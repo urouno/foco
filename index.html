@@ -9,6 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="Foco">
 <meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0B1120" media="(prefers-color-scheme: dark)">
+<script>/* Aplica el tema elegido antes de pintar, sin parpadeo */try{var t=(JSON.parse(localStorage.getItem("foco.pref"))||{}).tema;if(t==="light"||t==="dark"){document.documentElement.dataset.theme=t;document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){m.content=t==="dark"?"#0B1120":"#F2F2F7"})}}catch(e){}</script>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" href="icon-180.png">
@@ -30,7 +31,7 @@
   --ease:cubic-bezier(.2,.8,.2,1);
   color-scheme:light dark;
 }
-@media (prefers-color-scheme: dark){:root{
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0B1120; --sf:#151C2E; --sf2:#1F2740; --sf3:#2A3350;
   --ink:#EEF1F8; --mut:#A9B1C6; --mut2:#6B7590; --ln:rgba(255,255,255,.08); --ln2:rgba(255,255,255,.15);
   --ac:#5E5CE6; --ac-s:rgba(125,122,255,.17); --ac-t:#B4B2FF; --on-ac:#FFFFFF;
@@ -41,6 +42,18 @@
   --glow:0 0 0 1px rgba(125,122,255,.6),0 0 30px -8px rgba(125,122,255,.5);
   --float:0 14px 36px -10px rgba(0,0,0,.75);
 }}
+:root[data-theme="dark"]{color-scheme:dark;
+  --bg:#0B1120; --sf:#151C2E; --sf2:#1F2740; --sf3:#2A3350;
+  --ink:#EEF1F8; --mut:#A9B1C6; --mut2:#6B7590; --ln:rgba(255,255,255,.08); --ln2:rgba(255,255,255,.15);
+  --ac:#5E5CE6; --ac-s:rgba(125,122,255,.17); --ac-t:#B4B2FF; --on-ac:#FFFFFF;
+  --ok:#4BD97A; --ok-f:#30D158; --ok-s:rgba(48,209,88,.15);
+  --hot:#FF7A72; --hot-f:#FF453A; --hot-s:rgba(255,69,58,.16);
+  --warn:#FFB547; --warn-f:#FF9F0A; --warn-s:rgba(255,159,10,.16);
+  --vio:#DA9BFF; --vio-s:rgba(191,90,242,.17);
+  --glow:0 0 0 1px rgba(125,122,255,.6),0 0 30px -8px rgba(125,122,255,.5);
+  --float:0 14px 36px -10px rgba(0,0,0,.75);
+}
+:root[data-theme="light"]{color-scheme:light}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--ink)}
 html.lock,html.lock body{overflow:hidden}
@@ -564,7 +577,15 @@ body.dragging .board{scroll-snap-type:none}
 .ar-r + .ar-r{border-top:1px solid var(--ln)}
 .ar-r input[type=text]{flex:1;min-width:0;border:0;background:none;outline:none;padding:8px 0}
 .sw-c{position:relative;width:30px;height:30px;border-radius:9px;background:var(--a);flex:none;overflow:hidden}
-.sw-c input{position:absolute;inset:-8px;width:46px;height:46px;opacity:0;cursor:pointer}
+.sw-c{display:block;border:0;padding:0}
+.ar-r .cnt{font-size:13px;color:var(--mut);white-space:nowrap}
+.pal{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;padding:4px 14px 14px}
+.pal button{aspect-ratio:1;border-radius:50%;background:var(--c);position:relative;max-width:40px;justify-self:center;width:100%}
+.pal button.on::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2.5px solid var(--c)}
+.ar-new{padding:14px;border-top:1px solid var(--ln)}
+.ar-new .pal{padding:12px 0 2px}
+.ar-new .row{display:flex;gap:8px;margin-top:12px}
+.ar-new .row .btn{flex:1}
 .opt{text-align:left}
 .opt .tt{-webkit-line-clamp:1}
 .st-big{display:flex;align-items:center;gap:14px}
@@ -805,7 +826,7 @@ const pref = {
 
 const D = { st:null, justDragged:false };
 const ui = { view:'hoy', hoyVista:'lista', tabVista:'kanban', filtro:'todas', col:'prox', agSel:'', agY:null, histQ:'', histN:40, sheet:null,
-  capArea:'', enfCaps:[], dtOpen:'', savedAt:0, nuevoTomate:false, syncErr:'', cfgMsg:null, cfgDraft:null, onb:0 };
+  capArea:'', enfCaps:[], dtOpen:'', savedAt:0, nuevoTomate:false, syncErr:'', cfgMsg:null, cfgDraft:null, areaNueva:null, areaColor:'', onb:0 };
 const abierto = k => !!pref.v('ab-' + k);
 
 /* ================= Consultas ================= */
@@ -1306,7 +1327,7 @@ function renderBandeja() {
 }
 function pintarCapAreas() {
   const z = $('#capAreas'); if (!z) return;
-  z.innerHTML = areas().map(a => `<button class="chip area ${ui.capArea === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="capArea" data-v="${a.id}" role="radio" aria-checked="${ui.capArea === a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('');
+  z.innerHTML = areas().map(a => `<button class="chip area ${ui.capArea === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="capArea" data-v="${a.id}" role="radio" aria-checked="${ui.capArea === a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('') + `<button class="chip" data-a="irAreas" aria-label="Nueva área">${ic('plus')}Nueva</button>`;
 }
 function pintarBandejaLista(nuevos = []) {
   const z = $('#bandejaZona'); if (!z) return;
@@ -1967,7 +1988,7 @@ function cab(titulo, extra = '') {
 }
 function abrirSheet(ctx) {
   if (ctx.k === 'detalle' && (!ui.sheet || ui.sheet.id !== ctx.id)) ui.dtOpen = ctx.open || '';
-  if (ctx.k === 'ajustes' && (!ui.sheet || ui.sheet.k !== 'ajustes')) { ui.cfgMsg = null; ui.cfgDraft = null; }
+  if (ctx.k === 'ajustes' && (!ui.sheet || ui.sheet.k !== 'ajustes')) { ui.cfgMsg = null; ui.cfgDraft = null; ui.areaNueva = null; ui.areaColor = ''; }
   ui.sheet = ctx;
   refrescarSheet(true);
   const sh = $('#sheet');
@@ -2067,7 +2088,7 @@ function htmlDetalle(t) {
     fila('estado', 'circleDot', 'ind', 'Estado', `<span class="pill ${EST_CLS[t.estado]}">${ESTADOS[t.estado]}</span>`,
       `<div class="chips">${estados.map(([k, n]) => `<button class="chip ${t.estado === k ? 'on' : ''}" data-a="dtEstado" data-v="${k}">${n}</button>`).join('')}</div>`),
     fila('area', 'layers', 'teal', 'Área', A ? `<i class="dot" style="--a:${A.c}"></i>${esc(A.n)}` : 'Sin área',
-      `<div class="chips">${areas().map(a => `<button class="chip area ${t.area === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="dtArea" data-v="${a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('')}<button class="chip ${!A ? 'on' : ''}" data-a="dtArea" data-v="">Sin área</button></div>`),
+      `<div class="chips">${areas().map(a => `<button class="chip area ${t.area === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="dtArea" data-v="${a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('')}<button class="chip ${!A ? 'on' : ''}" data-a="dtArea" data-v="">Sin área</button><button class="chip" data-a="irAreas">${ic('plus')}Nueva área</button></div>`),
     fila('prio', 'flag', 'warn', 'Prioridad', q ? pq(t) : 'Sin prioridad', matriz(t.urgente, t.importante, 'dtMx') + '<p class="hint">Toca el cuadro que mejor describa la tarea.</p>'),
     fila('fecha', 'cal', 'hot', 'Fecha', fechaTxt,
       `<div class="chips">${[['hoy', 'Hoy'], ['manana', 'Mañana'], ['lunes', 'Próximo lunes'], ['semana', 'En una semana'], ['', 'Sin fecha']].map(([v, n]) => `<button class="chip ${(v === 'hoy' && t.fecha === hoy()) || (v === 'manana' && t.fecha === manana()) || (v === '' && !t.fecha) ? 'on' : ''}" data-a="dtCuando" data-v="${v}">${n}</button>`).join('')}</div>
@@ -2109,8 +2130,22 @@ function agregarNota(t, txt) {
 function htmlAjustes() {
   const a = S.ajustes, m = ui.cfgMsg, dr = ui.cfgDraft || S.conn;
   const stp = (k, n, sub, min, max) => `<div class="set-r"><span class="sl">${n}${sub ? `<small>${sub}</small>` : ''}</span><div class="stp"><button data-a="step" data-k="${k}" data-d="-1" data-min="${min}" data-max="${max}" aria-label="Menos ${n}" ${a[k] <= min ? 'disabled' : ''}>−</button><b>${a[k]}</b><button data-a="step" data-k="${k}" data-d="1" data-min="${min}" data-max="${max}" aria-label="Más ${n}" ${a[k] >= max ? 'disabled' : ''}>+</button></div></div>`;
-  const info = estadoSyncInfo();
+  const info = estadoSyncInfo(), tema = pref.v('tema') || 'auto', an = ui.areaNueva;
+  const paleta = (sel, act, id = '') => `<div class="pal" role="radiogroup" aria-label="Color">${PALETA.map(c => `<button class="${c.toLowerCase() === (sel || '').toLowerCase() ? 'on' : ''}" style="--c:${c}" data-a="${act}" data-v="${c}" ${id ? `data-id="${id}"` : ''} role="radio" aria-checked="${c === sel}" aria-label="Color ${c}"></button>`).join('')}</div>`;
+  const activasDe = id => vivas().filter(t => t.area === id && t.estado !== 'hecho').length;
   return cab('<h2>Ajustes</h2>') + `
+    <div class="f-sec"><span class="f-l">Apariencia</span>
+      <div class="seg" role="radiogroup" aria-label="Tema">${[['auto', 'Automático'], ['light', 'Claro'], ['dark', 'Oscuro']].map(([k, n]) => `<button class="${tema === k ? 'on' : ''}" data-a="tema" data-v="${k}" role="radio" aria-checked="${tema === k}">${n}</button>`).join('')}</div>
+      <p class="hint">Automático sigue el modo claro u oscuro de tu iPhone.</p></div>
+    <div class="f-sec" id="secAreas"><span class="f-l">Áreas</span><div class="group">
+      ${a.areas.map(x => `<div class="ar-r"><button class="sw-c" style="--a:${x.c}" data-a="areaColor" data-id="${x.id}" aria-label="Cambiar color de ${esc(x.n)}" aria-expanded="${ui.areaColor === x.id}"></button><input type="text" value="${esc(x.n)}" maxlength="30" data-in="areaN" data-id="${x.id}" aria-label="Nombre del área"><span class="cnt">${activasDe(x.id) || ''}</span><button class="ib" data-a="areaDel" data-id="${x.id}" aria-label="Eliminar área ${esc(x.n)}">${ic('trash')}</button></div>${ui.areaColor === x.id ? paleta(x.c, 'areaColorSel', x.id) : ''}`).join('')}
+      ${an ? `<div class="ar-new"><label class="f-l" for="areaNuevaN">Nombre de la nueva área</label>
+          <input class="in ${an.err ? 'bad' : ''}" id="areaNuevaN" maxlength="30" placeholder="Ej. Casa, Salud, Curso de producción" value="${esc(an.n)}" enterkeyhint="done" autocomplete="off">
+          ${an.err ? `<div class="err">${esc(an.err)}</div>` : ''}
+          <span class="f-l" style="margin:12px 2px 0">Color</span>${paleta(an.c, 'areaNuevaC')}
+          <div class="row"><button class="btn" data-a="areaNuevaNo">Cancelar</button><button class="btn pri" data-a="areaNuevaOk">${ic('check')}Agregar</button></div></div>`
+        : `<div class="ar-r"><button class="btn full" style="background:none;color:var(--ac-t)" data-a="areaAdd" ${a.areas.length >= 12 ? 'disabled' : ''}>${ic('plus')}${a.areas.length >= 12 ? 'Llegaste al máximo de 12 áreas' : 'Agregar área'}</button></div>`}
+      </div><p class="hint">Toca el nombre para cambiarlo y el círculo para cambiar el color. El número indica sus tareas pendientes.</p></div>
     <div class="f-sec"><span class="f-l">Conexión con Google Sheets</span>
       <div class="panel">
         <label class="f-l" for="cfgUrl">URL de la aplicación web</label>
@@ -2124,15 +2159,20 @@ function htmlAjustes() {
     <div class="f-sec"><span class="f-l">Pomodoro</span><div class="group">
       ${stp('pomo', 'Enfoque', 'Minutos por pomodoro', 5, 90)}${stp('corto', 'Descanso corto', 'Minutos', 1, 30)}${stp('largo', 'Descanso largo', 'Minutos', 5, 60)}${stp('cada', 'Descanso largo cada', 'Pomodoros', 2, 8)}${stp('meta', 'Meta diaria', 'Pomodoros por día', 1, 16)}
       <div class="set-r"><span class="sl">Sonido al terminar</span><button class="sw ${a.sonido ? 'on' : ''}" data-a="cfgSonido" role="switch" aria-checked="${a.sonido}" aria-label="Sonido al terminar"></button></div></div></div>
-    <div class="f-sec"><span class="f-l">Áreas</span><div class="group">
-      ${a.areas.map(x => `<div class="ar-r"><span class="sw-c" style="--a:${x.c}"><input type="color" value="${x.c}" data-in="areaC" data-id="${x.id}" aria-label="Color de ${esc(x.n)}"></span><input type="text" value="${esc(x.n)}" maxlength="30" data-in="areaN" data-id="${x.id}" aria-label="Nombre del área"><button class="ib" data-a="areaDel" data-id="${x.id}" aria-label="Eliminar área ${esc(x.n)}">${ic('trash')}</button></div>`).join('')}
-      <div class="ar-r"><button class="btn full" style="background:none;color:var(--ac-t)" data-a="areaAdd" ${a.areas.length >= 12 ? 'disabled' : ''}>${ic('plus')}Agregar área</button></div></div><p class="hint">Toca el color para cambiarlo. Máximo 12 áreas.</p></div>
     <div class="f-sec"><span class="f-l">Ayuda y datos</span><div class="group">
       <button class="set-r" data-a="verGuia"><span class="sl">Guía de Foco<small>Cómo funciona el método, paso a paso</small></span>${ic('chevR')}</button>
       <button class="set-r" data-a="resetTips"><span class="sl">Mostrar consejos otra vez<small>Vuelve a ver las pistas que ocultaste</small></span>${ic('chevR')}</button>
       <button class="set-r" data-a="exportar"><span class="sl">Descargar respaldo<small>${vivas().length} tareas · ${S.sesiones.length} sesiones, en un archivo JSON</small></span>${ic('download')}</button></div></div>
     <p class="hint" style="text-align:center">Foco · GTD, Ivy Lee, Kanban y Pomodoro</p>
     <div class="sh-end"></div>`;
+}
+
+function aplicarTema(t) {
+  const r = document.documentElement;
+  if (t === 'light' || t === 'dark') r.dataset.theme = t; else { delete r.dataset.theme; t = 'auto'; }
+  pref.set('tema', t);
+  const oscuro = t === 'dark' || (t === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
+  $$('meta[name="theme-color"]').forEach((m, i) => { m.content = t === 'auto' ? (i ? '#0B1120' : '#F2F2F7') : (oscuro ? '#0B1120' : '#F2F2F7'); });
 }
 
 /* ================= Acciones (toques) ================= */
@@ -2380,12 +2420,32 @@ const ACT = {
     S.ajustes.areas = S.ajustes.areas.filter(x => x.id !== id); guardarAjustes(); refrescarSheet();
   },
   areaAdd:() => {
-    if (areas().length >= 12) return;
-    const usados = areas().map(a => a.c); const c = PALETA.find(p => !usados.includes(p)) || PALETA[0];
-    let n = 'Nueva área', i = 2; while (areas().some(a => a.n === n)) n = `Nueva área ${i++}`;
-    S.ajustes.areas.push({ id:'a' + uid().slice(-5), n, c }); guardarAjustes(); refrescarSheet();
-    setTimeout(() => { const ins = $$('[data-in="areaN"]'); const last = ins[ins.length - 1]; if (last) { last.focus(); last.select(); } }, 60);
+    if (areas().length >= 12) { toast('Máximo 12 áreas. Elimina una para agregar otra.'); return; }
+    const usados = areas().map(a => a.c.toLowerCase());
+    ui.areaNueva = { n:'', c:PALETA.find(p => !usados.includes(p.toLowerCase())) || PALETA[0], err:'' }; ui.areaColor = '';
+    refrescarSheet(); setTimeout(() => { const i = $('#areaNuevaN'); if (i) { i.focus(); i.scrollIntoView({ block:'center', behavior:'smooth' }); } }, 80);
   },
+  areaNuevaC:el => { ui.areaNueva.n = $('#areaNuevaN').value; ui.areaNueva.c = el.dataset.v; refrescarSheet(); },
+  areaNuevaNo:() => { ui.areaNueva = null; refrescarSheet(); },
+  areaNuevaOk:() => {
+    const an = ui.areaNueva, n = $('#areaNuevaN').value.trim().replace(/\s+/g, ' ');
+    an.n = n;
+    if (!n) an.err = 'Escribe un nombre para el área.';
+    else if (areas().some(a => norm(a.n) === norm(n))) an.err = `Ya tienes un área llamada «${n}».`;
+    else if (areas().length >= 12) an.err = 'Llegaste al máximo de 12 áreas.';
+    else an.err = '';
+    if (an.err) { refrescarSheet(); sacudir($('#areaNuevaN')); $('#areaNuevaN').focus(); return; }
+    let id = norm(n).replace(/[^a-z0-9]+/g, '').slice(0, 12) || 'area';
+    while (area(id)) id = id + Math.floor(Math.random() * 10);
+    S.ajustes.areas.push({ id, n, c:an.c }); guardarAjustes();
+    ui.areaNueva = null; refrescarSheet(); render(); refrescarSheet();
+    const atajo = norm(n).split(' ')[0].replace(/[^a-z0-9_-]/g, '');
+    toast(`Área «${n}» lista. Al capturar puedes escribir #${atajo || id}`);
+  },
+  areaColor:el => { ui.areaColor = ui.areaColor === el.dataset.id ? '' : el.dataset.id; refrescarSheet(); },
+  areaColorSel:el => { const a = area(el.dataset.id); if (!a) return; a.c = el.dataset.v; ui.areaColor = ''; guardarAjustes(); refrescarSheet(); render(); refrescarSheet(); },
+  irAreas:() => { cerrarSheet(true); abrirSheet({ k:'ajustes' }); ACT.areaAdd(); },
+  tema:el => { aplicarTema(el.dataset.v); refrescarSheet(); },
   exportar:() => {
     const blob = new Blob([JSON.stringify({ exportado:nowISO(), tareas:S.tareas, sesiones:S.sesiones, ajustes:S.ajustes }, null, 1)], { type:'application/json' });
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `foco-respaldo-${hoy()}.json`; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
@@ -2429,13 +2489,14 @@ const IN = {
     if (areas().some(x => x.id !== a.id && norm(x.n) === norm(n))) { toast('Ya tienes un área con ese nombre'); return; }
     a.n = n; guardarAjustes();
   }, 600),
-  areaC:el => { const a = area(el.dataset.id); if (a) { a.c = el.value; el.parentElement.style.setProperty('--a', el.value); deb('ac', guardarAjustes, 400); } }
+  areaC:() => {}
 };
 document.addEventListener('input', e => {
   const el = e.target;
   if (el.dataset && el.dataset.in && IN[el.dataset.in]) IN[el.dataset.in](el);
   if (el.matches('#capIn,#capSheetIn,#blocIn,#bitIn,#procTt')) autoAlto(el);
   if (el.id === 'pEsperaIn' && proc && proc.d.errEsp && el.value.trim()) { proc.d.errEsp = false; el.classList.remove('bad'); const n = el.nextElementSibling; if (n && n.classList.contains('err')) n.remove(); }
+  if (el.id === 'areaNuevaN' && ui.areaNueva) { ui.areaNueva.n = el.value; if (ui.areaNueva.err) { ui.areaNueva.err = ''; el.classList.remove('bad'); const n = el.nextElementSibling; if (n && n.classList.contains('err')) n.remove(); } }
   if (el.id === 'cfgUrl' || el.id === 'cfgClave') { ui.cfgDraft = { url:$('#cfgUrl').value, clave:$('#cfgClave').value }; el.classList.remove('bad'); }
 });
 document.addEventListener('toggle', e => {
@@ -2454,6 +2515,7 @@ document.addEventListener('keydown', e => {
   else if (el.id === 'enfCap') { e.preventDefault(); ACT.enfCapAdd(); }
   else if (el.id === 'pEsperaIn') { e.preventDefault(); ACT.pGuardarEsp(); }
   else if (el.id === 'cfgClave') { e.preventDefault(); ACT.cfgGuardar(); }
+  else if (el.id === 'areaNuevaN') { e.preventDefault(); ACT.areaNuevaOk(); }
   else if (el.id === 'qaddIn') {
     e.preventDefault();
     const v = el.value.trim(); if (!v) { sacudir(el); return; }
