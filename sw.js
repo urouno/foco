@@ -1,5 +1,5 @@
 // Foco: funciona sin conexión. Cambia la versión cuando subas cambios para forzar la actualización.
-const CACHE = 'foco-v3';
+const CACHE = 'foco-v4';
 const ARCHIVOS = ['./', './index.html', './manifest.json', './icon-180.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
