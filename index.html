@@ -90,7 +90,7 @@ svg.i.fill{fill:currentColor;stroke:none}
 .ib{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;color:var(--mut);position:relative;flex:none;transition:background .15s}
 .ib:active{background:var(--sf2)}
 .ib.st-ok{color:var(--ok)} .ib.st-pend{color:var(--warn)} .ib.st-err{color:var(--hot)} .ib.st-run{color:var(--ac-t)}
-.ib.st-run svg.i{animation:pulse 1s infinite}
+.ib.st-run svg.i{}
 .streak{height:32px;margin-right:4px;padding:0 12px 0 8px;border-radius:999px;background:var(--sf2);color:var(--ink);font-weight:700;font-size:var(--fs-m);display:inline-flex;align-items:center;gap:4px;flex:none}
 .streak svg.i{color:var(--warn-f);width:17px;height:17px;stroke-width:2.2}
 
@@ -107,7 +107,7 @@ body.has-mini main{padding-bottom:calc(var(--tabs) + var(--mini) + 112px + var(-
 #tabs button.on{color:var(--ac-t)}
 #tabs button.on .tp{background:var(--ac-s)}
 #tabs .bdg{position:absolute;top:2px;left:calc(50% + 9px);min-width:19px;height:19px;padding:0 4px;border-radius:8px;background:var(--hot-f);color:#fff;font-size:var(--fs-s);line-height:19px;font-weight:700;font-style:normal}
-#tabs .tdot{position:absolute;top:6px;left:calc(50% + 13px);width:9px;height:9px;border-radius:50%;background:var(--ok-f);border:2px solid var(--sf);animation:pulse 1.4s infinite}
+#tabs .tdot{position:absolute;top:6px;left:calc(50% + 13px);width:9px;height:9px;border-radius:50%;background:var(--ok-f);border:2px solid var(--sf);}
 
 /* ===== Botón de captura ===== */
 #fab{position:fixed;right:16px;bottom:calc(var(--tabs) + 16px + var(--bot));z-index:44;height:48px;padding:0 20px 0 16px;border-radius:999px;background:var(--sf);color:var(--ac-t);border:1px solid var(--ln);display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:var(--fs-m);box-shadow:var(--float);transition:transform .2s var(--ease),bottom .3s var(--ease)}
@@ -253,6 +253,38 @@ body.dragging{cursor:grabbing}
 .conn .ci{width:40px;height:40px;border-radius:12px;background:var(--ac-s);color:var(--ac-t);display:grid;place-items:center;flex:none}
 .conn b{font-size:var(--fs-m);font-weight:600}
 
+/* ===== Captura estructurada ===== */
+.capf{padding:16px 16px 12px;border-radius:24px;transition:box-shadow .2s}
+.capf:focus-within{box-shadow:0 0 0 2px var(--ac)}
+.capf-l{display:flex;align-items:center;gap:8px;font-size:var(--fs-s);font-weight:600;color:var(--mut)}
+.vsel{display:inline-flex;align-items:center;gap:4px;min-height:32px;padding:0 8px 0 12px;border-radius:999px;background:var(--sf2);font-size:var(--fs-s)}
+.vsel b{font-weight:600;color:var(--ink)} .vsel b.nil{color:var(--ac-t)}
+.vsel svg.i,.asel svg.i{width:16px;height:16px;color:var(--mut)}
+.capf-in{display:block;width:100%;border:0;outline:0;background:none;resize:none;padding:12px 0;font-size:var(--fs-l);font-weight:500;line-height:1.3;min-height:56px;max-height:200px}
+.capf-in::placeholder{color:var(--mut2)}
+.capf-bot{display:flex;align-items:center;gap:8px;padding-top:12px;border-top:1px solid var(--ln)}
+.asel{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 12px;border-radius:12px;background:var(--sf2);font-size:var(--fs-m);color:var(--ink);max-width:60%}
+.asel.full{width:100%;max-width:none;min-height:48px}
+.capf-hint{margin:8px 4px 0;font-size:var(--fs-s);color:var(--mut);line-height:1.4}
+.capf-hint:empty{display:none}
+.capf-hint button{color:var(--ac-t);font-weight:600;text-align:left}
+.clar{margin:0 0 16px;padding:12px 16px;border-radius:16px;background:var(--sf);display:flex;flex-direction:column;gap:12px}
+.clar-i{display:flex;flex-direction:column;gap:8px}
+.clar-t{display:flex;gap:8px;align-items:flex-start;font-size:var(--fs-s);color:var(--mut);line-height:1.4}
+.clar-t svg.i{width:16px;height:16px;margin-top:1px;color:var(--ac-t)}
+.clar-a{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.clar-a .chip{min-height:32px;padding:0 12px;font-size:var(--fs-s)}
+.lnk2{color:var(--ac-t);font-weight:600;font-size:var(--fs-s);min-height:32px;display:inline-flex;align-items:center;gap:4px}
+.lnk2 svg.i{width:14px;height:14px}
+.row-add{display:flex;align-items:center;gap:8px;width:100%;min-height:48px;margin-top:12px;padding:0 16px;border-radius:12px;background:var(--ac-s);color:var(--ac-t);font-weight:600}
+.xmini{width:24px;height:24px;margin-right:-8px;display:grid;place-items:center;color:var(--mut)}
+.xmini svg.i{width:14px;height:14px}
+.res-l{display:flex;gap:8px;align-items:flex-start;margin-top:8px;font-size:var(--fs-s);color:var(--mut);line-height:1.4}
+.res-l svg.i{width:14px;height:14px;margin-top:2px;flex:none}
+.mut2{color:var(--mut2)}
+#sheet.top{z-index:320} #sheetBg.top{z-index:315}
+html.calma .view.on,html.calma .in-anim,html.calma .tom.new,html.calma .proc-card.enter,html.calma .onb-art .big,html.calma .dlg-box,html.calma #lvlUp .box{animation:none}
+
 /* ===== Organizar ===== */
 #proc{position:fixed;inset:0;z-index:300;background:var(--bg);display:none;flex-direction:column;padding:calc(var(--top) + 4px) 16px calc(16px + var(--bot));overflow-y:auto;overscroll-behavior:contain}
 #proc.on{display:flex;animation:vin .25s var(--ease)}
@@ -308,7 +340,7 @@ body.dragging{cursor:grabbing}
 .hero-l{display:flex;align-items:center;gap:8px;font-size:var(--fs-s);font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ac-t)}
 .hero-l b{font-variant-numeric:tabular-nums;letter-spacing:.02em}
 .live{width:8px;height:8px;border-radius:50%;background:var(--ac);flex:none;display:inline-block}
-.is-run .live,.running .live{background:var(--ok-f);animation:pulse 1.4s infinite}
+.is-run .live,.running .live{background:var(--ok-f);}
 .hero-t{font-size:var(--fs-l);font-weight:700;line-height:1.25;letter-spacing:-.01em;margin-top:8px;overflow-wrap:anywhere}
 .hero .mt{margin-top:8px}
 .hero-b{display:flex;gap:12px;margin-top:16px}
@@ -453,7 +485,7 @@ body.dragging .board{scroll-snap-type:none}
 #mini .tmm{font-size:var(--fs-l);font-weight:600;font-variant-numeric:tabular-nums}
 #mini .ib{color:var(--ink);width:42px;height:42px}
 #mini .live{background:var(--mut2)}
-#mini .live.on{background:var(--ok-f);animation:pulse 1.4s infinite}
+#mini .live.on{background:var(--ok-f);}
 
 /* ===== Progreso ===== */
 .lvl{display:flex;align-items:center;gap:16px}
@@ -642,12 +674,15 @@ body.dragging .board{scroll-snap-type:none}
 
 /* ===== Avisos y celebraciones ===== */
 #toast{position:fixed;left:50%;bottom:calc(var(--tabs) + 76px + var(--bot));z-index:400;transform:translate(-50%,30px);opacity:0;pointer-events:none;background:var(--ink);color:var(--bg);border-radius:12px;padding:12px 12px 12px 16px;font-size:var(--fs-m);font-weight:500;display:flex;align-items:center;gap:12px;width:max-content;max-width:calc(100% - 32px);box-shadow:var(--float);transition:all .3s var(--ease)}
-#toast.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+#toast.on{transform:translate(-50%,0);opacity:1}
+#toast.on button{pointer-events:auto}
 #toast > span{padding:2px 4px 2px 0}
 #toast button{background:var(--ac);color:var(--on-ac);font-weight:600;font-size:var(--fs-s);padding:8px 12px;border-radius:8px;flex:none}
 #toast svg.i{width:18px;height:18px;color:var(--warn-f)}
 body.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 76px + var(--bot))}
 body.no-fab #toast{bottom:calc(var(--tabs) + 16px + var(--bot))}
+html.lock #toast{bottom:auto!important;top:calc(var(--top) + 8px);transform:translate(-50%,-24px)}
+html.lock #toast.on{transform:translate(-50%,0)}
 body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(--bot))}
 .xpf{position:fixed;z-index:450;pointer-events:none;font-weight:700;font-size:var(--fs-l);color:var(--ac-t);animation:xpup 1.3s var(--ease) forwards}
 @keyframes xpup{0%{opacity:0;transform:translate(-50%,10px) scale(.6)}20%{opacity:1;transform:translate(-50%,-6px) scale(1.12)}100%{opacity:0;transform:translate(-50%,-64px) scale(1)}}
@@ -793,6 +828,7 @@ const IC = {
   filter:'<path d="M4 5h16l-6 7.5V19l-4 2v-8.5z"/>',
   grip:'<circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/>',
   folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+  listo:'<circle cx="12" cy="12" r="9"/><path d="m8.5 12.2 2.4 2.4 4.6-4.9"/>',
   circleDot:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/>',
   book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>'
 };
@@ -889,7 +925,7 @@ function toRowT(t) {
     id:t.id, titulo:t.titulo, estado:t.estado, area:t.area || '', proyecto:t.proyecto || '',
     urgente:t.urgente ? 'sí' : '', importante:t.importante ? 'sí' : '', dur:t.dur ? String(t.dur) : '',
     fecha:t.fecha || '', hora:t.hora || '', rec:t.rec || '', orden:String(t.orden ?? 0), espera:t.espera || '',
-    notas:(t.notas && t.notas.length) ? JSON.stringify(t.notas) : '', serie:t.serie || '', pomos:String(t.pomos || 0),
+    notas:(t.notas && t.notas.length) ? JSON.stringify(t.notas) : '', serie:t.serie || '', pomos:String(t.pomos || 0), resultado:t.resultado || '',
     creado:t.creado, actualizado:t.actualizado, hecho:t.hecho || '', borrado:t.borrado ? 'sí' : ''
   };
 }
@@ -899,7 +935,7 @@ function fromRowT(r) {
   return {
     id:r.id, titulo:r.titulo || '', estado:r.estado || 'bandeja', area:r.area || '', proyecto:r.proyecto || '',
     urgente:isTrue(r.urgente), importante:isTrue(r.importante), dur:+r.dur || 0, fecha:r.fecha || '', hora:r.hora || '',
-    rec:r.rec || '', orden:+r.orden || 0, espera:r.espera || '', notas, serie:r.serie || '', pomos:+r.pomos || 0,
+    rec:r.rec || '', orden:+r.orden || 0, espera:r.espera || '', notas, serie:r.serie || '', pomos:+r.pomos || 0, resultado:r.resultado || '',
     creado:r.creado || nowISO(), actualizado:r.actualizado || '', hecho:r.hecho || '', borrado:isTrue(r.borrado)
   };
 }
@@ -1054,7 +1090,7 @@ function revisarLogros() {
   const st = stats(), l = nivelDe(st.xp);
   if (S.insVistas === null) { S.insVistas = INSIGNIAS.filter(i => i.ok(st)).map(i => i.id); S.lvlVisto = l; save(); return; }
   const nuevas = INSIGNIAS.filter(i => i.ok(st) && !S.insVistas.includes(i.id));
-  if (nuevas.length) { S.insVistas.push(...nuevas.map(i => i.id)); setTimeout(() => toast(`Insignia desbloqueada: ${nuevas[0].n}`, null, null, 'award'), 900); }
+  if (nuevas.length) { S.insVistas.push(...nuevas.map(i => i.id)); if (!calma()) setTimeout(() => toast(`Insignia desbloqueada: ${nuevas[0].n}`, null, null, 'award'), 900); }
   if (l > (S.lvlVisto || 1)) { S.lvlVisto = l; celebrarNivel(l); }
   save();
 }
@@ -1062,7 +1098,7 @@ function revisarLogros() {
 /* ================= Acciones sobre tareas ================= */
 function nuevaTarea(titulo, extra = {}) {
   const t = { id:uid(), titulo:titulo.slice(0, MAX_TITULO), estado:'bandeja', area:'', proyecto:'', urgente:false, importante:false, dur:0, fecha:'', hora:'', rec:'',
-    orden:Date.now() % 1e9, espera:'', notas:[], serie:'', pomos:0, creado:nowISO(), actualizado:'', hecho:'', borrado:false, ...extra };
+    orden:Date.now() % 1e9, espera:'', notas:[], serie:'', pomos:0, resultado:'', creado:nowISO(), actualizado:'', hecho:'', borrado:false, ...extra };
   if ((t.estado === 'hoy' || t.estado === 'proceso') && !t.fecha) t.fecha = hoy();
   S.tareas.push(t); upsertT(t);
   return t;
@@ -1072,7 +1108,7 @@ function parsearCaptura(txt) {
   titulo = titulo.replace(/\s#([\p{L}\d_-]+)/gu, (m, tag) => { const a = buscarArea(tag); if (a && !ar) { ar = a.id; return ' '; } return m; });
   titulo = titulo.replace(/\s!!(?=\s)/g, () => { urg = true; imp = true; return ' '; });
   titulo = titulo.replace(/\s!(?=\s)/g, () => { urg = true; return ' '; });
-  return { titulo:titulo.replace(/\s{2,}/g, ' ').trim(), area:ar, urgente:urg, importante:imp };
+  return { titulo:limpiarTitulo(titulo), area:ar, urgente:urg, importante:imp };
 }
 function buscarArea(tag) {
   const n = norm(tag); if (!n) return null;
@@ -1140,6 +1176,118 @@ function rollover() {
   S.diaRoll = h; save();
 }
 
+
+/* ================= Redacción de pendientes =================
+   Ayuda a que cada pendiente empiece con un verbo en infinitivo, tenga un objeto claro
+   y, si hace falta, un resultado esperado. Solo sugiere: nunca inventa información. */
+const VERBOS_BASE = ['Revisar','Enviar','Llamar','Actualizar','Elaborar','Preparar','Validar','Responder','Pagar','Comprar','Agendar','Definir','Diseñar','Publicar','Cotizar','Confirmar','Investigar','Escribir','Organizar','Solicitar','Entregar','Registrar','Programar','Analizar','Corregir','Grabar','Editar','Subir','Contactar','Dar seguimiento a','Presentar','Planear','Terminar','Instalar','Configurar','Documentar','Capacitar','Negociar','Firmar','Facturar','Imprimir','Buscar','Calcular','Probar','Estudiar','Leer','Limpiar','Reparar'];
+const VAGOS = { ver:'Revisar', checar:'Revisar', chequear:'Revisar', hacer:'', mover:'', tratar:'', ocuparse:'' };
+// Sustantivo de acción → verbo (se reemplaza): «Revisión de campañas» → «Revisar campañas»
+const ACCION_N = { revision:'Revisar', envio:'Enviar', llamada:'Llamar', actualizacion:'Actualizar', elaboracion:'Elaborar', preparacion:'Preparar', validacion:'Validar', respuesta:'Responder', pago:'Pagar', compra:'Comprar', cotizacion:'Cotizar', publicacion:'Publicar', analisis:'Analizar', entrega:'Entregar', solicitud:'Solicitar', registro:'Registrar', correccion:'Corregir', grabacion:'Grabar', edicion:'Editar', investigacion:'Investigar', seguimiento:'Dar seguimiento a', instalacion:'Instalar', configuracion:'Configurar', capacitacion:'Capacitar', firma:'Firmar', impresion:'Imprimir', limpieza:'Limpiar', reparacion:'Reparar', lectura:'Leer', busqueda:'Buscar', confirmacion:'Confirmar', definicion:'Definir', planeacion:'Planear', diseno:'Diseñar' };
+// Sustantivo-objeto → verbo sugerido (se antepone): «Junta con Omar» → «Preparar junta con Omar»
+const OBJETO_N = { junta:'Preparar', reunion:'Preparar', presentacion:'Preparar', factura:'Facturar', reporte:'Elaborar', informe:'Elaborar', contrato:'Revisar', propuesta:'Elaborar', campana:'Revisar', video:'Grabar', post:'Publicar' };
+const NO_VERBO = new Set(['lugar','hogar','mar','bar','azucar','collar','altar','par','pilar','dolar','militar','familiar','particular','popular','similar','regular','titular','celular','solar','polar','escolar','lunar','alfiler','ayer','mujer','taller','placer','cancer','caracter','cadaver','alquiler','poster','computer','super','elixir','tapir','faquir','omar','edgar','oscar','baltazar','aguilar','escobar','salazar','javier','esther','walter','peter','oliver','jennifer','jasmir','yamir','bolivar','azar','cesar','sauver','mostrar?']);
+const CORTOS = new Set(['ir','ser','dar','ver','oir','leer','reir','irse']);
+const RELLENO = /^(?:(?:yo\s+)?tengo\s+que|tenemos\s+que|hay\s+que|necesito|necesitamos|debo|debemos|acordarme\s+de|acuerdate\s+de|recordar|no\s+olvidar|no\s+olvides|falta|quiero)\s+/i;
+const PREFIJO = /^(?:pendiente|ojo|urgente|nota|tarea|to\s*do)\s*[:\-]\s*/i;
+const AMBIGUOS = [[/\blo\s+del?\b/i, '«lo de»'], [/\blo\s+pendiente\b/i, '«lo pendiente»'], [/\blo\s+que\s+(?:qued|falt)/i, '«lo que falta»'], [/\bcosas?\b/i, '«cosas»'], [/\btemas?\b/i, '«tema»'], [/\basuntos?\b/i, '«asunto»'], [/\balgo\b/i, '«algo»'], [/\bdar\s+una\s+(?:revisada|checada|vuelta|leida)\b/i, '«dar una revisada»'], [/\betc\b\.?/i, '«etc.»']];
+function verbosTodos() { return [...new Set([...(S.ajustes.verbos || []), ...VERBOS_BASE])]; }
+function cap1(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+function limpiarTitulo(s) { return cap1(String(s).replace(/\s+/g, ' ').trim().replace(/[.;,]+$/, '').trim()).slice(0, MAX_TITULO); }
+function esInfinitivo(w) {
+  const n = norm(w); if (n.length < 2) return false;
+  if (CORTOS.has(n)) return true;
+  if (NO_VERBO.has(n)) return false;
+  if (verbosTodos().some(v => norm(v) === n)) return true;
+  const base = n.replace(/(?:me|te|se|nos|lo|la|le|los|las|les)+$/, '');
+  return [n, base].some(x => x.length >= 4 && /(?:ar|er|ir)$/.test(x) && !NO_VERBO.has(x));
+}
+// Devuelve el verbo con el que empieza el texto (frase conocida más larga o palabra en infinitivo).
+function verboInicial(texto) {
+  const t = String(texto).trim(), n = norm(t);
+  let mejor = '';
+  verbosTodos().forEach(v => { const nv = norm(v); if ((n === nv || n.startsWith(nv + ' ')) && nv.length > mejor.length) mejor = nv; });
+  if (mejor) return { verbo:cap1(t.slice(0, mejor.length)), largo:mejor.length };
+  const w = (t.match(/^\p{L}+/u) || [''])[0];
+  return w && esInfinitivo(w) ? { verbo:cap1(w), largo:w.length } : null;
+}
+// Al anteponer un verbo, baja la mayúscula inicial salvo en nombres propios, marcas y siglas.
+const NOMBRES = new Set('omar mariana julio luis beto armando perla iris jessica jose arturo juan pedro maria ana carlos jorge miguel luis antonio francisco javier alejandro fernando ricardo roberto eduardo daniel david raul sergio manuel jesus mario hector alberto gerardo rafael andres diego pablo oscar ruben victor enrique adrian ivan hugo emilio santiago sebastian mateo laura sofia valeria paola daniela fernanda andrea gabriela carmen patricia rosa lucia elena claudia veronica monica adriana diana alejandra karla karen lupita guadalupe sandra silvia teresa marco marcos isabel natalia camila regina ximena omova marelo esphabit afinazone afz ocm ocf mercado libre google meta apple amazon whatsapp instagram facebook tiktok excel sat imss'.split(' '));
+function bajarInicial(resto) {
+  const w = (resto.match(/^\p{L}+/u) || [''])[0];
+  if (!w || w.length < 2 || w === w.toUpperCase() || /\p{Lu}/u.test(w.slice(1))) return resto;
+  const n = norm(w);
+  if (NOMBRES.has(n) || areas().some(a => norm(a.n).split(' ')[0] === n)) return resto;
+  // Si ya la escribiste con mayúscula a media frase, es un nombre propio
+  if (S.tareas.some(t => !t.borrado && new RegExp(`\\s${w}\\b`).test(t.titulo))) return resto;
+  return w.toLowerCase() + resto.slice(w.length);
+}
+function desdeSustantivo(texto) {
+  const t = String(texto).trim(), w = (t.match(/^\p{L}+/u) || [''])[0], n = norm(w);
+  if (ACCION_N[n]) {
+    let resto = t.slice(w.length).trim();
+    resto = resto.replace(/^del\s+/i, 'el ').replace(/^de\s+/i, '');
+    return { verbo:ACCION_N[n], texto:limpiarTitulo(`${ACCION_N[n]} ${bajarInicial(resto)}`) };
+  }
+  if (OBJETO_N[n]) return { verbo:OBJETO_N[n], texto:limpiarTitulo(`${OBJETO_N[n]} ${bajarInicial(t)}`) };
+  return null;
+}
+// Pone (o cambia) el verbo inicial sin tocar el resto del texto.
+function aplicarVerbo(texto, verbo) {
+  const t = String(texto || '').trim(), vi = verboInicial(t);
+  if (!t) return verbo + ' ';
+  if (vi) return limpiarTitulo(`${verbo} ${t.slice(vi.largo).trim()}`);
+  const ds = desdeSustantivo(t); if (ds && ds.verbo === verbo) return ds.texto;
+  return limpiarTitulo(`${verbo} ${bajarInicial(t)}`);
+}
+function sinRelleno(texto) {
+  let t = String(texto).trim().replace(/\s*,?\s*por\s+favor\b/gi, '');
+  t = t.replace(PREFIJO, '');
+  const m = t.match(RELLENO);
+  if (m && verboInicial(t.slice(m[0].length))) t = t.slice(m[0].length);
+  return limpiarTitulo(t);
+}
+function dividirAcciones(texto) {
+  const partes = [];
+  String(texto).split(/\s*[;\n]\s*/).forEach(seg => {
+    const re = /(?:,\s*|\s+y\s+|\s+e\s+)(?=(\p{L}+))/gu; let ini = 0, m;
+    while ((m = re.exec(seg))) { if (esInfinitivo(m[1]) && !CORTOS.has(norm(m[1]))) { partes.push(seg.slice(ini, m.index)); ini = m.index + m[0].length; } }
+    partes.push(seg.slice(ini));
+  });
+  return partes.map(limpiarTitulo).filter(x => x.length > 1);
+}
+function verbosFrecuentes(n = 50) {
+  const uso = {};
+  S.tareas.forEach(t => { if (t.borrado) return; const v = verboInicial(t.titulo); if (v) { const k = norm(v.verbo); uso[k] = (uso[k] || 0) + 1; } });
+  const todos = verbosTodos();
+  return todos.map((v, i) => [v, uso[norm(v)] || 0, i]).sort((a, b) => b[1] - a[1] || a[2] - b[2]).map(x => x[0]).slice(0, n);
+}
+// Revisa un título y devuelve, por prioridad, lo que conviene aclarar.
+function analizar(texto) {
+  const t = String(texto || '').trim(); if (!t) return [];
+  const out = [], limpio = sinRelleno(t);
+  if (limpio !== limpiarTitulo(t) && limpio) out.push({ k:'relleno', ic:'sparkle', msg:'Queda más directo sin palabras de relleno:', propuesta:limpio });
+  const base = limpio || t, vi = verboInicial(base);
+  if (!vi) {
+    const ds = desdeSustantivo(base);
+    out.push({ k:'verbo', ic:'bolt', msg:'Empieza con un verbo en infinitivo: así sabrás qué hacer de un vistazo.', propuesta:ds ? ds.texto : '', verbos:[...new Set([ds && ds.verbo, ...verbosFrecuentes(4)].filter(Boolean))].slice(0, 4) });
+  } else if (VAGOS[norm(vi.verbo)] !== undefined) {
+    const alt = VAGOS[norm(vi.verbo)];
+    out.push({ k:'vago', ic:'bolt', msg:`«${vi.verbo}» es poco específico. ¿Qué harás exactamente?`, verbos:[...new Set([alt, ...verbosFrecuentes(4)].filter(Boolean))].slice(0, 4) });
+  }
+  const amb = AMBIGUOS.find(([re]) => re.test(base));
+  if (amb) out.push({ k:'ambiguo', ic:'info', msg:`${amb[1]} es ambiguo. Escribe qué es exactamente.` });
+  const partes = dividirAcciones(base);
+  if (partes.length > 1) out.push({ k:'varias', ic:'layers', msg:`Parece tener ${partes.length} acciones. Si son pasos separados, divídela.` });
+  if (base.length > 90) out.push({ k:'largo', ic:'note', msg:'El título es largo. Deja la acción y pasa el detalle al resultado esperado o a notas.' });
+  return out;
+}
+function htmlClaridad(texto, dest) {
+  const iss = analizar(texto).slice(0, 2); if (!iss.length) return '';
+  return `<div class="clar" role="note">${iss.map(i => `<div class="clar-i"><span class="clar-t">${ic(i.ic)}<span>${esc(i.msg)}</span></span>
+    ${i.verbos || i.propuesta || i.k === 'varias' ? `<div class="clar-a">${i.propuesta ? `<button class="chip" data-a="clarUsar" data-dest="${dest}" data-v="${esc(i.propuesta)}">Usar «${esc(i.propuesta.length > 44 ? i.propuesta.slice(0, 43) + '…' : i.propuesta)}»</button>` : ''}${(i.k === 'verbo' && i.propuesta) ? '' : (i.verbos || []).map(v => `<button class="chip" data-a="clarVerbo" data-dest="${dest}" data-v="${esc(v)}">${esc(v)}</button>`).join('')}${i.verbos ? `<button class="lnk2" data-a="verboAbrir" data-dest="${dest}">Más verbos</button>` : ''}${i.k === 'varias' ? `<button class="chip" data-a="dividirAbrir" data-dest="${dest}">${ic('layers')}Dividir</button>` : ''}</div>` : ''}</div>`).join('')}</div>`;
+}
+
 /* ================= Interfaz general ================= */
 const VISTAS = [
   { k:'bandeja', n:'Bandeja', ic:'inbox', sub:() => { const n = tareasEn('bandeja').length; return n ? `${n} por organizar` : 'Anota todo aquí, organiza después'; } },
@@ -1200,7 +1348,7 @@ function toast(msg, accion, fn, icono) {
   el.innerHTML = (icono ? ic(icono) : '') + `<span>${esc(msg)}</span>` + (accion ? `<button id="toastBtn">${esc(accion)}</button>` : '');
   el.classList.add('on');
   if (accion) $('#toastBtn').onclick = () => { el.classList.remove('on'); fn && fn(); };
-  clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('on'), accion ? 5000 : 2600);
+  clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('on'), accion ? 6000 : 3800);
 }
 function sacudir(el, msg) { if (el) { el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); } if (msg) toast(msg); }
 // Diálogo propio (en lugar de confirm del navegador). Resuelve 1 = principal, 2 = alterno, 0 = cancelar.
@@ -1221,7 +1369,7 @@ function dialogo({ titulo, texto = '', ok = 'Aceptar', cancelar = 'Cancelar', al
   });
 }
 function xpFlotante(xp, origen) {
-  if (!xp) return;
+  if (!xp || calma()) return;
   const el = document.createElement('div');
   el.className = 'xpf'; el.textContent = `+${xp} XP`;
   let x = innerWidth / 2, y = innerHeight * 0.55;
@@ -1230,6 +1378,7 @@ function xpFlotante(xp, origen) {
   document.body.appendChild(el); setTimeout(() => el.remove(), 1400);
 }
 function confeti(n = 60) {
+  if (calma()) return;
   const cols = ['#6E6BFF','#A97BFF','#34C759','#FF3B30','#FF9500','#32ADE6'];
   for (let i = 0; i < n; i++) {
     const c = document.createElement('i'); c.className = 'cf';
@@ -1240,7 +1389,10 @@ function confeti(n = 60) {
     document.body.appendChild(c); setTimeout(() => c.remove(), 3000);
   }
 }
+function calma() { return !!pref.v('calma') || matchMedia('(prefers-reduced-motion: reduce)').matches; }
+function aplicarCalma() { document.documentElement.classList.toggle('calma', !!pref.v('calma')); }
 function celebrarNivel(l) {
+  if (calma()) { toast(`Subiste a nivel ${l}: ${nombreNivel(l)}`, null, null, 'award'); return; }
   const el = $('#lvlUp');
   el.innerHTML = `<div class="box"><div class="lvl-badge">${l}</div><h2>Subiste a nivel ${l}</h2><p>Ahora eres <b>${nombreNivel(l)}</b>. Sigue así.</p><button class="btn pri full" data-a="cerrarNivel">Continuar</button></div>`;
   el.classList.add('on'); confeti(80); sonido('nivel');
@@ -1322,17 +1474,38 @@ function htmlPaso() {
 function renderBandeja() {
   const v = $('#v-bandeja');
   if (!$('#capIn', v)) {
-    v.innerHTML = `
-      <div class="panel cap" id="capBox"><div class="cap-r"><textarea id="capIn" rows="2" maxlength="2000" placeholder="¿Qué tienes pendiente? Escríbelo aquí…" enterkeyhint="send" autocomplete="off" aria-label="Nuevo pendiente"></textarea>
-        <button class="cap-send" data-a="capAdd" aria-label="Guardar en la bandeja">${ic('arrowUp')}</button></div>
-        <div class="cap-areas"><span>Área</span><div class="chips" id="capAreas" role="radiogroup" aria-label="Área opcional"></div></div></div>
-      <details class="tips"><summary>${ic('bulb')}Atajos para escribir más rápido${ic('chevD', 'chev')}</summary>
-        <div>Escribe el área con <b>#</b>, por ejemplo <b>#omova</b>. Agrega <b>!</b> para urgente o <b>!!</b> para urgente e importante. Si pegas una lista, cada línea se vuelve un pendiente.</div></details>
+    v.innerHTML = htmlCapForm('cap') + `
+      <details class="tips"><summary>${ic('bulb')}Cómo escribir un buen pendiente${ic('chevD', 'chev')}</summary>
+        <div>Empieza con un <b>verbo</b> (Revisar, Enviar, Llamar…) y di <b>sobre qué</b>: «Enviar la cotización a Omar». Los detalles los completas al organizar.<br>Atajos: <b>#omova</b> pone el área, <b>!</b> marca urgente y <b>!!</b> urgente e importante. Si pegas una lista, cada línea se vuelve un pendiente.</div></details>
       <div id="bandejaZona"></div>`;
   }
-  pintarCapAreas(); pintarBandejaLista();
+  pintarCapForm('cap'); pintarBandejaLista();
 }
-function pintarCapAreas() {
+// Captura en un paso: verbo (sugerido), qué vas a hacer y área. Nada más es obligatorio.
+function htmlCapForm(pfx) {
+  return `<div class="panel capf" id="${pfx}Box">
+    <div class="capf-l"><span>Verbo</span><button class="vsel" id="${pfx}Verbo" data-a="verboAbrir" data-dest="${pfx}" aria-label="Elegir verbo"></button></div>
+    <textarea id="${pfx}In" class="capf-in" rows="1" maxlength="2000" placeholder="¿Qué vas a hacer?" enterkeyhint="send" autocomplete="off" autocapitalize="sentences" aria-label="¿Qué vas a hacer?"></textarea>
+    <div class="capf-bot"><button class="asel" id="${pfx}Area" data-a="areaAbrir" data-dest="${pfx}" aria-label="Elegir área"></button><span class="sp"></span><button class="btn sm pri" data-a="${pfx === 'cap' ? 'capAdd' : 'capSheetAdd'}">Guardar</button></div>
+  </div><div class="capf-hint" id="${pfx}Hint" aria-live="polite"></div>`;
+}
+function pintarCapForm(pfx) {
+  const ta = $(`#${pfx}In`); if (!ta) return;
+  const txt = ta.value, lns = lineasDe(txt), vi = lns.length === 1 ? verboInicial(lns[0]) : null, a = area(ui.capArea);
+  $(`#${pfx}Verbo`).innerHTML = vi ? `<b>${esc(vi.verbo)}</b>${ic('chevD')}` : `<b class="nil">Elegir</b>${ic('chevD')}`;
+  $(`#${pfx}Area`).innerHTML = a ? `<i class="dot" style="--a:${a.c}"></i>${esc(a.n)}${ic('chevD')}` : `<span class="mut">Área</span>${ic('chevD')}`;
+  let h = '';
+  if (lns.length > 1) h = `Se guardarán ${lns.length} pendientes, uno por línea.`;
+  else if (lns.length === 1 && txt.trim().length > 2) {
+    const i = analizar(lns[0]).find(x => ['relleno', 'verbo', 'vago'].includes(x.k));
+    if (i && i.propuesta) h = `${i.k === 'relleno' ? 'Más corto:' : 'Con verbo:'} <button data-a="clarUsar" data-dest="${pfx}" data-v="${esc(i.propuesta)}">«${esc(i.propuesta)}»</button>`;
+    else if (i && i.k === 'verbo') h = 'Tip: empieza con un verbo. Toca «Elegir» para ver opciones.';
+    else if (i && i.k === 'vago') h = `«${esc(i.msg.split('»')[0].slice(1))}» es poco específico. ¿Qué harás exactamente?`;
+  }
+  $(`#${pfx}Hint`).innerHTML = h;
+}
+function pintarCapAreas() { pintarCapForm('cap'); pintarCapForm('capSheet'); }
+function pintarCapAreasViejo() {
   const z = $('#capAreas'); if (!z) return;
   z.innerHTML = areas().map(a => `<button class="chip area ${ui.capArea === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="capArea" data-v="${a.id}" role="radio" aria-checked="${ui.capArea === a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('') + `<button class="chip" data-a="irAreas" aria-label="Nueva área">${ic('plus')}Nueva</button>`;
 }
@@ -1352,14 +1525,19 @@ function pintarBandejaLista(nuevos = []) {
   }
   if (rec.length) html += acc('rec', 'check', 'Organizados hoy', rec.length,
     rec.map(r => { const t = byId(r.id); return `<div class="hr"><i class="dot" style="--a:${colorA(t.area)}"></i><div class="tb"><div class="ht">${esc(t.titulo)}</div><div class="hn">${DEST[r.d] || ''}</div></div><span class="hm">${horaDe(r.t)}</span></div>`; }).join(''));
-  if (!S.conn.url) html += `<div class="panel conn"><span class="ci">${ic('cloudOff')}</span><div class="tb"><b>Respalda en Google Sheets</b><div class="mut sm">Por ahora todo vive solo en este teléfono.</div></div><button class="btn sm pri" data-a="ajustes">Conectar</button></div>`;
+  if (!S.conn.url) html += `<div class="panel conn"><span class="ci">${ic('cloudOff')}</span><div class="tb"><b>Respalda en Google Sheets</b><div class="mut sm">Por ahora todo vive solo en este teléfono.</div></div><button class="btn sm" style="color:var(--ac-t)" data-a="ajustes">Conectar</button></div>`;
   z.innerHTML = html;
 }
 // Valida y captura desde un campo. Pregunta antes de duplicar una tarea existente.
 async function capturarDe(sel, estado = 'bandeja', extra = {}) {
+  if (ui.capturando) return [];
+  ui.capturando = true;
+  try { return await capturarDe_(sel, estado, extra); } finally { setTimeout(() => { ui.capturando = false; }, 250); }
+}
+async function capturarDe_(sel, estado, extra) {
   const ta = $(sel); if (!ta) return [];
   const txt = ta.value.trim();
-  if (!txt) { sacudir(ta.closest('.cap,.qcap') || ta, 'Escribe algo primero'); ta.focus(); return []; }
+  if (!txt) { sacudir(ta.closest('.cap,.capf,.qcap') || ta, sel === '#blocIn' ? 'Escribe la idea primero' : sel === '#enfCap' ? 'Escribe la idea primero' : 'Escribe qué vas a hacer'); ta.focus(); return []; }
   const lns = lineasDe(txt);
   let forzar = false;
   if (lns.length === 1) {
@@ -1396,7 +1574,7 @@ function cerrarProc() {
 function tActualProc() { return proc && byId(proc.ids[proc.i]); }
 function guardarTituloProc() {
   const t = tActualProc(), ta = $('#procTt');
-  if (t && ta && ta.value.trim() && ta.value.trim() !== t.titulo) { t.titulo = ta.value.trim().slice(0, MAX_TITULO); upsertT(t); }
+  if (t && ta && ta.value.trim() && limpiarTitulo(ta.value) !== t.titulo) { t.titulo = limpiarTitulo(ta.value); upsertT(t); }
 }
 function renderProc() {
   const o = $('#proc'), P = proc;
@@ -1416,6 +1594,7 @@ function renderProc() {
 function cuerpoProc(t) {
   const P = proc;
   if (P.paso === 'que') return `
+    <div id="procClar">${htmlClaridad(t.titulo, 'proc')}</div>
     <p class="proc-h">¿Qué hago con esto?</p>
     <button class="two" data-a="pYa"><span class="ico">${ic('bolt')}</span><span><b>Lo hago ahora</b><small>Si toma menos de 2 minutos, hazlo y márcalo</small></span>${ic('check')}</button>
     <div class="sec-t" style="margin-top:16px">Si toma más tiempo</div>
@@ -1426,7 +1605,8 @@ function cuerpoProc(t) {
       <button class="act del" data-a="pBorrar"><span class="ico">${ic('trash')}</span><span><b>Eliminar</b><span>Ya no hace falta</span></span></button>
     </div>`;
   const d = P.d;
-  const chipsArea = `<div class="chips">${areas().map(a => `<button class="chip area ${d.area === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="pArea" data-v="${a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('')}</div>`;
+  const A = area(d.area);
+  const chipsArea = `<button class="asel full" data-a="areaAbrir" data-dest="proc">${A ? `<i class="dot" style="--a:${A.c}"></i>${esc(A.n)}` : '<span class="mut">Sin área</span>'}<span class="sp"></span>${ic('chevD')}</button>`;
   if (P.paso === 'espera') return `
     <div class="f-sec"><label for="pEsperaIn">¿Qué o a quién esperas?</label><input class="in ${d.errEsp ? 'bad' : ''}" id="pEsperaIn" maxlength="120" placeholder="Ej. respuesta de Omar" value="${esc(d.espera || '')}">${d.errEsp ? '<div class="err">Escribe de quién o de qué dependes para poder darle seguimiento.</div>' : ''}</div>
     <div class="f-sec"><label>Área</label>${chipsArea}</div>
@@ -1438,6 +1618,7 @@ function cuerpoProc(t) {
     <div class="f-sec"><label>¿Cuándo la haces?</label><div class="chips">${[['hoy', 'Hoy'], ['manana', 'Mañana'], ['', 'Sin fecha'], ['fecha', 'Elegir fecha']].map(([v, n]) => `<button class="chip ${d.cuando === v ? 'on' : ''}" data-a="pCuando" data-v="${v}">${n}</button>`).join('')}</div>
       ${d.cuando === 'fecha' ? `<input type="date" class="in" style="margin-top:12px" id="pFecha" value="${d.fecha || manana()}" min="${hoy()}" aria-label="Fecha">` : ''}</div>
     <div class="f-sec"><label>Duración estimada</label><div class="chips">${[5, 15, 25, 50, 90].map(m => `<button class="chip ${d.dur === m ? 'on' : ''}" data-a="pDur" data-v="${m}">${m} min</button>`).join('')}</div></div>
+    <div class="f-sec">${d.resultado || d.verRes ? `<label for="pResultado">Resultado esperado <span class="mut">(opcional)</span></label><input class="in" id="pResultado" maxlength="160" placeholder="¿Cómo sabrás que está terminada?" value="${esc(d.resultado || '')}">` : `<button class="lnk2" data-a="pVerRes">${ic('plus')}Agregar resultado esperado</button>`}</div>
     <div class="f-sec"><label for="pProyecto">Proyecto (opcional)</label><input class="in" id="pProyecto" list="proyectos" maxlength="60" placeholder="Ej. App de finanzas" value="${esc(d.proyecto || '')}"></div>
     <div class="proc-foot"><button class="btn" data-a="pAtras">Atrás</button><button class="btn pri" data-a="pGuardarProx">${ic('check')}Guardar</button></div>`;
 }
@@ -1560,6 +1741,7 @@ function renderHoy() {
     html += `<div class="hero ${deCola ? '' : 'is-run'}" data-id="${ahora.id}" data-a="abrir" ${resto.length ? 'data-list="hoytop"' : ''} role="button" tabindex="0" aria-label="${esc(ahora.titulo)}. Abrir detalle">
       <div class="hero-l"><i class="live"></i>${deCola ? 'Tu siguiente tarea' : desc ? 'En descanso' : 'Trabajando en'}${run || desc ? ` · <b id="heroTm">${fmt(restante())}</b>` : ''}</div>
       <div class="hero-t">${esc(ahora.titulo)}</div>
+      ${ahora.resultado ? `<div class="res-l">${ic('listo')}<span>Listo cuando: ${esc(ahora.resultado)}</span></div>` : ''}
       <div class="mt">${metaCorta(ahora, 3, { area:true, pomos:true })}</div>
       <div class="hero-b"><button class="btn pri grow" data-a="play" data-id="${ahora.id}">${run || desc ? ic('timer') + 'Ir al enfoque' : ic('play', 'fill') + 'Empezar enfoque'}</button>
         <button class="btn sq okb" data-a="ck" data-id="${ahora.id}" aria-label="Marcar como hecha">${ic('check')}</button></div></div>`;
@@ -1822,7 +2004,7 @@ function renderEnfoque() {
   v.innerHTML = `<div class="enf fase-${t.fase} ${t.corriendo ? 'running' : ''}">
     <div class="panel enf-task" data-a="elegirTarea" role="button" tabindex="0" style="--a:${x ? colorA(x.area) : 'var(--mut2)'}" aria-label="${x ? 'Cambiar tarea: ' + esc(x.titulo) : 'Elegir tarea'}">
       <div class="tb"><div class="enf-l"><i class="dot"></i>${x ? (marcha && t.fase === 'foco' ? 'Trabajando en' : esc(area(x.area)?.n || 'Tarea elegida')) : 'Sin tarea · toca para elegir'}</div>
-        <div class="enf-tt">${x ? esc(x.titulo) : 'Elige en qué vas a trabajar'}</div>${cyc}</div>
+        <div class="enf-tt">${x ? esc(x.titulo) : 'Elige en qué vas a trabajar'}</div>${x && x.resultado ? `<div class="res-l">${ic('listo')}<span>Listo cuando: ${esc(x.resultado)}</span></div>` : ''}${cyc}</div>
       ${x && x.estado !== 'hecho' ? `<button class="btn sq okb" data-a="enfCompletar" aria-label="Marcar tarea como hecha">${ic('check')}</button>` : `<span class="ib-s">${ic('chevR')}</span>`}
     </div>
     <div class="modes" role="radiogroup" aria-label="Modo">${[['pomo', 'tomato', `Pomodoro ${a.pomo} min`], ['bloque', 'clock', 'Bloque de tiempo']].map(([k, i, n]) => `<button class="chip ${t.modo === k ? 'on' : ''}" data-a="modo" data-v="${k}" role="radio" aria-checked="${t.modo === k}" ${marcha && t.modo !== k ? 'disabled' : ''}>${ic(i)}${n}</button>`).join('')}</div>
@@ -1938,9 +2120,9 @@ function ayuda(k) {
   const a = S.ajustes;
   return ({
     bandeja:{ d:'Tu lugar para vaciar la cabeza. Anota cualquier pendiente en cuanto se te ocurra, sin pensar todavía dónde va.', p:[
-      ['plus', 'Captura', 'Escribe y toca la flecha. Si pegas una lista, cada línea se vuelve un pendiente.'],
-      ['layers', 'Área (opcional)', 'Toca un área antes de enviar, o escríbela con # dentro del texto, por ejemplo #omova.'],
-      ['sparkle', 'Organiza', 'Cuando tengas varios, toca «Organizar». Decides uno por uno: hacerlo ya, agendarlo, esperar a alguien, guardarlo para algún día o eliminarlo (método GTD).']] },
+      ['plus', 'Captura en un paso', 'Elige un verbo (Revisar, Enviar…), escribe qué vas a hacer y, si quieres, el área. Toca Guardar. Si pegas una lista, cada línea se vuelve un pendiente.'],
+      ['layers', 'Área (opcional)', 'Elígela en el selector o escríbela con # dentro del texto, por ejemplo #omova. Desde el selector también puedes crear una nueva.'],
+      ['sparkle', 'Organiza', 'Cuando tengas varios, toca «Organizar». Decides uno por uno: hacerlo ya, agendarlo, esperar a alguien, guardarlo para algún día o eliminarlo (método GTD). Si la redacción no es clara, Foco te sugiere cómo mejorarla o dividirla.']] },
     hoy:{ d:'Tus prioridades del día con el método Ivy Lee: máximo 6 tareas, en orden de importancia, trabajadas una a la vez.', p:[
       ['play', 'La tarjeta de arriba', 'Es la tarea que toca ahora. Toca «Empezar enfoque» para arrancar un Pomodoro sobre ella.'],
       ['check', 'Marcar como hecha', 'Toca el círculo de cualquier tarea o el botón verde. Siempre puedes deshacerlo desde el aviso.'],
@@ -1967,8 +2149,8 @@ function ayuda(k) {
   })[k];
 }
 const ONB = [
-  { ic:'inbox', paso:'Bandeja', t:'Vacía tu cabeza', d:'Anota en la Bandeja cualquier pendiente en cuanto se te ocurra. Sin pensar dónde va.' },
-  { ic:'sparkle', paso:'Organizar', t:'Decide qué es cada cosa', d:'Toca «Organizar» y decide: hacerlo ya, agendarlo, esperar a alguien o guardarlo para algún día.' },
+  { ic:'inbox', paso:'Bandeja', t:'Vacía tu cabeza', d:'Anota cada pendiente en cuanto se te ocurra, empezando con un verbo: «Enviar…», «Revisar…». Los detalles van después.' },
+  { ic:'sparkle', paso:'Organizar', t:'Decide qué es cada cosa', d:'Toca «Organizar»: aclara la redacción, agrega el resultado esperado si hace falta y decide cuándo hacerlo.' },
   { ic:'sun', paso:'Hoy', t:'Elige tus 6 del día', d:'Cada noche elige y ordena máximo 6 tareas. Al día siguiente trabájalas en orden, una a la vez.' },
   { ic:'timer', paso:'Enfoque', t:'Enfócate y avanza', d:'Empieza un Pomodoro sobre tu tarea. Ganas puntos, subes de nivel y mantienes tu racha.' }
 ];
@@ -1995,16 +2177,21 @@ function abrirSheet(ctx) {
   if (ctx.k === 'detalle' && (!ui.sheet || ui.sheet.id !== ctx.id)) ui.dtOpen = ctx.open || '';
   if (ctx.k === 'ajustes' && (!ui.sheet || ui.sheet.k !== 'ajustes')) { ui.cfgMsg = null; ui.cfgDraft = null; ui.areaNueva = null; ui.areaColor = ''; }
   ui.sheet = ctx;
+  if (ctx.k === 'areaSel') ui.areaNueva = null;
   refrescarSheet(true);
   const sh = $('#sheet');
+  // Encima de «Organizar» cuando se abre desde ahí
+  sh.classList.toggle('top', !!ctx.top); $('#sheetBg').classList.toggle('top', !!ctx.top);
   sh.style.setProperty('--dy', '0px');
-  sh.setAttribute('aria-label', { detalle:'Detalle de la tarea', plan:'Planear', ajustes:'Ajustes', captura:'Capturar', picker:'Elegir tarea', filtro:'Filtrar', sync:'Sincronización', ayuda:'Ayuda' }[ctx.k] || '');
+  sh.setAttribute('aria-label', { detalle:'Detalle de la tarea', plan:'Planear', ajustes:'Ajustes', captura:'Capturar', picker:'Elegir tarea', filtro:'Filtrar', sync:'Sincronización', ayuda:'Ayuda', verbo:'Elegir verbo', areaSel:'Elegir área', dividir:'Dividir en pasos' }[ctx.k] || '');
   $('#sheetBg').classList.add('on'); sh.classList.add('on');
   document.documentElement.classList.add('lock');
   if (ctx.k === 'captura') setTimeout(() => $('#capSheetIn')?.focus(), 320);
 }
-function cerrarSheet(silencioso) {
+function cerrarSheet(silencioso, sinVolver) {
   if (!ui.sheet) return;
+  // Un selector abierto desde otra hoja regresa a ella al cerrarse
+  if (!sinVolver && ui.sheet.volver) { abrirSheet(ui.sheet.volver); return; }
   if (ui.sheet.k === 'detalle') guardarDetalleTexto();
   ui.sheet = null;
   $('#sheetBg').classList.remove('on'); $('#sheet').classList.remove('on');
@@ -2030,8 +2217,92 @@ function refrescarSheet(inicio) {
   else if (c.k === 'filtro') html = htmlFiltro();
   else if (c.k === 'sync') html = htmlSync();
   else if (c.k === 'ayuda') html = htmlAyuda(c.v);
+  else if (c.k === 'verbo') html = htmlVerbo();
+  else if (c.k === 'areaSel') html = htmlAreaSel();
+  else if (c.k === 'dividir') html = htmlDividir();
   b.innerHTML = html; b.scrollTop = y;
+  if (c.k === 'captura') { const ta = $('#capSheetIn'); if (c.draft != null) ta.value = c.draft; pintarCapForm('capSheet'); }
+  if (c.k === 'verbo') pintarVerbos();
   $$('textarea', b).forEach(autoAlto);
+}
+function htmlVerbo() {
+  return cab('<h2>Elige un verbo</h2>') + `<p class="hint" style="margin:0 4px 16px">Empieza el pendiente con la acción. Los que más usas aparecen primero.</p>
+    <input class="in" id="verboQ" type="search" placeholder="Buscar o escribir uno nuevo" autocomplete="off" autocapitalize="sentences" enterkeyhint="done" aria-label="Buscar verbo">
+    <div id="verboLista"></div><div class="sh-end"></div>`;
+}
+function pintarVerbos() {
+  const z = $('#verboLista'), c = ui.sheet; if (!z || !c) return;
+  const q = ($('#verboQ')?.value || '').trim(), nq = norm(q);
+  const todos = verbosFrecuentes(999), filtrados = nq ? todos.filter(v => norm(v).includes(nq)) : todos;
+  const lista = nq || c.todos ? filtrados : filtrados.slice(0, 12);
+  const exacto = todos.some(v => norm(v) === nq), propios = S.ajustes.verbos || [];
+  const actual = verboInicial(textoDe(c.dest, c));
+  z.innerHTML = (c.err ? `<div class="err">${esc(c.err)}</div>` : '')
+    + (nq && !exacto ? `<button class="row-add" data-a="verboNuevo">${ic('plus')}Agregar «${esc(cap1(q))}» a tus verbos</button>` : '')
+    + `<div class="sec-t">${nq ? 'Coincidencias' : 'Más usados primero'}</div>`
+    + (lista.length ? `<div class="chips">${lista.map(v => `<button class="chip ${actual && norm(actual.verbo) === norm(v) ? 'on' : ''}" data-a="verboSel" data-v="${esc(v)}">${esc(v)}</button>`).join('')}</div>` : '<p class="hint">Sin coincidencias. Puedes agregarlo como verbo nuevo.</p>')
+    + (!nq && !c.todos && todos.length > 12 ? `<button class="lnk2" style="margin-top:8px" data-a="verboTodos">Ver todos (${todos.length})</button>` : '')
+    + (propios.length && !nq ? `<div class="sec-t">Tus verbos</div><div class="chips">${propios.map(v => `<span class="chip">${esc(v)}<button class="xmini" data-a="verboQuitar" data-v="${esc(v)}" aria-label="Quitar ${esc(v)} de tus verbos">${ic('x')}</button></span>`).join('')}</div>` : '');
+}
+function paletaHtml(sel, act, id = '') {
+  return `<div class="pal" role="radiogroup" aria-label="Color">${PALETA.map(c => `<button class="${c.toLowerCase() === (sel || '').toLowerCase() ? 'on' : ''}" style="--c:${c}" data-a="${act}" data-v="${c}" ${id ? `data-id="${id}"` : ''} role="radio" aria-checked="${c === sel}" aria-label="Color ${c}"></button>`).join('')}</div>`;
+}
+function htmlAreaNueva(an) {
+  return `<div class="ar-new"><label class="f-l" for="areaNuevaN">Nombre de la nueva área</label>
+    <input class="in ${an.err ? 'bad' : ''}" id="areaNuevaN" maxlength="30" placeholder="Ej. Casa, Salud, Curso de producción" value="${esc(an.n)}" enterkeyhint="done" autocomplete="off">
+    ${an.err ? `<div class="err">${esc(an.err)}</div>` : ''}
+    <span class="f-l" style="margin:12px 2px 0">Color</span>${paletaHtml(an.c, 'areaNuevaC')}
+    <div class="row"><button class="btn" data-a="areaNuevaNo">Cancelar</button><button class="btn pri" data-a="areaNuevaOk">${ic('check')}Agregar</button></div></div>`;
+}
+function htmlAreaSel() {
+  const c = ui.sheet, sel = c.dest === 'proc' ? ((proc && proc.d.area) || '') : ui.capArea, an = ui.areaNueva;
+  const fila = (id, n, col) => `<button class="tr opt" data-a="areaElegir" data-v="${id}" aria-pressed="${sel === id}"><i class="dot" style="--a:${col}"></i><span class="tb"><span class="tt">${esc(n)}</span></span><span class="ib-s" style="color:var(--ac-t)">${sel === id ? ic('check') : ''}</span></button>`;
+  return cab('<h2>Área</h2>') + `<div class="group">${areas().map(a => fila(a.id, a.n, a.c)).join('')}${fila('', 'Sin área', 'var(--sf3)')}</div>
+    <div class="group" style="margin-top:16px">${an ? htmlAreaNueva(an) : `<button class="tr opt" data-a="areaAdd" ${areas().length >= 12 ? 'disabled' : ''}><span class="tb"><span class="tt" style="color:var(--ac-t)">${areas().length >= 12 ? 'Llegaste al máximo de 12 áreas' : '+ Nueva área'}</span></span></button>`}</div>
+    <div class="sh-end"></div>`;
+}
+function htmlDividir() {
+  const c = ui.sheet, n = lineasDe(c.texto || '').length;
+  return cab('<h2>Dividir en pasos</h2>') + `<p class="hint" style="margin:0 4px 16px">Una acción por línea, cada una con su verbo. Conservan el área y la prioridad.</p>
+    <textarea class="in" id="divIn" rows="4" maxlength="1200" aria-label="Acciones, una por línea">${esc(c.texto || '')}</textarea>
+    ${c.err ? `<div class="err">${esc(c.err)}</div>` : ''}
+    <div class="sh-foot"><button class="btn" data-a="cerrarSheet">Cancelar</button><button class="btn pri" data-a="dividirOk" id="divOk">${ic('layers')}Crear ${n > 1 ? n : ''}</button></div>`;
+}
+// Texto sobre el que actúa un selector y cómo devolverle el resultado
+function textoDe(dest, ctx) {
+  if (dest === 'cap') return $('#capIn')?.value || '';
+  if (dest === 'capSheet') return ctx && ctx.k !== 'captura' ? (ctx.draft || '') : ($('#capSheetIn')?.value || '');
+  if (dest === 'proc') return $('#procTt') ? $('#procTt').value : (tActualProc()?.titulo || '');
+  if (dest === 'dt') { const t = byId(ctx && ctx.id ? ctx.id : ui.sheet && ui.sheet.id); return t ? t.titulo : ''; }
+  return '';
+}
+function finCursor(ta) { if (!ta) return; ta.focus(); const n = ta.value.length; try { ta.setSelectionRange(n, n); } catch (e) {} }
+function ponerTexto(dest, nuevo, desdeSelector) {
+  const ctx = desdeSelector ? ui.sheet : null;
+  if (dest === 'cap') { if (ctx) cerrarSheet(true, true); const ta = $('#capIn'); ta.value = nuevo; autoAlto(ta); pintarCapForm('cap'); finCursor(ta); }
+  else if (dest === 'capSheet') {
+    if (ctx) { abrirSheet({ k:'captura', draft:nuevo }); setTimeout(() => finCursor($('#capSheetIn')), 60); }
+    else { const ta = $('#capSheetIn'); ta.value = nuevo; ui.sheet.draft = nuevo; autoAlto(ta); pintarCapForm('capSheet'); finCursor(ta); }
+  } else if (dest === 'proc') {
+    const t = tActualProc(); if (!t) return;
+    t.titulo = limpiarTitulo(nuevo); upsertT(t);
+    if (ctx) cerrarSheet(true, true);
+    const ta = $('#procTt'); if (ta) { ta.value = t.titulo; autoAlto(ta); }
+    const c = $('#procClar'); if (c) c.innerHTML = htmlClaridad(t.titulo, 'proc');
+    toast('Redacción actualizada', null, null, 'check');
+  } else if (dest === 'dt') {
+    const id = ctx ? ctx.id : ui.sheet.id, t = byId(id); if (!t) return;
+    t.titulo = limpiarTitulo(nuevo); upsertT(t);
+    if (ctx) abrirSheet({ k:'detalle', id }); else refrescarSheet();
+    renderVista(); flashGuardado();
+  }
+}
+function abrirSelector(k, dest) {
+  const ctx = { k, dest };
+  if (dest === 'capSheet') { ctx.draft = $('#capSheetIn')?.value || ''; ctx.volver = { k:'captura', draft:ctx.draft }; }
+  if (dest === 'dt') { guardarDetalleTexto(); ctx.id = ui.sheet.id; ctx.volver = { k:'detalle', id:ctx.id }; }
+  if (dest === 'proc') { guardarTituloProc(); leerCamposProc(); ctx.top = true; }
+  abrirSheet(ctx);
 }
 let flashT;
 function flashGuardado() {
@@ -2056,9 +2327,8 @@ function htmlSync() {
     <div class="sh-end"></div>`;
 }
 function htmlCaptura() {
-  return cab('<h2>Capturar</h2>') + `
-    <div class="panel cap" id="capSheetBox"><div class="cap-r"><textarea id="capSheetIn" rows="2" maxlength="2000" placeholder="Escríbelo y vuelve a lo tuyo" enterkeyhint="send" aria-label="Nuevo pendiente"></textarea><button class="cap-send" data-a="capSheetAdd" aria-label="Guardar en la bandeja">${ic('arrowUp')}</button></div></div>
-    <p class="hint">Se guarda en tu Bandeja para organizarlo después. Puedes usar #área y ! para urgente.</p>
+  return cab('<h2>Capturar</h2>') + htmlCapForm('capSheet') + `
+    <p class="hint">Se guarda en tu Bandeja. Los detalles los completas al organizar.</p>
     <div class="sh-end"></div>`;
 }
 function htmlPicker() {
@@ -2090,6 +2360,8 @@ function htmlDetalle(t) {
   const fechaTxt = t.fecha ? `${fechaCorta(t.fecha)}${t.fecha === hoy() || t.fecha === manana() ? ' · ' + DIAS3[parseYmd(t.fecha).getDay()] : ''}` : 'Sin fecha';
   const horaVal = t.hora ? `${pad(Math.floor(hm2min(t.hora) / 60))}:${pad(hm2min(t.hora) % 60)}` : '';
   const filas = [
+    fila('res', 'listo', '', 'Listo cuando', t.resultado ? esc(t.resultado) : '<span class="mut2">Sin definir</span>',
+      `<textarea class="in" data-in="dtResultado" rows="2" maxlength="160" placeholder="Resultado esperado: ¿cómo sabrás que está terminada?" aria-label="Resultado esperado">${esc(t.resultado || '')}</textarea><p class="hint">Ej. «Cotización enviada y recepción confirmada».</p>`),
     fila('estado', 'circleDot', 'ind', 'Estado', `<span class="pill ${EST_CLS[t.estado]}">${ESTADOS[t.estado]}</span>`,
       `<div class="chips">${estados.map(([k, n]) => `<button class="chip ${t.estado === k ? 'on' : ''}" data-a="dtEstado" data-v="${k}">${n}</button>`).join('')}</div>`),
     fila('area', 'layers', 'teal', 'Área', A ? `<i class="dot" style="--a:${A.c}"></i>${esc(A.n)}` : 'Sin área',
@@ -2113,6 +2385,7 @@ function htmlDetalle(t) {
     `<input class="in" data-in="dtEspera" maxlength="120" value="${esc(t.espera)}" placeholder="¿De quién o de qué?" aria-label="Esperando a">`));
   return cab(`<h2>Tarea</h2>`, `<span class="saved ${Date.now() - ui.savedAt < 1300 ? 'on' : ''}" id="savedTag">${ic('check')}Guardado</span>`) + `
     <textarea class="dt-title" data-in="dtTitulo" rows="1" maxlength="${MAX_TITULO}" aria-label="Título de la tarea">${esc(t.titulo)}</textarea>
+    <div id="dtClar">${t.estado === 'hecho' ? '' : htmlClaridad(t.titulo, 'dt')}</div>
     <div class="group">${filas.join('')}</div>
     <div class="sec-t">${ic('note')}Notas y bitácora</div>
     <div class="bit">${(t.notas || []).slice().reverse().map(n => `<div class="bit-i"><small>${fechaCorta(diaDeISO(n.t))} · ${horaDe(n.t)}</small>${esc(n.x)}</div>`).join('')}</div>
@@ -2125,7 +2398,7 @@ function guardarDetalleTexto() {
   const c = ui.sheet; if (!c || c.k !== 'detalle') return;
   const t = byId(c.id); if (!t) return;
   const ta = $('[data-in="dtTitulo"]');
-  if (ta && ta.value.trim() && ta.value.trim() !== t.titulo) { t.titulo = ta.value.trim().slice(0, MAX_TITULO); upsertT(t); }
+  if (ta && ta.value.trim() && limpiarTitulo(ta.value) !== t.titulo) { t.titulo = limpiarTitulo(ta.value); upsertT(t); }
   const bi = $('#bitIn'); if (bi && bi.value.trim()) agregarNota(t, bi.value);
 }
 function agregarNota(t, txt) {
@@ -2141,7 +2414,8 @@ function htmlAjustes() {
   return cab('<h2>Ajustes</h2>') + `
     <div class="f-sec"><span class="f-l">Apariencia</span>
       <div class="seg" role="radiogroup" aria-label="Tema">${[['auto', 'Automático'], ['light', 'Claro'], ['dark', 'Oscuro']].map(([k, n]) => `<button class="${tema === k ? 'on' : ''}" data-a="tema" data-v="${k}" role="radio" aria-checked="${tema === k}">${n}</button>`).join('')}</div>
-      <p class="hint">Automático sigue el modo claro u oscuro de tu iPhone.</p></div>
+      <p class="hint">Automático sigue el modo claro u oscuro de tu iPhone.</p>
+      <div class="group" style="margin-top:16px"><div class="set-r"><span class="sl">Modo calma<small>Sin confeti, animaciones ni avisos de logros</small></span><button class="sw ${pref.v('calma') ? 'on' : ''}" data-a="calma" role="switch" aria-checked="${!!pref.v('calma')}" aria-label="Modo calma"></button></div></div></div>
     <div class="f-sec" id="secAreas"><span class="f-l">Áreas</span><div class="group">
       ${a.areas.map(x => `<div class="ar-r"><button class="sw-c" style="--a:${x.c}" data-a="areaColor" data-id="${x.id}" aria-label="Cambiar color de ${esc(x.n)}" aria-expanded="${ui.areaColor === x.id}"></button><input type="text" value="${esc(x.n)}" maxlength="30" data-in="areaN" data-id="${x.id}" aria-label="Nombre del área"><span class="cnt">${activasDe(x.id) || ''}</span><button class="ib" data-a="areaDel" data-id="${x.id}" aria-label="Eliminar área ${esc(x.n)}">${ic('trash')}</button></div>${ui.areaColor === x.id ? paleta(x.c, 'areaColorSel', x.id) : ''}`).join('')}
       ${an ? `<div class="ar-new"><label class="f-l" for="areaNuevaN">Nombre de la nueva área</label>
@@ -2184,8 +2458,8 @@ function aplicarTema(t) {
 const dtT = () => byId(ui.sheet && ui.sheet.id);
 function leerCamposProc() {
   if (!proc) return;
-  const e = $('#pEsperaIn'), f = $('#pFecha'), p = $('#pProyecto');
-  if (e) proc.d.espera = e.value; if (f) proc.d.fecha = f.value; if (p) proc.d.proyecto = p.value;
+  const e = $('#pEsperaIn'), f = $('#pFecha'), p = $('#pProyecto'), r = $('#pResultado');
+  if (e) proc.d.espera = e.value; if (f) proc.d.fecha = f.value; if (p) proc.d.proyecto = p.value; if (r) proc.d.resultado = r.value;
 }
 function hacerPrimera(id) {
   const t = byId(id); if (!t) return;
@@ -2213,9 +2487,10 @@ const ACT = {
   capArea:el => { ui.capArea = ui.capArea === el.dataset.v ? '' : el.dataset.v; pintarCapAreas(); },
   capAdd:async () => {
     const c = await capturarDe('#capIn', 'bandeja', ui.capArea ? { area:ui.capArea } : {});
-    if (c.length) { pintarBandejaLista(c.map(t => t.id)); encabezado(); pintarTabs(); if (c.length > 1) toast(`${c.length} pendientes capturados`); }
+    pintarCapForm('cap');
+    if (c.length) { pintarBandejaLista(c.map(t => t.id)); encabezado(); pintarTabs(); toast(c.length > 1 ? `${c.length} pendientes guardados en la Bandeja` : `Guardado: «${c[0].titulo}»`, null, null, 'check'); }
   },
-  capSheetAdd:async () => { const c = await capturarDe('#capSheetIn'); if (c.length) { toast(c.length > 1 ? `${c.length} pendientes a la Bandeja` : 'Guardado en la Bandeja'); cerrarSheet(); } },
+  capSheetAdd:async () => { const c = await capturarDe('#capSheetIn', 'bandeja', ui.capArea ? { area:ui.capArea } : {}); if (c.length) { cerrarSheet(false, true); toast(c.length > 1 ? `${c.length} pendientes guardados en la Bandeja` : `Guardado: «${c[0].titulo}»`, null, null, 'check'); } },
   blocAdd:async () => { const c = await capturarDe('#blocIn', 'algun'); if (c.length) renderVista(); },
   procesar:() => abrirProc(),
   abrir:el => abrirSheet({ k:'detalle', id:el.dataset.id }),
@@ -2261,7 +2536,7 @@ const ACT = {
   cerrarProc:() => cerrarProc(),
   procPlan:() => { cerrarProc(); abrirPlan(); },
   pYa:el => { guardarTituloProc(); const t = tActualProc(); regProc(t, 'hecho'); completar(t, el); volarProc('up'); },
-  pProx:() => { guardarTituloProc(); const t = tActualProc(); proc.paso = 'prox'; proc.d = { area:t.area, urgente:t.urgente, importante:t.importante, dur:t.dur || 0, cuando:'', proyecto:t.proyecto }; renderProc(); },
+  pProx:() => { guardarTituloProc(); const t = tActualProc(); proc.paso = 'prox'; proc.d = { area:t.area, urgente:t.urgente, importante:t.importante, dur:t.dur || 0, cuando:'', proyecto:t.proyecto, resultado:t.resultado || '' }; renderProc(); },
   pEspera:() => { guardarTituloProc(); const t = tActualProc(); proc.paso = 'espera'; proc.d = { area:t.area, espera:'', fecha:'' }; renderProc(); setTimeout(() => $('#pEsperaIn')?.focus(), 350); },
   pAlgun:() => { guardarTituloProc(); const t = tActualProc(); regProc(t, 'algun'); setEstado(t, 'algun'); volarProc('right'); },
   pBorrar:() => { const t = tActualProc(); regProc(t, 'borrado'); t.borrado = true; upsertT(t); volarProc('left'); },
@@ -2275,7 +2550,7 @@ const ACT = {
     guardarTituloProc(); leerCamposProc();
     const t = tActualProc(), d = proc.d;
     if (d.cuando === 'fecha' && !d.fecha) { sacudir($('#pFecha'), 'Elige una fecha'); return; }
-    Object.assign(t, { area:d.area || '', urgente:!!d.urgente, importante:!!d.importante, dur:d.dur || 0, proyecto:(d.proyecto || '').trim().slice(0, 60) });
+    Object.assign(t, { area:d.area || '', urgente:!!d.urgente, importante:!!d.importante, dur:d.dur || 0, proyecto:(d.proyecto || '').trim().slice(0, 60), resultado:(d.resultado || '').trim().slice(0, 160) });
     if (d.cuando === 'hoy') { t.estado = 'hoy'; t.fecha = hoy(); t.orden = 50 + tareasEn('hoy').length; }
     else if (d.cuando === 'manana') { t.estado = 'prox'; t.fecha = manana(); }
     else if (d.cuando === 'fecha') { t.estado = 'prox'; t.fecha = d.fecha; if (t.fecha <= hoy()) { t.estado = 'hoy'; t.fecha = hoy(); } }
@@ -2432,6 +2707,46 @@ const ACT = {
   },
   areaNuevaC:el => { ui.areaNueva.n = $('#areaNuevaN').value; ui.areaNueva.c = el.dataset.v; refrescarSheet(); },
   areaNuevaNo:() => { ui.areaNueva = null; refrescarSheet(); },
+  verboAbrir:el => abrirSelector('verbo', el.dataset.dest),
+  areaAbrir:el => abrirSelector('areaSel', el.dataset.dest),
+  verboSel:el => { const c = ui.sheet; ponerTexto(c.dest, aplicarVerbo(textoDe(c.dest, c), el.dataset.v), true); },
+  verboNuevo:() => {
+    const c = ui.sheet, q = limpiarTitulo($('#verboQ').value), w = norm((q.match(/^\p{L}+/u) || [''])[0]);
+    if (!w || !/(?:ar|er|ir)(?:se)?$/.test(w)) { c.err = 'Escríbelo en infinitivo: termina en -ar, -er o -ir (por ejemplo «Cotizar»).'; pintarVerbos(); sacudir($('#verboQ')); return; }
+    if (q.length > 30) { c.err = 'Usa máximo 30 caracteres.'; pintarVerbos(); sacudir($('#verboQ')); return; }
+    S.ajustes.verbos = [...new Set([...(S.ajustes.verbos || []), q])]; guardarAjustes(); c.err = '';
+    toast(`«${q}» agregado a tus verbos`, null, null, 'check');
+    ponerTexto(c.dest, aplicarVerbo(textoDe(c.dest, c), q), true);
+  },
+  verboTodos:() => { ui.sheet.todos = true; pintarVerbos(); },
+  verboQuitar:el => { S.ajustes.verbos = (S.ajustes.verbos || []).filter(v => v !== el.dataset.v); guardarAjustes(); pintarVerbos(); toast(`«${el.dataset.v}» quitado de tus verbos`); },
+  areaElegir:el => {
+    const id = el.dataset.v, c = ui.sheet;
+    if (c.dest === 'proc') { proc.d.area = id; cerrarSheet(true, true); repintarCuerpoProc(); }
+    else { ui.capArea = id; if (c.dest === 'capSheet') abrirSheet({ k:'captura', draft:c.draft }); else { cerrarSheet(true, true); pintarCapForm('cap'); } }
+  },
+  clarVerbo:el => { const d = el.dataset.dest; ponerTexto(d, aplicarVerbo(textoDe(d), el.dataset.v)); },
+  clarUsar:el => ponerTexto(el.dataset.dest, el.dataset.v),
+  pVerRes:() => { leerCamposProc(); proc.d.verRes = true; repintarCuerpoProc(); setTimeout(() => $('#pResultado')?.focus(), 50); },
+  dividirAbrir:el => {
+    const dest = el.dataset.dest; let t;
+    if (dest === 'proc') { guardarTituloProc(); t = tActualProc(); } else { guardarDetalleTexto(); t = dtT(); }
+    if (!t) return;
+    abrirSheet({ k:'dividir', id:t.id, dest, texto:dividirAcciones(t.titulo).join('\n'), top:dest === 'proc', volver:dest === 'dt' ? { k:'detalle', id:t.id } : null });
+  },
+  dividirOk:() => {
+    const c = ui.sheet, t = byId(c.id); if (!t || c.ocupado) return;
+    const lns = lineasDe($('#divIn').value).map(limpiarTitulo).filter(Boolean);
+    if (lns.length < 2) { c.texto = $('#divIn').value; c.err = 'Escribe al menos dos acciones, una por línea.'; refrescarSheet(); sacudir($('#divIn')); return; }
+    c.ocupado = true;
+    t.titulo = lns[0]; upsertT(t);
+    const est = t.estado === 'proceso' ? 'hoy' : t.estado;
+    const nuevas = lns.slice(1).map((x, i) => nuevaTarea(x, { estado:est, area:t.area, urgente:t.urgente, importante:t.importante, fecha:t.fecha, proyecto:t.proyecto, orden:(+t.orden || 0) + (i + 1) / 10 }));
+    if (c.dest === 'proc' && proc) { proc.ids.splice(proc.i + 1, 0, ...nuevas.map(x => x.id)); cerrarSheet(true, true); renderProc(); }
+    else { cerrarSheet(true, true); abrirSheet({ k:'detalle', id:t.id }); renderVista(); }
+    toast(`Listo: ${lns.length} pendientes`, null, null, 'check');
+  },
+  calma:() => { pref.set('calma', pref.v('calma') ? 0 : 1); aplicarCalma(); refrescarSheet(); },
   areaNuevaOk:() => {
     const an = ui.areaNueva, n = $('#areaNuevaN').value.trim().replace(/\s+/g, ' ');
     an.n = n;
@@ -2443,7 +2758,9 @@ const ACT = {
     let id = norm(n).replace(/[^a-z0-9]+/g, '').slice(0, 12) || 'area';
     while (area(id)) id = id + Math.floor(Math.random() * 10);
     S.ajustes.areas.push({ id, n, c:an.c }); guardarAjustes();
-    ui.areaNueva = null; refrescarSheet(); render(); refrescarSheet();
+    ui.areaNueva = null;
+    if (ui.sheet && ui.sheet.k === 'areaSel') { ACT.areaElegir({ dataset:{ v:id } }); toast(`Área «${n}» creada`, null, null, 'check'); return; }
+    refrescarSheet(); render(); refrescarSheet();
     const atajo = norm(n).split(' ')[0].replace(/[^a-z0-9_-]/g, '');
     toast(`Área «${n}» lista. Al capturar puedes escribir #${atajo || id}`);
   },
@@ -2469,7 +2786,8 @@ document.addEventListener('click', e => {
 const debs = {};
 const deb = (k, fn, ms = 500) => { clearTimeout(debs[k]); debs[k] = setTimeout(fn, ms); };
 const IN = {
-  dtTitulo:el => { autoAlto(el); deb('tt', () => { const t = dtT(); if (t && el.value.trim()) { t.titulo = el.value.trim().slice(0, MAX_TITULO); upsertT(t); renderVista(); } }); },
+  dtTitulo:el => { autoAlto(el); deb('tt', () => { const t = dtT(); if (t && el.value.trim()) { t.titulo = limpiarTitulo(el.value); upsertT(t); renderVista(); const c = $('#dtClar'); if (c) c.innerHTML = htmlClaridad(el.value, 'dt'); } }); },
+  dtResultado:el => { autoAlto(el); deb('res', () => { const t = dtT(); if (t) { t.resultado = el.value.trim().slice(0, 160); upsertT(t); const v = $('.dr.open .dr-v'); if (v) v.innerHTML = t.resultado ? esc(t.resultado) : '<span class="mut2">Sin definir</span>'; } }); },
   dtProyecto:el => deb('pr', () => { const t = dtT(); if (t) { t.proyecto = el.value.trim().slice(0, 60); upsertT(t); renderVista(); } }),
   dtEspera:el => deb('es', () => { const t = dtT(); if (t) { t.espera = el.value.trim().slice(0, 120); upsertT(t); renderVista(); } }),
   dtFecha:el => {
@@ -2499,7 +2817,12 @@ const IN = {
 document.addEventListener('input', e => {
   const el = e.target;
   if (el.dataset && el.dataset.in && IN[el.dataset.in]) IN[el.dataset.in](el);
-  if (el.matches('#capIn,#capSheetIn,#blocIn,#bitIn,#procTt')) autoAlto(el);
+  if (el.matches('#capIn,#capSheetIn,#blocIn,#bitIn,#procTt,#divIn')) autoAlto(el);
+  if (el.id === 'capIn') pintarCapForm('cap');
+  if (el.id === 'capSheetIn') { if (ui.sheet && ui.sheet.k === 'captura') ui.sheet.draft = el.value; pintarCapForm('capSheet'); }
+  if (el.id === 'procTt') deb('pclar', () => { const c = $('#procClar'); if (c) c.innerHTML = htmlClaridad(el.value, 'proc'); }, 350);
+  if (el.id === 'verboQ') { ui.sheet.err = ''; pintarVerbos(); }
+  if (el.id === 'divIn' && ui.sheet) { ui.sheet.texto = el.value; const n = lineasDe(el.value).length, b = $('#divOk'); if (b) b.innerHTML = `${ic('layers')}Crear ${n > 1 ? n : ''}`; }
   if (el.id === 'pEsperaIn' && proc && proc.d.errEsp && el.value.trim()) { proc.d.errEsp = false; el.classList.remove('bad'); const n = el.nextElementSibling; if (n && n.classList.contains('err')) n.remove(); }
   if (el.id === 'areaNuevaN' && ui.areaNueva) { ui.areaNueva.n = el.value; if (ui.areaNueva.err) { ui.areaNueva.err = ''; el.classList.remove('bad'); const n = el.nextElementSibling; if (n && n.classList.contains('err')) n.remove(); } }
   if (el.id === 'cfgUrl' || el.id === 'cfgClave') { ui.cfgDraft = { url:$('#cfgUrl').value, clave:$('#cfgClave').value }; el.classList.remove('bad'); }
@@ -2521,6 +2844,12 @@ document.addEventListener('keydown', e => {
   else if (el.id === 'pEsperaIn') { e.preventDefault(); ACT.pGuardarEsp(); }
   else if (el.id === 'cfgClave') { e.preventDefault(); ACT.cfgGuardar(); }
   else if (el.id === 'areaNuevaN') { e.preventDefault(); ACT.areaNuevaOk(); }
+  else if (el.id === 'verboQ') {
+    e.preventDefault();
+    const q = norm(el.value.trim()); if (!q) return;
+    const ex = verbosTodos().find(v => norm(v) === q) || (verbosTodos().filter(v => norm(v).includes(q)).length === 1 && verbosTodos().find(v => norm(v).includes(q)));
+    if (ex) ACT.verboSel({ dataset:{ v:ex } }); else ACT.verboNuevo();
+  }
   else if (el.id === 'qaddIn') {
     e.preventDefault();
     const v = el.value.trim(); if (!v) { sacudir(el); return; }
@@ -2722,6 +3051,7 @@ function arrancar() {
   $('#gearBtn').innerHTML = ic('gear');
   $('#infoBtn').innerHTML = ic('info');
   $('#fab').innerHTML = ic('plus') + 'Capturar';
+  aplicarCalma();
   render();
   if (!pref.v('onb')) abrirOnb();
   else if (q.get('capturar')) abrirSheet({ k:'captura' });
