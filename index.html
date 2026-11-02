@@ -12,7 +12,7 @@
 <script>/* Aplica el tema elegido antes de pintar, sin parpadeo */try{var t=(JSON.parse(localStorage.getItem("foco.pref"))||{}).tema;if(t==="light"||t==="dark"){document.documentElement.dataset.theme=t;document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){m.content=t==="dark"?"#111113":"#F0F0F3"})}}catch(e){}</script>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-180.png">
-<link rel="icon" type="image/png" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-512.png">
 <title>Foco</title>
 <style>
 /* ===== Sistema visual: menos, pero mejor. Fuente del sistema, 4 tamaños, retícula de 8, base neutra y un acento ===== */
@@ -373,6 +373,34 @@ details.sec-d[open] .chev{transform:rotate(180deg)}
 .tl-now{position:absolute;left:52px;right:0;height:0;border-top:2px solid var(--hot-f);z-index:5;pointer-events:none}
 .tl-now::before{content:"";position:absolute;left:-5px;top:-6px;width:10px;height:10px;border-radius:50%;background:var(--hot-f)}
 .tl-wrap.picking{box-shadow:0 0 0 2px var(--ac)}
+.tl-b b svg.i{width:13px;height:13px;vertical-align:-2px;margin-right:4px}
+.tl-b.f-ahora{box-shadow:0 0 0 2px var(--ok-f)}
+.tl-b.f-tarde{border-left-color:var(--hot-f)}.tl-b.f-tarde .tl-t{color:var(--hot)}
+.tag.f-ahora{color:var(--ok);font-weight:700}.tag.f-pronto{color:var(--ac-t);font-weight:600}.tag.f-tarde{color:var(--hot);font-weight:600}
+/* Semana */
+.wk{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:2px 16px;scroll-behavior:smooth}
+.wk::-webkit-scrollbar{display:none}
+.wk-d{flex:none;width:56px;padding:8px 0 10px;border-radius:14px;background:var(--sf);display:flex;flex-direction:column;align-items:center;gap:2px;position:relative}
+.wk-d span{font-size:var(--fs-s);color:var(--mut);font-weight:600;text-transform:capitalize}
+.wk-d b{font-size:var(--fs-l);font-weight:700;font-variant-numeric:tabular-nums}
+.wk-d.hoy span{color:var(--ac-t)}
+.wk-d.on{background:var(--ac);color:var(--on-ac)}.wk-d.on span{color:var(--on-ac);opacity:.85}
+.wk-n{position:absolute;top:4px;right:6px;font-style:normal;font-size:11px;font-weight:700;color:var(--ac-t)}.wk-d.on .wk-n{color:var(--on-ac)}
+.wk-l{display:block;width:32px;height:4px;border-radius:2px;background:var(--sf3);overflow:hidden;margin-top:4px}
+.wk-l i{display:block;height:100%;background:var(--ac)}.wk-d.on .wk-l{background:rgba(255,255,255,.3)}.wk-d.on .wk-l i{background:var(--on-ac)}
+/* Línea del día */
+.ld{display:block;width:100%;margin-top:16px;padding:12px;border-radius:var(--r);background:var(--sf);text-align:left}
+.ld-r{position:relative;height:20px;border-radius:6px;background:var(--sf3)}
+.ld-r i{position:absolute;top:0;bottom:0;border-radius:4px;background:color-mix(in srgb,var(--a,#888) 55%,var(--sf3));min-width:4px}
+.ld-r i.ok{background:var(--ok-f)}.ld-r i.ahora{box-shadow:0 0 0 2px var(--ok-f)}.ld-r i.tarde{background:var(--hot-f);opacity:.7}
+.ld-r u{position:absolute;top:-4px;bottom:-4px;width:2px;margin-left:-1px;background:var(--hot-f);border-radius:1px}
+.ld-h{display:flex;justify-content:space-between;margin-top:8px;font-size:var(--fs-s);color:var(--mut);font-variant-numeric:tabular-nums;font-weight:600}
+.nx.toca{margin:16px 0 0;box-shadow:inset 0 0 0 1.5px var(--ok-f)}.nx.toca .ni{background:var(--ok-s);color:var(--ok)}
+/* Subpestañas y filtro por verbo */
+.subnav{margin-bottom:16px}
+.chips.vf{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -16px 12px;padding:2px 16px}
+.chips.vf::-webkit-scrollbar{display:none}
+.chip .n{font-size:var(--fs-s);color:var(--mut);font-weight:600}.chip.on .n{color:var(--ac-t)}
 
 /* ===== Tablero ===== */
 .tb-top{display:flex;gap:8px;align-items:center}
@@ -714,7 +742,9 @@ body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(-
   <button class="ib" data-a="ajustes" aria-label="Ajustes" id="gearBtn"></button>
 </header>
 <main>
+  <div class="seg subnav" id="subnav" role="tablist"></div>
   <section class="view" id="v-bandeja"></section>
+  <section class="view" id="v-agenda"></section>
   <section class="view" id="v-hoy"></section>
   <section class="view" id="v-tablero"></section>
   <section class="view" id="v-enfoque"></section>
@@ -868,7 +898,7 @@ const pref = {
 };
 
 const D = { st:null, justDragged:false };
-const ui = { view:'hoy', hoyVista:'lista', tabVista:'kanban', filtro:'todas', col:'prox', agSel:'', agY:null, histQ:'', histN:40, sheet:null,
+const ui = { view:'bandeja', ult:{}, dia:'', bVerbo:'', hoyVista:'lista', tabVista:'kanban', filtro:'todas', col:'prox', agSel:'', agY:null, histQ:'', histN:40, sheet:null,
   capArea:'', enfCaps:[], dtOpen:'', savedAt:0, nuevoTomate:false, syncErr:'', cfgMsg:null, cfgDraft:null, areaNueva:null, areaColor:'', onb:0 };
 const abierto = k => !!pref.v('ab-' + k);
 
@@ -1291,26 +1321,37 @@ function htmlClaridad(texto, dest) {
 /* ================= Interfaz general ================= */
 const VISTAS = [
   { k:'bandeja', n:'Bandeja', ic:'inbox', sub:() => { const n = tareasEn('bandeja').length; return n ? `${n} por organizar` : 'Anota todo aquí, organiza después'; } },
-  { k:'hoy', n:'Hoy', ic:'sun', sub:() => { const d = new Date(); return `${DIAS[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]}`; } },
+  { k:'agenda', n:'Agenda', ic:'cal', sub:() => 'Tu semana por días y horas' },
   { k:'tablero', n:'Tablero', ic:'kanban', sub:() => 'Todas tus tareas por estado' },
+  { k:'hoy', n:'Hoy', ic:'sun', sub:() => { const d = new Date(); return `${DIAS[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]}`; } },
   { k:'enfoque', n:'Enfoque', ic:'timer', sub:() => 'Pomodoro y bloques de tiempo' },
   { k:'progreso', n:'Progreso', ic:'trophy', sub:() => 'Tu avance y tus logros' }
 ];
+// Tres pasos: ingresa → planifica → ejecuta. Cada paso agrupa sus vistas en subpestañas.
+const GRUPOS = [
+  { k:'ingresa', n:'Ingresa', ic:'inbox', vs:['bandeja'] },
+  { k:'planifica', n:'Planifica', ic:'cal', vs:['agenda', 'tablero'] },
+  { k:'ejecuta', n:'Ejecuta', ic:'bolt', vs:['hoy', 'enfoque', 'progreso'] }
+];
+const grupoDe = v => GRUPOS.find(g => g.vs.includes(v));
 function pintarTabs() {
-  const nb = tareasEn('bandeja').length, run = S.timer && S.timer.corriendo;
-  $('#tabs').innerHTML = VISTAS.map(v => `<button class="${ui.view === v.k ? 'on' : ''}" data-a="tab" data-v="${v.k}" ${ui.view === v.k ? 'aria-current="page"' : ''} aria-label="${v.n}${v.k === 'bandeja' && nb ? `, ${nb} por organizar` : ''}"><span class="tp">${ic(v.ic)}</span>${v.n}${v.k === 'bandeja' && nb ? `<i class="bdg">${nb > 99 ? '99+' : nb}</i>` : ''}${v.k === 'enfoque' && run && ui.view !== 'enfoque' ? '<i class="tdot"></i>' : ''}</button>`).join('');
+  const nb = tareasEn('bandeja').length, run = S.timer && S.timer.corriendo, g0 = grupoDe(ui.view);
+  $('#tabs').innerHTML = GRUPOS.map(g => { const on = g === g0, v = ui.ult[g.k] || g.vs[0]; return `<button class="${on ? 'on' : ''}" data-a="tab" data-v="${v}" ${on ? 'aria-current="page"' : ''} aria-label="${g.n}${g.k === 'ingresa' && nb ? `, ${nb} por organizar` : ''}"><span class="tp">${ic(g.ic)}</span>${g.n}${g.k === 'ingresa' && nb ? `<i class="bdg">${nb > 99 ? '99+' : nb}</i>` : ''}${g.k === 'ejecuta' && run && ui.view !== 'enfoque' ? '<i class="tdot"></i>' : ''}</button>`; }).join('');
+  const sn = $('#subnav');
+  sn.classList.toggle('hide', g0.vs.length < 2);
+  sn.innerHTML = g0.vs.map(k => { const V = VISTAS.find(x => x.k === k); return `<button class="${ui.view === k ? 'on' : ''}" data-a="tab" data-v="${k}" role="tab" aria-selected="${ui.view === k}">${ic(V.ic)}${V.n}</button>`; }).join('');
 }
 function ir(v) {
   if (!VISTAS.some(x => x.k === v)) return;
   if (ui.view === v) { window.scrollTo({ top:0, behavior:'smooth' }); return; }
-  ui.view = v; ui.agSel = ''; ui.agY = null;
+  ui.view = v; ui.agSel = ''; ui.agY = null; ui.ult[grupoDe(v).k] = v;
   $$('.view').forEach(s => s.classList.toggle('on', s.id === 'v-' + v));
   window.scrollTo(0, 0);
   render();
 }
 function encabezado() {
   const V = VISTAS.find(x => x.k === ui.view);
-  $('#hTitle').textContent = V.n; $('#hSub').textContent = V.sub();
+  $('#hTitle').textContent = grupoDe(ui.view).n; $('#hSub').textContent = V.sub();
   $('#infoBtn').setAttribute('aria-label', `Cómo funciona ${V.n}`);
   const r = stats().racha, sb = $('#streakBtn');
   sb.classList.toggle('hide', !r);
@@ -1326,7 +1367,7 @@ function render() {
   $('#proyectos').innerHTML = pr.map(p => `<option value="${esc(p)}">`).join('');
 }
 function renderVista() {
-  ({ bandeja:renderBandeja, hoy:renderHoy, tablero:renderTablero, enfoque:renderEnfoque, progreso:renderProgreso })[ui.view]();
+  ({ bandeja:renderBandeja, agenda:renderAgenda, hoy:renderHoy, tablero:renderTablero, enfoque:renderEnfoque, progreso:renderProgreso })[ui.view]();
   pintarTabs(); encabezado();
 }
 let renderPend = false;
@@ -1433,7 +1474,7 @@ function metaCorta(t, max = 2, op = {}) {
   if (t.estado === 'espera' && t.espera) out.push(`<span class="tag">${ic('hourglass')}${esc(t.espera)}</span>`);
   if (cuad(t)) out.push(pq(t));
   if (op.area) { const a = area(t.area); if (a) out.push(`<span class="tag"><i class="dot" style="--a:${a.c}"></i>${esc(a.n)}</span>`); }
-  if (t.hora) out.push(`<span class="tag">${ic('clock')}${t.hora}</span>`);
+  if (t.hora) { const f = franja(t); out.push(`<span class="tag ${f ? 'f-' + f.k : ''}">${ic('clock')}${t.hora}${f ? ' · ' + f.txt : ''}</span>`); }
   if (t.fecha && t.fecha !== hoy() && t.estado !== 'hecho') out.push(`<span class="tag">${ic('cal')}${fechaCorta(t.fecha)}</span>`);
   if (t.dur) out.push(`<span class="tag">${ic('timer')}${t.dur} min</span>`);
   if (op.pomos && t.pomos) out.push(`<span class="tag">${ic('tomato')}${t.pomos}</span>`);
@@ -1511,12 +1552,23 @@ function pintarCapAreasViejo() {
 }
 function pintarBandejaLista(nuevos = []) {
   const z = $('#bandejaZona'); if (!z) return;
-  const items = tareasEn('bandeja').sort((a, b) => b.creado.localeCompare(a.creado));
+  const todos = tareasEn('bandeja').sort((a, b) => b.creado.localeCompare(a.creado));
+  // Filtro por verbo: agrupa los pendientes por el infinitivo con que empiezan.
+  const vb = t => { const v = verboInicial(t.titulo); return v ? cap1(v.verbo.toLowerCase()) : ''; };
+  const cuenta = {}; todos.forEach(t => { const k = vb(t); cuenta[k] = (cuenta[k] || 0) + 1; });
+  if (ui.bVerbo && !cuenta[ui.bVerbo === '-' ? '' : ui.bVerbo]) ui.bVerbo = '';
+  const items = ui.bVerbo ? todos.filter(t => vb(t) === (ui.bVerbo === '-' ? '' : ui.bVerbo)) : todos;
+  const verbos = Object.keys(cuenta).filter(Boolean).sort((a, b) => cuenta[b] - cuenta[a] || a.localeCompare(b));
+  const filtroV = todos.length > 1 && (verbos.length > 1 || cuenta['']) ? `<div class="chips vf" role="group" aria-label="Filtrar por verbo">
+    <button class="chip ${!ui.bVerbo ? 'on' : ''}" data-a="bVerbo" data-v="">Todos <span class="n">${todos.length}</span></button>
+    ${verbos.map(v => `<button class="chip ${ui.bVerbo === v ? 'on' : ''}" data-a="bVerbo" data-v="${esc(v)}" aria-pressed="${ui.bVerbo === v}">${esc(v)} <span class="n">${cuenta[v]}</span></button>`).join('')}
+    ${cuenta[''] ? `<button class="chip ${ui.bVerbo === '-' ? 'on' : ''}" data-a="bVerbo" data-v="-">Sin verbo <span class="n">${cuenta['']}</span></button>` : ''}</div>` : '';
+  ui.bIds = items.map(t => t.id);
   const rec = (S.procRec || []).filter(r => diaDeISO(r.t) === hoy() && byId(r.id)).slice(0, 8);
   let html = '';
   if (items.length) {
-    html += `<button class="cta" data-a="procesar"><span class="ico">${ic('sparkle')}</span><span><b>Organizar ${items.length} ${items.length === 1 ? 'pendiente' : 'pendientes'}</b><small>Decide qué hacer con cada uno</small></span>${ic('arrowR')}</button>
-      <div class="sec-t">Por organizar <span class="n">${items.length}</span></div>
+    html += `<button class="cta" data-a="procesar"><span class="ico">${ic('sparkle')}</span><span><b>Organizar ${items.length} ${items.length === 1 ? 'pendiente' : 'pendientes'}${ui.bVerbo ? ` de «${esc(ui.bVerbo === '-' ? 'Sin verbo' : ui.bVerbo)}»` : ''}</b><small>Decide qué hacer con cada uno</small></span>${ic('arrowR')}</button>
+      <div class="sec-t">Por organizar <span class="n">${items.length}${ui.bVerbo ? ' de ' + todos.length : ''}</span></div>${filtroV}
       <div class="group">${items.map(t => `<div class="tr nock ${nuevos.includes(t.id) ? 'in-anim' : ''}" style="--a:${t.area ? colorA(t.area) : 'transparent'}" data-a="abrir" data-id="${t.id}" role="button" tabindex="0">
         <div class="tb"><div class="tt">${esc(t.titulo)}</div><div class="mt"><span class="tag">${haceCuanto(t.creado)}</span>${metaCorta(t, 2, { area:true })}</div></div>
         <button class="ib-s" data-a="quitar" data-id="${t.id}" aria-label="Eliminar: ${esc(t.titulo)}">${ic('trash')}</button></div>`).join('')}</div>`;
@@ -1560,7 +1612,7 @@ function autoAlto(ta) { if (!ta || ta.tagName !== 'TEXTAREA') return; ta.style.h
 /* ================= Organizar la bandeja (GTD) ================= */
 let proc = null;
 function abrirProc() {
-  const ids = tareasEn('bandeja').sort((a, b) => a.creado.localeCompare(b.creado)).map(t => t.id);
+  const ids = (ui.bVerbo ? (ui.bIds || []).map(byId).filter(t => t && t.estado === 'bandeja') : tareasEn('bandeja')).sort((a, b) => a.creado.localeCompare(b.creado)).map(t => t.id);
   if (!ids.length) { toast('La bandeja ya está vacía'); return; }
   proc = { ids, i:0, paso:'que', d:{}, hechos:0, anim:'enter' };
   $('#proc').classList.add('on'); document.documentElement.classList.add('lock');
@@ -1699,7 +1751,7 @@ async function guardarPlan() {
   const para = plan.para;
   cerrarSheet(true);
   toast(para === 'hoy' ? 'Plan de hoy listo' : 'Plan de mañana listo. Descansa.');
-  if (ui.view !== 'hoy') ir('hoy'); else render();
+  if (!['hoy', 'agenda'].includes(ui.view)) ir('hoy'); else render();
 }
 
 /* ================= Vista: Hoy ================= */
@@ -1716,15 +1768,7 @@ function renderHoy() {
   if (total) html += total <= 12
     ? `<div class="segbar" role="img" aria-label="${hechas.length} de ${total} hechas">${Array.from({ length:total }, (_, i) => `<i class="${i < hechas.length ? 'on' : ''}"></i>`).join('')}</div>`
     : `<div class="bar okbar"><i style="width:${hechas.length / total * 100}%"></i></div>`;
-  html += `<div class="seg" style="margin-top:16px" role="tablist"><button class="${ui.hoyVista === 'lista' ? 'on' : ''}" data-a="hoySeg" data-v="lista" role="tab">${ic('list')}Lista</button><button class="${ui.hoyVista === 'agenda' ? 'on' : ''}" data-a="hoySeg" data-v="agenda" role="tab">${ic('clock')}Agenda por horas</button></div>`;
-  if (ui.hoyVista === 'agenda') {
-    v.innerHTML = html + htmlAgenda(proceso, cola, hechas);
-    const w = $('#tlWrap');
-    ajustarAgenda(w);
-    if (ui.agY != null) w.scrollTop = ui.agY; else posAgenda(w);
-    w.addEventListener('scroll', () => { ui.agY = w.scrollTop; }, { passive:true });
-    return;
-  }
+  html += htmlLineaDia();
 
   if (!proceso.length && !cola.length) {
     html += total
@@ -1738,8 +1782,10 @@ function renderHoy() {
     const desc = t.tareaId === ahora.id && (t.fase === 'corto' || t.fase === 'largo');
     const extra = proceso.slice(1);
     const resto = deCola ? cola.slice(1) : cola;
+    const toca = cola.find(x => x.id !== ahora.id && franja(x)?.k === 'ahora');
+    if (toca) html += `<div class="nx toca"><span class="ni">${ic('clock')}</span><div class="nxt"><b>${esc(toca.titulo)}</b><small>Programada a las ${toca.hora} · le toca ahora</small></div><button class="lnk" data-a="play" data-id="${toca.id}">Empezar${ic('chevR')}</button></div>`;
     html += `<div class="hero ${deCola ? '' : 'is-run'}" data-id="${ahora.id}" data-a="abrir" ${resto.length ? 'data-list="hoytop"' : ''} role="button" tabindex="0" aria-label="${esc(ahora.titulo)}. Abrir detalle">
-      <div class="hero-l"><i class="live"></i>${deCola ? 'Tu siguiente tarea' : desc ? 'En descanso' : 'Trabajando en'}${run || desc ? ` · <b id="heroTm">${fmt(restante())}</b>` : ''}</div>
+      <div class="hero-l"><i class="live"></i>${deCola ? 'Tu siguiente tarea' : desc ? 'En descanso' : 'Trabajando en'}${run || desc ? ` · <b id="heroTm">${fmt(restante())}</b>` : ahora.hora ? ` · ${ahora.hora}${franja(ahora) ? ' · ' + franja(ahora).txt : ''}` : ''}</div>
       <div class="hero-t">${esc(ahora.titulo)}</div>
       ${ahora.resultado ? `<div class="res-l">${ic('listo')}<span>Listo cuando: ${esc(ahora.resultado)}</span></div>` : ''}
       <div class="mt">${metaCorta(ahora, 3, { area:true, pomos:true })}</div>
@@ -1757,9 +1803,45 @@ function renderHoy() {
   v.innerHTML = html;
 }
 const AG_INI = 0, AG_FIN = 24;
-function htmlAgenda(proceso, cola, hechas) {
-  const items = [...proceso, ...cola];
+// Momento de una tarea con hora respecto a ahora: 'pronto' (menos de 1 h), 'ahora' o 'tarde'.
+function franja(t) {
+  if (!t.hora || t.estado === 'hecho' || t.fecha !== hoy()) return null;
+  const d = new Date(), nm = d.getHours() * 60 + d.getMinutes(), s = hm2min(t.hora), e = s + Math.max(+t.dur || 30, 15);
+  if (nm >= e) return { k:'tarde', txt:'atrasada' };
+  if (nm >= s) return { k:'ahora', txt:'ahora' };
+  if (s - nm <= 60) return { k:'pronto', txt:`en ${s - nm} min` };
+  return null;
+}
+const minDia = ts => ts.reduce((a, t) => a + (+t.dur || (t.hora ? 30 : 0)), 0);
+// Tareas de un día: las planeadas para esa fecha y las que se terminaron ese día.
+function tareasDia(d) {
+  return vivas().filter(t => t.estado === 'hecho' ? diaDeISO(t.hecho) === d && (t.fecha === d || t.hora) : t.fecha === d && !['bandeja', 'algun'].includes(t.estado));
+}
+function renderAgenda() {
+  const v = $('#v-agenda');
+  if (!ui.dia || ui.dia < hoy()) ui.dia = hoy();
+  const d = ui.dia, ts = tareasDia(d);
+  const pend = ts.filter(t => t.estado !== 'hecho'), hechas = ts.filter(t => t.estado === 'hecho');
+  const dias = Array.from({ length:14 }, (_, i) => addDays(hoy(), i));
+  let html = `<div class="wk" id="wk">${dias.map(x => {
+    const tx = tareasDia(x).filter(t => t.estado !== 'hecho'), min = minDia(tx), dd = parseYmd(x);
+    return `<button class="wk-d ${x === d ? 'on' : ''} ${x === hoy() ? 'hoy' : ''}" data-a="dia" data-v="${x}" aria-pressed="${x === d}" aria-label="${fechaLarga(x)}, ${tx.length} tareas">
+      <span>${x === hoy() ? 'Hoy' : DIAS3[dd.getDay()]}</span><b>${dd.getDate()}</b><i class="wk-n">${tx.length || ''}</i><i class="wk-l"><i style="width:${Math.min(100, min / 480 * 100)}%"></i></i></button>`;
+  }).join('')}</div>`;
+  const min = minDia(pend);
+  html += `<div class="sum" style="margin-top:16px"><div class="sum-t"><b>${d === hoy() ? 'Hoy' : d === manana() ? 'Mañana' : cap1(fechaCorta(d))}</b><span>${pend.length ? `${pend.length} ${pend.length === 1 ? 'tarea' : 'tareas'}${min ? ' · ' + txtHM(min) : ''}` : 'libre'}</span></div>
+    ${d <= manana() ? `<button class="btn sm ghost" data-a="plan" data-v="${d === hoy() ? 'hoy' : 'manana'}">${ic('sparkle')}Elegir mis 6</button>` : ''}</div>`;
+  if (min > 480) html += `<div class="warn6">${ic('flag')}<span>Tienes ${txtHM(min)} planeadas este día. Más de 8 horas suele no caber; mueve algo a otro día.</span></div>`;
+  v.innerHTML = html + htmlAgenda(pend, hechas);
+  const w = $('#tlWrap');
+  ajustarAgenda(w);
+  if (ui.agY != null) w.scrollTop = ui.agY; else if (d === hoy()) posAgenda(w); else w.scrollTop = 8 * 60 - 20;
+  w.addEventListener('scroll', () => { ui.agY = w.scrollTop; }, { passive:true });
+  const sel = $('.wk-d.on', v); if (sel) $('#wk').scrollLeft = sel.offsetLeft - 16 - $('#wk').offsetWidth / 2 + sel.offsetWidth / 2;
+}
+function htmlAgenda(items, hechas) {
   const sin = items.filter(t => !t.hora), con = [...items, ...hechas].filter(t => t.hora);
+  const porAgendar = tareasEn('prox').filter(t => !t.fecha).sort(ordenPrioridad);
   const evs = con.map(t => ({ t, s:hm2min(t.hora), e:Math.min(hm2min(t.hora) + Math.max(+t.dur || 30, 15), 24 * 60) })).sort((a, b) => a.s - b.s);
   let grupo = null; const grupos = [];
   evs.forEach(ev => {
@@ -1773,17 +1855,32 @@ function htmlAgenda(proceso, cola, hechas) {
   let horas = ''; for (let h = AG_INI; h < AG_FIN; h++) horas += `<div class="tl-h" style="top:${(h - AG_INI) * 60}px"><span>${h}:00</span></div>`;
   const bloques = evs.map(ev => {
     const top = ev.s - AG_INI * 60, h = Math.max(ev.e - ev.s, 28);
-    const hecha = ev.t.estado === 'hecho', run = ev.t.estado === 'proceso';
-    return `<div class="tl-b ${hecha ? 'hecha' : ''} ${run ? 'run' : ''}" style="--a:${colorA(ev.t.area)};top:${top}px;height:${h - 2}px;left:calc(58px + (100% - 64px) * ${ev.c / ev.n});width:calc((100% - 64px) / ${ev.n} - 4px)" data-id="${ev.t.id}" data-a="abrir" role="button" tabindex="0" ${hecha ? '' : 'data-drag data-free'}><b>${esc(ev.t.titulo)}</b><span class="tl-t">${min2hm(ev.s)} – ${min2hm(ev.e)}</span></div>`;
+    const hecha = ev.t.estado === 'hecho', run = ev.t.estado === 'proceso', f = franja(ev.t);
+    return `<div class="tl-b ${hecha ? 'hecha' : ''} ${run ? 'run' : ''} ${f ? 'f-' + f.k : ''}" style="--a:${colorA(ev.t.area)};top:${top}px;height:${h - 2}px;left:calc(58px + (100% - 64px) * ${ev.c / ev.n});width:calc((100% - 64px) / ${ev.n} - 4px)" data-id="${ev.t.id}" data-a="abrir" role="button" tabindex="0" ${hecha ? '' : 'data-drag data-free'}><b>${hecha ? ic('check') : ''}${esc(ev.t.titulo)}</b><span class="tl-t">${min2hm(ev.s)} – ${min2hm(ev.e)}${f ? ' · ' + f.txt : ''}</span></div>`;
   }).join('');
   const nm = new Date().getHours() * 60 + new Date().getMinutes();
   const sel = ui.agSel && byId(ui.agSel);
+  const chip = t => `<button class="ag-chip ${ui.agSel === t.id ? 'sel' : ''}" data-a="agSel" data-id="${t.id}" aria-pressed="${ui.agSel === t.id}"><i class="dot" style="--a:${colorA(t.area)}"></i><span>${esc(t.titulo)}</span></button>`;
   let cab_ = '';
-  if (!items.length && !con.length) cab_ = `<div class="tip">${ic('clock')}<span>Aquí bloqueas horas para tus tareas de hoy. Primero elige tus tareas con «Planear».</span></div>`;
-  else if (sin.length) cab_ = `<div class="sec-t">Sin hora asignada <span class="n">${sin.length}</span></div><div class="ag-sin">${sin.map(t => `<button class="ag-chip ${ui.agSel === t.id ? 'sel' : ''}" data-a="agSel" data-id="${t.id}" aria-pressed="${ui.agSel === t.id}"><i class="dot" style="--a:${colorA(t.area)}"></i><span>${esc(t.titulo)}</span></button>`).join('')}</div>
-    ${sel ? `<div class="ag-banner">${ic('clock')}Ahora toca una hora en la agenda para colocar «${esc(sel.titulo)}»</div>` : `<p class="hint">Toca una tarea de arriba y luego una hora. Mantén presionado un bloque para moverlo.</p>`}`;
-  else cab_ = `<p class="hint">Mantén presionado un bloque para moverlo de hora.</p>`;
-  return cab_ + `<div class="tl-wrap ${sel ? 'picking' : ''}" id="tlWrap"><div class="tl" id="tl" data-a="tlTap" style="height:${alto}px">${horas}${bloques}<div class="tl-now" style="top:${nm - AG_INI * 60}px"></div></div></div>`;
+  if (sin.length) cab_ += `<div class="sec-t">Este día, sin hora <span class="n">${sin.length}</span></div><div class="ag-sin">${sin.map(chip).join('')}</div>`;
+  if (porAgendar.length) cab_ += `<div class="sec-t">Por agendar <span class="n">${porAgendar.length}</span></div><div class="ag-sin">${porAgendar.map(chip).join('')}</div>`;
+  if (!sin.length && !porAgendar.length && !con.length) cab_ += `<div class="tip">${ic('clock')}<span>Aquí verás tus tareas por hora. Organiza tu Bandeja como «Próxima acción» y aparecerán para agendarlas.</span></div>`;
+  cab_ += sel ? `<div class="ag-banner">${ic('clock')}Toca una hora para colocar «${esc(sel.titulo)}»</div>`
+    : (sin.length || porAgendar.length) ? `<p class="hint">Toca una tarea y luego una hora. Mantén presionado un bloque para moverlo.</p>` : con.length ? `<p class="hint">Mantén presionado un bloque para moverlo de hora.</p>` : '';
+  return cab_ + `<div class="tl-wrap ${sel ? 'picking' : ''}" id="tlWrap"><div class="tl" id="tl" data-a="tlTap" style="height:${alto}px">${horas}${bloques}${ui.dia === hoy() ? `<div class="tl-now" style="top:${nm - AG_INI * 60}px"></div>` : ''}</div></div>`;
+}
+// Línea del día: los bloques con hora de hoy en una franja, con la hora actual marcada.
+function htmlLineaDia() {
+  const ts = tareasDia(hoy()).filter(t => t.hora);
+  if (!ts.length) return '';
+  const evs = ts.map(t => ({ t, s:hm2min(t.hora), e:hm2min(t.hora) + Math.max(+t.dur || 30, 15) }));
+  const d = new Date(), nm = d.getHours() * 60 + d.getMinutes();
+  const ini = Math.min(...evs.map(e => e.s), nm) - 30, fin = Math.max(...evs.map(e => e.e), nm) + 30, L = fin - ini;
+  const pc = m => ((m - ini) / L * 100).toFixed(2);
+  const hechas = ts.filter(t => t.estado === 'hecho').length;
+  return `<button class="ld" data-a="tab" data-v="agenda" aria-label="Línea del día: ${hechas} de ${ts.length} bloques hechos. Abrir agenda">
+    <div class="ld-r">${evs.map(e => `<i class="${e.t.estado === 'hecho' ? 'ok' : franja(e.t)?.k || ''}" style="left:${pc(e.s)}%;width:${pc(e.e) - pc(e.s)}%;--a:${colorA(e.t.area)}"></i>`).join('')}<u style="left:${pc(nm)}%"></u></div>
+    <div class="ld-h"><span>${min2hm(Math.max(0, Math.round(ini / 30) * 30))}</span><span>${hechas}/${ts.length} bloques</span><span>${min2hm(Math.min(1439, Math.round(fin / 30) * 30))}</span></div></button>`;
 }
 function ajustarAgenda(w) {
   w = w || $('#tlWrap'); if (!w) return;
@@ -2121,14 +2218,20 @@ function ayuda(k) {
   return ({
     bandeja:{ d:'Tu lugar para vaciar la cabeza. Anota cualquier pendiente en cuanto se te ocurra, sin pensar todavía dónde va.', p:[
       ['plus', 'Captura en un paso', 'Elige un verbo (Revisar, Enviar…), escribe qué vas a hacer y, si quieres, el área. Toca Guardar. Si pegas una lista, cada línea se vuelve un pendiente.'],
+      ['filter', 'Filtrar por verbo', 'Toca un verbo (Llamar, Enviar, Revisar…) para ver solo esos pendientes y organizarlos juntos.'],
       ['layers', 'Área (opcional)', 'Elígela en el selector o escríbela con # dentro del texto, por ejemplo #omova. Desde el selector también puedes crear una nueva.'],
       ['sparkle', 'Organiza', 'Cuando tengas varios, toca «Organizar». Decides uno por uno: hacerlo ya, agendarlo, esperar a alguien, guardarlo para algún día o eliminarlo (método GTD). Si la redacción no es clara, Foco te sugiere cómo mejorarla o dividirla.']] },
     hoy:{ d:'Tus prioridades del día con el método Ivy Lee: máximo 6 tareas, en orden de importancia, trabajadas una a la vez.', p:[
       ['play', 'La tarjeta de arriba', 'Es la tarea que toca ahora. Toca «Empezar enfoque» para arrancar un Pomodoro sobre ella.'],
       ['check', 'Marcar como hecha', 'Toca el círculo de cualquier tarea o el botón verde. Siempre puedes deshacerlo desde el aviso.'],
       ['grip', 'Cambiar el orden', 'Arrastra desde los seis puntos de la derecha. Si sueltas la tarea sobre la tarjeta de arriba, se vuelve la siguiente.'],
-      ['clock', 'Agenda por horas', 'Asigna una hora a cada tarea para bloquear tiempo en tu día (time blocking).'],
+      ['clock', 'Horarios en vivo', 'Las tareas con hora te avisan «en 20 min», «ahora» o «atrasada», y la línea del día muestra tus bloques y la hora actual.'],
       ['moon', 'Planear', 'Por la noche elige tus 6 de mañana. Lo que no termines pasa solo al día siguiente.']] },
+    agenda:{ d:'Planifica visualmente: elige un día de las próximas dos semanas y acomoda tus tareas por hora (time blocking).', p:[
+      ['cal', 'La semana', 'Cada día muestra cuántas tareas tiene y una barra con las horas planeadas. Toca un día para verlo.'],
+      ['clock', 'Agendar', 'Toca una tarea de «Por agendar» o «Sin hora» y luego una hora en la agenda. Queda con fecha y hora.'],
+      ['grip', 'Mover', 'Mantén presionado un bloque para cambiarlo de hora.'],
+      ['sparkle', 'Elegir mis 6', 'Para hoy y mañana, elige y ordena tus tareas con el método Ivy Lee.']] },
     tablero:{ d:'Todas tus tareas activas según su estado (método Kanban). Úsalo para ver el panorama completo.', p:[
       ['list', 'Próximas', 'Ya decidiste hacerlas, pero aún no tienen día.'],
       ['sun', 'Hoy', 'Las que elegiste para hoy.'],
@@ -2149,10 +2252,9 @@ function ayuda(k) {
   })[k];
 }
 const ONB = [
-  { ic:'inbox', paso:'Bandeja', t:'Vacía tu cabeza', d:'Anota cada pendiente en cuanto se te ocurra, empezando con un verbo: «Enviar…», «Revisar…». Los detalles van después.' },
-  { ic:'sparkle', paso:'Organizar', t:'Decide qué es cada cosa', d:'Toca «Organizar»: aclara la redacción, agrega el resultado esperado si hace falta y decide cuándo hacerlo.' },
-  { ic:'sun', paso:'Hoy', t:'Elige tus 6 del día', d:'Cada noche elige y ordena máximo 6 tareas. Al día siguiente trabájalas en orden, una a la vez.' },
-  { ic:'timer', paso:'Enfoque', t:'Enfócate y avanza', d:'Empieza un Pomodoro sobre tu tarea. Ganas puntos, subes de nivel y mantienes tu racha.' }
+  { ic:'inbox', paso:'Ingresa', t:'Vacía tu cabeza', d:'Anota cada pendiente en cuanto se te ocurra, empezando con un verbo: «Enviar…», «Revisar…». Luego toca «Organizar» para decidir qué es cada cosa.' },
+  { ic:'cal', paso:'Planifica', t:'Dale día y hora', d:'En la Agenda elige un día y acomoda tus tareas por hora. Elige tus 6 más importantes de hoy o de mañana.' },
+  { ic:'bolt', paso:'Ejecuta', t:'Una a la vez', d:'Trabaja tus tareas en orden con un Pomodoro. Foco te avisa qué toca ahora y te muestra tu avance del día.' }
 ];
 function abrirOnb() { ui.onb = 0; $('#onb').classList.add('on'); document.documentElement.classList.add('lock'); pintarOnb(); }
 function pintarOnb() {
@@ -2522,14 +2624,20 @@ const ACT = {
     toast(`Movida a ${COLN[dest]}`, 'Deshacer', () => { t.estado = prev; t.fecha = pf; upsertT(t); renderVista(); });
   },
   activar:el => { const t = byId(el.dataset.id); setEstado(t, 'prox'); renderVista(); toast('Movida a Próximas', 'Ver', () => { ui.tabVista = 'kanban'; ui.col = 'prox'; renderVista(); }); },
+  dia:el => { ui.dia = el.dataset.v; ui.agY = null; renderVista(); },
+  bVerbo:el => { ui.bVerbo = ui.bVerbo === el.dataset.v ? '' : el.dataset.v; pintarBandejaLista(); },
   agSel:el => { ui.agSel = ui.agSel === el.dataset.id ? '' : el.dataset.id; renderVista(); },
   tlTap:(el, e) => {
     if (!ui.agSel) return;
     const t = byId(ui.agSel); if (!t) return;
     const y = e.clientY - el.getBoundingClientRect().top;
     const m = clamp(Math.round(y / 15) * 15, 0, (AG_FIN - AG_INI) * 60 - 15) + AG_INI * 60;
-    t.hora = min2hm(m); if (!t.dur) t.dur = 25; upsertT(t);
-    ui.agSel = ''; renderVista(); toast(`«${t.titulo}» a las ${t.hora}`);
+    const d = ui.dia || hoy();
+    t.hora = min2hm(m); t.fecha = d; if (!t.dur) t.dur = 25;
+    if (d === hoy() && t.estado === 'prox') t.estado = 'hoy';
+    else if (d > hoy() && ['hoy', 'proceso'].includes(t.estado)) t.estado = 'prox';
+    upsertT(t);
+    ui.agSel = ''; renderVista(); toast(`«${t.titulo}» ${d === hoy() ? 'hoy' : fechaCorta(d).toLowerCase()} a las ${t.hora}`);
   },
   histMas:() => { ui.histN += 60; pintarHistorial(); },
   // Organizar bandeja
@@ -3045,7 +3153,7 @@ function arrancar() {
   rollover();
   if (S.insVistas === null) revisarLogros();
   const q = new URLSearchParams(location.search);
-  if (q.get('v') && VISTAS.some(x => x.k === q.get('v'))) ui.view = q.get('v');
+  if (q.get('v') && VISTAS.some(x => x.k === q.get('v'))) { ui.view = q.get('v'); ui.ult[grupoDe(ui.view).k] = ui.view; }
   $$('.view').forEach(s => s.classList.toggle('on', s.id === 'v-' + ui.view));
   estadoS = S.conn.url ? (S.cola.length ? 'pend' : 'ok') : 'sin';
   $('#gearBtn').innerHTML = ic('gear');
@@ -3060,7 +3168,7 @@ function arrancar() {
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { tic(); sincronizar(false); if (T().corriendo) pantallaActiva(true); } else guardarYa(); });
   addEventListener('online', () => sincronizar(false));
   addEventListener('pagehide', guardarYa);
-  addEventListener('resize', () => { if (ui.view === 'tablero') ajustarBoard(); if (ui.view === 'hoy') ajustarAgenda(); });
+  addEventListener('resize', () => { if (ui.view === 'tablero') ajustarBoard(); if (ui.view === 'agenda') ajustarAgenda(); });
   document.addEventListener('touchend', audioListo, { once:true });
   sincronizar(false);
   if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
