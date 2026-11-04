@@ -19,7 +19,7 @@
 :root{
   /* Base neutra, un solo acento (índigo). Sin blanco ni negro puros. */
   --bg:#F0F0F3; --sf:#FBFBFD; --sf2:#EDEDF0; --sf3:#E3E3E8;
-  --ink:#1D1D1F; --mut:#6E6E73; --mut2:#A1A1A6; --ln:rgba(60,60,67,.12); --ln2:#D2D2D7;
+  --ink:#1D1D1F; --mut:#626267; --mut2:#727277; --ln:rgba(60,60,67,.12); --ln2:#D2D2D7;
   --ac:#5856D6; --ac-s:#EEEEFB; --ac-t:#4B49C7; --on-ac:#FBFBFD;
   --ok:#1F7F37; --ok-f:#34C759; --ok-s:#E8F5EB;
   --hot:#C8102E; --hot-f:#FF3B30; --hot-s:#FCEDEC;
@@ -37,7 +37,7 @@
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#111113; --sf:#1C1C1E; --sf2:#2C2C2E; --sf3:#3A3A3C;
-  --ink:#F5F5F7; --mut:#A1A1A6; --mut2:#6E6E73; --ln:rgba(255,255,255,.08); --ln2:rgba(255,255,255,.16);
+  --ink:#F5F5F7; --mut:#A1A1A6; --mut2:#8E8E93; --ln:rgba(255,255,255,.08); --ln2:rgba(255,255,255,.16);
   --ac:#5E5CE6; --ac-s:rgba(94,92,230,.22); --ac-t:#A5A3FF; --on-ac:#F5F5F7;
   --ok:#4BD97A; --ok-f:#30D158; --ok-s:rgba(48,209,88,.15);
   --hot:#FF7A72; --hot-f:#FF453A; --hot-s:rgba(255,69,58,.16);
@@ -48,7 +48,7 @@
 }}
 :root[data-theme="dark"]{color-scheme:dark;
   --bg:#111113; --sf:#1C1C1E; --sf2:#2C2C2E; --sf3:#3A3A3C;
-  --ink:#F5F5F7; --mut:#A1A1A6; --mut2:#6E6E73; --ln:rgba(255,255,255,.08); --ln2:rgba(255,255,255,.16);
+  --ink:#F5F5F7; --mut:#A1A1A6; --mut2:#8E8E93; --ln:rgba(255,255,255,.08); --ln2:rgba(255,255,255,.16);
   --ac:#5E5CE6; --ac-s:rgba(94,92,230,.22); --ac-t:#A5A3FF; --on-ac:#F5F5F7;
   --ok:#4BD97A; --ok-f:#30D158; --ok-s:rgba(48,209,88,.15);
   --hot:#FF7A72; --hot-f:#FF453A; --hot-s:rgba(255,69,58,.16);
@@ -106,7 +106,7 @@ body.has-mini main{padding-bottom:calc(var(--tabs) + var(--mini) + 112px + var(-
 #tabs .tp svg.i{width:23px;height:23px}
 #tabs button.on{color:var(--ac-t)}
 #tabs button.on .tp{background:var(--ac-s)}
-#tabs .bdg{position:absolute;top:2px;left:calc(50% + 9px);min-width:19px;height:19px;padding:0 4px;border-radius:8px;background:var(--hot-f);color:#fff;font-size:var(--fs-s);line-height:19px;font-weight:700;font-style:normal}
+#tabs .bdg{position:absolute;top:2px;left:calc(50% + 9px);min-width:19px;height:19px;padding:0 4px;border-radius:8px;background:var(--ac);color:var(--on-ac);font-size:var(--fs-s);line-height:19px;font-weight:700;font-style:normal}
 #tabs .tdot{position:absolute;top:6px;left:calc(50% + 13px);width:9px;height:9px;border-radius:50%;background:var(--ok-f);border:2px solid var(--sf);}
 
 /* ===== Botón de captura ===== */
@@ -136,7 +136,7 @@ body.has-mini #fab{bottom:calc(var(--tabs) + var(--mini) + 16px + var(--bot))}
 .tag svg.i{width:14px;height:14px;stroke-width:2.1}
 .pq{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 8px;border-radius:8px;font-size:var(--fs-s);font-weight:600;white-space:nowrap}
 .pq svg.i{width:13px;height:13px;stroke-width:2.3}
-.pq.q1{background:var(--hot-s);color:var(--hot)}.pq.q2,.pq.q3{background:var(--sf2);color:var(--mut)}
+.pq.q1{background:var(--ac-s);color:var(--ac-t)}.pq.q2,.pq.q3{background:var(--sf2);color:var(--mut)}
 .seg{display:flex;background:var(--sf3);border-radius:12px;padding:4px;gap:4px}
 .seg button{flex:1;min-height:36px;border-radius:8px;font-size:var(--fs-m);font-weight:600;color:var(--mut);display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:all .2s var(--ease)}
 .seg button svg.i{width:17px;height:17px}
@@ -323,9 +323,9 @@ html.calma .view.on,html.calma .in-anim,html.calma .tom.new,html.calma .proc-car
 .mx-c{min-height:68px;padding:12px 12px;border-radius:12px;background:var(--sf2);text-align:left;border:2px solid transparent;transition:all .18s}
 .mx-c b{display:block;font-size:var(--fs-m);font-weight:600}
 .mx-c span{display:block;font-size:var(--fs-s);color:var(--mut);margin-top:2px;line-height:1.3}
-.mx-c.q1 b{color:var(--hot)}
+.mx-c.q1 b{color:var(--ac-t)}
 .mx-c.on{border-color:currentColor}
-.mx-c.on{color:var(--ac);background:var(--ac-s)}.mx-c.on b{color:var(--ac-t)}.mx-c.on.q1{color:var(--hot);background:var(--hot-s)}.mx-c.on.q1 b{color:var(--hot)}
+.mx-c.on{color:var(--ac);background:var(--ac-s)}.mx-c.on b{color:var(--ac-t)}.mx-c.on.q1{color:var(--ac);background:var(--ac-s)}.mx-c.on.q1 b{color:var(--ac-t)}
 
 /* ===== Hoy ===== */
 .sum{display:flex;align-items:center;gap:12px}
@@ -377,13 +377,13 @@ details.sec-d[open] .chev{transform:rotate(180deg)}
 .tl-b .tl-t{font-size:var(--fs-s);color:var(--mut);font-variant-numeric:tabular-nums}
 .tl-b.hecha{opacity:.45}.tl-b.hecha b{text-decoration:line-through}
 .tl-b.run{box-shadow:0 0 0 2px var(--ac)}
-.tl-now{position:absolute;left:52px;right:0;height:0;border-top:2px solid var(--hot-f);z-index:5;pointer-events:none}
-.tl-now::before{content:"";position:absolute;left:-5px;top:-6px;width:10px;height:10px;border-radius:50%;background:var(--hot-f)}
+.tl-now{position:absolute;left:52px;right:0;height:0;border-top:2px solid var(--ac);z-index:5;pointer-events:none}
+.tl-now::before{content:"";position:absolute;left:-5px;top:-6px;width:10px;height:10px;border-radius:50%;background:var(--ac)}
 .tl-wrap.picking{box-shadow:0 0 0 2px var(--ac)}
 .tl-b b svg.i{width:13px;height:13px;vertical-align:-2px;margin-right:4px}
 .tl-b.f-ahora{box-shadow:0 0 0 2px var(--ok-f)}
-.tl-b.f-tarde{border-left-color:var(--hot-f)}.tl-b.f-tarde .tl-t{color:var(--hot)}
-.tag.f-ahora{color:var(--ok);font-weight:700}.tag.f-pronto{color:var(--ac-t);font-weight:600}.tag.f-tarde{color:var(--hot);font-weight:600}
+.tl-b.f-tarde{border-left-color:var(--warn-f)}.tl-b.f-tarde .tl-t{color:var(--warn)}
+.tag.f-ahora{color:var(--ok);font-weight:700}.tag.f-pronto{color:var(--ac-t);font-weight:600}.tag.f-tarde{color:var(--warn);font-weight:600}
 /* Semana */
 .wk{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:2px 16px;scroll-behavior:smooth}
 .wk::-webkit-scrollbar{display:none}
@@ -399,8 +399,8 @@ details.sec-d[open] .chev{transform:rotate(180deg)}
 .ld{display:block;width:100%;margin-top:16px;padding:12px;border-radius:var(--r);background:var(--sf);text-align:left}
 .ld-r{position:relative;height:20px;border-radius:6px;background:var(--sf3)}
 .ld-r i{position:absolute;top:0;bottom:0;border-radius:4px;background:color-mix(in srgb,var(--a,#888) 55%,var(--sf3));min-width:4px}
-.ld-r i.ok{background:var(--ok-f)}.ld-r i.ahora{box-shadow:0 0 0 2px var(--ok-f)}.ld-r i.tarde{background:var(--hot-f);opacity:.7}
-.ld-r u{position:absolute;top:-4px;bottom:-4px;width:2px;margin-left:-1px;background:var(--hot-f);border-radius:1px}
+.ld-r i.ok{background:var(--ok-f)}.ld-r i.ahora{box-shadow:0 0 0 2px var(--ok-f)}.ld-r i.tarde{background:var(--warn-f);opacity:.7}
+.ld-r u{position:absolute;top:-4px;bottom:-4px;width:2px;margin-left:-1px;background:var(--ac);border-radius:1px}
 .ld-h{display:flex;justify-content:space-between;margin-top:8px;font-size:var(--fs-s);color:var(--mut);font-variant-numeric:tabular-nums;font-weight:600}
 .nx.toca{margin:16px 0 0;box-shadow:inset 0 0 0 1.5px var(--ok-f)}.nx.toca .ni{background:var(--ok-s);color:var(--ok)}
 /* Subpestañas y filtro por verbo */
@@ -409,13 +409,50 @@ details.sec-d[open] .chev{transform:rotate(180deg)}
 .chips.vf::-webkit-scrollbar{display:none}
 .chip .n{font-size:var(--fs-s);color:var(--mut);font-weight:600}.chip.on .n{color:var(--ac-t)}
 
+/* ===== Cabecera mínima y captura en la navegación ===== */
+#infoBtn,#streakBtn,#searchBtn,#gearBtn{display:none!important}
+#fab{display:none!important}
+.mi{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--sf2);color:var(--ac-t);flex:none}
+.mi svg.i{width:18px;height:18px}
+kbd.mk{font:600 12px/1 inherit;color:var(--mut);padding:4px 7px;border-radius:6px;background:var(--sf2);border:1px solid var(--ln)}
+#tabs .tcap{order:3}
+#tabs .tcap .tp{width:48px;height:48px;border-radius:50%;background:var(--ac);color:var(--on-ac);box-shadow:0 4px 14px color-mix(in srgb,var(--ac) 35%,transparent)}
+#tabs .tcap .tp svg.i{width:24px;height:24px;stroke-width:2.4}
+#tabs .tcap .tl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+#tabs > button:nth-of-type(1),#tabs > button:nth-of-type(2){order:1}
+#tabs > button:nth-of-type(3),#tabs > button:nth-of-type(4){order:4}
+#tabs .brand{order:0}#tabs .side-f{order:9}
+/* Enfoque inmersivo: solo el tiempo, un control y la salida */
+body.inmersivo{--tabs:0px}
+body.inmersivo #tabs,body.inmersivo #menuBtn,body.inmersivo #hSub,body.inmersivo #mini{display:none!important}
+/* ===== Hoy: Ahora, avance en una línea, lo demás plegado ===== */
+.hoy-a .hero{margin-top:4px}
+.hoy-a .panel.zero{margin-top:4px}
+.hero-m #heroFin{flex:1;min-width:0}
+.arr{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:44px;margin-top:8px;border-radius:12px;color:var(--ac-t);font-weight:600;font-size:var(--fs-s)}
+.arr svg.i{width:16px;height:16px}
+.avance{margin-top:20px}
+.av-t{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.av-t b{font-size:var(--fs-l);font-weight:700}
+.av-t span{color:var(--mut)}
+.av-t small{margin-left:auto;font-size:var(--fs-s);color:var(--mut)}
+.avance .segbar{margin-top:8px}
+.prox{display:flex;align-items:center;gap:10px;width:100%;min-height:48px;margin-top:12px;padding:8px 12px;border-radius:12px;background:var(--sf);color:var(--ink);text-align:left;font-size:var(--fs-s)}
+.prox > svg.i{width:16px;height:16px;color:var(--ac-t);flex:none}
+.prox span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prox small{color:var(--mut);flex:none}
+.hoy-acc{display:flex;flex-wrap:wrap;gap:4px 16px;margin-top:8px}
+.hoy-acc .lnk2{min-height:40px}
+.mas{display:flex;align-items:center;justify-content:center;gap:4px;width:100%;min-height:44px;margin-top:6px;border-radius:12px;color:var(--ac-t);font-weight:600;font-size:var(--fs-s)}
+.mas svg.i{width:16px;height:16px}.mas svg.i.up{transform:rotate(180deg)}
+.sub-t{margin:12px 4px 6px;font-size:12px;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
 /* ===== Hoy: prioridades, decisiones pendientes ===== */
 .ordn{flex:none;width:22px;margin-right:-6px;text-align:center;font-size:var(--fs-s);font-weight:700;color:var(--ac-t);font-variant-numeric:tabular-nums}
 .sum-e{margin:6px 2px 0;font-size:var(--fs-s);color:var(--mut)}
 .tr.dec{align-items:flex-start}
 .dec-b{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .dec-b .qk{min-height:36px}
-.tr.pl.sust .ck{border-color:var(--hot);box-shadow:0 0 0 2px var(--hot-s)}
+.tr.pl.sust .ck{border-color:var(--warn-f);box-shadow:0 0 0 2px var(--warn-s)}
 .tr.pl.pend{box-shadow:inset 0 0 0 2px var(--ac)}
 .tr.pl:disabled{opacity:.55}
 .dt-rep{display:flex;align-items:center;gap:6px;margin:10px 4px 0}
@@ -429,14 +466,14 @@ details.sec-d[open] .chev{transform:rotate(180deg)}
 .cap-l{margin-top:10px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 12px;font-size:var(--fs-s);color:var(--mut)}
 .cap-b{flex:1 0 100%;height:6px;border-radius:3px;background:var(--sf3);overflow:hidden;margin-top:4px}
 .cap-b i{display:block;height:100%;background:var(--ac);border-radius:3px}
-.cap-b.over i,.wk-l.over i{background:var(--hot-f)}
+.cap-b.over i,.wk-l.over i{background:var(--warn-f)}
 .wk-d.pas{opacity:.65}
 .sol{display:flex;flex-direction:column;gap:8px;margin-top:12px}
-.sol-i{display:flex;gap:10px;padding:12px;border-radius:12px;background:var(--hot-s);color:var(--ink);font-size:var(--fs-s)}
-.sol-i > svg.i{color:var(--hot);width:18px;height:18px;flex:none;margin-top:1px}
-.sol-i b{display:block;color:var(--hot);font-size:var(--fs-s)}
+.sol-i{display:flex;gap:10px;padding:12px;border-radius:12px;background:var(--warn-s);color:var(--ink);font-size:var(--fs-s)}
+.sol-i > svg.i{color:var(--warn);width:18px;height:18px;flex:none;margin-top:1px}
+.sol-i b{display:block;color:var(--warn);font-size:var(--fs-s)}
 .sol-i span{display:block;margin-top:2px}
-.tl-b.solapa{box-shadow:inset 0 0 0 2px var(--hot-f)}
+.tl-b.solapa{box-shadow:inset 0 0 0 2px var(--warn-f)}
 .sm-in{width:auto;min-width:110px;min-height:40px}
 /* Densidad compacta: menos aire, mismo tamaño de texto y de controles */
 .compacta .tr{min-height:52px;padding-top:8px;padding-bottom:8px}
@@ -492,7 +529,7 @@ details.sec-d[open] .chev{transform:rotate(180deg)}
 .ls-add{padding:0;margin-top:12px}
 .sec-t small{font-weight:500;color:var(--mut2);margin-left:auto;text-align:right}
 .sec-t .dot{width:10px;height:10px}
-.sec-t.hot{color:var(--hot)}
+.sec-t.hot{color:var(--warn)}
 .tr.ls{padding-right:8px}
 .ls-ag{flex:none;display:inline-flex;align-items:center;gap:4px;min-height:36px;padding:0 10px;border-radius:10px;background:var(--sf2);color:var(--mut);font-size:var(--fs-s);font-weight:600;font-variant-numeric:tabular-nums}
 .ls-ag svg.i{width:15px;height:15px}
@@ -861,6 +898,15 @@ body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(-
   #tabs .tl{flex:1;text-align:left}
   #tabs .bdg,#tabs .tdot{position:static;margin:0}
   #tabs kbd,.side-f kbd{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:6px;background:var(--sf2);border:1px solid var(--ln);font:600 12px/1 inherit;color:var(--mut)}
+  #tabs .tcap{order:0;margin:0 0 12px;background:var(--ac);color:var(--on-ac)}
+  #tabs .tcap:hover{background:color-mix(in srgb,var(--ac) 88%,#000)}
+  #tabs .tcap .tp{width:auto;height:auto;border-radius:0;background:none;box-shadow:none;color:inherit}
+  #tabs .tcap .tp svg.i{width:20px;height:20px}
+  #tabs .tcap .tl{position:static;width:auto;height:auto;overflow:visible;clip:auto}
+  #tabs .tcap kbd{background:color-mix(in srgb,var(--on-ac) 18%,transparent);border-color:transparent;color:var(--on-ac)}
+  #tabs > button{order:1}
+  body.inmersivo{padding-left:0}
+  body.inmersivo main{margin:0 auto;max-width:720px}
   #tabs .side-f{display:flex;flex-direction:column;gap:8px;margin-top:auto;padding:16px 12px 0;border-top:1px solid var(--ln);font-size:var(--fs-s);color:var(--mut)}
   .side-f b{font-weight:600;color:var(--ink)}
   .side-f span{display:flex;align-items:center;gap:4px}.side-f span kbd:last-of-type{margin-right:6px}
@@ -916,7 +962,7 @@ body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(-
   .sm-h b{font-size:var(--fs-l);font-weight:700;font-variant-numeric:tabular-nums}
   .sm-h small{font-size:12px;color:var(--mut)}
   .sm-h.hoy span,.sm-h.hoy b{color:var(--ac-t)}
-  .sm-h.over small{color:var(--hot);font-weight:600}.sm-h.over .wk-l i{background:var(--hot-f)}
+  .sm-h.over small{color:var(--warn);font-weight:600}.sm-h.over .wk-l i{background:var(--warn-f)}
   .sm-body{overflow-y:auto;overscroll-behavior:contain;height:600px}
   .sm-grid{position:relative;background:repeating-linear-gradient(to bottom,var(--ln) 0 1px,transparent 1px 60px)}
   .sm-axis{position:relative}
@@ -939,6 +985,7 @@ body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(-
   <button class="streak hide" id="streakBtn" data-a="ir" data-v="progreso"></button>
   <button class="ib" data-a="buscar" id="searchBtn" aria-label="Buscar tareas"></button>
   <button class="ib" data-a="sync" id="syncBtn" aria-label="Sincronización"></button>
+  <button class="ib" data-a="menu" id="menuBtn" aria-label="Más opciones" aria-haspopup="dialog"></button>
   <button class="ib" data-a="ajustes" aria-label="Ajustes" id="gearBtn"></button>
 </header>
 <main>
@@ -1016,6 +1063,7 @@ function txtHM(min) { const h = Math.floor(min / 60), m = Math.round(min % 60); 
 const IC = {
   inbox:'<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>',
   sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/>',
+  more:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',
   search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
   chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
   expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
@@ -1367,6 +1415,8 @@ function pintarSync() {
   const b = $('#syncBtn'); if (!b) return;
   const e = estadoSyncInfo();
   b.className = `ib st-${e.k}`;
+  // Sin ruido: el icono solo aparece cuando algo requiere atención (error o cambios sin conexión).
+  b.classList.toggle('hide', !(e.k === 'err' || (e.k === 'pend' && !navigator.onLine)));
   b.innerHTML = ic(e.ic);
   b.setAttribute('aria-label', `Sincronización: ${e.t}`); b.title = e.t;
 }
@@ -1672,6 +1722,7 @@ const desk = () => mqDesk.matches;
 function pintarTabs() {
   const nb = tareasEn('bandeja').length, run = S.timer && S.timer.corriendo, g0 = grupoDe(ui.view);
   $('#tabs').innerHTML = `<div class="brand"><img src="icon-180.png" alt="" width="28" height="28">Foco</div>` + GRUPOS.map((g, i) => { const on = g === g0, v = g.k === 'hoy' ? 'hoy' : ui.ult[g.k] || g.vs[0]; return `<button class="${on ? 'on' : ''}" data-a="tab" data-v="${v}" ${on ? 'aria-current="page"' : ''} aria-label="${g.n}${g.k === 'bandeja' && nb ? `, ${nb} por organizar` : ''}"><span class="tp">${ic(g.ic)}</span><span class="tl">${g.n}</span>${g.k === 'bandeja' && nb ? `<i class="bdg">${nb > 99 ? '99+' : nb}</i>` : ''}${g.k === 'hoy' && run && ui.view !== 'enfoque' ? '<i class="tdot"></i>' : ''}<kbd>${i + 1}</kbd></button>`; }).join('')
+    + `<button class="tcap" data-a="capFab" aria-label="Capturar pendiente"><span class="tp">${ic('plus')}</span><span class="tl">Capturar</span><kbd>N</kbd></button>`
     + `<div class="side-f"><b>Atajos</b><span><kbd>N</kbd>Capturar</span><span><kbd>1</kbd>–<kbd>4</kbd>Cambiar de sección</span><span><kbd>/</kbd>Buscar</span><span><kbd>F</kbd>Enfoque</span><span><kbd>Espacio</kbd>Pausar o seguir</span><span><kbd>Esc</kbd>Cerrar</span></div>`;
   const sn = $('#subnav');
   const sv = subVistas(g0);
@@ -1704,8 +1755,9 @@ function encabezado() {
 }
 function render() {
   encabezado(); pintarTabs(); pintarSync();
-  const sinFab = ['bandeja', 'enfoque'].includes(ui.view);
-  $('#fab').classList.toggle('hide', sinFab); document.body.classList.toggle('no-fab', sinFab);
+  // Capturar vive en la barra de navegación: ya no flota sobre el contenido.
+  $('#fab').classList.add('hide'); document.body.classList.add('no-fab');
+  document.body.classList.toggle('inmersivo', ui.view === 'enfoque');
   pintarMini(); renderVista();
   const pr = [...new Set(vivas().map(t => t.proyecto).filter(Boolean))];
   $('#proyectos').innerHTML = pr.map(p => `<option value="${esc(p)}">`).join('');
@@ -1811,7 +1863,8 @@ function tip(k, icono, html) {
 }
 
 /* ================= Piezas de tarea ================= */
-const pq = t => { const q = cuad(t); return q ? `<span class="pq ${q.k}">${ic(q.ic)}${q.n}</span>` : ''; };
+const PQ_CORTO = { q1:'Hacer ya', q2:'Importante', q3:'Urgente' };
+const pq = t => { const q = cuad(t); return q ? `<span class="pq ${q.k}" title="${q.n}">${ic(q.ic)}${PQ_CORTO[q.k]}</span>` : ''; };
 // Máximo 2 o 3 datos por tarjeta: lo que sirve para decidir. El resto vive en el detalle.
 // Datos por relevancia: lo comprometido (hora, duración, seguimiento, límite cercano) siempre se ve;
 // el resto llena el espacio que quede. El orden y los iconos son siempre los mismos.
@@ -2126,9 +2179,10 @@ async function guardarPlan() {
 }
 
 /* ================= Vista: Hoy ================= */
-function renderHoy() {
-  const v = $('#v-hoy');
-  // Prioridades: subconjunto explícito del día (registro del plan). Sin registro, todo lo de hoy es una sola lista.
+// Hora de reloj dentro de «seg» segundos («10:45»): hace visible el tiempo.
+function horaFin(seg) { const f = new Date(Date.now() + seg * 1000); return `${f.getHours()}:${pad(f.getMinutes())}`; }
+// Tareas de hoy sin terminar, en el orden en que conviene trabajarlas.
+function trabajoDeHoy() {
   const rec = planDe(hoy());
   const prioIds = rec ? rec.prio.filter(id => byId(id) && !byId(id).borrado) : null;
   const esPrio = t => !prioIds || prioIds.includes(t.id);
@@ -2137,75 +2191,82 @@ function renderHoy() {
   const proceso = tareasEn('proceso').sort(byOrden);
   const cola = delDia.filter(t => t.estado === 'hoy' && esPrio(t)).sort((a, b) => posP(a) - posP(b) || byOrden(a, b));
   const otras = prioIds ? delDia.filter(t => t.estado === 'hoy' && !esPrio(t)).sort((a, b) => (a.hora || '99').localeCompare(b.hora || '99') || byOrden(a, b)) : [];
+  return { rec, prioIds, esPrio, proceso, cola, otras };
+}
+/* Hoy, pensado para no saturar: primero «Ahora» (una tarea, una acción, el tiempo visible),
+   luego el avance en una sola línea, las 2 siguientes y todo lo demás plegado. */
+function renderHoy() {
+  const v = $('#v-hoy');
+  const { rec, prioIds, esPrio, proceso, cola, otras } = trabajoDeHoy();
   const hechas = hechasEl(hoy()).sort((a, b) => b.hecho.localeCompare(a.hecho));
   const hechasP = prioIds ? prioIds.filter(id => byId(id).estado === 'hecho').length : hechas.length;
   const total = prioIds ? prioIds.length : proceso.length + cola.length + hechas.length;
   const pendP = [...proceso.filter(esPrio), ...cola];
   const est = pendP.reduce((a, t) => a + (+t.dur || 0), 0), sinEst = pendP.filter(t => !t.dur).length;
-  const tarde = new Date().getHours() >= 17;
-  let html = htmlPaso();
-  html += `<div class="sum"><div class="sum-t">${total ? `<b>${hechasP} de ${total}</b><span>${prioIds ? (hechasP === total ? 'prioridades listas' : 'prioridades') : hechasP === total ? 'día completo' : 'hechas'}</span>` : '<b>Sin plan</b><span>para hoy</span>'}</div>
-    <div class="sum-b"><button class="btn sm ghost" data-a="irEnfoque" aria-label="Abrir enfoque">${ic('timer')}Enfoque</button><button class="btn sm ghost" data-a="plan" data-v="${tarde ? 'manana' : 'hoy'}">${ic(tarde ? 'moon' : 'sparkle')}${tarde ? 'Planear mañana' : 'Planear'}</button></div></div>`;
-  if (pendP.length) html += `<p class="sum-e">${est ? `≈ ${txtHM(est)} estimadas` : 'Sin estimaciones'}${sinEst ? ` · ${sinEst} sin estimar` : ''}${otras.length ? ` · ${otras.length} ${otras.length === 1 ? 'otra tarea' : 'otras tareas'} hoy` : ''}</p>`;
-  if (total) html += total <= 12
-    ? `<div class="segbar" role="img" aria-label="${hechasP} de ${total} hechas">${Array.from({ length:total }, (_, i) => `<i class="${i < hechasP ? 'on' : ''}"></i>`).join('')}</div>`
-    : `<div class="bar okbar"><i style="width:${hechasP / total * 100}%"></i></div>`;
-  html += htmlLineaDia();
-  // Tres zonas: resumen, tarea actual y lista. En escritorio la tarea actual va a la izquierda.
-  const zTop = html; let zA = ''; html = '';
+  const tarde = new Date().getHours() >= 17, t = T();
+  let zA = '', zT = '', zB = '';
 
-  if (!proceso.length && !cola.length && !otras.length) {
-    html += total
-      ? `<div class="panel zero" style="margin-top:16px"><div class="orb">${ic('check')}</div><h3>Lista terminada</h3><p>Hiciste todo lo que planeaste. Prepara tus prioridades de mañana.</p><button class="btn pri" style="margin-top:16px" data-a="plan" data-v="manana">${ic('moon')}Planear mañana</button></div>`
-      : `<div class="panel zero" style="margin-top:16px"><div class="orb ac">${ic('sun')}</div><h3>¿Qué harás hoy?</h3><p>Elige hasta 6 tareas y trabájalas en orden, una a la vez.</p><button class="btn pri" style="margin-top:16px" data-a="plan" data-v="hoy">${ic('sparkle')}Elegir mis tareas</button></div>`;
-    zA = html; html = '';
+  // ----- Ahora -----
+  const ahora = proceso[0] || cola[0] || otras[0];
+  if (!ahora) {
+    const hayProx = tareasEn('prox').length;
+    zA = total
+      ? `<div class="panel zero"><div class="orb">${ic('check')}</div><h3>Lista terminada</h3><p>Hiciste lo que planeaste. Puedes descansar o preparar mañana.</p><button class="btn pri" style="margin-top:16px" data-a="plan" data-v="manana">${ic('moon')}Preparar mañana</button></div>`
+      : `<div class="panel zero"><div class="orb ac">${ic('sun')}</div><h3>¿Qué harás hoy?</h3><p>${hayProx ? 'Elige hasta 6 tareas y trabájalas una a la vez.' : 'Anota tus pendientes en la Bandeja y después elige qué hacer hoy.'}</p><button class="btn pri" style="margin-top:16px" data-a="${hayProx ? 'plan' : 'irBandeja'}" ${hayProx ? 'data-v="hoy"' : ''}>${ic(hayProx ? 'star' : 'inbox')}${hayProx ? 'Elegir prioridades' : 'Ir a la Bandeja'}</button></div>`;
   } else {
-    const ahora = proceso[0] || cola[0] || otras[0];
-    const deCola = !proceso.length && ahora === cola[0], enCurso = ahora.estado === 'proceso';
-    const t = T();
+    const enCurso = ahora.estado === 'proceso';
     const run = t.tareaId === ahora.id && t.fase === 'foco' && (t.corriendo || t.restante < t.total);
     const desc = t.tareaId === ahora.id && (t.fase === 'corto' || t.fase === 'largo');
-    const extra = proceso.slice(1);
-    const resto = cola.filter(x => x !== ahora);
-    const otrasR = otras.filter(x => x !== ahora);
-    const toca = cola.find(x => x.id !== ahora.id && franja(x)?.k === 'ahora');
-    if (toca) html += `<div class="nx toca"><span class="ni">${ic('clock')}</span><div class="nxt"><b>${esc(toca.titulo)}</b><small>Programada a las ${toca.hora} · le toca ahora</small></div><button class="lnk" data-a="play" data-id="${toca.id}">Empezar${ic('chevR')}</button></div>`;
-    html += `<div class="hero ${enCurso ? 'is-run' : ''}" data-id="${ahora.id}" data-a="abrir" ${resto.length ? 'data-list="hoytop"' : ''} role="button" tabindex="0" aria-label="${esc(ahora.titulo)}. Abrir detalle">
-      <div class="hero-l"><i class="live"></i>${desc ? 'En descanso' : enCurso || run ? 'Trabajando en' : 'Tu siguiente tarea'}${run || desc ? ` · <b id="heroTm">${fmt(restante())}</b>` : ahora.hora ? ` · ${ahora.hora}${franja(ahora) ? ' · ' + franja(ahora).txt : ''}` : ''}</div>
+    const durPlan = t.modo === 'pomo' ? S.ajustes.pomo : (ahora.dur >= 10 ? ahora.dur : t.bloqueMin);
+    const tiempo = run || desc ? (t.corriendo ? `Termina a las ${horaFin(restante())}` : 'En pausa')
+      : `${t.modo === 'pomo' ? `Pomodoro de ${durPlan} min` : `Bloque de ${durPlan} min`} · terminarías a las ${horaFin(durPlan * 60)}`;
+    const deCola = !proceso.length && ahora === cola[0];
+    zA = `<div class="hero ${enCurso ? 'is-run' : ''}" data-id="${ahora.id}" data-a="abrir" ${cola.length > 1 ? 'data-list="hoytop"' : ''} role="button" tabindex="0" aria-label="${esc(ahora.titulo)}. Abrir detalle">
+      <div class="hero-l"><i class="live"></i>${desc ? 'En descanso' : run ? 'Trabajando en' : 'Ahora'}${run || desc ? ` · <b id="heroTm">${fmt(restante())}</b>` : ''}</div>
       <div class="hero-t">${esc(ahora.titulo)}</div>
       ${ahora.resultado ? `<div class="res-l">${ic('listo')}<span>Listo cuando: ${esc(ahora.resultado)}</span></div>` : ''}
-      <div class="mt">${metaCorta(ahora, 3, { area:true, pomos:true })}</div>
+      <div class="mt">${metaCorta(ahora, 2, { area:true })}</div>
       ${run || desc ? `<div class="hero-bar ${desc ? 'desc' : ''}" aria-hidden="true"><i id="heroBar" style="width:${100 * (1 - restante() / t.total)}%"></i></div>` : ''}
       <div class="hero-b">${run || desc
         ? `<button class="btn pri grow" data-a="${t.corriendo ? 'pausar' : 'iniciar'}">${t.corriendo ? ic('pause') + 'Pausar' : ic('play', 'fill') + 'Reanudar'}</button>
           ${desc ? `<button class="btn sq" data-a="saltar" aria-label="Saltar descanso">${ic('skip')}</button>` : `<button class="btn sq" data-a="miniCerrar" aria-label="Terminar sesión">${ic('stop')}</button>`}
-          <button class="btn sq" data-a="ir" data-v="enfoque" aria-label="Abrir enfoque en pantalla completa">${ic('expand')}</button>`
-        : `<button class="btn pri grow" data-a="play" data-id="${ahora.id}">${ic('play', 'fill')}Empezar enfoque</button>`}
+          <button class="btn sq" data-a="ir" data-v="enfoque" aria-label="Enfoque en pantalla completa">${ic('expand')}</button>`
+        : `<button class="btn pri grow" data-a="play" data-id="${ahora.id}">${ic('play', 'fill')}Empezar</button>`}
         <button class="btn sq okb" data-a="ck" data-id="${ahora.id}" aria-label="Marcar como hecha">${ic('check')}</button></div>
-      ${run || desc ? '' : `<div class="hero-m">${t.modo === 'pomo' ? `${ic('tomato')}Pomodoro de ${S.ajustes.pomo} min` : `${ic('clock')}Bloque de ${t.modo === 'bloque' && ahora.dur >= 10 ? ahora.dur : t.bloqueMin} min`}<button class="lnk2" data-a="heroModo">Cambiar</button></div>`}</div>`;
-    zA = html; html = '';
-    if (!prioIds && proceso.length + cola.length > 6) html += `<div class="warn6">${ic('flag')}<span>Tienes ${proceso.length + cola.length} tareas para hoy. Elige hasta 6 prioridades; las demás quedan en «Otras tareas de hoy».</span><button class="lnk" data-a="plan" data-v="hoy">Elegir</button></div>`;
-    if (extra.length) html += `<div class="sec-t">También en curso</div><div class="group">${extra.map(x => filaHoy(x, 0, { curso:true })).join('')}</div>`;
-    if (resto.length) html += `<div class="sec-t">${prioIds ? `${ic('star')}Prioridades, en este orden` : 'Después, en este orden'} <span class="n">${resto.length}</span></div>
-      <div class="group" data-list="hoy" data-base="${deCola ? 1 : 0}" data-hero="${deCola ? ahora.id : ''}" id="hoyList">${resto.map((x, i) => filaHoy(x, i + (deCola ? 2 : 1))).join('')}</div>
-      ${tip('hoy-orden', 'grip', `Toca el círculo para marcar una tarea como hecha. Arrastra desde ${ic('grip', 'fill')} para cambiar el orden${deCola ? ', o suéltala sobre la tarjeta de arriba para hacerla la siguiente' : ''}. También puedes ordenar desde «Planear».`)}`;
-    if (otrasR.length) html += `<div class="sec-t">Otras tareas de hoy <span class="n">${otrasR.length}</span><small>${ic('star')} la vuelve prioridad</small></div>
-      <div class="group">${otrasR.map(x => filaHoy(x, 0, { otra:true })).join('')}</div>`;
+      <div class="hero-m">${ic('clock')}<span id="heroFin">${tiempo}</span>${run || desc ? '' : `<button class="lnk2" data-a="heroModo">Cambiar</button>`}</div></div>`;
+    if (!enMarcha()) zA += `<button class="arr" data-a="arranque">${ic('sparkle')}¿No sabes por dónde empezar?</button>`;
+    // ----- Siguientes: solo 2 a la vista -----
+    const resto = cola.filter(x => x !== ahora), extra = proceso.slice(1);
+    const todas = !!ui.hoyTodas, vis = todas ? resto : resto.slice(0, 2);
+    if (extra.length) zB += `<div class="sec-t">También en curso</div><div class="group">${extra.map(x => filaHoy(x, 0, { curso:true })).join('')}</div>`;
+    if (resto.length) zB += `<div class="sec-t">Después</div>
+      <div class="group" data-list="hoy" data-base="${deCola ? 1 : 0}" data-hero="${deCola ? ahora.id : ''}" id="hoyList">${vis.map((x, i) => filaHoy(x, i + (deCola ? 2 : 1))).join('')}</div>
+      ${resto.length > 2 ? `<button class="mas" data-a="hoyTodas" aria-expanded="${todas}">${todas ? 'Ver menos' : `Ver las ${resto.length} ${prioIds ? 'prioridades' : 'tareas'}`}${ic('chevD', todas ? 'up' : '')}</button>` : ''}
+      ${tip('hoy-orden', 'grip', 'Toca el círculo para completar. Arrastra los puntos para reordenar.')}`;
+    const otrasR = otras.filter(x => x !== ahora);
+    if (otrasR.length) zB += `<details class="sec-d" data-k="otras" ${abierto('otras') ? 'open' : ''}><summary class="sec-t">Otras tareas de hoy <span class="n">${otrasR.length}</span><span class="sp"></span>${ic('chevD', 'chev')}</summary>
+      <div class="group">${otrasR.map(x => filaHoy(x, 0, { otra:true })).join('')}</div><p class="hint">${ic('star')} la vuelve prioridad.</p></details>`;
   }
-  // Seguimientos que tocan hoy (siguen en espera hasta que decidas) y pendientes de días anteriores.
-  const segs = seguimientosHoy(), ant = pendientesAnteriores();
-  if (segs.length) html += `<div class="sec-t">${ic('refresh')}Seguimientos de hoy <span class="n">${segs.length}</span></div><div class="group">${segs.map(t => `<div class="tr dec" style="--a:${colorA(t.area)}" data-a="abrir" data-id="${t.id}" role="button" tabindex="0">
-      <div class="tb"><div class="tt">${esc(t.titulo)}</div><div class="mt">${metaCorta(t, 3, { area:true })}</div>
-      <div class="dec-b"><button class="qk pri" data-a="segRetomar" data-id="${t.id}">${ic('sun')}Retomar hoy</button><button class="qk" data-a="segOtro" data-id="${t.id}">${ic('cal')}Otro día</button></div></div></div>`).join('')}</div>`;
-  if (ant.length) html += `<details class="sec-d" data-k="ant" ${pref.v('ab-ant') !== 0 ? 'open' : ''}><summary class="sec-t hot">${ic('flag')}Pendientes anteriores <span class="n">${ant.length}</span><span class="sp"></span>${ic('chevD', 'chev')}</summary>
-      <div class="group">${ant.map(t => `<div class="tr dec" style="--a:${colorA(t.area)}" data-a="abrir" data-id="${t.id}" role="button" tabindex="0">
-        <div class="tb"><div class="tt">${esc(t.titulo)}</div><div class="mt">${metaCorta(t, 3, { area:true })}</div>
-        <div class="dec-b"><button class="qk pri" data-a="pendHoy" data-id="${t.id}">Mantener hoy</button><button class="qk" data-a="pendOtro" data-id="${t.id}">Elegir otro día</button><button class="qk" data-a="pendProx" data-id="${t.id}">Devolver a próximas</button></div></div></div>`).join('')}</div>
-      ${ant.length > 1 ? `<button class="btn full" style="margin-top:8px" data-a="pendTodasHoy">${ic('sun')}Mantener todas hoy</button>` : ''}</details>`;
-  if (hechas.length) html += `<details class="sec-d" data-k="hechas" ${abierto('hechas') ? 'open' : ''}><summary class="sec-t">${ic('check')}Completadas hoy <span class="n">${hechas.length}</span><span class="sp"></span>${ic('chevD', 'chev')}</summary><div class="group">${hechas.map(filaHecha).join('')}</div></details>`;
+
+  // ----- Avance en una línea y próximo compromiso -----
+  if (total) zT += `<div class="avance"><div class="av-t"><b>${hechasP} de ${total}</b><span>${prioIds ? 'prioridades' : 'tareas'}</span>${pendP.length ? `<small>${est ? `≈ ${txtHM(est)}` : ''}${sinEst ? `${est ? ' · ' : ''}${sinEst} sin estimar` : ''}</small>` : ''}</div>
+    ${total <= 12 ? `<div class="segbar" role="img" aria-label="${hechasP} de ${total} hechas">${Array.from({ length:total }, (_, i) => `<i class="${i < hechasP ? 'on' : ''}"></i>`).join('')}</div>` : `<div class="bar okbar"><i style="width:${hechasP / total * 100}%"></i></div>`}</div>`;
+  const nm = new Date().getHours() * 60 + new Date().getMinutes();
+  const prox = tareasDia(hoy()).filter(x => x.estado !== 'hecho' && x.hora && hm2min(x.hora) >= nm - 5 && x !== ahora).sort((a, b) => a.hora.localeCompare(b.hora))[0];
+  if (prox) { const m = hm2min(prox.hora) - nm; zT += `<button class="prox" data-a="tab" data-v="agenda">${ic('clock')}<span><b>${prox.hora}</b> ${esc(prox.titulo)}</span><small>${m <= 0 ? 'ahora' : m < 60 ? `en ${m} min` : `en ${txtHM(m)}`}</small></button>`; }
+  zT += `<div class="hoy-acc"><button class="lnk2" data-a="plan" data-v="${tarde ? 'manana' : 'hoy'}">${ic(tarde ? 'moon' : 'star')}${tarde ? 'Preparar mañana' : rec ? 'Cambiar prioridades' : 'Elegir prioridades'}</button><button class="lnk2" data-a="irEnfoque">${ic('timer')}Enfoque libre</button></div>`;
+
+  // ----- Por decidir (plegado, sin tono de alarma) y completadas -----
+  const segs = seguimientosHoy(), ant = pendientesAnteriores(), nDec = segs.length + ant.length;
+  const filaDec = (x, botones) => `<div class="tr dec" style="--a:${colorA(x.area)}" data-a="abrir" data-id="${x.id}" role="button" tabindex="0"><div class="tb"><div class="tt">${esc(x.titulo)}</div><div class="mt">${metaCorta(x, 2, { area:true })}</div><div class="dec-b">${botones}</div></div></div>`;
+  if (nDec) zB += `<details class="sec-d" data-k="decidir" ${abierto('decidir') ? 'open' : ''}><summary class="sec-t">${ic('layers')}Por decidir <span class="n">${nDec}</span><span class="sp"></span>${ic('chevD', 'chev')}</summary>
+    ${segs.length ? `<div class="sub-t">Seguimientos de hoy</div><div class="group">${segs.map(x => filaDec(x, `<button class="qk pri" data-a="segRetomar" data-id="${x.id}">Retomar hoy</button><button class="qk" data-a="segOtro" data-id="${x.id}">Otro día</button>`)).join('')}</div>` : ''}
+    ${ant.length ? `<div class="sub-t">De días anteriores</div><div class="group">${ant.map(x => filaDec(x, `<button class="qk pri" data-a="pendHoy" data-id="${x.id}">Hoy</button><button class="qk" data-a="pendOtro" data-id="${x.id}">Otro día</button><button class="qk" data-a="pendProx" data-id="${x.id}">A próximas</button>`)).join('')}</div>
+      ${ant.length > 1 ? `<button class="mas" data-a="pendTodasHoy">${ic('sun')}Pasar todas a hoy</button>` : ''}` : ''}</details>`;
+  if (hechas.length) zB += `<details class="sec-d" data-k="hechas" ${abierto('hechas') ? 'open' : ''}><summary class="sec-t">${ic('check')}Completadas hoy <span class="n">${hechas.length}</span><span class="sp"></span>${ic('chevD', 'chev')}</summary><div class="group">${hechas.map(filaHecha).join('')}</div></details>`;
   const plMan = tareasEn('prox').filter(x => x.fecha === manana()).length;
-  if (plMan) html += `<button class="panel row-link" data-a="plan" data-v="manana">${ic('moon')}<span><b>Mañana</b> · ${plMan} ${plMan === 1 ? 'tarea planeada' : 'tareas planeadas'}</span>${ic('chevR')}</button>`;
-  v.innerHTML = `<div class="hoy-g"><div class="hoy-t">${zTop}</div><div class="hoy-a">${zA}</div><div class="hoy-b">${html}</div></div>`;
+  if (plMan && tarde) zB += `<button class="panel row-link" data-a="plan" data-v="manana">${ic('moon')}<span><b>Mañana</b> · ${plMan} ${plMan === 1 ? 'tarea planeada' : 'tareas planeadas'}</span>${ic('chevR')}</button>`;
+  v.innerHTML = `<div class="hoy-g"><div class="hoy-a">${zA}</div><div class="hoy-t">${zT}</div><div class="hoy-b">${zB}</div></div>`;
 }
 // Rango visible de la Agenda: tu horario de trabajo, ampliado si alguna tarea queda fuera (o el día completo).
 let AG_INI = 0, AG_FIN = 24;
@@ -2473,7 +2534,7 @@ function gruposLista(por, ts) {
   const h = hoy(), m = manana(), sem = addDays(h, 7);
   const prox = ts.filter(t => t.estado === 'prox');
   return [
-    { k:'atr', n:'Atrasadas', ic:'flag', hot:true, ts:prox.filter(t => t.fecha && t.fecha < h).sort(ordFecha) },
+    { k:'atr', n:'De días anteriores', ic:'refresh', ts:prox.filter(t => t.fecha && t.fecha < h).sort(ordFecha) },
     { k:'hoy', n:'Hoy', ic:'sun', ts:[...ts.filter(t => ['proceso', 'hoy'].includes(t.estado)), ...prox.filter(t => t.fecha === h)].sort(ordHoy) },
     { k:'man', n:'Mañana', ic:'moon', ts:prox.filter(t => t.fecha === m).sort(ordFecha) },
     { k:'sem', n:'Esta semana', ic:'cal', ts:prox.filter(t => t.fecha > m && t.fecha <= sem).sort(ordFecha) },
@@ -2494,7 +2555,7 @@ function renderLista() {
   html += htmlBarraFiltros(ts.length, todas.length);
   html += `<div class="ls-sum"><div><b>${ts.length}</b><span>activas</span></div><div class="${sinF ? 'pend' : ''}"><b>${sinF}</b><span>sin fecha</span></div><div><b>${conHora}</b><span>con horario</span></div><div><b>${algun.length}</b><span>algún día</span></div></div>`;
   html += `<div class="qadd ls-add"><input id="qaddIn" maxlength="${MAX_TITULO}" placeholder="${esc(phCaptura())}" enterkeyhint="done" autocomplete="off" aria-label="${esc(phCaptura().slice(2))}"></div>`;
-  if (sinF) html += tip('lista', 'cal', `Toca <b>Agendar</b> en una tarea para darle día y hora en la Agenda.`);
+  if (sinF) html += tip('lista', 'cal', `<b>Agendar</b> le da día y hora.`);
   if (filtrando && !ts.length && !algun.length) html += sinCoincidencias();
   else if (!ts.length && !algun.length) {
     html += `<div class="zero"><div class="orb ac">${ic('list')}</div><h3>Aún no hay nada organizado</h3><p>Anota tus pendientes en la Bandeja y organízalos. Aquí verás todo lo que decidiste hacer.</p><button class="btn pri" style="margin-top:16px" data-a="irBandeja">Ir a la Bandeja</button></div>`;
@@ -2599,7 +2660,7 @@ function renderTablero() {
   let html = htmlBarraFiltros(nAct, base.length);
   const datos = COLS.map(c => ({ c, ts:tareasCol(c.k) }));
   html += `<div class="coltabs" id="coltabs" role="tablist" aria-label="Columnas">${datos.map(({ c, ts }) => `<button class="${ui.col === c.k ? 'on' : ''}" data-a="colGo" data-v="${c.k}" role="tab"><span>${c.n}</span><b class="${c.lim && ts.length >= c.lim ? 'full' : ''}">${ts.length}${c.lim ? '/' + c.lim : ''}</b></button>`).join('')}</div>`;
-  html += tip('tablero', 'arrowR', 'Usa el botón de cada tarjeta para avanzarla, o mantenla presionada y arrástrala a otra columna.');
+  html += tip('tablero', 'arrowR', 'Avanza cada tarjeta con su botón o arrastrándola.');
   html += `<div class="board" id="board">${datos.map(({ c, ts }) => `<section class="col" style="--c:${c.c}" data-col="${c.k}" aria-label="${c.n}">
       <div class="col-h"><div><i class="cd"></i>${c.n}<span class="cnt">${ts.length}</span></div><small>${c.d}</small></div>
       ${c.k === 'prox' ? `<div class="qadd"><input id="qaddIn" maxlength="${MAX_TITULO}" placeholder="${esc(phCaptura())}" enterkeyhint="done" autocomplete="off" aria-label="${esc(phCaptura().slice(2))}"></div>` : ''}
@@ -2672,12 +2733,14 @@ function pausar() { const t = T(); t.restante = restante(); t.corriendo = false;
 // Regla única para cerrar un tramo de enfoque (terminar, completar, cambiar o eliminar la tarea):
 // se registra desde 5 minutos; si es menor, se avisa que no se registró. Devuelve los minutos registrados.
 const MIN_TRAMO = 300;
+function restaurarModo(t) { if (t.modoPrev) { t.modo = t.modoPrev; delete t.modoPrev; } }
 function cerrarTramo(aviso = true) {
   const t = T();
   if (t.fase !== 'foco' || !enMarcha()) return 0;
   const hecho = t.total - restante(), min = Math.round(hecho / 60);
   if (hecho >= MIN_TRAMO) registrarSesion(hecho >= t.total - 30, min);
   else if (aviso && hecho >= 15) toast('Tramo de menos de 5 minutos: no se registró');
+  restaurarModo(t);
   t.corriendo = false; t.total = t.restante = segFase('foco'); t.inicio = ''; pantallaActiva(false);
   save(); pushTimer();
   return hecho >= MIN_TRAMO ? min : 0;
@@ -2686,6 +2749,7 @@ function detener() {
   const t = T();
   if (t.corriendo && Date.now() >= t.fin) { finFase(); return; }
   if (t.fase === 'foco') cerrarTramo(false);
+  restaurarModo(t);
   t.fase = 'foco'; t.corriendo = false; t.total = t.restante = segFase('foco'); t.inicio = '';
   save(); pantallaActiva(false); pushTimer(); render();
 }
@@ -2715,7 +2779,7 @@ function finFase() {
       const f = t.ciclo % S.ajustes.cada === 0 ? 'largo' : 'corto';
       t.fase = f; t.total = t.restante = segFase(f); t.inicio = new Date(finTs).toISOString();
       t.fin = finTs + t.total * 1000; t.corriendo = true;
-    } else { t.fase = 'listo'; t.restante = 0; t.total = 1; t.inicio = ''; pantallaActiva(false); }
+    } else { t.fase = 'listo'; t.restante = 0; t.total = 1; t.inicio = ''; pantallaActiva(false); restaurarModo(t); }
     if (reciente) confeti(30);
   } else {
     if (reciente) sonido('descanso');
@@ -2760,6 +2824,7 @@ function actualizarReloj() {
     if (sub) { const fin = new Date(Date.now() + r * 1000); sub.textContent = t.corriendo ? `Termina a las ${fin.getHours()}:${pad(fin.getMinutes())}` : (t.fase === 'listo' ? '' : (t.restante < t.total ? 'En pausa' : 'Listo para empezar')); }
   }
   const ht = $('#heroTm'); if (ht) ht.textContent = fmt(r);
+  const hf = $('#heroFin'); if (hf && t.corriendo) hf.textContent = `Termina a las ${horaFin(r)}`;
   const kt = $('#kcTm'); if (kt) kt.textContent = fmt(r);
   const frac = t.total ? 100 * (1 - r / t.total) : 0;
   ['#heroBar', '#kcBar'].forEach(q => { const b = $(q); if (b) b.style.width = frac + '%'; });
@@ -2780,7 +2845,7 @@ function renderEnfoque() {
   ui.nuevoTomate = false;
   const hechosCiclo = t.ciclo % a.cada;
   const cyc = t.modo === 'pomo' ? `<div class="cyc" aria-label="Pomodoro ${hechosCiclo + 1} de ${a.cada} del ciclo">${Array.from({ length:a.cada }, (_, i) => `<i class="${i < hechosCiclo ? 'on' : i === hechosCiclo && t.fase === 'foco' && marcha ? 'cur' : ''}"></i>`).join('')}</div>` : '';
-  const xpTxt = t.fase === 'foco' ? `${ic('star')}+${t.modo === 'pomo' ? 25 : t.bloqueMin} XP al completar` : t.fase === 'listo' ? '' : 'Levántate, estírate, toma agua';
+  const xpTxt = t.fase === 'corto' || t.fase === 'largo' ? 'Levántate, estírate, toma agua' : '';
   const durs = t.modo === 'bloque' && !marcha && t.fase === 'foco'
     ? `<div class="durs">${[...new Set([x && x.dur >= 10 ? x.dur : null, t.bloqueMin, 15, 30, 45, 60, 90].filter(Boolean))].sort((p, q) => p - q).map(m => `<button class="chip ${t.bloqueMin === m ? 'on' : ''}" data-a="bloqueMin" data-v="${m}">${m} min</button>`).join('')}</div>` : '';
   const controles = t.fase === 'listo'
@@ -2798,15 +2863,15 @@ function renderEnfoque() {
         <div class="enf-tt">${x ? esc(x.titulo) : 'Elige en qué vas a trabajar'}</div>${x && x.resultado ? `<div class="res-l">${ic('listo')}<span>Listo cuando: ${esc(x.resultado)}</span></div>` : ''}${cyc}</div>
       ${x && x.estado !== 'hecho' ? `<button class="btn sq okb" data-a="enfCompletar" aria-label="Marcar tarea como hecha">${ic('check')}</button>` : `<span class="ib-s">${ic('chevR')}</span>`}
     </div>
-    <div class="modes" role="radiogroup" aria-label="Modo">${[['pomo', 'tomato', `Pomodoro ${a.pomo} min`], ['bloque', 'clock', 'Bloque de tiempo']].map(([k, i, n]) => `<button class="chip ${t.modo === k ? 'on' : ''}" data-a="modo" data-v="${k}" role="radio" aria-checked="${t.modo === k}" ${marcha && t.modo !== k ? 'disabled' : ''}>${ic(i)}${n}</button>`).join('')}</div>
+    <div class="modes ${marcha ? 'hide' : ''}" role="radiogroup" aria-label="Modo">${[['pomo', 'tomato', `Pomodoro ${a.pomo} min`], ['bloque', 'clock', 'Bloque de tiempo']].map(([k, i, n]) => `<button class="chip ${t.modo === k ? 'on' : ''}" data-a="modo" data-v="${k}" role="radio" aria-checked="${t.modo === k}" ${marcha && t.modo !== k ? 'disabled' : ''}>${ic(i)}${n}</button>`).join('')}</div>
     <div class="ring-wrap" id="ringWrap"><svg viewBox="0 0 280 280" aria-hidden="true">
       <circle cx="140" cy="140" r="${RING_R}" fill="none" stroke-width="12" style="stroke:var(--sf3)"/>
       <circle id="ringPr" cx="140" cy="140" r="${RING_R}" fill="none" stroke-width="12" stroke-linecap="${frac > .985 || frac < .015 ? 'butt' : 'round'}" style="stroke:${t.fase === 'foco' ? 'var(--ac)' : 'var(--ok-f)'};transition:stroke-dashoffset .5s linear" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - frac)}"/></svg>
       <div class="ring-in"><div class="fase">${t.corriendo ? '<i class="live"></i>' : ''}${FASES[t.fase]}${t.modo === 'pomo' && t.fase === 'foco' ? ` ${hechosCiclo + 1}/${a.cada}` : ''}</div>
         <div class="tm" id="tmTime" role="timer">${t.fase === 'listo' ? '00:00' : fmt(r)}</div><div class="tm-sub" id="tmSub"></div><div class="tm-xp">${xpTxt}</div></div></div>
-    ${marcha && t.fase === 'foco' && !t.corriendo ? '<p class="hint" style="text-align:center;margin-top:2px">Para cambiar de modo, termina la sesión.</p>' : ''}
+
     ${durs}${controles}
-    <div class="tomrow" aria-label="${ph} de ${meta} pomodoros hoy">${tom}<span>${ph}/${meta} hoy${fm ? ` · ${txtHM(fm)}` : ''}</span></div>
+    <div class="tomrow ${marcha ? 'hide' : ''}" aria-label="${ph} de ${meta} pomodoros hoy">${tom}<span>${ph}/${meta} hoy${fm ? ` · ${txtHM(fm)}` : ''}</span></div>
     <div class="qcap" id="enfCapBox">${ic('bulb')}<input id="enfCap" maxlength="${MAX_TITULO}" placeholder="¿Se te ocurrió algo? Anótalo aquí" enterkeyhint="send" autocomplete="off" aria-label="Capturar idea sin perder el foco"><button class="cap-send" data-a="enfCapAdd" aria-label="Guardar en la bandeja">${ic('arrowUp')}</button></div>
     <div class="caps" id="enfCaps">${pintarCaps()}</div>
   </div>`;
@@ -3038,7 +3103,7 @@ function abrirSheet(ctx) {
   // Encima de «Organizar» cuando se abre desde ahí
   sh.classList.toggle('top', !!ctx.top); $('#sheetBg').classList.toggle('top', !!ctx.top);
   sh.style.setProperty('--dy', '0px');
-  sh.setAttribute('aria-label', { detalle:'Detalle de la tarea', plan:'Planear', ajustes:'Ajustes', captura:'Capturar', picker:'Elegir tarea', filtro:'Filtrar', buscar:'Buscar', sync:'Sincronización', ayuda:'Ayuda', verbo:'Elegir verbo', areaSel:'Elegir área', dividir:'Dividir en pasos' }[ctx.k] || '');
+  sh.setAttribute('aria-label', { detalle:'Detalle de la tarea', plan:'Planear', ajustes:'Ajustes', captura:'Capturar', picker:'Elegir tarea', filtro:'Filtrar', buscar:'Buscar', menu:'Opciones', lote:'Asignar a varios', sync:'Sincronización', ayuda:'Ayuda', verbo:'Elegir verbo', areaSel:'Elegir área', dividir:'Dividir en pasos' }[ctx.k] || '');
   $('#sheetBg').classList.add('on'); sh.classList.add('on');
   document.documentElement.classList.add('lock');
   if (ctx.k === 'captura') setTimeout(() => $('#capSheetIn')?.focus(), 320);
@@ -3077,6 +3142,7 @@ function refrescarSheet(inicio) {
   else if (c.k === 'picker') html = htmlPicker();
   else if (c.k === 'filtro') html = htmlFiltro();
   else if (c.k === 'buscar') html = htmlBuscar();
+  else if (c.k === 'menu') html = htmlMenu();
   else if (c.k === 'lote') html = htmlLote();
   else if (c.k === 'sync') html = htmlSync();
   else if (c.k === 'ayuda') html = htmlAyuda(c.v);
@@ -3241,6 +3307,15 @@ function htmlLote() {
     <div class="f-sec"><span class="f-l">Destino</span><div class="chips">${[['', 'Sin cambios'], ['prox', 'Próximas acciones'], ['hoy', 'Hoy'], ['manana', 'Mañana'], ['algun', 'Algún día']].map(([v, nm]) => `<button class="chip ${(L.dest || '') === v ? 'on' : ''}" data-a="loteSet" data-k="dest" data-v="${v}">${nm}</button>`).join('')}</div>
       <label class="f-l" style="margin-top:12px" for="loteFecha">O un día planeado</label><input type="date" class="in" id="loteFecha" data-in="loteFecha" value="${L.fecha || ''}" min="${hoy()}"></div>
     <div class="sh-foot"><button class="btn" data-a="cerrarSheet">Cancelar</button><button class="btn pri" data-a="loteAplicar">${ic('check')}Aplicar a ${n}</button></div>`;
+}
+function htmlMenu() {
+  const V = VISTAS.find(x => x.k === ui.view), e = estadoSyncInfo();
+  const fila = (a, icono, t, sub = '', kbd = '') => `<button class="tr opt" data-a="${a}"><span class="mi">${ic(icono)}</span><span class="tb"><span class="tt">${t}</span>${sub ? `<span class="mt"><span class="tag">${esc(sub)}</span></span>` : ''}</span>${kbd ? `<kbd class="mk">${kbd}</kbd>` : ''}</button>`;
+  return cab('<h2>Opciones</h2>') + `<div class="group">
+    ${fila('buscar', 'search', 'Buscar tareas', '', '/')}
+    ${fila('ayuda', 'info', `Cómo funciona ${esc(V ? V.n : 'esta pantalla')}`)}
+    ${fila('sync', e.ic, 'Respaldo y sincronización', e.t)}
+    ${fila('ajustes', 'gear', 'Ajustes')}</div><div class="sh-end"></div>`;
 }
 function htmlBuscar() {
   return cab('<h2>Buscar</h2>') + `<input class="in" id="buscarIn" data-in="buscarQ" type="search" enterkeyhint="search" placeholder="Título, proyecto o notas" value="${esc(ui.buscarQ)}" autocomplete="off" aria-label="Buscar tareas">
@@ -3443,6 +3518,25 @@ const ACT = {
   inicio:el => { pref.set('inicio', el.dataset.v); refrescarSheet(); },
   densidad:el => { pref.set('densidad', el.dataset.v); aplicarCalma(); refrescarSheet(); },
   buscar:() => abrirSheet({ k:'buscar' }),
+  menu:() => abrirSheet({ k:'menu' }),
+  hoyTodas:() => { ui.hoyTodas = !ui.hoyTodas; renderVista(); },
+  arranque:async () => {
+    const { proceso, cola, otras } = trabajoDeHoy();
+    // Lo más corto primero: empezar cuesta menos con algo pequeño.
+    const cands = [...new Set([...proceso, ...cola, ...otras])].sort((a, b) => (+a.dur || 30) - (+b.dur || 30));
+    if (!cands.length) { toast('No hay tareas para hoy. Elige tus prioridades.'); return; }
+    for (let i = 0; ; i++) {
+      const x = cands[i % cands.length];
+      const r = await dialogo({ titulo:'Empieza con 5 minutos', texto:`«${x.titulo}». Solo 5 minutos: si te late, sigues; si no, paras sin problema.`, ok:'Empezar 5 min', alt:cands.length > 1 ? 'Otra tarea' : '', cancelar:'Ahora no' });
+      if (r === 2) continue;
+      if (r !== 1) return;
+      const t = T(); if (enMarcha()) cerrarTramo();
+      if (!t.modoPrev) t.modoPrev = t.modo;
+      t.modo = 'bloque'; t.tareaId = x.id; t.fase = 'foco'; t.total = t.restante = 300; t.inicio = '';
+      save(); iniciar(); toast('5 minutos. Solo empieza.');
+      return;
+    }
+  },
   heroModo:() => { const t = T(); if (enMarcha()) return; t.modo = t.modo === 'pomo' ? 'bloque' : 'pomo'; t.fase = 'foco'; t.total = t.restante = segFase('foco'); save(); renderVista(); toast(t.modo === 'pomo' ? `Pomodoro de ${S.ajustes.pomo} min` : `Bloque de ${t.bloqueMin} min`); },
   plan:el => abrirPlan(el.dataset.v),
   hoySeg:el => { ui.hoyVista = el.dataset.v; ui.agSel = ''; ui.agY = null; renderVista(); },
@@ -4087,7 +4181,7 @@ function arrancar() {
   ui.ult[grupoDe(ui.view).k] = ui.view;
   $$('.view').forEach(s => s.classList.toggle('on', s.id === 'v-' + ui.view));
   estadoS = S.conn.url ? (S.cola.length ? 'pend' : 'ok') : 'sin';
-  $('#gearBtn').innerHTML = ic('gear'); $('#searchBtn').innerHTML = ic('search'); $('#backBtn').innerHTML = ic('chevL');
+  $('#gearBtn').innerHTML = ic('gear'); $('#searchBtn').innerHTML = ic('search'); $('#menuBtn').innerHTML = ic('more'); $('#backBtn').innerHTML = ic('chevL');
   $('#infoBtn').innerHTML = ic('info');
   $('#fab').innerHTML = ic('plus') + 'Capturar';
   aplicarCalma();
