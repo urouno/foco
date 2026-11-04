@@ -344,6 +344,13 @@ html.calma .view.on,html.calma .in-anim,html.calma .tom.new,html.calma .proc-car
 .hero-t{font-size:var(--fs-l);font-weight:700;line-height:1.25;letter-spacing:-.01em;margin-top:8px;overflow-wrap:anywhere}
 .hero .mt{margin-top:8px}
 .hero-b{display:flex;gap:12px;margin-top:16px}
+/* Enfoque dentro de la tarjeta: barra de avance y modo elegido */
+.hero-bar{height:6px;border-radius:3px;background:var(--sf3);margin-top:16px;overflow:hidden}
+.hero-bar i{display:block;height:100%;border-radius:3px;background:var(--ac);transition:width .5s linear}
+.hero-bar.desc i{background:var(--ok-f)}
+.hero-m{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:var(--fs-s);color:var(--mut)}
+.hero-m svg.i{width:15px;height:15px}
+.hero-m .lnk2{margin-left:auto}
 .hero.over{box-shadow:0 0 0 3px var(--ac),var(--glow);transform:scale(1.01)}
 .hero.done{opacity:.35;transform:scale(.97)}
 .warn6{display:flex;gap:8px;align-items:flex-start;margin-top:16px;padding:12px 12px;border-radius:12px;background:var(--warn-s);color:var(--warn);font-size:var(--fs-s);font-weight:600}
@@ -402,9 +409,38 @@ details.sec-d[open] .chev{transform:rotate(180deg)}
 .chips.vf::-webkit-scrollbar{display:none}
 .chip .n{font-size:var(--fs-s);color:var(--mut);font-weight:600}.chip.on .n{color:var(--ac-t)}
 
+/* ===== Lista (Planifica) ===== */
+.ls-sum{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.ls-sum div{background:var(--sf);border-radius:12px;padding:10px 8px;text-align:center}
+.ls-sum b{display:block;font-size:var(--fs-l);font-weight:700;font-variant-numeric:tabular-nums}
+.ls-sum span{display:block;font-size:12px;color:var(--mut);font-weight:600;margin-top:2px}
+.ls-sum .pend b{color:var(--ac-t)}
+.ls-add{padding:0;margin-top:12px}
+.sec-t small{font-weight:500;color:var(--mut2);margin-left:auto;text-align:right}
+.sec-t .dot{width:10px;height:10px}
+.sec-t.hot{color:var(--hot)}
+.tr.ls{padding-right:8px}
+.ls-ag{flex:none;display:inline-flex;align-items:center;gap:4px;min-height:36px;padding:0 10px;border-radius:10px;background:var(--sf2);color:var(--mut);font-size:var(--fs-s);font-weight:600;font-variant-numeric:tabular-nums}
+.ls-ag svg.i{width:15px;height:15px}
+.ls-ag.pend{background:var(--ac-s);color:var(--ac-t)}
+.ls-ag:active{transform:scale(.95)}
+details.sec-d .bloc,details.sec-d #blocBox{margin-top:8px}
+
 /* ===== Tablero ===== */
 .tb-top{display:flex;gap:8px;align-items:center}
-.tb-top .seg{flex:1}
+.tb-sum{flex:1;min-width:0}
+.tb-sum b{display:block;font-size:var(--fs-m);font-weight:700}
+.tb-sum span{display:block;font-size:var(--fs-s);color:var(--mut)}
+.kc-enf{margin-top:8px;padding:8px 10px;border-radius:10px;background:var(--ac-s);color:var(--ac-t)}
+.kc-tm{display:flex;align-items:center;gap:8px;font-size:var(--fs-s);font-weight:600}
+.kc-tm b{font-size:var(--fs-l);font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.kc-bar{display:block;height:4px;border-radius:2px;background:color-mix(in srgb,var(--ac) 20%,transparent);margin-top:6px;overflow:hidden}
+.kc-bar i{display:block;height:100%;background:var(--ac);transition:width .5s linear}
+.kc-tm{flex-wrap:wrap;gap:2px 8px}
+.kc-f.pr{flex-wrap:wrap}
+.kc-f.pr .mt{flex:1 1 100%;padding-bottom:0}
+.kc-f.pr .mt:empty{display:none}
+.kc-f.pr .qk.ok{flex:1;justify-content:center}
 .filt{background:var(--sf3);border-radius:12px;width:44px;height:42px}
 .filt.on{background:var(--ac-s);color:var(--ac-t)}
 .coltabs{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:12px;background:var(--sf3);border-radius:12px;padding:4px}
@@ -776,6 +812,7 @@ body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(-
   .hoy-a .hero{padding:32px 28px 28px}
   .hoy-a .hero-t{font-size:26px}
   #v-enfoque,#v-progreso{max-width:720px}
+  #v-lista{max-width:880px}
   /* Tablero: todas las columnas a la vista */
   .coltabs{display:none}
   .board{margin:12px 0 0;padding:0;overflow-x:visible}
@@ -829,6 +866,7 @@ body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(-
 <main>
   <div class="seg subnav" id="subnav" role="tablist"></div>
   <section class="view" id="v-bandeja"></section>
+  <section class="view" id="v-lista"></section>
   <section class="view" id="v-agenda"></section>
   <section class="view" id="v-hoy"></section>
   <section class="view" id="v-tablero"></section>
@@ -900,6 +938,8 @@ function txtHM(min) { const h = Math.floor(min / 60), m = Math.round(min % 60); 
 const IC = {
   inbox:'<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>',
   sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/>',
+  chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
   kanban:'<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 7v8M12 7v4M16 7v10"/>',
   timer:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M10 2h4M19 5l1.5 1.5"/>',
   trophy:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>',
@@ -984,7 +1024,7 @@ const pref = {
 };
 
 const D = { st:null, justDragged:false };
-const ui = { view:'bandeja', ult:{}, dia:'', bVerbo:'', hoyVista:'lista', tabVista:'kanban', filtro:'todas', col:'prox', agSel:'', agY:null, histQ:'', histN:40, sheet:null,
+const ui = { view:'bandeja', ult:{}, dia:'', bVerbo:'', hoyVista:'lista', listaPor:pref.v('listaPor') || 'cuando', filtro:'todas', col:'prox', agSel:'', agY:null, histQ:'', histN:40, sheet:null,
   capArea:'', enfCaps:[], dtOpen:'', savedAt:0, nuevoTomate:false, syncErr:'', cfgMsg:null, cfgDraft:null, areaNueva:null, areaColor:'', onb:0 };
 const abierto = k => !!pref.v('ab-' + k);
 
@@ -1407,17 +1447,19 @@ function htmlClaridad(texto, dest) {
 /* ================= Interfaz general ================= */
 const VISTAS = [
   { k:'bandeja', n:'Bandeja', ic:'inbox', sub:() => { const n = tareasEn('bandeja').length; return n ? `${n} por organizar` : 'Anota todo aquí, organiza después'; } },
-  { k:'agenda', n:'Agenda', ic:'cal', sub:() => 'Tu semana por días y horas' },
+  { k:'lista', n:'Lista', ic:'list', sub:() => { const n = activas().filter(t => !['bandeja', 'algun'].includes(t.estado)).length; return n ? `${n} ${n === 1 ? 'tarea organizada' : 'tareas organizadas'}` : 'Todo lo que tienes organizado'; } },
+  { k:'agenda', n:'Agenda', ic:'cal', sub:() => 'Asigna día y hora a tus tareas' },
   { k:'tablero', n:'Tablero', ic:'kanban', sub:() => 'Todas tus tareas por estado' },
   { k:'hoy', n:'Hoy', ic:'sun', sub:() => { const d = new Date(); return `${DIAS[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]}`; } },
   { k:'enfoque', n:'Enfoque', ic:'timer', sub:() => 'Pomodoro y bloques de tiempo' },
-  { k:'progreso', n:'Progreso', ic:'trophy', sub:() => 'Tu avance y tus logros' }
+  { k:'progreso', n:'Panel', ic:'chart', sub:() => 'Tu avance y tus logros' }
 ];
-// Tres pasos: ingresa → planifica → ejecuta. Cada paso agrupa sus vistas en subpestañas.
+// Tres pasos (ingresa → planifica → ejecuta) y el Panel con tu avance. Cada sección agrupa sus vistas en subpestañas.
 const GRUPOS = [
   { k:'ingresa', n:'Ingresa', ic:'inbox', vs:['bandeja'] },
-  { k:'planifica', n:'Planifica', ic:'cal', vs:['agenda', 'tablero'] },
-  { k:'ejecuta', n:'Ejecuta', ic:'bolt', vs:['hoy', 'enfoque', 'progreso'] }
+  { k:'planifica', n:'Planifica', ic:'cal', vs:['lista', 'agenda'] },
+  { k:'ejecuta', n:'Ejecuta', ic:'bolt', vs:['hoy', 'tablero', 'enfoque'] },
+  { k:'panel', n:'Panel', ic:'chart', vs:['progreso'] }
 ];
 const grupoDe = v => GRUPOS.find(g => g.vs.includes(v));
 // Escritorio: pantallas anchas usan barra lateral, paneles lado a lado y la semana en columnas.
@@ -1426,7 +1468,7 @@ const desk = () => mqDesk.matches;
 function pintarTabs() {
   const nb = tareasEn('bandeja').length, run = S.timer && S.timer.corriendo, g0 = grupoDe(ui.view);
   $('#tabs').innerHTML = `<div class="brand"><img src="icon-180.png" alt="" width="28" height="28">Foco</div>` + GRUPOS.map((g, i) => { const on = g === g0, v = ui.ult[g.k] || g.vs[0]; return `<button class="${on ? 'on' : ''}" data-a="tab" data-v="${v}" ${on ? 'aria-current="page"' : ''} aria-label="${g.n}${g.k === 'ingresa' && nb ? `, ${nb} por organizar` : ''}"><span class="tp">${ic(g.ic)}</span><span class="tl">${g.n}</span>${g.k === 'ingresa' && nb ? `<i class="bdg">${nb > 99 ? '99+' : nb}</i>` : ''}${g.k === 'ejecuta' && run && ui.view !== 'enfoque' ? '<i class="tdot"></i>' : ''}<kbd>${i + 1}</kbd></button>`; }).join('')
-    + `<div class="side-f"><b>Atajos</b><span><kbd>N</kbd>Capturar</span><span><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd>Cambiar de paso</span><span><kbd>Espacio</kbd>Pausar o seguir</span><span><kbd>Esc</kbd>Cerrar</span></div>`;
+    + `<div class="side-f"><b>Atajos</b><span><kbd>N</kbd>Capturar</span><span><kbd>1</kbd>–<kbd>4</kbd>Cambiar de sección</span><span><kbd>Espacio</kbd>Pausar o seguir</span><span><kbd>Esc</kbd>Cerrar</span></div>`;
   const sn = $('#subnav');
   sn.classList.toggle('hide', g0.vs.length < 2);
   sn.innerHTML = g0.vs.map(k => { const V = VISTAS.find(x => x.k === k); return `<button class="${ui.view === k ? 'on' : ''}" data-a="tab" data-v="${k}" role="tab" aria-selected="${ui.view === k}">${ic(V.ic)}${V.n}</button>`; }).join('');
@@ -1457,8 +1499,8 @@ function render() {
   $('#proyectos').innerHTML = pr.map(p => `<option value="${esc(p)}">`).join('');
 }
 function renderVista() {
-  ({ bandeja:renderBandeja, agenda:renderAgenda, hoy:renderHoy, tablero:renderTablero, enfoque:renderEnfoque, progreso:renderProgreso })[ui.view]();
-  pintarTabs(); encabezado();
+  ({ bandeja:renderBandeja, lista:renderLista, agenda:renderAgenda, hoy:renderHoy, tablero:renderTablero, enfoque:renderEnfoque, progreso:renderProgreso })[ui.view]();
+  pintarTabs(); encabezado(); pintarMini();
 }
 let renderPend = false;
 function renderSeguro() {
@@ -1841,7 +1883,7 @@ async function guardarPlan() {
   const para = plan.para;
   cerrarSheet(true);
   toast(para === 'hoy' ? 'Plan de hoy listo' : 'Plan de mañana listo. Descansa.');
-  if (!['hoy', 'agenda'].includes(ui.view)) ir('hoy'); else render();
+  if (!['hoy', 'agenda', 'lista'].includes(ui.view)) ir('hoy'); else render();
 }
 
 /* ================= Vista: Hoy ================= */
@@ -1882,8 +1924,14 @@ function renderHoy() {
       <div class="hero-t">${esc(ahora.titulo)}</div>
       ${ahora.resultado ? `<div class="res-l">${ic('listo')}<span>Listo cuando: ${esc(ahora.resultado)}</span></div>` : ''}
       <div class="mt">${metaCorta(ahora, 3, { area:true, pomos:true })}</div>
-      <div class="hero-b"><button class="btn pri grow" data-a="play" data-id="${ahora.id}">${run || desc ? ic('timer') + 'Ir al enfoque' : ic('play', 'fill') + 'Empezar enfoque'}</button>
-        <button class="btn sq okb" data-a="ck" data-id="${ahora.id}" aria-label="Marcar como hecha">${ic('check')}</button></div></div>`;
+      ${run || desc ? `<div class="hero-bar ${desc ? 'desc' : ''}" aria-hidden="true"><i id="heroBar" style="width:${100 * (1 - restante() / t.total)}%"></i></div>` : ''}
+      <div class="hero-b">${run || desc
+        ? `<button class="btn pri grow" data-a="${t.corriendo ? 'pausar' : 'iniciar'}">${t.corriendo ? ic('pause') + 'Pausar' : ic('play', 'fill') + 'Reanudar'}</button>
+          ${desc ? `<button class="btn sq" data-a="saltar" aria-label="Saltar descanso">${ic('skip')}</button>` : `<button class="btn sq" data-a="miniCerrar" aria-label="Terminar sesión">${ic('stop')}</button>`}
+          <button class="btn sq" data-a="ir" data-v="enfoque" aria-label="Abrir enfoque en pantalla completa">${ic('expand')}</button>`
+        : `<button class="btn pri grow" data-a="play" data-id="${ahora.id}">${ic('play', 'fill')}Empezar enfoque</button>`}
+        <button class="btn sq okb" data-a="ck" data-id="${ahora.id}" aria-label="Marcar como hecha">${ic('check')}</button></div>
+      ${run || desc ? '' : `<div class="hero-m">${t.modo === 'pomo' ? `${ic('tomato')}Pomodoro de ${S.ajustes.pomo} min` : `${ic('clock')}Bloque de ${t.modo === 'bloque' && ahora.dur >= 10 ? ahora.dur : t.bloqueMin} min`}<button class="lnk2" data-a="heroModo">Cambiar</button></div>`}</div>`;
     zA = html; html = '';
     if (proceso.length + cola.length > 6) html += `<div class="warn6">${ic('flag')}<span>Tienes ${proceso.length + cola.length} tareas para hoy. El método recomienda máximo 6; considera mover algunas a Próximas.</span></div>`;
     if (extra.length) html += `<div class="sec-t">También en curso</div><div class="group">${extra.map(x => filaHoy(x, 0, { curso:true })).join('')}</div>`;
@@ -2071,6 +2119,68 @@ function posAgenda(w) {
   ui.agY = w.scrollTop;
 }
 
+/* ================= Vista: Lista (Planifica) ================= */
+// Todo lo organizado en un solo lugar, agrupado por cuándo, por área o por proyecto.
+// Desde aquí cada tarea se manda a la Agenda para darle día y hora.
+const EST_TAG = { hoy:['sun', 'Hoy'], proceso:['timer', 'En curso'], espera:['hourglass', 'En espera'] };
+function filaLista(t, por) {
+  const e = EST_TAG[t.estado], pill = t.estado === 'proceso' ? `<span class="pq q2">${ic('timer')}En curso</span>` : (por !== 'cuando' && e ? `<span class="tag">${ic(e[0])}${e[1]}</span>` : '');
+  const fecha = por !== 'cuando' && t.fecha === hoy() && !t.hora && t.estado === 'prox' ? `<span class="tag">${ic('cal')}Hoy</span>` : '';
+  const sinFecha = !t.fecha && t.estado !== 'espera';
+  return `<div class="tr ls" style="--a:${colorA(t.area)}" data-id="${t.id}" data-a="abrir" role="button" tabindex="0" aria-label="${esc(t.titulo)}. Abrir detalle">
+    <button class="ck" data-a="ck" data-id="${t.id}" aria-label="Marcar como hecha: ${esc(t.titulo)}">${ic('check')}</button>
+    <div class="tb"><div class="tt">${esc(t.titulo)}</div><div class="mt">${pill}${fecha}${metaCorta(t, 3, { area:por !== 'area' })}${t.proyecto && por !== 'proyecto' ? `<span class="tag">${ic('folder')}${esc(t.proyecto)}</span>` : ''}</div></div>
+    ${t.estado === 'espera' ? '' : `<button class="ls-ag ${sinFecha ? 'pend' : ''}" data-a="listaAgendar" data-id="${t.id}" aria-label="${t.hora ? 'Cambiar horario' : 'Asignar día y hora'} en la Agenda">${ic(t.hora ? 'clock' : 'cal')}<span>${t.hora ? t.hora : sinFecha ? 'Agendar' : 'Hora'}</span></button>`}
+  </div>`;
+}
+function gruposLista(por, ts) {
+  const ordHoy = (a, b) => (a.estado === 'proceso' ? 0 : 1) - (b.estado === 'proceso' ? 0 : 1) || (a.hora || '99').localeCompare(b.hora || '99') || byOrden(a, b);
+  const ordFecha = (a, b) => (a.fecha || '9').localeCompare(b.fecha || '9') || (a.hora || '99').localeCompare(b.hora || '99') || ordenPrioridad(a, b);
+  if (por === 'area') {
+    const gs = areas().map(a => ({ k:a.id, n:a.n, c:a.c, ts:ts.filter(t => t.area === a.id) }));
+    gs.push({ k:'sin', n:'Sin área', c:'var(--mut2)', ts:ts.filter(t => !area(t.area)) });
+    return gs.map(g => ({ ...g, ts:g.ts.sort(ordFecha) }));
+  }
+  if (por === 'proyecto') {
+    const ps = [...new Set(ts.map(t => t.proyecto).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es'));
+    return [...ps.map(p => ({ k:'p-' + p, n:p, ic:'folder', ts:ts.filter(t => t.proyecto === p).sort(ordFecha) })),
+      { k:'p-', n:'Sin proyecto', ic:'folder', ts:ts.filter(t => !t.proyecto).sort(ordFecha) }];
+  }
+  const h = hoy(), m = manana(), sem = addDays(h, 7);
+  const prox = ts.filter(t => t.estado === 'prox');
+  return [
+    { k:'atr', n:'Atrasadas', ic:'flag', hot:true, ts:prox.filter(t => t.fecha && t.fecha < h).sort(ordFecha) },
+    { k:'hoy', n:'Hoy', ic:'sun', ts:[...ts.filter(t => ['proceso', 'hoy'].includes(t.estado)), ...prox.filter(t => t.fecha === h)].sort(ordHoy) },
+    { k:'man', n:'Mañana', ic:'moon', ts:prox.filter(t => t.fecha === m).sort(ordFecha) },
+    { k:'sem', n:'Esta semana', ic:'cal', ts:prox.filter(t => t.fecha > m && t.fecha <= sem).sort(ordFecha) },
+    { k:'mas', n:'Más adelante', ic:'cal', ts:prox.filter(t => t.fecha > sem).sort(ordFecha) },
+    { k:'sinf', n:'Sin fecha', ic:'list', sub:'Dales día y hora en la Agenda', ts:prox.filter(t => !t.fecha).sort(ordenPrioridad) },
+    { k:'esp', n:'En espera', ic:'hourglass', sub:'Dependen de alguien más', ts:ts.filter(t => t.estado === 'espera').sort(ordFecha) }
+  ];
+}
+function renderLista() {
+  const v = $('#v-lista'), por = ui.listaPor;
+  const qPrev = $('#qaddIn', v), qVal = qPrev ? qPrev.value : '', qFoc = qPrev && document.activeElement === qPrev;
+  const ts = activas().filter(t => ['prox', 'hoy', 'proceso', 'espera'].includes(t.estado));
+  const algun = tareasEn('algun').sort((a, b) => b.creado.localeCompare(a.creado));
+  const sinF = ts.filter(t => t.estado === 'prox' && !t.fecha).length, conHora = ts.filter(t => t.hora).length;
+  let html = `<div class="seg" role="tablist" aria-label="Agrupar por">${[['cuando', 'cal', 'Cuándo'], ['area', 'layers', 'Área'], ['proyecto', 'folder', 'Proyecto']].map(([k, i, n]) => `<button class="${por === k ? 'on' : ''}" data-a="listaPor" data-v="${k}" role="tab" aria-selected="${por === k}">${ic(i)}${n}</button>`).join('')}</div>`;
+  html += `<div class="ls-sum"><div><b>${ts.length}</b><span>activas</span></div><div class="${sinF ? 'pend' : ''}"><b>${sinF}</b><span>sin fecha</span></div><div><b>${conHora}</b><span>con horario</span></div><div><b>${algun.length}</b><span>algún día</span></div></div>`;
+  html += `<div class="qadd ls-add"><input id="qaddIn" maxlength="${MAX_TITULO}" placeholder="+ Agregar próxima acción" enterkeyhint="done" autocomplete="off" aria-label="Agregar próxima acción"></div>`;
+  if (sinF) html += tip('lista', 'cal', `Toca <b>Agendar</b> en una tarea para darle día y hora en la Agenda.`);
+  if (!ts.length && !algun.length) {
+    html += `<div class="zero"><div class="orb ac">${ic('list')}</div><h3>Aún no hay nada organizado</h3><p>Anota tus pendientes en la Bandeja y organízalos. Aquí verás todo lo que decidiste hacer.</p><button class="btn pri" style="margin-top:16px" data-a="irBandeja">Ir a la Bandeja</button></div>`;
+  } else {
+    gruposLista(por, ts).filter(g => g.ts.length).forEach(g => {
+      html += `<div class="sec-t ${g.hot ? 'hot' : ''}">${g.c ? `<i class="dot" style="--a:${g.c}"></i>` : ic(g.ic)}${esc(g.n)} <span class="n">${g.ts.length}</span>${g.sub ? `<small>${g.sub}</small>` : ''}</div>
+        <div class="group">${g.ts.map(t => filaLista(t, por)).join('')}</div>`;
+    });
+    html += `<details class="sec-d" data-k="ls-algun" ${abierto('ls-algun') ? 'open' : ''}><summary class="sec-t">${ic('bulb')}Algún día <span class="n">${algun.length}</span><span class="sp"></span>${ic('chevD', 'chev')}</summary>${htmlBloc(true)}</details>`;
+  }
+  v.innerHTML = html;
+  if (qVal || qFoc) { const i = $('#qaddIn', v); i.value = qVal; if (qFoc) i.focus(); }
+}
+
 /* ================= Vista: Tablero ================= */
 const COLS = [
   { k:'prox', n:'Próximas', c:'var(--mut2)', d:'Decididas, aún sin día' },
@@ -2097,24 +2207,28 @@ function cardK(t, k) {
     if (ui.filtro === 'todas' && area(t.area)) out.push(`<span class="tag"><i class="dot" style="--a:${colorA(t.area)}"></i>${esc(area(t.area).n)}</span>`);
     if (t.dur) out.push(`<span class="tag">${ic('timer')}${t.dur} min</span>`);
   }
-  const run = T().tareaId === t.id && k === 'proceso' && T().corriendo;
+  const tm = T(), suyo = tm.tareaId === t.id && k === 'proceso' && enMarcha() && tm.fase !== 'listo', run = suyo && tm.corriendo;
+  // En curso: el enfoque vive en la tarjeta (tiempo restante, pausar o empezar) sin salir del tablero.
+  const enf = k !== 'proceso' ? '' : suyo
+    ? `<div class="kc-enf ${run ? 'on' : ''}"><span class="kc-tm">${run ? '<i class="live"></i>' : ''}<b id="kcTm">${fmt(restante())}</b>${FASES[tm.fase]}${run ? '' : ' · en pausa'}</span><i class="kc-bar"><i id="kcBar" style="width:${100 * (1 - restante() / tm.total)}%"></i></i></div>`
+    : '';
   const qk = {
     prox:`<button class="qk" data-a="mover" data-id="${t.id}" data-v="hoy" aria-label="Mover a Hoy">Hoy${ic('arrowR')}</button>`,
     hoy:`<button class="qk pri" data-a="play" data-id="${t.id}">${ic('play', 'fill')}Empezar</button>`,
-    proceso:`<button class="qk ok" data-a="ck" data-id="${t.id}">${ic('check')}Hecha</button>`,
+    proceso:`${suyo ? `<button class="qk pri" data-a="${run ? 'pausar' : 'iniciar'}" aria-label="${run ? 'Pausar' : 'Reanudar'} enfoque">${run ? ic('pause') : ic('play', 'fill')}</button>` : `<button class="qk pri" data-a="play" data-id="${t.id}" aria-label="Empezar enfoque">${ic('play', 'fill')}</button>`}<button class="qk ok" data-a="ck" data-id="${t.id}">${ic('check')}Hecha</button>`,
     espera:`<button class="qk" data-a="mover" data-id="${t.id}" data-v="hoy">Retomar</button>`
   }[k] || '';
   return `<div class="kc ${k === 'hecho' ? 'hecha' : ''} ${run ? 'run' : ''}" style="--a:${colorA(t.area)}" data-id="${t.id}" data-a="abrir" data-drag role="button" tabindex="0">
-    <div class="kc-t">${esc(t.titulo)}</div><div class="kc-f"><div class="mt">${out.slice(0, 2).join('')}</div>${qk}</div></div>`;
+    <div class="kc-t">${esc(t.titulo)}</div>${enf}<div class="kc-f ${k === 'proceso' ? 'pr' : ''}"><div class="mt">${out.slice(0, 2).join('')}</div>${qk}</div></div>`;
 }
 function renderTablero() {
   const v = $('#v-tablero');
   const prevLeft = $('#board', v) ? $('#board', v).scrollLeft : null;
   const fa = ui.filtro !== 'todas';
-  let html = `<div class="tb-top"><div class="seg" role="tablist"><button class="${ui.tabVista === 'kanban' ? 'on' : ''}" data-a="tabSeg" data-v="kanban" role="tab">${ic('kanban')}Por estado</button><button class="${ui.tabVista === 'bloc' ? 'on' : ''}" data-a="tabSeg" data-v="bloc" role="tab">${ic('bulb')}Algún día</button></div>
+  const nAct = ['prox', 'hoy', 'proceso', 'espera'].reduce((n, k) => n + tareasEn(k).filter(pasaFiltro).length, 0);
+  let html = `<div class="tb-top"><div class="tb-sum"><b>${nAct} ${nAct === 1 ? 'tarea activa' : 'tareas activas'}</b><span>Avánzalas de izquierda a derecha</span></div>
     <button class="ib filt ${fa ? 'on' : ''}" data-a="filtrar" aria-label="Filtrar por área${fa ? ' (activo)' : ''}">${ic('filter')}</button></div>`;
   if (fa) html += `<div class="chips" style="margin-top:12px"><button class="chip area on" style="--a:${ui.filtro === 'sin' ? 'var(--mut)' : colorA(ui.filtro)}" data-a="filtro" data-v="todas" aria-label="Quitar filtro"><i class="dot"></i>${esc(ui.filtro === 'sin' ? 'Sin área' : (area(ui.filtro)?.n || ''))}${ic('x')}</button></div>`;
-  if (ui.tabVista === 'bloc') { v.innerHTML = html + htmlBloc(); return; }
   const datos = COLS.map(c => ({ c, ts:tareasCol(c.k) }));
   html += `<div class="coltabs" id="coltabs" role="tablist" aria-label="Columnas">${datos.map(({ c, ts }) => `<button class="${ui.col === c.k ? 'on' : ''}" data-a="colGo" data-v="${c.k}" role="tab"><span>${c.n}</span><b class="${c.lim && ts.length >= c.lim ? 'full' : ''}">${ts.length}${c.lim ? '/' + c.lim : ''}</b></button>`).join('')}</div>`;
   html += tip('tablero', 'arrowR', 'Usa el botón de cada tarjeta para avanzarla, o mantenla presionada y arrástrala a otra columna.');
@@ -2142,8 +2256,8 @@ function ajustarBoard() {
   const extra = document.body.classList.contains('has-mini') ? 54 : 0;
   b.style.height = Math.max(340, innerHeight - top - (desk() ? 0 : $('#tabs').offsetHeight) - extra - 10) + 'px';
 }
-function htmlBloc() {
-  const ts = tareasEn('algun').filter(pasaFiltro).sort((a, b) => b.creado.localeCompare(a.creado));
+function htmlBloc(todas) {
+  const ts = tareasEn('algun').filter(t => todas || pasaFiltro(t)).sort((a, b) => b.creado.localeCompare(a.creado));
   return `<div class="panel cap" style="margin-top:12px" id="blocBox"><div class="cap-r"><textarea id="blocIn" rows="1" maxlength="${MAX_TITULO}" placeholder="Una idea para algún día…" enterkeyhint="send" aria-label="Nueva idea" style="min-height:50px"></textarea><button class="cap-send" data-a="blocAdd" aria-label="Guardar idea">${ic('plus')}</button></div></div>
     <p class="hint">Ideas sin fecha ni presión. Revísalas cada semana y activa las que ya tengan su momento.</p>
     ${ts.length ? `<div class="bloc">${ts.map(t => `<div class="note" style="--a:${colorA(t.area)}" data-a="abrir" data-id="${t.id}" role="button" tabindex="0"><div class="nt">${esc(t.titulo)}</div>
@@ -2244,6 +2358,9 @@ function actualizarReloj() {
     if (sub) { const fin = new Date(Date.now() + r * 1000); sub.textContent = t.corriendo ? `Termina a las ${fin.getHours()}:${pad(fin.getMinutes())}` : (t.fase === 'listo' ? '' : (t.restante < t.total ? 'En pausa' : 'Listo para empezar')); }
   }
   const ht = $('#heroTm'); if (ht) ht.textContent = fmt(r);
+  const kt = $('#kcTm'); if (kt) kt.textContent = fmt(r);
+  const frac = t.total ? 100 * (1 - r / t.total) : 0;
+  ['#heroBar', '#kcBar'].forEach(q => { const b = $(q); if (b) b.style.width = frac + '%'; });
   pintarMini();
   document.title = t.corriendo ? `${fmt(r)} · Foco` : 'Foco';
 }
@@ -2306,13 +2423,16 @@ async function enfocar(id, auto) {
   t.tareaId = id;
   if (t.modo === 'bloque' && x.dur >= 10 && !t.corriendo) { t.bloqueMin = x.dur; t.total = t.restante = segFase('foco'); }
   save(); cerrarSheet(true);
-  if (ui.view === 'enfoque') render(); else ir('enfoque');
+  // Desde Hoy y Tablero el enfoque arranca ahí mismo; la pantalla completa queda a un toque.
+  const enSitio = auto && ['hoy', 'tablero'].includes(ui.view);
+  if (ui.view === 'enfoque' || enSitio) render(); else ir('enfoque');
   if (auto && !t.corriendo && t.fase === 'foco') iniciar();
 }
 let miniKey = '';
 function pintarMini() {
   const t = T(), m = $('#mini');
-  const visible = ui.view !== 'enfoque' && enMarcha();
+  // Si el reloj ya se ve en la tarjeta de Hoy o del Tablero, no se repite abajo.
+  const visible = ui.view !== 'enfoque' && enMarcha() && !(ui.view === 'hoy' && $('#heroTm')) && !(ui.view === 'tablero' && $('#kcTm'));
   m.classList.toggle('on', visible); document.body.classList.toggle('has-mini', visible);
   if (!visible) { miniKey = ''; return; }
   const x = byId(t.tareaId), desc = t.fase === 'corto' || t.fase === 'largo';
@@ -2397,12 +2517,17 @@ function ayuda(k) {
       ['layers', 'Área (opcional)', 'Elígela en el selector o escríbela con # dentro del texto, por ejemplo #omova. Desde el selector también puedes crear una nueva.'],
       ['sparkle', 'Organiza', 'Cuando tengas varios, toca «Organizar». Decides uno por uno: hacerlo ya, agendarlo, esperar a alguien, guardarlo para algún día o eliminarlo (método GTD). Si la redacción no es clara, Foco te sugiere cómo mejorarla o dividirla.']] },
     hoy:{ d:'Tus prioridades del día con el método Ivy Lee: máximo 6 tareas, en orden de importancia, trabajadas una a la vez.', p:[
-      ['play', 'La tarjeta de arriba', 'Es la tarea que toca ahora. Toca «Empezar enfoque» para arrancar un Pomodoro sobre ella.'],
+      ['play', 'La tarjeta de arriba', 'Es la tarea que toca ahora. Toca «Empezar enfoque» y el reloj corre ahí mismo: puedes pausar, terminar o abrirlo en pantalla completa.'],
       ['check', 'Marcar como hecha', 'Toca el círculo de cualquier tarea o el botón verde. Siempre puedes deshacerlo desde el aviso.'],
       ['grip', 'Cambiar el orden', 'Arrastra desde los seis puntos de la derecha. Si sueltas la tarea sobre la tarjeta de arriba, se vuelve la siguiente.'],
       ['clock', 'Horarios en vivo', 'Las tareas con hora te avisan «en 20 min», «ahora» o «atrasada», y la línea del día muestra tus bloques y la hora actual.'],
       ['moon', 'Planear', 'Por la noche elige tus 6 de mañana. Lo que no termines pasa solo al día siguiente.']] },
-    agenda:{ d:'Planifica visualmente: elige un día de las próximas dos semanas y acomoda tus tareas por hora (time blocking).', p:[
+    lista:{ d:'Todo lo que ya organizaste en un solo lugar: lo de hoy, lo que tiene fecha, lo que aún no y lo que espera a alguien.', p:[
+      ['cal', 'Agrupar', 'Ordénalo por cuándo, por área o por proyecto para ver si algo se te está quedando atrás.'],
+      ['clock', 'Agendar', 'Toca «Agendar» en una tarea: te lleva a la Agenda con ella lista para colocarla en un día y hora.'],
+      ['check', 'Marcar como hecha', 'Toca el círculo. Toca la tarea para editar su área, prioridad o duración.'],
+      ['bulb', 'Algún día', 'Ideas sin fecha al final de la lista. Actívalas cuando les llegue su momento.']] },
+    agenda:{ d:'Asigna horario: elige un día y acomoda tus tareas por hora (time blocking).', p:[
       ['cal', 'La semana', 'Cada día muestra cuántas tareas tiene y una barra con las horas planeadas. Toca un día para verlo.'],
       ['clock', 'Agendar', 'Toca una tarea de «Por agendar» o «Sin hora» y luego una hora en la agenda. Queda con fecha y hora.'],
       ['grip', 'Mover', 'Mantén presionado un bloque para cambiarlo de hora.'],
@@ -2413,13 +2538,13 @@ function ayuda(k) {
       ['timer', 'En curso', 'La que estás trabajando ahora. Solo una a la vez.'],
       ['hourglass', 'En espera', 'Dependen de otra persona. Anota de quién para darle seguimiento.'],
       ['arrowR', 'Mover tareas', 'Usa el botón de cada tarjeta, o mantenla presionada y arrástrala a otra columna.'],
-      ['bulb', 'Algún día', 'Ideas sin fecha. Actívalas cuando les llegue su momento.']] },
+      ['tomato', 'Enfoque en la tarjeta', 'Toca «Empezar» en Hoy: la tarea pasa a En curso con su reloj a la vista, y puedes pausarla sin salir del tablero.']] },
     enfoque:{ d:'Trabaja una sola tarea sin interrupciones. Cada sesión completa suma puntos y alimenta tu racha.', p:[
       ['tomato', 'Pomodoro', `${a.pomo} minutos de enfoque y ${a.corto} de descanso. Cada ${a.cada}, un descanso largo de ${a.largo}. Ajusta los tiempos en Ajustes.`],
       ['clock', 'Bloque de tiempo', 'Tú eliges la duración. Útil para tareas largas o trabajo profundo.'],
       ['bulb', 'Captura sin salir', 'Si se te ocurre algo, anótalo abajo: se va a tu Bandeja y el reloj sigue.'],
       ['check', 'Terminar la tarea', 'Toca el botón verde junto a la tarea. Foco te propone la siguiente de tu lista.']] },
-    progreso:{ d:'Tu avance, tus logros y todo lo que has terminado.', p:[
+    progreso:{ d:'Tu panel: avance, logros y todo lo que has terminado.', p:[
       ['star', 'Puntos (XP)', 'Tarea hecha: +10, +10 más si era importante y +5 si además era urgente. Pomodoro: +25. Vaciar la bandeja: +15. Planear el día: +10.'],
       ['flame', 'Racha', 'Días seguidos con al menos una tarea hecha o 5 minutos de enfoque.'],
       ['award', 'Insignias', 'Se desbloquean con hábitos: rachas, pomodoros y tareas terminadas.'],
@@ -2428,8 +2553,8 @@ function ayuda(k) {
 }
 const ONB = [
   { ic:'inbox', paso:'Ingresa', t:'Vacía tu cabeza', d:'Anota cada pendiente en cuanto se te ocurra, empezando con un verbo: «Enviar…», «Revisar…». Luego toca «Organizar» para decidir qué es cada cosa.' },
-  { ic:'cal', paso:'Planifica', t:'Dale día y hora', d:'En la Agenda elige un día y acomoda tus tareas por hora. Elige tus 6 más importantes de hoy o de mañana.' },
-  { ic:'bolt', paso:'Ejecuta', t:'Una a la vez', d:'Trabaja tus tareas en orden con un Pomodoro. Foco te avisa qué toca ahora y te muestra tu avance del día.' }
+  { ic:'cal', paso:'Planifica', t:'Mira todo y dale horario', d:'En la Lista ves todo lo que organizaste. Desde ahí mándalo a la Agenda para darle día y hora, y elige tus 6 más importantes de hoy o de mañana.' },
+  { ic:'bolt', paso:'Ejecuta', t:'Una a la vez', d:'Trabaja tus tareas en orden con un Pomodoro que corre en la misma tarjeta. Usa el Tablero para ver cómo avanza todo, y el Panel para tus logros.' }
 ];
 function abrirOnb() { ui.onb = 0; $('#onb').classList.add('on'); document.documentElement.classList.add('lock'); pintarOnb(); }
 function pintarOnb() {
@@ -2785,9 +2910,11 @@ const ACT = {
     setTimeout(() => { completar(t, el); renderVista(); }, 620);
   },
   play:el => enfocar(el.dataset.id, true),
+  heroModo:() => { const t = T(); if (enMarcha()) return; t.modo = t.modo === 'pomo' ? 'bloque' : 'pomo'; t.fase = 'foco'; t.total = t.restante = segFase('foco'); save(); renderVista(); toast(t.modo === 'pomo' ? `Pomodoro de ${S.ajustes.pomo} min` : `Bloque de ${t.bloqueMin} min`); },
   plan:el => abrirPlan(el.dataset.v),
   hoySeg:el => { ui.hoyVista = el.dataset.v; ui.agSel = ''; ui.agY = null; renderVista(); },
-  tabSeg:el => { ui.tabVista = el.dataset.v; renderVista(); },
+  listaPor:el => { ui.listaPor = el.dataset.v; pref.set('listaPor', ui.listaPor); renderVista(); },
+  listaAgendar:el => { const t = byId(el.dataset.id); if (!t) return; ir('agenda'); ui.agSel = t.id; if (t.fecha && t.fecha >= hoy()) { ui.dia = t.fecha; if (t.fecha >= addDays(hoy(), 7)) ui.semIni = t.fecha; } renderVista(); },
   filtrar:() => abrirSheet({ k:'filtro' }),
   filtro:el => { ui.filtro = el.dataset.v; renderVista(); },
   filtroSel:el => { ui.filtro = el.dataset.v; cerrarSheet(); },
@@ -2798,7 +2925,7 @@ const ACT = {
     setEstado(t, dest); renderVista();
     toast(`Movida a ${COLN[dest]}`, 'Deshacer', () => { t.estado = prev; t.fecha = pf; upsertT(t); renderVista(); });
   },
-  activar:el => { const t = byId(el.dataset.id); setEstado(t, 'prox'); renderVista(); toast('Movida a Próximas', 'Ver', () => { ui.tabVista = 'kanban'; ui.col = 'prox'; renderVista(); }); },
+  activar:el => { const t = byId(el.dataset.id); setEstado(t, 'prox'); renderVista(); toast('Movida a Próximas'); },
   dia:el => { ui.dia = el.dataset.v; ui.agY = null; renderVista(); },
   semMov:el => { const n = +el.dataset.v; ui.semIni = n ? addDays(ui.semIni || hoy(), n) : hoy(); if (ui.semIni < hoy()) ui.semIni = hoy(); ui.smY = null; renderVista(); },
   semTap:(el, e) => {
@@ -3123,7 +3250,7 @@ document.addEventListener('keydown', e => {
     && !ui.sheet && !['#proc', '#onb', '#dlg'].some(s => $(s).classList.contains('on'));
   if (libre) {
     const k = e.key.toLowerCase();
-    if (['1', '2', '3'].includes(k)) { const g = GRUPOS[+k - 1]; e.preventDefault(); ir(ui.ult[g.k] || g.vs[0]); return; }
+    if (['1', '2', '3', '4'].includes(k)) { const g = GRUPOS[+k - 1]; e.preventDefault(); ir(ui.ult[g.k] || g.vs[0]); return; }
     if (k === 'n') { e.preventDefault(); if (ui.view === 'bandeja') $('#capIn')?.focus(); else abrirSheet({ k:'captura' }); return; }
     if (k === ' ' && el.tagName !== 'BUTTON' && (enMarcha() || ui.view === 'enfoque')) { e.preventDefault(); if (T().corriendo) pausar(); else iniciar(); return; }
   }
