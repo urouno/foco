@@ -1,6 +1,6 @@
 // Foco: funciona sin conexión. Cambia la versión cuando subas cambios para forzar la actualización.
 const PREFIJO = 'foco-';
-const CACHE = PREFIJO + 'v12';
+const CACHE = PREFIJO + 'v13';
 const ARCHIVOS = ['./', './index.html', './manifest.json', './icon-180.png', './icon-512.png', './icon-maskable-512.png'];
 const ESPERA_RED = 3500; // con red lenta, después de esto se usa la copia guardada
 

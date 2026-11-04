@@ -409,6 +409,23 @@ details.sec-d[open] .chev{transform:rotate(180deg)}
 .chips.vf::-webkit-scrollbar{display:none}
 .chip .n{font-size:var(--fs-s);color:var(--mut);font-weight:600}.chip.on .n{color:var(--ac-t)}
 
+/* ===== Fase 3: Progreso con un indicador principal ===== */
+.pmain{margin-top:12px}
+.pm-n{display:flex;align-items:baseline;gap:8px}
+.pm-n b{font-size:40px;font-weight:700;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
+.pm-n span{color:var(--mut);font-size:var(--fs-m)}
+.pmain .chart{height:110px;margin-top:16px}
+.pmain.vacio p{margin:12px 0 12px;color:var(--mut)}
+.ptiles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.pm-n .lnk2{margin-left:auto}
+.ptile{display:flex;align-items:center;gap:10px;min-height:60px;padding:10px 12px;border-radius:var(--r);background:var(--sf);color:var(--ink);text-align:left}
+.ptile .tb b{display:block;font-size:var(--fs-m);font-weight:700}
+.ptile .tb small{display:block;font-size:var(--fs-s);color:var(--mut);line-height:1.25}
+.ptile > svg.chev{width:16px;height:16px;color:var(--mut2);flex:none;transition:transform .2s}
+.ptile > svg.chev.up{transform:rotate(180deg)}
+.ptile.on{box-shadow:inset 0 0 0 2px var(--ac)}
+#v-progreso .acc{margin-top:12px}
+#v-progreso .acc summary .v{white-space:nowrap}
 /* ===== Fase 2: Planifica y Bandeja sin saturar ===== */
 .fbar .agr{flex:none;margin-right:auto}
 .fbar .agr button{padding:0 12px}
@@ -706,7 +723,9 @@ body.dragging .board{scroll-snap-type:none}
 .chart .cb{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
 .chart .cv{font-size:var(--fs-s);font-weight:600;color:var(--mut);min-height:15px}
 .chart .cbar{width:100%;max-width:30px;border-radius:7px 7px 3px 3px;background:var(--ac);opacity:.4;min-height:4px;transition:height .6s var(--ease)}
-.chart .cbar.zero{background:var(--sf3);opacity:1}
+.chart .cbar.nul{background:var(--sf3);opacity:1}
+.chart .cb{min-width:0}
+.chart.mes .cd{font-size:11px}
 .chart .cbar.hoy{opacity:1}
 .chart .cd{font-size:var(--fs-s);font-weight:600;color:var(--mut)}
 .chart .cd.hoy{color:var(--ink)}
@@ -3013,33 +3032,37 @@ function renderProgreso() {
   const filasA = Object.entries(grupos).sort((p, q) => usaMin ? q[1].m - p[1].m : q[1].t - p[1].t);
   const nombreG = k => dist === 'area' ? (k === 'sin' ? 'Sin área' : area(k).n) : (k === '-' ? 'Sin proyecto' : k);
   const colorG = k => dist === 'area' && k !== 'sin' ? colorA(k) : 'var(--mut2)';
+  // Un indicador principal (lo que terminaste) con su gráfica; lo demás, a un toque y sin porcentajes que desanimen.
   const det = ui.pDet || '';
-  const pct = C.ini ? Math.round(C.ok / C.ini * 100) : null;
-  const kpi = (k, val, label, sub, icono) => `<button class="panel kpi ${det === k ? 'on' : ''}" data-a="pDet" data-v="${k}" aria-expanded="${det === k}"><div class="kv">${val}</div><div class="kl">${ic(icono)}${label}</div><div class="ks">${sub}</div></button>`;
+  const maxT = Math.max(1, ...R.dias.map(d => tarDia[d] || 0));
+  const lblDia = (d, i) => per === 'mes' ? (i % 5 === 4 || d === hoy() ? parseYmd(d).getDate() : '') : DIAS1[parseYmd(d).getDay()];
+  const grafica = per === 'hoy' ? '' : `<div class="chart ${per === 'mes' ? 'mes' : ''}" role="img" aria-label="Tareas terminadas por día">${R.dias.map((d, i) => { const n = tarDia[d] || 0, m = minDia[d] || 0; return `<div class="cb" title="${cap1(fechaCorta(d))}: ${n} ${n === 1 ? 'tarea' : 'tareas'}${m ? ` · ${m} min de enfoque` : ''}"><span class="cv">${n && per !== 'mes' ? n : ''}</span><div class="cbar ${n ? '' : 'nul'} ${d === hoy() ? 'hoy' : ''}" style="height:${n ? Math.max(8, n / maxT * 100) : 4}%"></div><span class="cd ${d === hoy() ? 'hoy' : ''}">${lblDia(d, i)}</span></div>`; }).join('')}</div>`;
+  const listaHechas = (n = 60) => hechas.length ? `<div class="group">${hechas.slice(0, n).map(t => `<button class="hr" style="--a:${colorA(t.area)};text-align:left" data-a="abrir" data-id="${t.id}"><i class="dot"></i><span class="tb"><span class="ht" style="display:block">${esc(t.titulo)}</span>${area(t.area) || t.proyecto ? `<span class="hn">${[area(t.area)?.n, t.proyecto].filter(Boolean).map(esc).join(' · ')}</span>` : ''}</span><span class="hm">${per === 'hoy' ? horaDe(t.hecho) : fechaCorta(diaDeISO(t.hecho))}</span></button>`).join('')}</div>` : '';
+  const principal = hechas.length
+    ? `<div class="panel pmain"><div class="pm-n"><b>${hechas.length}</b><span>${hechas.length === 1 ? 'tarea terminada' : 'tareas terminadas'}</span>${per !== 'hoy' ? `<button class="lnk2" data-a="pDet" data-v="hechas" aria-expanded="${det === 'hechas'}">${det === 'hechas' ? 'Ocultar' : 'Ver cuáles'}</button>` : ''}</div>${grafica}${per === 'hoy' ? `<div style="margin-top:12px">${listaHechas(8)}</div>` : ''}</div>`
+    : `<div class="panel pmain vacio"><div class="pm-n"><b>0</b><span>tareas terminadas</span></div>${grafica}<p>Aún nada en este periodo. Empezar con algo pequeño cuenta.</p><button class="btn pri" data-a="tab" data-v="hoy">${ic('sun')}Ir a Hoy</button></div>`;
+  const tile = (k, icono, val, label) => `<button class="ptile ${det === k ? 'on' : ''}" data-a="pDet" data-v="${k}" aria-expanded="${det === k}"><span class="mi">${ic(icono)}</span><span class="tb"><b>${val}</b><small>${label}</small></span>${ic('chevD', det === k ? 'chev up' : 'chev')}</button>`;
+  const prioVal = C.ini ? `${C.ok} de ${C.ini}` : 'Sin plan';
+  const prioLbl = C.ini ? 'prioridades' : 'de prioridades';
   let detalle = '';
-  if (det === 'hechas') detalle = hechas.length ? `<div class="group">${hechas.slice(0, 60).map(t => `<button class="hr" style="--a:${colorA(t.area)};text-align:left" data-a="abrir" data-id="${t.id}"><i class="dot"></i><span class="tb"><span class="ht" style="display:block">${esc(t.titulo)}</span><span class="hn">${[area(t.area)?.n, t.proyecto].filter(Boolean).map(esc).join(' · ')}</span></span><span class="hm">${fechaCorta(diaDeISO(t.hecho))} ${horaDe(t.hecho)}</span></button>`).join('')}</div>` : '<div class="empty">No terminaste tareas en este periodo.</div>';
-  if (det === 'enfoque') detalle = ses.length ? `<div class="group">${ses.slice(0, 60).map(s => `<div class="hr" style="--a:${area(s.area) ? colorA(s.area) : 'var(--mut2)'}"><i class="dot"></i><span class="tb"><span class="ht" style="display:block">${esc(s.tareaTitulo || 'Enfoque libre')}</span><span class="hn">${s.tipo === 'pomodoro' ? 'Pomodoro' : 'Bloque'}${isTrue(s.completa) ? ' completo' : ' parcial'}</span></span><span class="hm">${s.min} min · ${fechaCorta(diaDeISO(s.fin))}</span></div>`).join('')}</div>` : '<div class="empty">Sin sesiones de enfoque en este periodo.</div>';
-  if (det === 'prio') detalle = C.dias.length ? `<div class="group">${C.dias.slice().reverse().map(x => `<div class="hr"><span class="tb"><span class="ht" style="display:block">${cap1(fechaLarga(x.d))}</span><span class="hn">${x.ok} de ${x.ini} del plan inicial${x.altas ? ` · ${x.altas} ${x.altas === 1 ? 'añadida' : 'añadidas'} después` : ''}${x.fuera ? ` · ${x.fuera} fuera del plan` : ''}</span></span><span class="hm">${x.ini ? Math.round(x.ok / x.ini * 100) + '%' : '—'}</span></div>`).join('')}</div>${C.sinReg ? `<p class="hint">${C.sinReg} ${C.sinReg === 1 ? 'día' : 'días'} con tareas terminadas sin registro del plan.</p>` : ''}` : `<div class="empty">Sin registro del plan en este periodo. Usa «Prioridades» en Hoy para empezar a medirlo.</div>`;
+  if (det === 'hechas') detalle = listaHechas();
+  if (det === 'enfoque') detalle = ses.length ? `<div class="group">${ses.slice(0, 60).map(x => `<div class="hr" style="--a:${area(x.area) ? colorA(x.area) : 'var(--mut2)'}"><i class="dot"></i><span class="tb"><span class="ht" style="display:block">${esc(x.tareaTitulo || 'Enfoque libre')}</span><span class="hn">${x.tipo === 'pomodoro' ? 'Pomodoro' : 'Bloque'}${isTrue(x.completa) ? '' : ' parcial'}</span></span><span class="hm">${x.min} min · ${fechaCorta(diaDeISO(x.fin))}</span></div>`).join('')}</div>` : '<div class="empty">Sin sesiones de enfoque en este periodo.</div>';
+  if (det === 'prio') detalle = C.dias.length ? `<div class="group">${C.dias.slice().reverse().map(x => `<div class="hr"><span class="tb"><span class="ht" style="display:block">${cap1(fechaLarga(x.d))}</span><span class="hn">${[x.altas ? `${x.altas} ${x.altas === 1 ? 'añadida' : 'añadidas'} después` : '', x.fuera ? `${x.fuera} fuera del plan` : ''].filter(Boolean).join(' · ') || 'Según el plan inicial'}</span></span><span class="hm">${x.ok} de ${x.ini}</span></div>`).join('')}</div>${C.sinReg ? `<p class="hint">${C.sinReg} ${C.sinReg === 1 ? 'día' : 'días'} sin plan registrado.</p>` : ''}` : `<div class="empty">Aún no hay un plan registrado en este periodo.</div>`;
   v.innerHTML = `
     <div class="seg" role="tablist" aria-label="Periodo">${[['hoy', 'Hoy'], ['semana', 'Semana'], ['mes', 'Mes']].map(([k, n]) => `<button class="${per === k ? 'on' : ''}" data-a="pPer" data-v="${k}" role="tab" aria-selected="${per === k}">${n}</button>`).join('')}</div>
-    <p class="hint per-r">${ic('cal')}${R.txt}${per === 'semana' ? ' · últimos 7 días' : per === 'mes' ? ' · últimos 30 días' : ''}</p>
-    <div class="kpis3">
-      ${kpi('hechas', hechas.length, 'Terminadas', 'Tareas completadas', 'check')}
-      ${kpi('enfoque', fmtHM(minT), 'Enfoque', `${ses.length} ${ses.length === 1 ? 'sesión' : 'sesiones'}`, 'timer')}
-      ${kpi('prio', pct == null ? '—' : pct + '%', 'Prioridades', pct == null ? 'Sin registro del plan' : `${C.ok} de ${C.ini} del plan inicial`, 'star')}
-    </div>
-    ${det ? `<div class="kdet">${detalle}</div>` : `<p class="hint">Toca un indicador para ver las tareas o sesiones que lo forman.</p>`}
-    ${C.fuera ? `<p class="hint">${C.fuera} ${C.fuera === 1 ? 'tarea terminada' : 'tareas terminadas'} fuera del plan (no cuentan para el cumplimiento).</p>` : ''}
-    ${per !== 'hoy' ? `<div class="panel" style="margin-top:12px"><div class="ph-h"><h3>Minutos de enfoque por día</h3><span class="mut sm">${fmtHM(minT)} en total</span></div>
-      <div class="chart ${per === 'mes' ? 'mes' : ''}" role="img" aria-label="Minutos de enfoque por día">${R.dias.map((d, i) => { const m = minDia[d] || 0, td = tarDia[d] || 0, lbl = per === 'mes' ? (i % 5 === 4 || d === hoy() ? parseYmd(d).getDate() : '') : DIAS1[parseYmd(d).getDay()]; return `<div class="cb" title="${fechaCorta(d)}: ${m} min, ${td} ${td === 1 ? 'tarea' : 'tareas'}"><span class="cv">${m && per !== 'mes' ? m + ' min' : ''}</span><div class="cbar ${m ? '' : 'zero'} ${d === hoy() ? 'hoy' : ''}" style="height:${m ? Math.max(6, m / maxM * 100) : 4}%"></div><span class="ct">${td && per !== 'mes' ? ic('check') + td : ''}</span><span class="cd ${d === hoy() ? 'hoy' : ''}">${lbl}</span></div>`; }).join('')}</div></div>` : ''}
-    <div class="panel" style="margin-top:12px"><div class="ph-h"><h3>Distribución del trabajo</h3><div class="seg mini" role="tablist">${[['area', 'Área'], ['proyecto', 'Proyecto']].map(([k, n]) => `<button class="${dist === k ? 'on' : ''}" data-a="pDist" data-v="${k}" role="tab">${n}</button>`).join('')}</div></div>
-      ${filasA.length ? filasA.map(([k, x]) => `<div class="abar" style="--a:${colorG(k)}"><div class="nm"><i class="dot"></i>${esc(nombreG(k))}<span class="v">${x.m ? txtHM(x.m) + ' · ' : ''}${x.t} ${x.t === 1 ? 'tarea' : 'tareas'}</span></div><div class="tk2"><i style="width:${(usaMin ? x.m : x.t) / maxA * 100}%"></i></div></div>`).join('') : '<div class="empty">Aún no hay actividad en este periodo.</div>'}</div>
-    <div class="sec-t">${ic('list')}Historial <span class="n">${vivas().filter(t => t.estado === 'hecho').length}</span></div>
-    <input class="in" data-in="histQ" type="search" placeholder="Buscar en lo terminado: título, área, proyecto o notas" value="${esc(ui.histQ)}" aria-label="Buscar en el historial"><div id="histList"></div>
-    <details class="acc" data-k="logros" ${abierto('logros') ? 'open' : ''}><summary><span class="ai">${ic('award')}</span>Nivel, racha e insignias<span class="v">Nivel ${l} · ${st.racha} ${st.racha === 1 ? 'día' : 'días'}</span>${ic('chevD', 'chev')}</summary><div class="acc-b">
-      <div class="panel lvl"><div class="lvl-badge">${l}</div><div style="flex:1;min-width:0"><div class="ln">Nivel ${l} · ${nombreNivel(l)}</div><div class="bar" role="progressbar" aria-valuenow="${st.xp - a}" aria-valuemax="${b - a}"><i style="width:${(st.xp - a) / (b - a) * 100}%"></i></div><div class="mut sm" style="margin-top:8px">${st.xp} XP · te faltan ${b - st.xp} para el nivel ${l + 1}</div></div></div>
-      <p class="hint"><span style="color:var(--warn-f);display:inline-flex;vertical-align:-3px">${ic('flame')}</span> Racha de ${st.racha} ${st.racha === 1 ? 'día' : 'días'} · mejor: ${st.rachaMax}</p>
-      <div class="ins">${INSIGNIAS.map(i => `<div class="in-b ${i.ok(st) ? '' : 'off'}"><div class="o">${ic(i.ic)}</div><b>${i.n}</b><span>${i.d}</span></div>`).join('')}</div></div></details>`;
+    <p class="hint per-r">${ic('cal')}${R.txt}</p>
+    ${principal}
+    <div class="ptiles">${tile('enfoque', 'timer', hCorta(minT), 'de enfoque')}${tile('prio', 'star', prioVal, prioLbl)}</div>
+    ${det ? `<div class="kdet">${detalle}</div>` : ''}
+    ${filasA.length ? `<details class="acc" data-k="dist" ${abierto('dist') ? 'open' : ''}><summary><span class="ai">${ic('layers')}</span>En qué se fue el tiempo<span class="v">${dist === 'area' ? 'Por área' : 'Por proyecto'}</span>${ic('chevD', 'chev')}</summary><div class="acc-b">
+      <div class="seg mini" role="tablist" style="margin-bottom:12px">${[['area', 'Área'], ['proyecto', 'Proyecto']].map(([k, n]) => `<button class="${dist === k ? 'on' : ''}" data-a="pDist" data-v="${k}" role="tab">${n}</button>`).join('')}</div>
+      ${filasA.map(([k, x]) => `<div class="abar" style="--a:${colorG(k)}"><div class="nm"><i class="dot"></i>${esc(nombreG(k))}<span class="v">${x.m ? txtHM(x.m) + ' · ' : ''}${x.t} ${x.t === 1 ? 'tarea' : 'tareas'}</span></div><div class="tk2"><i style="width:${(usaMin ? x.m : x.t) / maxA * 100}%"></i></div></div>`).join('')}</div></details>` : ''}
+    <details class="acc" data-k="logros" ${abierto('logros') ? 'open' : ''}><summary><span class="ai">${ic('award')}</span>Nivel, racha e insignias<span class="v">Nivel ${l}</span>${ic('chevD', 'chev')}</summary><div class="acc-b">
+      <div class="panel lvl"><div class="lvl-badge">${l}</div><div style="flex:1;min-width:0"><div class="ln">Nivel ${l} · ${nombreNivel(l)}</div><div class="bar" role="progressbar" aria-valuenow="${st.xp - a}" aria-valuemax="${b - a}"><i style="width:${(st.xp - a) / (b - a) * 100}%"></i></div><div class="mut sm" style="margin-top:8px">${st.xp} XP · ${b - st.xp} para el nivel ${l + 1}</div></div></div>
+      <p class="hint">${st.racha ? `Racha de ${st.racha} ${st.racha === 1 ? 'día' : 'días'} · mejor: ${st.rachaMax}` : `Tu mejor racha: ${st.rachaMax} ${st.rachaMax === 1 ? 'día' : 'días'}. Cualquier día es bueno para empezar otra.`}</p>
+      <div class="ins">${INSIGNIAS.map(i => `<div class="in-b ${i.ok(st) ? '' : 'off'}"><div class="o">${ic(i.ic)}</div><b>${i.n}</b><span>${i.d}</span></div>`).join('')}</div></div></details>
+    <div class="sec-t">${ic('list')}Historial</div>
+    <input class="in" data-in="histQ" type="search" placeholder="Buscar en lo terminado" value="${esc(ui.histQ)}" aria-label="Buscar en el historial"><div id="histList"></div>`;
   pintarHistorial();
 }
 function pintarHistorial() {
@@ -3103,7 +3126,7 @@ function ayuda(k) {
       ['clock', 'Bloque de tiempo', 'Tú eliges la duración. Útil para tareas largas o trabajo profundo.'],
       ['bulb', 'Captura sin salir', 'Si se te ocurre algo, anótalo abajo: se va a tu Bandeja y el reloj sigue.'],
       ['check', 'Terminar la tarea', 'Toca el botón verde junto a la tarea. Foco te propone la siguiente de tu lista.']] },
-    progreso:{ d:'Tus resultados por periodo (hoy, semana o mes): tareas terminadas, enfoque y cumplimiento de prioridades. Toca un indicador para ver de dónde sale.', p:[
+    progreso:{ d:'Lo que terminaste en el periodo elegido. Toca enfoque o prioridades para ver el detalle.', p:[
       ['star', 'Prioridades', 'Se mide contra el primer plan del día. Las que agregas después y lo que terminas fuera del plan se muestran aparte. Si un día no tiene plan registrado, no se inventa un porcentaje.'],
       ['star', 'Puntos (XP)', 'Tarea hecha: +10, +10 más si era importante y +5 si además era urgente. Pomodoro: +25. Vaciar la bandeja: +15. Planear el día: +10.'],
       ['flame', 'Racha', 'Días seguidos con al menos una tarea hecha o 5 minutos de enfoque.'],
