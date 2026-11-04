@@ -409,6 +409,30 @@ details.sec-d[open] .chev{transform:rotate(180deg)}
 .chips.vf::-webkit-scrollbar{display:none}
 .chip .n{font-size:var(--fs-s);color:var(--mut);font-weight:600}.chip.on .n{color:var(--ac-t)}
 
+/* ===== Filtros compartidos y búsqueda ===== */
+.fbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px}
+.fbtn{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 12px;border-radius:12px;background:var(--sf3);color:var(--ink);font-weight:600;font-size:var(--fs-s)}
+.fbtn svg.i{width:16px;height:16px}
+.fbtn.on{background:var(--ac-s);color:var(--ac-t)}
+.fbtn b{min-width:20px;height:20px;border-radius:10px;background:var(--ac);color:var(--on-ac);font-size:12px;display:inline-grid;place-items:center;padding:0 5px}
+.fbar .chip{min-height:40px}
+.fbar .chip svg.i{width:14px;height:14px;margin-left:2px}
+.fcnt{font-size:var(--fs-s);color:var(--mut);font-weight:600;margin-left:auto}
+.sm-side .fbar{margin:0 0 12px}
+.sum-b{display:flex;gap:8px;flex:none;margin-left:auto}
+.sum{flex-wrap:wrap;row-gap:8px}
+.sum-t{white-space:nowrap;flex:1 0 auto}
+#hdr #backBtn{margin-left:-8px}
+.bres{align-items:center;text-align:left}
+.bres .tb{display:block}
+.bres .tt{display:block}
+.est{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:8px;background:var(--sf2);color:var(--mut);font-size:var(--fs-s);font-weight:600}
+.est.hoy,.est.proceso{background:var(--ac-s);color:var(--ac-t)}
+.est.hecho{background:var(--ok-s);color:var(--ok)}
+.bnota{display:flex;gap:6px;align-items:flex-start;margin-top:6px;font-size:var(--fs-s);color:var(--mut);line-height:1.35}
+.bnota svg.i{width:14px;height:14px;flex:none;margin-top:1px}
+#buscarIn{margin-bottom:4px}
+
 /* ===== Lista (Planifica) ===== */
 .ls-sum{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
 .ls-sum div{background:var(--sf);border-radius:12px;padding:10px 8px;text-align:center}
@@ -635,6 +659,8 @@ body.dragging .board{scroll-snap-type:none}
 .saved{font-size:var(--fs-s);color:var(--ok);font-weight:600;opacity:0;transition:opacity .4s;display:inline-flex;gap:4px;align-items:center}
 .saved svg.i{width:14px;height:14px;stroke-width:2.6}
 .saved.on{opacity:1}
+.saved.run{color:var(--mut)}
+.saved.err{color:var(--hot)}
 .dt-title{display:block;width:100%;border:0;outline:0;background:var(--sf);border-radius:var(--r);resize:none;font-size:var(--fs-l);font-weight:600;line-height:1.3;padding:16px;margin:0 0 16px}
 .dt-title:focus{box-shadow:0 0 0 2px var(--ac)}
 .dr + .dr{border-top:1px solid var(--ln)}
@@ -815,8 +841,8 @@ body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(-
   #v-lista{max-width:880px}
   /* Tablero: todas las columnas a la vista */
   .coltabs{display:none}
-  .board{margin:12px 0 0;padding:0;overflow-x:visible}
-  .col{flex:1 1 0;min-width:0}
+  .board{margin:12px 0 0;padding:0 0 8px;overflow-x:auto;scroll-snap-type:none;scrollbar-width:thin}
+  .col{flex:1 0 260px;min-width:260px;max-width:340px}
   /* Planifica: semana en columnas */
   .semana{display:grid;grid-template-columns:260px minmax(0,1fr);gap:24px;align-items:start}
   .sm-side{position:sticky;top:96px}
@@ -858,8 +884,10 @@ body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(-
 <body>
 <noscript><p style="padding:40px 24px;text-align:center;font-family:sans-serif">Foco necesita JavaScript activado.</p></noscript>
 <header id="hdr">
+  <button class="ib hide" data-a="enfVolver" id="backBtn" aria-label="Salir del enfoque"></button>
   <div class="hd-t"><div class="hd-r"><h1 id="hTitle">Foco</h1><button class="info" data-a="ayuda" id="infoBtn" aria-label="¿Cómo funciona esta pantalla?"></button></div><p id="hSub"></p></div>
   <button class="streak hide" id="streakBtn" data-a="ir" data-v="progreso"></button>
+  <button class="ib" data-a="buscar" id="searchBtn" aria-label="Buscar tareas"></button>
   <button class="ib" data-a="sync" id="syncBtn" aria-label="Sincronización"></button>
   <button class="ib" data-a="ajustes" aria-label="Ajustes" id="gearBtn"></button>
 </header>
@@ -938,6 +966,7 @@ function txtHM(min) { const h = Math.floor(min / 60), m = Math.round(min % 60); 
 const IC = {
   inbox:'<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>',
   sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
   chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
   expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
   kanban:'<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 7v8M12 7v4M16 7v10"/>',
@@ -1009,13 +1038,36 @@ function defAjustes() {
     actualizado:'2000-01-01T00:00:00.000Z'
   };
 }
-function cargar() { try { return JSON.parse(localStorage.getItem(LS)); } catch (e) { return null; } }
+// Si los datos guardados están dañados, se apartan en otra clave antes de seguir: nunca se pisan con una instalación vacía.
+let datosDanados = '';
+function cargar() {
+  let raw = null;
+  try { raw = localStorage.getItem(LS); } catch (e) { return null; }
+  if (!raw) return null;
+  try { const o = JSON.parse(raw); if (o && typeof o === 'object') return o; throw new Error('formato'); }
+  catch (e) { datosDanados = LS + '.danado-' + Date.now(); try { localStorage.setItem(datosDanados, raw); } catch (e2) {} return null; }
+}
 let S = cargar() || {};
 S = Object.assign({ tareas:[], sesiones:[], ajustes:defAjustes(), cola:[], timer:null, conn:{ url:'', clave:'' }, ultSync:'', lvlVisto:0, insVistas:null, diaRoll:'', procRec:[] }, S);
 S.ajustes = Object.assign(defAjustes(), S.ajustes);
 let saveT;
 function save() { clearTimeout(saveT); saveT = setTimeout(guardarYa, 120); }
-function guardarYa() { try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) { console.warn(e); } }
+// Estado real del guardado local: «Guardado en este dispositivo» solo después de escribir sin error.
+const alm = { pendFlash:false, err:'', avisado:0 };
+function guardarYa() {
+  clearTimeout(saveT);
+  try {
+    localStorage.setItem(LS, JSON.stringify(S));
+    alm.err = '';
+    if (alm.pendFlash) { alm.pendFlash = false; flashGuardado(); }
+    return true;
+  } catch (e) {
+    console.warn(e);
+    alm.err = e && e.name === 'QuotaExceededError' ? 'El almacenamiento de este dispositivo está lleno.' : 'No se pudo escribir en el almacenamiento de este dispositivo.';
+    errorGuardado();
+    return false;
+  }
+}
 // Preferencias de interfaz de este teléfono (secciones abiertas, consejos vistos, guía).
 const pref = {
   get() { try { return JSON.parse(localStorage.getItem('foco.pref')) || {}; } catch (e) { return {}; } },
@@ -1024,7 +1076,7 @@ const pref = {
 };
 
 const D = { st:null, justDragged:false };
-const ui = { view:'bandeja', ult:{}, dia:'', bVerbo:'', hoyVista:'lista', listaPor:pref.v('listaPor') || 'cuando', filtro:'todas', col:'prox', agSel:'', agY:null, histQ:'', histN:40, sheet:null,
+const ui = { view:'hoy', scroll:{}, f:{ area:'todas', proyecto:'', estado:'', prio:'' }, buscarQ:'', volverDe:'hoy', ult:{}, dia:'', bVerbo:'', hoyVista:'lista', listaPor:pref.v('listaPor') || 'cuando', filtro:'todas', col:'prox', agSel:'', agY:null, histQ:'', histN:40, sheet:null,
   capArea:'', enfCaps:[], dtOpen:'', savedAt:0, nuevoTomate:false, syncErr:'', cfgMsg:null, cfgDraft:null, areaNueva:null, areaColor:'', onb:0 };
 const abierto = k => !!pref.v('ab-' + k);
 
@@ -1095,15 +1147,17 @@ function fromRowT(r) {
     creado:r.creado || nowISO(), actualizado:r.actualizado || '', hecho:r.hecho || '', borrado:isTrue(r.borrado)
   };
 }
+// Cada operación lleva un identificador local (qid, solo en este dispositivo) para que la sincronización
+// quite de la cola exactamente lo que el servidor confirmó, aunque la cola cambie durante la petición.
 function encolar(hoja, fila) {
   const key = hoja === 'Ajustes' ? fila.clave : fila.id;
-  if (hoja !== 'Sesiones') S.cola = S.cola.filter(o => !(o.hoja === hoja && (o.fila.id || o.fila.clave) === key));
-  S.cola.push({ hoja, fila });
+  if (hoja !== 'Sesiones') S.cola = S.cola.filter(o => !(o.hoja === hoja && (o.fila.id || o.fila.clave) === key && !enVuelo.has(o.qid)));
+  S.cola.push({ hoja, fila, qid:uid() });
   save(); pintarSync(); programarSync();
 }
 function upsertT(t) {
+  if (ui.sheet && ui.sheet.k === 'detalle' && ui.sheet.id === t.id) alm.pendFlash = true;
   t.actualizado = nowISO(); encolar('Tareas', toRowT(t)); save();
-  if (ui.sheet && ui.sheet.k === 'detalle' && ui.sheet.id === t.id) flashGuardado();
 }
 function guardarAjustes() {
   S.ajustes.actualizado = nowISO();
@@ -1121,21 +1175,27 @@ function pushTimer() {
   }, 500);
 }
 let syncing = false, syncOtra = false, syncT, estadoS = '';
+const enVuelo = new Set(); // qid de las operaciones que se están enviando ahora
+S.cola.forEach(o => { if (!o.qid) o.qid = uid(); });
 function programarSync(ms = 1800) { clearTimeout(syncT); syncT = setTimeout(() => sincronizar(false), ms); }
 async function sincronizar(manual) {
   if (!S.conn.url || !S.conn.clave) { estadoS = 'sin'; pintarSync(); return false; }
   if (syncing) { syncOtra = true; return false; }
   syncing = true; estadoS = 'run'; pintarSync(); refrescarSi(['sync']);
+  // Instantánea del lote: el formato que se envía es el de siempre ({ hoja, fila }); el qid no sale del dispositivo.
   const lote = S.cola.slice(0, 300);
+  lote.forEach(o => enVuelo.add(o.qid));
   let ok = false;
   try {
     const ctrl = new AbortController(); const to = setTimeout(() => ctrl.abort(), 20000);
-    const res = await fetch(S.conn.url, { method:'POST', body:JSON.stringify({ clave:S.conn.clave, accion:'sync', ops:lote }), signal:ctrl.signal });
+    const res = await fetch(S.conn.url, { method:'POST', body:JSON.stringify({ clave:S.conn.clave, accion:'sync', ops:lote.map(o => ({ hoja:o.hoja, fila:o.fila })) }), signal:ctrl.signal });
     clearTimeout(to);
     if (!res.ok) throw new Error(`El servidor respondió con error ${res.status}.`);
     let j; try { j = await res.json(); } catch (e) { throw new Error('La URL no devolvió datos de Foco. Revisa que sea la de la aplicación web.'); }
     if (!j.ok) throw new Error(j.error === 'Clave incorrecta' ? 'La clave no coincide con la del Apps Script.' : (j.error || 'Respuesta inválida.'));
-    S.cola.splice(0, lote.length);
+    // Solo se retiran las operaciones de este lote; lo editado durante la petición sigue en cola.
+    const enviados = new Set(lote.map(o => o.qid));
+    S.cola = S.cola.filter(o => !enviados.has(o.qid));
     fusionar(j);
     S.ultSync = nowISO(); estadoS = 'ok'; ui.syncErr = ''; ok = true;
     guardarYa();
@@ -1148,6 +1208,7 @@ async function sincronizar(manual) {
       : e.message;
     if (manual) toast('No se pudo sincronizar');
   } finally {
+    lote.forEach(o => enVuelo.delete(o.qid));
     syncing = false; pintarSync(); refrescarSi(['sync', 'ajustes']);
     if (ok && (syncOtra || S.cola.length)) { syncOtra = false; programarSync(400); }
   }
@@ -1304,12 +1365,20 @@ function completar(t, origen) {
     clon = nuevaTarea(t.titulo, { estado:'prox', area:t.area, proyecto:t.proyecto, urgente:t.urgente, importante:t.importante, dur:t.dur,
       hora:t.hora, rec:t.rec, serie:t.serie || t.id, fecha:siguienteFecha(t.rec, base), orden:t.orden });
   }
-  if (S.timer && S.timer.tareaId === t.id && !S.timer.corriendo) { S.timer.tareaId = ''; pushTimer(); }
+  // Completar la tarea del reloj cierra su tramo (una sola vez) y libera el reloj; otra tarea no lo interrumpe.
+  const tm = S.timer, eraDelReloj = tm && tm.tareaId === t.id;
+  if (eraDelReloj) {
+    if (tm.fase === 'foco') cerrarTramo();
+    if (tm.fase === 'listo') { tm.fase = 'foco'; tm.total = tm.restante = segFase('foco'); }
+    tm.tareaId = ''; save(); pushTimer();
+  }
   const xp = xpTarea(t);
   xpFlotante(xp, origen);
   toast(`Hecha · +${xp} XP${clon ? ' · se repite ' + fechaCorta(clon.fecha).toLowerCase() : ''}`, 'Deshacer', () => {
     t.estado = prev; t.hecho = ''; upsertT(t);
     if (clon) { clon.borrado = true; upsertT(clon); }
+    // Deshacer devuelve la tarea al reloj, pero sin arrancarlo.
+    if (eraDelReloj && !enMarcha() && !S.timer.tareaId) { S.timer.tareaId = t.id; save(); pushTimer(); }
     renderVista();
   });
   revisarLogros();
@@ -1452,38 +1521,48 @@ const VISTAS = [
   { k:'tablero', n:'Tablero', ic:'kanban', sub:() => 'Todas tus tareas por estado' },
   { k:'hoy', n:'Hoy', ic:'sun', sub:() => { const d = new Date(); return `${DIAS[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]}`; } },
   { k:'enfoque', n:'Enfoque', ic:'timer', sub:() => 'Pomodoro y bloques de tiempo' },
-  { k:'progreso', n:'Panel', ic:'chart', sub:() => 'Tu avance y tus logros' }
+  { k:'progreso', n:'Progreso', ic:'chart', sub:() => 'Tu avance y tus logros' }
 ];
-// Tres pasos (ingresa → planifica → ejecuta) y el Panel con tu avance. Cada sección agrupa sus vistas en subpestañas.
+// Cuatro secciones: Hoy (con Enfoque como modo ampliado), Bandeja, Planifica (Lista, Tablero y Agenda) y Progreso.
+// «ocultas» son vistas del grupo que no aparecen como subpestaña.
 const GRUPOS = [
-  { k:'ingresa', n:'Ingresa', ic:'inbox', vs:['bandeja'] },
-  { k:'planifica', n:'Planifica', ic:'cal', vs:['lista', 'agenda'] },
-  { k:'ejecuta', n:'Ejecuta', ic:'bolt', vs:['hoy', 'tablero', 'enfoque'] },
-  { k:'panel', n:'Panel', ic:'chart', vs:['progreso'] }
+  { k:'hoy', n:'Hoy', ic:'sun', vs:['hoy', 'enfoque'], ocultas:['enfoque'] },
+  { k:'bandeja', n:'Bandeja', ic:'inbox', vs:['bandeja'] },
+  { k:'planifica', n:'Planifica', ic:'cal', vs:['lista', 'tablero', 'agenda'] },
+  { k:'progreso', n:'Progreso', ic:'chart', vs:['progreso'] }
 ];
+const subVistas = g => g.vs.filter(v => !(g.ocultas || []).includes(v));
 const grupoDe = v => GRUPOS.find(g => g.vs.includes(v));
 // Escritorio: pantallas anchas usan barra lateral, paneles lado a lado y la semana en columnas.
 const mqDesk = matchMedia('(min-width:1024px)');
 const desk = () => mqDesk.matches;
 function pintarTabs() {
   const nb = tareasEn('bandeja').length, run = S.timer && S.timer.corriendo, g0 = grupoDe(ui.view);
-  $('#tabs').innerHTML = `<div class="brand"><img src="icon-180.png" alt="" width="28" height="28">Foco</div>` + GRUPOS.map((g, i) => { const on = g === g0, v = ui.ult[g.k] || g.vs[0]; return `<button class="${on ? 'on' : ''}" data-a="tab" data-v="${v}" ${on ? 'aria-current="page"' : ''} aria-label="${g.n}${g.k === 'ingresa' && nb ? `, ${nb} por organizar` : ''}"><span class="tp">${ic(g.ic)}</span><span class="tl">${g.n}</span>${g.k === 'ingresa' && nb ? `<i class="bdg">${nb > 99 ? '99+' : nb}</i>` : ''}${g.k === 'ejecuta' && run && ui.view !== 'enfoque' ? '<i class="tdot"></i>' : ''}<kbd>${i + 1}</kbd></button>`; }).join('')
-    + `<div class="side-f"><b>Atajos</b><span><kbd>N</kbd>Capturar</span><span><kbd>1</kbd>–<kbd>4</kbd>Cambiar de sección</span><span><kbd>Espacio</kbd>Pausar o seguir</span><span><kbd>Esc</kbd>Cerrar</span></div>`;
+  $('#tabs').innerHTML = `<div class="brand"><img src="icon-180.png" alt="" width="28" height="28">Foco</div>` + GRUPOS.map((g, i) => { const on = g === g0, v = g.k === 'hoy' ? 'hoy' : ui.ult[g.k] || g.vs[0]; return `<button class="${on ? 'on' : ''}" data-a="tab" data-v="${v}" ${on ? 'aria-current="page"' : ''} aria-label="${g.n}${g.k === 'bandeja' && nb ? `, ${nb} por organizar` : ''}"><span class="tp">${ic(g.ic)}</span><span class="tl">${g.n}</span>${g.k === 'bandeja' && nb ? `<i class="bdg">${nb > 99 ? '99+' : nb}</i>` : ''}${g.k === 'hoy' && run && ui.view !== 'enfoque' ? '<i class="tdot"></i>' : ''}<kbd>${i + 1}</kbd></button>`; }).join('')
+    + `<div class="side-f"><b>Atajos</b><span><kbd>N</kbd>Capturar</span><span><kbd>1</kbd>–<kbd>4</kbd>Cambiar de sección</span><span><kbd>/</kbd>Buscar</span><span><kbd>F</kbd>Enfoque</span><span><kbd>Espacio</kbd>Pausar o seguir</span><span><kbd>Esc</kbd>Cerrar</span></div>`;
   const sn = $('#subnav');
-  sn.classList.toggle('hide', g0.vs.length < 2);
-  sn.innerHTML = g0.vs.map(k => { const V = VISTAS.find(x => x.k === k); return `<button class="${ui.view === k ? 'on' : ''}" data-a="tab" data-v="${k}" role="tab" aria-selected="${ui.view === k}">${ic(V.ic)}${V.n}</button>`; }).join('');
+  const sv = subVistas(g0);
+  sn.classList.toggle('hide', sv.length < 2);
+  sn.innerHTML = sv.map(k => { const V = VISTAS.find(x => x.k === k); return `<button class="${ui.view === k ? 'on' : ''}" data-a="tab" data-v="${k}" role="tab" aria-selected="${ui.view === k}">${ic(V.ic)}${V.n}</button>`; }).join('');
 }
+const RECUERDA_POS = ['lista', 'tablero', 'agenda', 'progreso'];
 function ir(v) {
   if (!VISTAS.some(x => x.k === v)) return;
   if (ui.view === v) { window.scrollTo({ top:0, behavior:'smooth' }); return; }
-  ui.view = v; ui.agSel = ''; ui.agY = null; ui.ult[grupoDe(v).k] = v;
+  ui.scroll[ui.view] = scrollY;
+  if (v === 'enfoque') ui.volverDe = ui.view;
+  ui.view = v; ui.agSel = ''; ui.ult[grupoDe(v).k] = v;
+  if (v !== 'enfoque') pref.set('ultVista', v);
   $$('.view').forEach(s => s.classList.toggle('on', s.id === 'v-' + v));
   window.scrollTo(0, 0);
   render();
+  // Cada vista de Planifica (y Progreso) vuelve a donde la dejaste.
+  if (RECUERDA_POS.includes(v) && ui.scroll[v]) window.scrollTo(0, ui.scroll[v]);
 }
 function encabezado() {
   const V = VISTAS.find(x => x.k === ui.view);
-  $('#hTitle').textContent = grupoDe(ui.view).n; $('#hSub').textContent = V.sub();
+  $('#hTitle').textContent = ui.view === 'enfoque' ? 'Enfoque' : grupoDe(ui.view).n; $('#hSub').textContent = V.sub();
+  $('#backBtn').classList.toggle('hide', ui.view !== 'enfoque');
   $('#infoBtn').setAttribute('aria-label', `Cómo funciona ${V.n}`);
   const r = stats().racha, sb = $('#streakBtn');
   sb.classList.toggle('hide', !r);
@@ -1896,7 +1975,7 @@ function renderHoy() {
   const tarde = new Date().getHours() >= 17;
   let html = htmlPaso();
   html += `<div class="sum"><div class="sum-t">${total ? `<b>${hechas.length} de ${total}</b><span>${hechas.length === total ? 'día completo' : 'hechas'}</span>` : '<b>Sin plan</b><span>para hoy</span>'}</div>
-    <button class="btn sm ghost" data-a="plan" data-v="${tarde ? 'manana' : 'hoy'}">${ic(tarde ? 'moon' : 'sparkle')}${tarde ? 'Planear mañana' : 'Planear'}</button></div>`;
+    <div class="sum-b"><button class="btn sm ghost" data-a="irEnfoque" aria-label="Abrir enfoque">${ic('timer')}Enfoque</button><button class="btn sm ghost" data-a="plan" data-v="${tarde ? 'manana' : 'hoy'}">${ic(tarde ? 'moon' : 'sparkle')}${tarde ? 'Planear mañana' : 'Planear'}</button></div></div>`;
   if (total) html += total <= 12
     ? `<div class="segbar" role="img" aria-label="${hechas.length} de ${total} hechas">${Array.from({ length:total }, (_, i) => `<i class="${i < hechas.length ? 'on' : ''}"></i>`).join('')}</div>`
     : `<div class="bar okbar"><i style="width:${hechas.length / total * 100}%"></i></div>`;
@@ -1986,18 +2065,20 @@ function renderSemana() {
   const v = $('#v-agenda');
   if (!ui.semIni || ui.semIni < hoy()) ui.semIni = hoy();
   const dias = Array.from({ length:7 }, (_, i) => addDays(ui.semIni, i));
-  const porAgendar = tareasEn('prox').filter(t => !t.fecha).sort(ordenPrioridad);
-  const sinHora = dias.flatMap(d => tareasDia(d).filter(t => t.estado !== 'hecho' && !t.hora));
+  const porAgendar = tareasEn('prox').filter(t => !t.fecha && pasaFiltro(t)).sort(ordenPrioridad);
+  const sinHora = dias.flatMap(d => tareasDia(d).filter(t => t.estado !== 'hecho' && !t.hora && pasaFiltro(t)));
+  const baseAg = tareasEn('prox').filter(t => !t.fecha).length + dias.flatMap(d => tareasDia(d).filter(t => t.estado !== 'hecho')).length;
+  const nAg = porAgendar.length + dias.flatMap(d => tareasDia(d).filter(t => t.estado !== 'hecho' && pasaFiltro(t))).length;
   const sel = ui.agSel && byId(ui.agSel);
   const d0 = parseYmd(dias[0]), d6 = parseYmd(dias[6]);
   const rango = d0.getMonth() === d6.getMonth() ? `${d0.getDate()} – ${d6.getDate()} de ${MESES[d6.getMonth()]}` : `${d0.getDate()} ${MESES[d0.getMonth()].slice(0, 3)} – ${d6.getDate()} ${MESES[d6.getMonth()].slice(0, 3)}`;
   const it = t => `<div class="sm-it ${ui.agSel === t.id ? 'sel' : ''}" draggable="true" data-dnd="${t.id}" data-a="agSel" data-id="${t.id}" role="button" tabindex="0" aria-pressed="${ui.agSel === t.id}" style="--a:${colorA(t.area)}"><i class="dot"></i><span>${esc(t.titulo)}</span>${t.fecha ? `<small>${t.fecha === hoy() ? 'Hoy' : DIAS3[parseYmd(t.fecha).getDay()]}</small>` : ''}</div>`;
-  const side = `<aside class="sm-side">
+  const side = `<aside class="sm-side">${htmlBarraFiltros(nAg, baseAg)}
     <div class="sm-nav"><button class="ib" data-a="semMov" data-v="-7" ${ui.semIni <= hoy() ? 'disabled' : ''} aria-label="Semana anterior">${ic('chevL')}</button><b>${rango}</b><button class="ib" data-a="semMov" data-v="7" aria-label="Semana siguiente">${ic('chevR')}</button></div>
     <div class="sm-acc">${ui.semIni !== hoy() ? `<button class="btn sm ghost" data-a="semMov" data-v="0">Volver a hoy</button>` : ''}<button class="btn sm ghost" data-a="plan" data-v="${new Date().getHours() >= 17 ? 'manana' : 'hoy'}">${ic('sparkle')}Elegir mis 6</button></div>
     ${sel ? `<div class="ag-banner">${ic('clock')}Toca una hora en el calendario para colocar «${esc(sel.titulo)}»</div>` : `<p class="hint">Arrastra una tarea al día y hora que quieras, o tócala y luego toca el calendario.</p>`}
     <div class="sec-t">Por agendar <span class="n">${porAgendar.length}</span></div>
-    ${porAgendar.length ? `<div class="sm-list">${porAgendar.map(it).join('')}</div>` : `<p class="hint">Nada pendiente. Organiza tu Bandeja como «Próxima acción» para verlas aquí.</p>`}
+    ${porAgendar.length ? `<div class="sm-list">${porAgendar.map(it).join('')}</div>` : chipsFiltro().length ? `<p class="hint">Sin coincidencias con los filtros.</p>` : `<p class="hint">Nada pendiente. Organiza tu Bandeja como «Próxima acción» para verlas aquí.</p>`}
     ${sinHora.length ? `<div class="sec-t">Con día, sin hora <span class="n">${sinHora.length}</span></div><div class="sm-list">${sinHora.map(it).join('')}</div>` : ''}
   </aside>`;
   const d = new Date(), nm = d.getHours() * 60 + d.getMinutes();
@@ -2007,7 +2088,7 @@ function renderSemana() {
     return `<div class="sm-h ${x === hoy() ? 'hoy' : ''} ${min > 480 ? 'over' : ''}"><span>${x === hoy() ? 'Hoy' : DIAS3[dd.getDay()]}</span><b>${dd.getDate()}</b><small>${pend.length ? `${pend.length} · ${txtHM(min || 0)}` : 'libre'}</small><i class="wk-l"><i style="width:${Math.min(100, min / 480 * 100)}%"></i></i></div>`;
   }).join('');
   const cols = dias.map(x => {
-    const bl = carriles(tareasDia(x).filter(t => t.hora)).map(ev => {
+    const bl = carriles(tareasDia(x).filter(t => t.hora && pasaFiltro(t, { sinEstado:t.estado === 'hecho' }))).map(ev => {
       const hecha = ev.t.estado === 'hecho', run = ev.t.estado === 'proceso', f = franja(ev.t), h = Math.max(ev.e - ev.s, 24);
       return `<div class="tl-b ${hecha ? 'hecha' : ''} ${run ? 'run' : ''} ${f ? 'f-' + f.k : ''}" style="--a:${colorA(ev.t.area)};top:${ev.s - AG_INI * 60}px;height:${h - 2}px;left:calc(2px + (100% - 4px) * ${ev.c / ev.n});width:calc((100% - 4px) / ${ev.n} - 2px)" data-id="${ev.t.id}" data-a="abrir" role="button" tabindex="0" ${hecha ? '' : `draggable="true" data-dnd="${ev.t.id}"`} title="${esc(ev.t.titulo)} · ${min2hm(ev.s)} – ${min2hm(ev.e)}"><b>${hecha ? ic('check') : ''}${esc(ev.t.titulo)}</b><span class="tl-t">${min2hm(ev.s)}${f ? ' · ' + f.txt : ''}</span></div>`;
     }).join('');
@@ -2055,7 +2136,9 @@ function renderAgenda() {
   html += `<div class="sum" style="margin-top:16px"><div class="sum-t"><b>${d === hoy() ? 'Hoy' : d === manana() ? 'Mañana' : cap1(fechaCorta(d))}</b><span>${pend.length ? `${pend.length} ${pend.length === 1 ? 'tarea' : 'tareas'}${min ? ' · ' + txtHM(min) : ''}` : 'libre'}</span></div>
     ${d <= manana() ? `<button class="btn sm ghost" data-a="plan" data-v="${d === hoy() ? 'hoy' : 'manana'}">${ic('sparkle')}Elegir mis 6</button>` : ''}</div>`;
   if (min > 480) html += `<div class="warn6">${ic('flag')}<span>Tienes ${txtHM(min)} planeadas este día. Más de 8 horas suele no caber; mueve algo a otro día.</span></div>`;
-  v.innerHTML = html + htmlAgenda(pend, hechas);
+  const pf = pend.filter(t => pasaFiltro(t)), hf = hechas.filter(t => pasaFiltro(t, { sinEstado:true }));
+  html += `<div style="margin-top:12px">${htmlBarraFiltros(pf.length, pend.length)}</div>`;
+  v.innerHTML = html + htmlAgenda(pf, hf);
   const w = $('#tlWrap');
   ajustarAgenda(w);
   if (ui.agY != null) w.scrollTop = ui.agY; else if (d === hoy()) posAgenda(w); else w.scrollTop = 8 * 60 - 20;
@@ -2064,7 +2147,7 @@ function renderAgenda() {
 }
 function htmlAgenda(items, hechas) {
   const sin = items.filter(t => !t.hora), con = [...items, ...hechas].filter(t => t.hora);
-  const porAgendar = tareasEn('prox').filter(t => !t.fecha).sort(ordenPrioridad);
+  const porAgendar = tareasEn('prox').filter(t => !t.fecha && pasaFiltro(t)).sort(ordenPrioridad);
   const evs = con.map(t => ({ t, s:hm2min(t.hora), e:Math.min(hm2min(t.hora) + Math.max(+t.dur || 30, 15), 24 * 60) })).sort((a, b) => a.s - b.s);
   let grupo = null; const grupos = [];
   evs.forEach(ev => {
@@ -2161,21 +2244,25 @@ function gruposLista(por, ts) {
 function renderLista() {
   const v = $('#v-lista'), por = ui.listaPor;
   const qPrev = $('#qaddIn', v), qVal = qPrev ? qPrev.value : '', qFoc = qPrev && document.activeElement === qPrev;
-  const ts = activas().filter(t => ['prox', 'hoy', 'proceso', 'espera'].includes(t.estado));
-  const algun = tareasEn('algun').sort((a, b) => b.creado.localeCompare(a.creado));
+  const todas = activas().filter(t => ['prox', 'hoy', 'proceso', 'espera'].includes(t.estado));
+  const ts = todas.filter(t => pasaFiltro(t));
+  const algun = ui.f.estado ? [] : tareasEn('algun').filter(t => pasaFiltro(t, { sinEstado:true })).sort((a, b) => b.creado.localeCompare(a.creado));
+  const filtrando = chipsFiltro().length > 0;
   const sinF = ts.filter(t => t.estado === 'prox' && !t.fecha).length, conHora = ts.filter(t => t.hora).length;
   let html = `<div class="seg" role="tablist" aria-label="Agrupar por">${[['cuando', 'cal', 'Cuándo'], ['area', 'layers', 'Área'], ['proyecto', 'folder', 'Proyecto']].map(([k, i, n]) => `<button class="${por === k ? 'on' : ''}" data-a="listaPor" data-v="${k}" role="tab" aria-selected="${por === k}">${ic(i)}${n}</button>`).join('')}</div>`;
+  html += htmlBarraFiltros(ts.length, todas.length);
   html += `<div class="ls-sum"><div><b>${ts.length}</b><span>activas</span></div><div class="${sinF ? 'pend' : ''}"><b>${sinF}</b><span>sin fecha</span></div><div><b>${conHora}</b><span>con horario</span></div><div><b>${algun.length}</b><span>algún día</span></div></div>`;
-  html += `<div class="qadd ls-add"><input id="qaddIn" maxlength="${MAX_TITULO}" placeholder="+ Agregar próxima acción" enterkeyhint="done" autocomplete="off" aria-label="Agregar próxima acción"></div>`;
+  html += `<div class="qadd ls-add"><input id="qaddIn" maxlength="${MAX_TITULO}" placeholder="${esc(phCaptura())}" enterkeyhint="done" autocomplete="off" aria-label="${esc(phCaptura().slice(2))}"></div>`;
   if (sinF) html += tip('lista', 'cal', `Toca <b>Agendar</b> en una tarea para darle día y hora en la Agenda.`);
-  if (!ts.length && !algun.length) {
+  if (filtrando && !ts.length && !algun.length) html += sinCoincidencias();
+  else if (!ts.length && !algun.length) {
     html += `<div class="zero"><div class="orb ac">${ic('list')}</div><h3>Aún no hay nada organizado</h3><p>Anota tus pendientes en la Bandeja y organízalos. Aquí verás todo lo que decidiste hacer.</p><button class="btn pri" style="margin-top:16px" data-a="irBandeja">Ir a la Bandeja</button></div>`;
   } else {
     gruposLista(por, ts).filter(g => g.ts.length).forEach(g => {
       html += `<div class="sec-t ${g.hot ? 'hot' : ''}">${g.c ? `<i class="dot" style="--a:${g.c}"></i>` : ic(g.ic)}${esc(g.n)} <span class="n">${g.ts.length}</span>${g.sub ? `<small>${g.sub}</small>` : ''}</div>
         <div class="group">${g.ts.map(t => filaLista(t, por)).join('')}</div>`;
     });
-    html += `<details class="sec-d" data-k="ls-algun" ${abierto('ls-algun') ? 'open' : ''}><summary class="sec-t">${ic('bulb')}Algún día <span class="n">${algun.length}</span><span class="sp"></span>${ic('chevD', 'chev')}</summary>${htmlBloc(true)}</details>`;
+    if (!ui.f.estado) html += `<details class="sec-d" data-k="ls-algun" ${abierto('ls-algun') ? 'open' : ''}><summary class="sec-t">${ic('bulb')}Algún día <span class="n">${algun.length}</span><span class="sp"></span>${ic('chevD', 'chev')}</summary>${htmlBloc(true)}</details>`;
   }
   v.innerHTML = html;
   if (qVal || qFoc) { const i = $('#qaddIn', v); i.value = qVal; if (qFoc) i.focus(); }
@@ -2190,7 +2277,46 @@ const COLS = [
   { k:'hecho', n:'Hecho', c:'var(--ok-f)', d:'Últimos 7 días' }
 ];
 const COLN = { prox:'Próximas', hoy:'Hoy', proceso:'En curso', espera:'En espera', hecho:'Hecho' };
-function pasaFiltro(t) { return ui.filtro === 'todas' || t.area === ui.filtro || (ui.filtro === 'sin' && !area(t.area)); }
+/* Filtros compartidos de Planifica: los mismos en Lista, Tablero y Agenda. Hoy y Bandeja no se filtran. */
+const PRIO_F = { q1:'Urgente e importante', imp:'Importante', urg:'Urgente', sin:'Sin prioridad' };
+const EST_F = { prox:'Próximas', hoy:'Hoy', proceso:'En curso', espera:'En espera' };
+const prioDe = t => t.urgente && t.importante ? 'q1' : t.importante ? 'imp' : t.urgente ? 'urg' : 'sin';
+function pasaFiltro(t, op = {}) {
+  const f = ui.f;
+  if (f.area !== 'todas' && !(f.area === 'sin' ? !area(t.area) : t.area === f.area)) return false;
+  if (f.proyecto && !(f.proyecto === '-' ? !t.proyecto : t.proyecto === f.proyecto)) return false;
+  if (f.estado && !op.sinEstado && t.estado !== f.estado) return false;
+  if (f.prio && prioDe(t) !== f.prio) return false;
+  return true;
+}
+function chipsFiltro() {
+  const f = ui.f, out = [];
+  if (f.area !== 'todas') out.push(['area', f.area === 'sin' ? 'Sin área' : (area(f.area)?.n || 'Área'), f.area === 'sin' ? 'var(--mut2)' : colorA(f.area)]);
+  if (f.proyecto) out.push(['proyecto', f.proyecto === '-' ? 'Sin proyecto' : f.proyecto]);
+  if (f.estado) out.push(['estado', EST_F[f.estado]]);
+  if (f.prio) out.push(['prio', PRIO_F[f.prio]]);
+  return out;
+}
+// Barra visible con los filtros activos, el conteo y «Limpiar filtros».
+function htmlBarraFiltros(n, total) {
+  const ch = chipsFiltro();
+  return `<div class="fbar"><button class="fbtn ${ch.length ? 'on' : ''}" data-a="filtrar" aria-label="Filtrar${ch.length ? `, ${ch.length} activos` : ''}">${ic('filter')}Filtrar${ch.length ? `<b>${ch.length}</b>` : ''}</button>
+    ${ch.map(([k, nm, c]) => `<button class="chip on" data-a="quitarFiltro" data-k="${k}" aria-label="Quitar filtro: ${esc(nm)}">${c ? `<i class="dot" style="--a:${c}"></i>` : ''}${esc(nm)}${ic('x')}</button>`).join('')}
+    ${ch.length ? `<span class="fcnt">${n} de ${total}</span><button class="lnk2" data-a="limpiarFiltros">Limpiar filtros</button>` : ''}</div>`;
+}
+const sinCoincidencias = (txt = 'Ninguna tarea coincide con los filtros.') => `<div class="zero"><div class="orb ac">${ic('filter')}</div><h3>Sin coincidencias</h3><p>${txt}</p><button class="btn pri" style="margin-top:16px" data-a="limpiarFiltros">Limpiar filtros</button></div>`;
+// Una captura solo hereda área o proyecto si ese filtro se ve en pantalla.
+function ctxCaptura() {
+  if (!['lista', 'tablero'].includes(ui.view)) return {};
+  const f = ui.f, o = {};
+  if (f.area !== 'todas' && f.area !== 'sin' && area(f.area)) o.area = f.area;
+  if (f.proyecto && f.proyecto !== '-') o.proyecto = f.proyecto;
+  return o;
+}
+function phCaptura() {
+  const c = ctxCaptura(), d = [c.area && area(c.area).n, c.proyecto].filter(Boolean);
+  return '+ Agregar próxima acción' + (d.length ? ' en ' + d.join(' · ') : '');
+}
 function tareasCol(k) {
   const ts = tareasEn(k).filter(pasaFiltro);
   if (k === 'hecho') { const s = addDays(hoy(), -7); return ts.filter(t => diaDeISO(t.hecho) >= s).sort((a, b) => b.hecho.localeCompare(a.hecho)).slice(0, 40); }
@@ -2204,7 +2330,7 @@ function cardK(t, k) {
     if (k === 'espera' && t.espera) out.push(`<span class="tag">${ic('hourglass')}${esc(t.espera)}</span>`);
     if (t.fecha && t.fecha !== hoy()) out.push(`<span class="tag">${ic('cal')}${fechaCorta(t.fecha)}</span>`);
     if (cuad(t)) out.push(pq(t));
-    if (ui.filtro === 'todas' && area(t.area)) out.push(`<span class="tag"><i class="dot" style="--a:${colorA(t.area)}"></i>${esc(area(t.area).n)}</span>`);
+    if (ui.f.area === 'todas' && area(t.area)) out.push(`<span class="tag"><i class="dot" style="--a:${colorA(t.area)}"></i>${esc(area(t.area).n)}</span>`);
     if (t.dur) out.push(`<span class="tag">${ic('timer')}${t.dur} min</span>`);
   }
   const tm = T(), suyo = tm.tareaId === t.id && k === 'proceso' && enMarcha() && tm.fase !== 'listo', run = suyo && tm.corriendo;
@@ -2224,17 +2350,15 @@ function cardK(t, k) {
 function renderTablero() {
   const v = $('#v-tablero');
   const prevLeft = $('#board', v) ? $('#board', v).scrollLeft : null;
-  const fa = ui.filtro !== 'todas';
-  const nAct = ['prox', 'hoy', 'proceso', 'espera'].reduce((n, k) => n + tareasEn(k).filter(pasaFiltro).length, 0);
-  let html = `<div class="tb-top"><div class="tb-sum"><b>${nAct} ${nAct === 1 ? 'tarea activa' : 'tareas activas'}</b><span>Avánzalas de izquierda a derecha</span></div>
-    <button class="ib filt ${fa ? 'on' : ''}" data-a="filtrar" aria-label="Filtrar por área${fa ? ' (activo)' : ''}">${ic('filter')}</button></div>`;
-  if (fa) html += `<div class="chips" style="margin-top:12px"><button class="chip area on" style="--a:${ui.filtro === 'sin' ? 'var(--mut)' : colorA(ui.filtro)}" data-a="filtro" data-v="todas" aria-label="Quitar filtro"><i class="dot"></i>${esc(ui.filtro === 'sin' ? 'Sin área' : (area(ui.filtro)?.n || ''))}${ic('x')}</button></div>`;
+  const base = ['prox', 'hoy', 'proceso', 'espera'].flatMap(k => tareasEn(k));
+  const nAct = base.filter(t => pasaFiltro(t)).length;
+  let html = htmlBarraFiltros(nAct, base.length);
   const datos = COLS.map(c => ({ c, ts:tareasCol(c.k) }));
   html += `<div class="coltabs" id="coltabs" role="tablist" aria-label="Columnas">${datos.map(({ c, ts }) => `<button class="${ui.col === c.k ? 'on' : ''}" data-a="colGo" data-v="${c.k}" role="tab"><span>${c.n}</span><b class="${c.lim && ts.length >= c.lim ? 'full' : ''}">${ts.length}${c.lim ? '/' + c.lim : ''}</b></button>`).join('')}</div>`;
   html += tip('tablero', 'arrowR', 'Usa el botón de cada tarjeta para avanzarla, o mantenla presionada y arrástrala a otra columna.');
   html += `<div class="board" id="board">${datos.map(({ c, ts }) => `<section class="col" style="--c:${c.c}" data-col="${c.k}" aria-label="${c.n}">
       <div class="col-h"><div><i class="cd"></i>${c.n}<span class="cnt">${ts.length}</span></div><small>${c.d}</small></div>
-      ${c.k === 'prox' ? `<div class="qadd"><input id="qaddIn" maxlength="${MAX_TITULO}" placeholder="+ Agregar próxima acción" enterkeyhint="done" autocomplete="off" aria-label="Agregar próxima acción"></div>` : ''}
+      ${c.k === 'prox' ? `<div class="qadd"><input id="qaddIn" maxlength="${MAX_TITULO}" placeholder="${esc(phCaptura())}" enterkeyhint="done" autocomplete="off" aria-label="${esc(phCaptura().slice(2))}"></div>` : ''}
       <div class="list" data-list="${c.k}">${ts.map(t => cardK(t, c.k)).join('')}<div class="empty">${{ prox:'Organiza tu Bandeja para llenar esta lista', hoy:'Usa «Planear» en Hoy', proceso:'Empieza una tarea desde Hoy', espera:'Nada pendiente de otros', hecho:'Aquí verás lo que termines' }[c.k]}</div></div>
     </section>`).join('')}</div>`;
   v.innerHTML = html;
@@ -2256,8 +2380,8 @@ function ajustarBoard() {
   const extra = document.body.classList.contains('has-mini') ? 54 : 0;
   b.style.height = Math.max(340, innerHeight - top - (desk() ? 0 : $('#tabs').offsetHeight) - extra - 10) + 'px';
 }
-function htmlBloc(todas) {
-  const ts = tareasEn('algun').filter(t => todas || pasaFiltro(t)).sort((a, b) => b.creado.localeCompare(a.creado));
+function htmlBloc() {
+  const ts = tareasEn('algun').filter(t => pasaFiltro(t, { sinEstado:true })).sort((a, b) => b.creado.localeCompare(a.creado));
   return `<div class="panel cap" style="margin-top:12px" id="blocBox"><div class="cap-r"><textarea id="blocIn" rows="1" maxlength="${MAX_TITULO}" placeholder="Una idea para algún día…" enterkeyhint="send" aria-label="Nueva idea" style="min-height:50px"></textarea><button class="cap-send" data-a="blocAdd" aria-label="Guardar idea">${ic('plus')}</button></div></div>
     <p class="hint">Ideas sin fecha ni presión. Revísalas cada semana y activa las que ya tengan su momento.</p>
     ${ts.length ? `<div class="bloc">${ts.map(t => `<div class="note" style="--a:${colorA(t.area)}" data-a="abrir" data-id="${t.id}" role="button" tabindex="0"><div class="nt">${esc(t.titulo)}</div>
@@ -2301,10 +2425,23 @@ async function iniciar() {
   pintarMini(); pintarTabs(); actualizarReloj();
 }
 function pausar() { const t = T(); t.restante = restante(); t.corriendo = false; save(); pantallaActiva(false); pushTimer(); if (ui.view === 'enfoque') renderEnfoque(); else renderVista(); pintarMini(); pintarTabs(); actualizarReloj(); }
+// Regla única para cerrar un tramo de enfoque (terminar, completar, cambiar o eliminar la tarea):
+// se registra desde 5 minutos; si es menor, se avisa que no se registró. Devuelve los minutos registrados.
+const MIN_TRAMO = 300;
+function cerrarTramo(aviso = true) {
+  const t = T();
+  if (t.fase !== 'foco' || !enMarcha()) return 0;
+  const hecho = t.total - restante(), min = Math.round(hecho / 60);
+  if (hecho >= MIN_TRAMO) registrarSesion(hecho >= t.total - 30, min);
+  else if (aviso && hecho >= 15) toast('Tramo de menos de 5 minutos: no se registró');
+  t.corriendo = false; t.total = t.restante = segFase('foco'); t.inicio = ''; pantallaActiva(false);
+  save(); pushTimer();
+  return hecho >= MIN_TRAMO ? min : 0;
+}
 function detener() {
   const t = T();
   if (t.corriendo && Date.now() >= t.fin) { finFase(); return; }
-  if (t.fase === 'foco') { const hecho = t.total - restante(); if (hecho >= 300) registrarSesion(hecho >= t.total - 2, Math.round(hecho / 60)); }
+  if (t.fase === 'foco') cerrarTramo(false);
   t.fase = 'foco'; t.corriendo = false; t.total = t.restante = segFase('foco'); t.inicio = '';
   save(); pantallaActiva(false); pushTimer(); render();
 }
@@ -2318,8 +2455,14 @@ function registrarSesion(completa, min, finTs) {
   xpFlotante(xpSesion(s), $('#ringWrap'));
   ui.nuevoTomate = completa && s.tipo === 'pomodoro';
 }
+// Varias pestañas en este dispositivo comparten el mismo reloj: solo una cierra cada fase (marca por fin de fase).
+const FIN_LOCK = LS + '.finFase';
 function finFase() {
   const t = T(), finTs = t.fin, reciente = Date.now() - finTs < 8000;
+  try {
+    if (localStorage.getItem(FIN_LOCK) === String(finTs)) { adoptarDeOtraPestana(); return; }
+    localStorage.setItem(FIN_LOCK, String(finTs));
+  } catch (e) {}
   t.corriendo = false;
   if (t.fase === 'foco') {
     registrarSesion(true, Math.round(t.total / 60), finTs);
@@ -2334,10 +2477,24 @@ function finFase() {
     if (reciente) sonido('descanso');
     t.fase = 'foco'; t.total = t.restante = segFase('foco'); t.inicio = ''; pantallaActiva(false);
   }
-  save(); pushTimer(); revisarLogros();
+  guardarYa(); pushTimer(); revisarLogros();
   if (ui.view === 'enfoque') renderEnfoque(); else renderVista();
   pintarMini();
 }
+// Otra pestaña guardó: se adoptan sus datos para no pisarlos con una copia vieja ni duplicar sesiones.
+function adoptarDeOtraPestana() {
+  let n; try { n = JSON.parse(localStorage.getItem(LS)); } catch (e) { return; }
+  if (!n || !Array.isArray(n.tareas)) return;
+  clearTimeout(saveT);
+  const conn = S.conn;
+  S = Object.assign({ tareas:[], sesiones:[], ajustes:defAjustes(), cola:[], timer:null, conn, ultSync:'', lvlVisto:0, insVistas:null, diaRoll:'', procRec:[] }, n);
+  S.ajustes = Object.assign(defAjustes(), S.ajustes);
+  if (!S.timer) S.timer = tDef();
+  S.cola.forEach(o => { if (!o.qid) o.qid = uid(); });
+  const t = T(); pantallaActiva(t.corriendo);
+  renderSeguro(); pintarMini(); actualizarReloj();
+}
+addEventListener('storage', e => { if (e.key === LS && e.newValue) adoptarDeOtraPestana(); });
 function tic() {
   const t = T();
   if (t.corriendo && Date.now() >= t.fin) finFase();
@@ -2418,7 +2575,9 @@ async function enfocar(id, auto) {
     const prev = byId(t.tareaId);
     const r = await dialogo({ titulo:'Ya tienes un enfoque en marcha', texto:`Estás trabajando en «${prev ? prev.titulo : 'otra tarea'}». Si cambias, se guarda el tiempo que llevas.`, ok:'Cambiar de tarea', cancelar:'Seguir con la actual' });
     if (r !== 1) return;
-    detener();
+    const min = cerrarTramo();
+    if (prev && prev.estado === 'proceso') { prev.estado = 'hoy'; upsertT(prev); }
+    if (min) toast(`${min} min guardados en «${prev ? prev.titulo : 'Enfoque libre'}»`);
   }
   t.tareaId = id;
   if (t.modo === 'bloque' && x.dur >= 10 && !t.corriendo) { t.bloqueMin = x.dur; t.total = t.restante = segFase('foco'); }
@@ -2521,30 +2680,32 @@ function ayuda(k) {
       ['check', 'Marcar como hecha', 'Toca el círculo de cualquier tarea o el botón verde. Siempre puedes deshacerlo desde el aviso.'],
       ['grip', 'Cambiar el orden', 'Arrastra desde los seis puntos de la derecha. Si sueltas la tarea sobre la tarjeta de arriba, se vuelve la siguiente.'],
       ['clock', 'Horarios en vivo', 'Las tareas con hora te avisan «en 20 min», «ahora» o «atrasada», y la línea del día muestra tus bloques y la hora actual.'],
-      ['moon', 'Planear', 'Por la noche elige tus 6 de mañana. Lo que no termines pasa solo al día siguiente.']] },
+      ['moon', 'Planear', 'Por la noche elige tus 6 de mañana. Lo que no termines pasa solo al día siguiente.'],
+      ['timer', 'Enfoque', 'El botón «Enfoque» (o la tecla F) abre el reloj en grande, con tarea o en enfoque libre. Sal con la flecha de arriba.']] },
     lista:{ d:'Todo lo que ya organizaste en un solo lugar: lo de hoy, lo que tiene fecha, lo que aún no y lo que espera a alguien.', p:[
       ['cal', 'Agrupar', 'Ordénalo por cuándo, por área o por proyecto para ver si algo se te está quedando atrás.'],
       ['clock', 'Agendar', 'Toca «Agendar» en una tarea: te lleva a la Agenda con ella lista para colocarla en un día y hora.'],
       ['check', 'Marcar como hecha', 'Toca el círculo. Toca la tarea para editar su área, prioridad o duración.'],
+      ['filter', 'Filtrar', 'Los filtros de área, proyecto, estado y prioridad se comparten entre Lista, Tablero y Agenda. Siempre se ven arriba, con «Limpiar filtros».'],
       ['bulb', 'Algún día', 'Ideas sin fecha al final de la lista. Actívalas cuando les llegue su momento.']] },
     agenda:{ d:'Asigna horario: elige un día y acomoda tus tareas por hora (time blocking).', p:[
       ['cal', 'La semana', 'Cada día muestra cuántas tareas tiene y una barra con las horas planeadas. Toca un día para verlo.'],
       ['clock', 'Agendar', 'Toca una tarea de «Por agendar» o «Sin hora» y luego una hora en la agenda. Queda con fecha y hora.'],
       ['grip', 'Mover', 'Mantén presionado un bloque para cambiarlo de hora.'],
       ['sparkle', 'Elegir mis 6', 'Para hoy y mañana, elige y ordena tus tareas con el método Ivy Lee.']] },
-    tablero:{ d:'Todas tus tareas activas según su estado (método Kanban). Úsalo para ver el panorama completo.', p:[
+    tablero:{ d:'Tus tareas activas según su estado (método Kanban), con los mismos filtros que la Lista y la Agenda.', p:[
       ['list', 'Próximas', 'Ya decidiste hacerlas, pero aún no tienen día.'],
       ['sun', 'Hoy', 'Las que elegiste para hoy.'],
       ['timer', 'En curso', 'La que estás trabajando ahora. Solo una a la vez.'],
       ['hourglass', 'En espera', 'Dependen de otra persona. Anota de quién para darle seguimiento.'],
       ['arrowR', 'Mover tareas', 'Usa el botón de cada tarjeta, o mantenla presionada y arrástrala a otra columna.'],
       ['tomato', 'Enfoque en la tarjeta', 'Toca «Empezar» en Hoy: la tarea pasa a En curso con su reloj a la vista, y puedes pausarla sin salir del tablero.']] },
-    enfoque:{ d:'Trabaja una sola tarea sin interrupciones. Cada sesión completa suma puntos y alimenta tu racha.', p:[
+    enfoque:{ d:'El modo ampliado del reloj: una sola tarea, sin interrupciones. Cada sesión completa suma puntos y alimenta tu racha.', p:[
       ['tomato', 'Pomodoro', `${a.pomo} minutos de enfoque y ${a.corto} de descanso. Cada ${a.cada}, un descanso largo de ${a.largo}. Ajusta los tiempos en Ajustes.`],
       ['clock', 'Bloque de tiempo', 'Tú eliges la duración. Útil para tareas largas o trabajo profundo.'],
       ['bulb', 'Captura sin salir', 'Si se te ocurre algo, anótalo abajo: se va a tu Bandeja y el reloj sigue.'],
       ['check', 'Terminar la tarea', 'Toca el botón verde junto a la tarea. Foco te propone la siguiente de tu lista.']] },
-    progreso:{ d:'Tu panel: avance, logros y todo lo que has terminado.', p:[
+    progreso:{ d:'Tu avance, tus logros y todo lo que has terminado.', p:[
       ['star', 'Puntos (XP)', 'Tarea hecha: +10, +10 más si era importante y +5 si además era urgente. Pomodoro: +25. Vaciar la bandeja: +15. Planear el día: +10.'],
       ['flame', 'Racha', 'Días seguidos con al menos una tarea hecha o 5 minutos de enfoque.'],
       ['award', 'Insignias', 'Se desbloquean con hábitos: rachas, pomodoros y tareas terminadas.'],
@@ -2552,9 +2713,9 @@ function ayuda(k) {
   })[k];
 }
 const ONB = [
-  { ic:'inbox', paso:'Ingresa', t:'Vacía tu cabeza', d:'Anota cada pendiente en cuanto se te ocurra, empezando con un verbo: «Enviar…», «Revisar…». Luego toca «Organizar» para decidir qué es cada cosa.' },
-  { ic:'cal', paso:'Planifica', t:'Mira todo y dale horario', d:'En la Lista ves todo lo que organizaste. Desde ahí mándalo a la Agenda para darle día y hora, y elige tus 6 más importantes de hoy o de mañana.' },
-  { ic:'bolt', paso:'Ejecuta', t:'Una a la vez', d:'Trabaja tus tareas en orden con un Pomodoro que corre en la misma tarjeta. Usa el Tablero para ver cómo avanza todo, y el Panel para tus logros.' }
+  { ic:'inbox', paso:'Bandeja', t:'Vacía tu cabeza', d:'Anota cada pendiente en cuanto se te ocurra, empezando con un verbo: «Enviar…», «Revisar…». Luego toca «Organizar» para decidir qué es cada cosa.' },
+  { ic:'cal', paso:'Planifica', t:'Mira todo y dale horario', d:'En Lista, Tablero y Agenda ves todo lo que organizaste, con los mismos filtros. Dale día y hora, y elige tus 6 más importantes de hoy o de mañana.' },
+  { ic:'sun', paso:'Hoy', t:'Una a la vez', d:'Trabaja tus tareas en orden con un Pomodoro que corre en la misma tarjeta, o ábrelo en grande con Enfoque. En Progreso verás tu avance.' }
 ];
 function abrirOnb() { ui.onb = 0; $('#onb').classList.add('on'); document.documentElement.classList.add('lock'); pintarOnb(); }
 function pintarOnb() {
@@ -2576,6 +2737,8 @@ function cab(titulo, extra = '') {
   return `<div class="sh-top"><div class="grab" data-a="cerrarSheet" aria-hidden="true"></div><div class="sh-row">${titulo}${extra}<button class="ib x" data-a="cerrarSheet" aria-label="Cerrar">${ic('x')}</button></div></div>`;
 }
 function abrirSheet(ctx) {
+  flushDebs('dt:');
+  if (ui.sheet && ui.sheet.k === 'detalle' && !(ctx.k === 'detalle' && ctx.id === ui.sheet.id)) guardarDetalleTexto();
   if (ctx.k === 'detalle' && (!ui.sheet || ui.sheet.id !== ctx.id)) ui.dtOpen = ctx.open || '';
   if (ctx.k === 'ajustes' && (!ui.sheet || ui.sheet.k !== 'ajustes')) { ui.cfgMsg = null; ui.cfgDraft = null; ui.areaNueva = null; ui.areaColor = ''; }
   ui.sheet = ctx;
@@ -2585,15 +2748,17 @@ function abrirSheet(ctx) {
   // Encima de «Organizar» cuando se abre desde ahí
   sh.classList.toggle('top', !!ctx.top); $('#sheetBg').classList.toggle('top', !!ctx.top);
   sh.style.setProperty('--dy', '0px');
-  sh.setAttribute('aria-label', { detalle:'Detalle de la tarea', plan:'Planear', ajustes:'Ajustes', captura:'Capturar', picker:'Elegir tarea', filtro:'Filtrar', sync:'Sincronización', ayuda:'Ayuda', verbo:'Elegir verbo', areaSel:'Elegir área', dividir:'Dividir en pasos' }[ctx.k] || '');
+  sh.setAttribute('aria-label', { detalle:'Detalle de la tarea', plan:'Planear', ajustes:'Ajustes', captura:'Capturar', picker:'Elegir tarea', filtro:'Filtrar', buscar:'Buscar', sync:'Sincronización', ayuda:'Ayuda', verbo:'Elegir verbo', areaSel:'Elegir área', dividir:'Dividir en pasos' }[ctx.k] || '');
   $('#sheetBg').classList.add('on'); sh.classList.add('on');
   document.documentElement.classList.add('lock');
   if (ctx.k === 'captura') setTimeout(() => $('#capSheetIn')?.focus(), 320);
+  if (ctx.k === 'buscar') setTimeout(() => { const i = $('#buscarIn'); if (i) { i.focus(); i.select(); } }, 320);
 }
 function cerrarSheet(silencioso, sinVolver) {
   if (!ui.sheet) return;
   // Un selector abierto desde otra hoja regresa a ella al cerrarse
   if (!sinVolver && ui.sheet.volver) { abrirSheet(ui.sheet.volver); return; }
+  flushDebs('dt:');
   if (ui.sheet.k === 'detalle') guardarDetalleTexto();
   ui.sheet = null;
   $('#sheetBg').classList.remove('on'); $('#sheet').classList.remove('on');
@@ -2617,6 +2782,7 @@ function refrescarSheet(inicio) {
   else if (c.k === 'captura') html = htmlCaptura();
   else if (c.k === 'picker') html = htmlPicker();
   else if (c.k === 'filtro') html = htmlFiltro();
+  else if (c.k === 'buscar') html = htmlBuscar();
   else if (c.k === 'sync') html = htmlSync();
   else if (c.k === 'ayuda') html = htmlAyuda(c.v);
   else if (c.k === 'verbo') html = htmlVerbo();
@@ -2707,10 +2873,23 @@ function abrirSelector(k, dest) {
   abrirSheet(ctx);
 }
 let flashT;
+function guardando() {
+  clearTimeout(flashT);
+  const s = $('#savedTag'); if (!s) return;
+  s.className = 'saved on run'; s.innerHTML = 'Guardando…';
+}
 function flashGuardado() {
   ui.savedAt = Date.now();
-  const s = $('#savedTag'); if (s) s.classList.add('on');
-  clearTimeout(flashT); flashT = setTimeout(() => { const x = $('#savedTag'); if (x) x.classList.remove('on'); }, 1500);
+  const s = $('#savedTag'); if (s) { s.className = 'saved on'; s.innerHTML = ic('check') + 'Guardado en este dispositivo'; }
+  clearTimeout(flashT); flashT = setTimeout(() => { const x = $('#savedTag'); if (x && !x.classList.contains('err')) x.classList.remove('on'); }, 1800);
+}
+// Falla de escritura: el texto sigue en pantalla y en memoria; se ofrece reintentar o descargar un respaldo.
+function errorGuardado() {
+  clearTimeout(flashT);
+  const s = $('#savedTag'); if (s) { s.className = 'saved on err'; s.innerHTML = ic('x') + 'No se guardó'; }
+  if (Date.now() - alm.avisado < 15000) return;
+  alm.avisado = Date.now();
+  toast(`${alm.err} Tus cambios siguen en pantalla.`, 'Descargar respaldo', () => ACT.exportar(), 'cloudErr');
 }
 function htmlAyuda(v) {
   const V = VISTAS.find(x => x.k === v) || VISTAS[1], A = ayuda(V.k);
@@ -2746,11 +2925,39 @@ function htmlPicker() {
     <div class="sh-end"></div>`;
 }
 function htmlFiltro() {
-  const enTablero = vivas().filter(t => ['prox', 'hoy', 'proceso', 'espera'].includes(t.estado));
-  const ops = [['todas', 'Todas las áreas', 'var(--mut2)', enTablero.length],
-    ...areas().map(a => [a.id, a.n, a.c, enTablero.filter(t => t.area === a.id).length]),
-    ['sin', 'Sin área', 'var(--mut2)', enTablero.filter(t => !area(t.area)).length]];
-  return cab('<h2>Filtrar por área</h2>') + `<div class="group">${ops.map(([k, n, c, cnt]) => `<button class="tr opt" data-a="filtroSel" data-v="${k}" aria-pressed="${ui.filtro === k}"><i class="dot" style="--a:${c}"></i><span class="tb"><span class="tt">${esc(n)}</span></span><span class="mut sm">${cnt}</span><span class="ib-s" style="color:var(--ac-t)">${ui.filtro === k ? ic('check') : ''}</span></button>`).join('')}</div><div class="sh-end"></div>`;
+  const f = ui.f, base = activas().filter(t => ['prox', 'hoy', 'proceso', 'espera'].includes(t.estado));
+  const n = base.filter(t => pasaFiltro(t)).length;
+  const grupo = (k, titulo, ops) => `<div class="f-sec"><span class="f-l">${titulo}</span><div class="chips" role="radiogroup" aria-label="${titulo}">${ops.map(([v, nm, c]) => `<button class="chip ${f[k] === v ? 'on' : ''}" data-a="filtroSet" data-k="${k}" data-v="${esc(v)}" role="radio" aria-checked="${f[k] === v}">${c ? `<i class="dot" style="--a:${c}"></i>` : ''}${esc(nm)}</button>`).join('')}</div></div>`;
+  const proys = [...new Set(base.map(t => t.proyecto).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es'));
+  return cab('<h2>Filtrar</h2>') + `<p class="hint" style="margin:0 2px 8px">Se aplica a Lista, Tablero y Agenda. Hoy y Bandeja no cambian.</p>
+    ${grupo('area', 'Área', [['todas', 'Todas'], ...areas().map(a => [a.id, a.n, a.c]), ['sin', 'Sin área', 'var(--mut2)']])}
+    ${grupo('proyecto', 'Proyecto', [['', 'Todos'], ...proys.map(p => [p, p]), ['-', 'Sin proyecto']])}
+    ${grupo('estado', 'Estado', [['', 'Todos'], ...Object.entries(EST_F)])}
+    ${grupo('prio', 'Prioridad', [['', 'Todas'], ...Object.entries(PRIO_F)])}
+    <div class="sh-foot"><button class="btn" data-a="limpiarFiltros">Limpiar filtros</button><button class="btn pri" data-a="cerrarSheet">Ver ${n} ${n === 1 ? 'tarea' : 'tareas'}</button></div>`;
+}
+/* Búsqueda global: título, proyecto, área, resultado y notas; incluye completadas sin ocultarlas. */
+function htmlBuscar() {
+  return cab('<h2>Buscar</h2>') + `<input class="in" id="buscarIn" data-in="buscarQ" type="search" enterkeyhint="search" placeholder="Título, proyecto o notas" value="${esc(ui.buscarQ)}" autocomplete="off" aria-label="Buscar tareas">
+    <div id="buscarRes" aria-live="polite">${htmlResultados()}</div><div class="sh-end"></div>`;
+}
+function htmlResultados() {
+  const qt = ui.buscarQ.trim(), q = norm(qt);
+  if (!q) return `<p class="hint">Busca entre todas tus tareas, también las terminadas, por título, proyecto, área o texto de sus notas.</p>`;
+  const notas = t => (t.notas || []).map(n => n.x);
+  const ts = vivas().filter(t => norm([t.titulo, t.proyecto, area(t.area)?.n || '', t.resultado || '', t.espera || '', ...notas(t)].join(' ')).includes(q));
+  if (!ts.length) return `<div class="empty" style="margin-top:16px">Sin coincidencias para «${esc(qt)}».</div>`;
+  const act = ts.filter(t => t.estado !== 'hecho').sort(ordenPrioridad);
+  const hechas = ts.filter(t => t.estado === 'hecho').sort((a, b) => (b.hecho || '').localeCompare(a.hecho || ''));
+  const fila = t => {
+    const nota = norm(t.titulo).includes(q) ? '' : notas(t).find(x => norm(x).includes(q));
+    const cuando = t.estado === 'hecho' ? `<span class="tag">${ic('check')}${fechaCorta(diaDeISO(t.hecho))}</span>` : t.fecha ? `<span class="tag">${ic('cal')}${fechaCorta(t.fecha)}${t.hora ? ' · ' + t.hora : ''}</span>` : '';
+    return `<button class="tr opt bres" data-a="abrirRes" data-id="${t.id}" style="--a:${colorA(t.area)}"><span class="tb"><span class="tt">${esc(t.titulo)}</span>
+      <span class="mt"><span class="est ${t.estado}">${ESTADOS[t.estado]}</span>${area(t.area) ? `<span class="tag"><i class="dot" style="--a:${colorA(t.area)}"></i>${esc(area(t.area).n)}</span>` : ''}${t.proyecto ? `<span class="tag">${ic('folder')}${esc(t.proyecto)}</span>` : ''}${cuando}</span>
+      ${nota ? `<span class="bnota">${ic('note')}${esc(nota.length > 90 ? nota.slice(0, 89) + '…' : nota)}</span>` : ''}</span>${ic('chevR')}</button>`;
+  };
+  return (act.length ? `<div class="sec-t">Activas <span class="n">${act.length}</span></div><div class="group">${act.slice(0, 40).map(fila).join('')}</div>` : '')
+    + (hechas.length ? `<div class="sec-t">${ic('check')}Completadas <span class="n">${hechas.length}</span></div><div class="group">${hechas.slice(0, 40).map(fila).join('')}</div>` : '');
 }
 // Detalle como lista de ajustes de iOS: cada fila muestra su valor y abre un solo selector a la vez.
 function htmlDetalle(t) {
@@ -2816,7 +3023,9 @@ function htmlAjustes() {
   return cab('<h2>Ajustes</h2>') + `
     <div class="f-sec"><span class="f-l">Apariencia</span>
       <div class="seg" role="radiogroup" aria-label="Tema">${[['auto', 'Automático'], ['light', 'Claro'], ['dark', 'Oscuro']].map(([k, n]) => `<button class="${tema === k ? 'on' : ''}" data-a="tema" data-v="${k}" role="radio" aria-checked="${tema === k}">${n}</button>`).join('')}</div>
-      <p class="hint">Automático sigue el modo claro u oscuro de tu iPhone.</p>
+      <p class="hint">Automático sigue el modo claro u oscuro de tu sistema.</p>
+      <span class="f-l" style="margin-top:16px">Al abrir Foco</span>
+      <div class="seg" role="radiogroup" aria-label="Pantalla inicial">${[['hoy', 'Mostrar Hoy'], ['ultima', 'Última vista']].map(([k, n]) => `<button class="${(pref.v('inicio') || 'hoy') === k ? 'on' : ''}" data-a="inicio" data-v="${k}" role="radio" aria-checked="${(pref.v('inicio') || 'hoy') === k}">${n}</button>`).join('')}</div>
       <div class="group" style="margin-top:16px"><div class="set-r"><span class="sl">Modo calma<small>Sin confeti, animaciones ni avisos de logros</small></span><button class="sw ${pref.v('calma') ? 'on' : ''}" data-a="calma" role="switch" aria-checked="${!!pref.v('calma')}" aria-label="Modo calma"></button></div></div></div>
     <div class="f-sec" id="secAreas"><span class="f-l">Áreas</span><div class="group">
       ${a.areas.map(x => `<div class="ar-r"><button class="sw-c" style="--a:${x.c}" data-a="areaColor" data-id="${x.id}" aria-label="Cambiar color de ${esc(x.n)}" aria-expanded="${ui.areaColor === x.id}"></button><input type="text" value="${esc(x.n)}" maxlength="30" data-in="areaN" data-id="${x.id}" aria-label="Nombre del área"><span class="cnt">${activasDe(x.id) || ''}</span><button class="ib" data-a="areaDel" data-id="${x.id}" aria-label="Eliminar área ${esc(x.n)}">${ic('trash')}</button></div>${ui.areaColor === x.id ? paleta(x.c, 'areaColorSel', x.id) : ''}`).join('')}
@@ -2910,14 +3119,20 @@ const ACT = {
     setTimeout(() => { completar(t, el); renderVista(); }, 620);
   },
   play:el => enfocar(el.dataset.id, true),
+  enfVolver:() => ir(ui.volverDe && ui.volverDe !== 'enfoque' ? ui.volverDe : 'hoy'),
+  irEnfoque:() => ir('enfoque'),
+  inicio:el => { pref.set('inicio', el.dataset.v); refrescarSheet(); },
+  buscar:() => abrirSheet({ k:'buscar' }),
   heroModo:() => { const t = T(); if (enMarcha()) return; t.modo = t.modo === 'pomo' ? 'bloque' : 'pomo'; t.fase = 'foco'; t.total = t.restante = segFase('foco'); save(); renderVista(); toast(t.modo === 'pomo' ? `Pomodoro de ${S.ajustes.pomo} min` : `Bloque de ${t.bloqueMin} min`); },
   plan:el => abrirPlan(el.dataset.v),
   hoySeg:el => { ui.hoyVista = el.dataset.v; ui.agSel = ''; ui.agY = null; renderVista(); },
   listaPor:el => { ui.listaPor = el.dataset.v; pref.set('listaPor', ui.listaPor); renderVista(); },
   listaAgendar:el => { const t = byId(el.dataset.id); if (!t) return; ir('agenda'); ui.agSel = t.id; if (t.fecha && t.fecha >= hoy()) { ui.dia = t.fecha; if (t.fecha >= addDays(hoy(), 7)) ui.semIni = t.fecha; } renderVista(); },
   filtrar:() => abrirSheet({ k:'filtro' }),
-  filtro:el => { ui.filtro = el.dataset.v; renderVista(); },
-  filtroSel:el => { ui.filtro = el.dataset.v; cerrarSheet(); },
+  filtroSet:el => { ui.f[el.dataset.k] = el.dataset.v; refrescarSheet(); renderVista(); },
+  quitarFiltro:el => { const k = el.dataset.k; ui.f[k] = k === 'area' ? 'todas' : ''; renderVista(); },
+  limpiarFiltros:() => { ui.f = { area:'todas', proyecto:'', estado:'', prio:'' }; if (ui.sheet && ui.sheet.k === 'filtro') refrescarSheet(); renderVista(); },
+  abrirRes:el => abrirSheet({ k:'detalle', id:el.dataset.id, volver:{ k:'buscar' } }),
   colGo:el => { const b = $('#board'), c = $(`.col[data-col="${el.dataset.v}"]`); if (!b || !c) return; ui.col = el.dataset.v; $$('#coltabs button').forEach(x => x.classList.toggle('on', x === el)); b.scrollTo({ left:c.offsetLeft - 16, behavior:'smooth' }); },
   mover:el => {
     const t = byId(el.dataset.id); if (!t) return;
@@ -3032,7 +3247,11 @@ const ACT = {
     t.rec = 'semanal:' + n.join(','); upsertT(t); refrescarSheet();
   },
   bitAdd:() => { const t = dtT(), bi = $('#bitIn'); if (!bi || !bi.value.trim()) { sacudir($('#bitBox'), 'Escribe la nota primero'); bi && bi.focus(); return; } agregarNota(t, bi.value); dtRefrescar(); setTimeout(() => $('#bitIn')?.focus(), 50); },
-  dtBorrar:() => { const t = dtT(); t.borrado = true; upsertT(t); cerrarSheet(); toast('Tarea eliminada', 'Deshacer', () => { t.borrado = false; upsertT(t); render(); }); },
+  dtBorrar:() => {
+    const t = dtT(); if (!t) return;
+    // Eliminar la tarea del reloj conserva el tiempo trabajado y deja el reloj libre.
+    if (T().tareaId === t.id) { cerrarTramo(); T().tareaId = ''; save(); pushTimer(); }
+    t.borrado = true; upsertT(t); cerrarSheet(); toast('Tarea eliminada', 'Deshacer', () => { t.borrado = false; upsertT(t); render(); }); },
   dtCompletar:el => { const t = dtT(); guardarDetalleTexto(); completar(t, el); cerrarSheet(); },
   // Enfoque
   iniciar:() => iniciar(),
@@ -3040,12 +3259,12 @@ const ACT = {
   detener:() => {
     const eraFoco = T().fase === 'foco', m = Math.round((T().total - restante()) / 60);
     detener();
-    toast(eraFoco && m >= 5 ? `Sesión terminada · ${m} min registrados` : eraFoco ? 'Sesión terminada' : 'Descanso terminado');
+    toast(eraFoco && m >= 5 ? `Sesión terminada · ${m} min registrados` : eraFoco ? 'Sesión terminada · menos de 5 min, no se registró' : 'Descanso terminado');
   },
   miniCerrar:async () => {
     const eraFoco = T().fase === 'foco', m = Math.round((T().total - restante()) / 60);
     if (eraFoco && m >= 1) { const r = await dialogo({ titulo:'¿Terminar la sesión?', texto:m >= 5 ? `Se registrarán los ${m} minutos que llevas.` : 'Llevas menos de 5 minutos, así que no se registrará.', ok:'Terminar', peligro:true }); if (r !== 1) return; }
-    detener(); toast(eraFoco ? 'Sesión terminada' : 'Descanso terminado');
+    detener(); toast(eraFoco && m >= 5 ? `Sesión terminada · ${m} min registrados` : eraFoco ? 'Sesión terminada · menos de 5 min, no se registró' : 'Descanso terminado');
   },
   saltar:() => saltarDescanso(),
   modo:el => { const t = T(); if (enMarcha()) { toast('Termina la sesión para cambiar de modo'); return; } t.modo = el.dataset.v; const x = byId(t.tareaId); if (t.modo === 'bloque' && x && x.dur >= 10) t.bloqueMin = x.dur; t.fase = 'foco'; t.total = t.restante = segFase('foco'); t.inicio = ''; save(); renderEnfoque(); },
@@ -3053,21 +3272,24 @@ const ACT = {
   elegirTarea:() => abrirSheet({ k:'picker' }),
   pick:el => {
     const t = T(), id = el.dataset.id;
+    // Cambiar de tarea con el reloj en marcha: el tramo trabajado queda en la anterior y la nueva queda lista para empezar.
     if (t.fase === 'foco' && enMarcha() && t.tareaId !== id) {
-      const prev = byId(t.tareaId); if (prev && prev.estado === 'proceso') { prev.estado = 'hoy'; upsertT(prev); }
-      const x = byId(id); if (x && x.estado !== 'proceso') setEstado(x, 'proceso');
+      const prev = byId(t.tareaId), min = cerrarTramo();
+      if (prev && prev.estado === 'proceso') { prev.estado = 'hoy'; upsertT(prev); }
+      if (min) toast(`${min} min guardados en «${prev ? prev.titulo : 'Enfoque libre'}». Toca Empezar para seguir.`);
     }
     t.tareaId = id; const x = byId(id);
     if (t.modo === 'bloque' && x && x.dur >= 10 && !t.corriendo) { t.bloqueMin = x.dur; t.total = t.restante = segFase('foco'); }
     save(); pushTimer(); cerrarSheet(true); render();
   },
   enfCompletar:el => {
-    const t = T(), x = byId(t.tareaId); if (!x) return;
-    if (t.fase === 'foco' && enMarcha()) { const hecho = t.total - restante(); if (hecho >= 300) registrarSesion(hecho >= t.total - 30, Math.round(hecho / 60)); t.corriendo = false; t.total = t.restante = segFase('foco'); t.inicio = ''; pantallaActiva(false); }
-    if (t.fase === 'listo') { t.fase = 'foco'; t.total = t.restante = segFase('foco'); }
-    completar(x, el); t.tareaId = '';
-    const sig = tareasEn('hoy').sort(byOrden)[0];
-    if (sig) { t.tareaId = sig.id; setTimeout(() => toast(`Siguiente: ${sig.titulo}`), 1600); }
+    // Un doble clic no debe completar también la siguiente tarea que aparece en el mismo lugar.
+    if (Date.now() - (ui.enfLock || 0) < 1200) return;
+    const t = T(), x = byId(t.tareaId); if (!x || x.estado === 'hecho') return;
+    ui.enfLock = Date.now();
+    completar(x, el);
+    const sig = [...tareasEn('proceso'), ...tareasEn('hoy').sort(byOrden)].find(s => s.id !== x.id);
+    if (sig && !t.tareaId) { t.tareaId = sig.id; setTimeout(() => toast(`Siguiente: ${sig.titulo}`), 1600); }
     save(); pushTimer(); renderEnfoque(); pintarMini();
   },
   enfCapAdd:async () => {
@@ -3105,7 +3327,7 @@ const ACT = {
     const r = await dialogo({ titulo:`¿Eliminar «${a.n}»?`, texto:n ? `${n} ${n === 1 ? 'tarea quedará' : 'tareas quedarán'} sin área. No se borran.` : 'No hay tareas activas en esta área.', ok:'Eliminar área', peligro:true });
     if (r !== 1) return;
     vivas().forEach(t => { if (t.area === id) { t.area = ''; upsertT(t); } });
-    if (ui.filtro === id) ui.filtro = 'todas';
+    if (ui.f.area === id) ui.f.area = 'todas';
     if (ui.capArea === id) ui.capArea = '';
     S.ajustes.areas = S.ajustes.areas.filter(x => x.id !== id); guardarAjustes(); refrescarSheet();
   },
@@ -3193,13 +3415,19 @@ document.addEventListener('click', e => {
 }, true);
 
 /* ================= Entradas de texto ================= */
+// Guardado diferido: cada edición queda pendiente con su propia función y se puede forzar (flushDebs)
+// al cerrar la ficha o abrir otra, para que nada se pierda ni caiga en otra tarea.
 const debs = {};
-const deb = (k, fn, ms = 500) => { clearTimeout(debs[k]); debs[k] = setTimeout(fn, ms); };
+const deb = (k, fn, ms = 500) => { if (debs[k]) clearTimeout(debs[k].t); debs[k] = { fn, t:setTimeout(() => { delete debs[k]; fn(); }, ms) }; };
+function flushDebs(prefijo = '') { Object.keys(debs).filter(k => k.startsWith(prefijo)).forEach(k => { const d = debs[k]; clearTimeout(d.t); delete debs[k]; d.fn(); }); }
+// Los campos de la ficha guardan el ID de la tarea al escribir, no al disparar el guardado.
+const dtCampo = (k, el, aplicar) => { const id = ui.sheet && ui.sheet.id; if (!id) return; guardando(); deb('dt:' + k + ':' + id, () => { const t = byId(id); if (t) aplicar(t, id); }); };
+const dtVisible = id => ui.sheet && ui.sheet.k === 'detalle' && ui.sheet.id === id;
 const IN = {
-  dtTitulo:el => { autoAlto(el); deb('tt', () => { const t = dtT(); if (t && el.value.trim()) { t.titulo = limpiarTitulo(el.value); upsertT(t); renderVista(); const c = $('#dtClar'); if (c) c.innerHTML = htmlClaridad(el.value, 'dt'); } }); },
-  dtResultado:el => { autoAlto(el); deb('res', () => { const t = dtT(); if (t) { t.resultado = el.value.trim().slice(0, 160); upsertT(t); const v = $('.dr.open .dr-v'); if (v) v.innerHTML = t.resultado ? esc(t.resultado) : '<span class="mut2">Sin definir</span>'; } }); },
-  dtProyecto:el => deb('pr', () => { const t = dtT(); if (t) { t.proyecto = el.value.trim().slice(0, 60); upsertT(t); renderVista(); } }),
-  dtEspera:el => deb('es', () => { const t = dtT(); if (t) { t.espera = el.value.trim().slice(0, 120); upsertT(t); renderVista(); } }),
+  dtTitulo:el => { autoAlto(el); const v = el.value; dtCampo('tt', el, (t, id) => { if (!v.trim()) return; t.titulo = limpiarTitulo(v); upsertT(t); renderVista(); const c = dtVisible(id) && $('#dtClar'); if (c) c.innerHTML = htmlClaridad(v, 'dt'); }); },
+  dtResultado:el => { autoAlto(el); const v = el.value; dtCampo('res', el, (t, id) => { t.resultado = v.trim().slice(0, 160); upsertT(t); const d = dtVisible(id) && $('.dr.open .dr-v'); if (d) d.innerHTML = t.resultado ? esc(t.resultado) : '<span class="mut2">Sin definir</span>'; }); },
+  dtProyecto:el => { const v = el.value; dtCampo('pr', el, t => { t.proyecto = v.trim().slice(0, 60); upsertT(t); renderVista(); }); },
+  dtEspera:el => { const v = el.value; dtCampo('es', el, t => { t.espera = v.trim().slice(0, 120); upsertT(t); renderVista(); }); },
   dtFecha:el => {
     const t = dtT(); if (!t || !el.value) return;
     if (el.value < hoy() && t.estado !== 'hecho') { el.value = t.fecha; sacudir(el, 'Elige una fecha de hoy en adelante'); return; }
@@ -3216,6 +3444,7 @@ const IN = {
     upsertT(t); renderVista();
     const v = $('.dr.open .dr-v'); if (v) v.textContent = t.hora || 'Sin hora';
   },
+  buscarQ:el => { ui.buscarQ = el.value; const r = $('#buscarRes'); if (r) r.innerHTML = htmlResultados(); },
   histQ:el => { ui.histQ = el.value; ui.histN = 40; pintarHistorial(); },
   areaN:el => deb('an' + el.dataset.id, () => {
     const a = area(el.dataset.id), n = el.value.trim(); if (!a || !n) return;
@@ -3250,7 +3479,9 @@ document.addEventListener('keydown', e => {
     && !ui.sheet && !['#proc', '#onb', '#dlg'].some(s => $(s).classList.contains('on'));
   if (libre) {
     const k = e.key.toLowerCase();
-    if (['1', '2', '3', '4'].includes(k)) { const g = GRUPOS[+k - 1]; e.preventDefault(); ir(ui.ult[g.k] || g.vs[0]); return; }
+    if (['1', '2', '3', '4'].includes(k)) { const g = GRUPOS[+k - 1]; e.preventDefault(); ir(g.k === 'hoy' ? 'hoy' : ui.ult[g.k] || g.vs[0]); return; }
+    if (k === '/') { e.preventDefault(); abrirSheet({ k:'buscar' }); return; }
+    if (k === 'f') { e.preventDefault(); ir('enfoque'); return; }
     if (k === 'n') { e.preventDefault(); if (ui.view === 'bandeja') $('#capIn')?.focus(); else abrirSheet({ k:'captura' }); return; }
     if (k === ' ' && el.tagName !== 'BUTTON' && (enMarcha() || ui.view === 'enfoque')) { e.preventDefault(); if (T().corriendo) pausar(); else iniciar(); return; }
   }
@@ -3272,8 +3503,7 @@ document.addEventListener('keydown', e => {
   else if (el.id === 'qaddIn') {
     e.preventDefault();
     const v = el.value.trim(); if (!v) { sacudir(el); return; }
-    const fa = ui.filtro !== 'todas' && ui.filtro !== 'sin' ? ui.filtro : '';
-    const { creadas, repetidas } = capturar(v, 'prox', fa ? { area:fa } : {});
+    const { creadas, repetidas } = capturar(v, 'prox', ctxCaptura());
     if (repetidas.length && !creadas.length) toast('Esa tarea ya existe');
     renderVista(); setTimeout(() => $('#qaddIn')?.focus(), 30);
   }
@@ -3464,14 +3694,20 @@ function arrancar() {
   rollover();
   if (S.insVistas === null) revisarLogros();
   const q = new URLSearchParams(location.search);
-  if (q.get('v') && VISTAS.some(x => x.k === q.get('v'))) { ui.view = q.get('v'); ui.ult[grupoDe(ui.view).k] = ui.view; }
+  // Pantalla inicial: Hoy por defecto, o la última vista si así lo eligió. Sin tareas, la Bandeja para capturar la primera.
+  const ult = pref.v('ultVista');
+  if (pref.v('inicio') === 'ultima' && ult && ult !== 'enfoque' && VISTAS.some(x => x.k === ult)) ui.view = ult;
+  if (!vivas().length) ui.view = 'bandeja';
+  if (q.get('v') && VISTAS.some(x => x.k === q.get('v'))) ui.view = q.get('v');
+  ui.ult[grupoDe(ui.view).k] = ui.view;
   $$('.view').forEach(s => s.classList.toggle('on', s.id === 'v-' + ui.view));
   estadoS = S.conn.url ? (S.cola.length ? 'pend' : 'ok') : 'sin';
-  $('#gearBtn').innerHTML = ic('gear');
+  $('#gearBtn').innerHTML = ic('gear'); $('#searchBtn').innerHTML = ic('search'); $('#backBtn').innerHTML = ic('chevL');
   $('#infoBtn').innerHTML = ic('info');
   $('#fab').innerHTML = ic('plus') + 'Capturar';
   aplicarCalma();
   render();
+  if (datosDanados) setTimeout(() => dialogo({ titulo:'Tus datos guardados estaban dañados', texto:`No se borraron: quedaron apartados en este dispositivo (${datosDanados}). Si tienes tu hoja de Google conectada, vuelve a conectarla para recuperarlos.`, ok:'Entendido' }), 600);
   if (!pref.v('onb')) abrirOnb();
   else if (q.get('capturar')) abrirSheet({ k:'captura' });
   setInterval(tic, 500);
