@@ -516,6 +516,10 @@ body.inmersivo #tabs,body.inmersivo #menuBtn,body.inmersivo #hSub,body.inmersivo
 .sol-i b{display:block;color:var(--warn);font-size:var(--fs-s)}
 .sol-i span{display:block;margin-top:2px}
 .tl-b.solapa{box-shadow:inset 0 0 0 2px var(--warn-f)}
+/* Bloques cortos (≤ 30 min): título y hora en un renglón para que nada quede cortado */
+.tl-b.corta{display:flex;align-items:center;gap:8px;padding-top:2px;padding-bottom:2px}
+.tl-b.corta b{flex:0 1 auto;min-width:0}
+.tl-b.corta .tl-t{flex:none;white-space:nowrap}
 .sm-in{width:auto;min-width:110px;min-height:40px}
 /* Densidad compacta: menos aire, mismo tamaño de texto y de controles */
 .compacta .tr{min-height:52px;padding-top:8px;padding-bottom:8px}
@@ -781,6 +785,7 @@ body.dragging .board{scroll-snap-type:none}
 .sh-row h2{margin:0;font-size:var(--fs-l);font-weight:700;letter-spacing:-.01em;flex:1;min-width:0}
 .sh-row .x{background:var(--sf3);border-radius:50%;width:36px;height:36px;color:var(--mut)}
 .sh-row .x svg.i{width:18px;height:18px;stroke-width:2.4}
+.sh-row .x:focus-visible{outline-offset:-2px}
 .sh-foot{position:sticky;bottom:0;z-index:3;display:flex;gap:8px;margin:16px -16px 0;padding:12px 16px calc(12px + var(--bot));background:var(--bg);border-top:1px solid var(--ln)}
 .sh-foot .btn{flex:1}
 .sh-foot .btn.sq{flex:none}
@@ -949,6 +954,12 @@ body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(-
   #tabs .tcap .tl{position:static;width:auto;height:auto;overflow:visible;clip:auto}
   #tabs .tcap kbd{background:color-mix(in srgb,var(--on-ac) 18%,transparent);border-color:transparent;color:var(--on-ac)}
   #tabs > button{order:1}
+  /* El atajo de cada sección solo aparece al pasar el cursor: no compite con el contador de la Bandeja */
+  #tabs > button:not(.tcap) > kbd{opacity:0;transition:opacity .15s}
+  #tabs > button:not(.tcap):hover > kbd,#tabs > button:not(.tcap):focus-visible > kbd{opacity:1}
+  body.inmersivo #hdr{padding-left:max(32px,calc(50% - 360px));padding-right:max(24px,calc(50% - 368px))}
+  .sh-top{padding-top:12px}
+  .sh-top .grab{display:none}
   body.inmersivo{padding-left:0}
   body.inmersivo main{margin:0 auto;max-width:720px}
   #tabs .side-f{display:flex;flex-direction:column;gap:8px;margin-top:auto;padding:16px 12px 0;border-top:1px solid var(--ln);font-size:var(--fs-s);color:var(--mut)}
@@ -966,10 +977,11 @@ body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(-
   #sheet.on{transform:translateX(0)}
   #proc,#onb{padding-left:max(24px,calc(50% - 320px));padding-right:max(24px,calc(50% - 320px))}
   /* Ingresa: captura a la izquierda, lista a la derecha */
-  #v-bandeja.on{display:grid;grid-template-columns:minmax(320px,400px) minmax(0,1fr);column-gap:32px;align-items:start}
+  #v-bandeja.on{display:grid;grid-template-columns:minmax(340px,440px) minmax(0,1fr);column-gap:32px;align-items:start}
   #v-bandeja>*{grid-column:1}
   #v-bandeja>#bandejaZona{grid-column:2;grid-row:1 / span 5}
   #bandejaZona>.sec-t:first-of-type{margin-top:24px}
+  #bandejaZona>:first-child{margin-top:0}
   /* Ejecuta: tarea actual a la izquierda, avance y lista a la derecha */
   .hoy-g{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"a t" "a b";column-gap:32px;align-items:start}
   .hoy-t{grid-area:t}.hoy-b{grid-area:b}
@@ -982,7 +994,7 @@ body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(-
   /* Tablero: todas las columnas a la vista */
   .coltabs{display:none}
   .board{margin:12px 0 0;padding:0 0 8px;overflow-x:auto;scroll-snap-type:none;scrollbar-width:thin}
-  .col{flex:1 0 260px;min-width:260px;max-width:340px}
+  .col{flex:1 1 0;min-width:208px;max-width:340px}
   /* Planifica: semana en columnas */
   .semana{display:grid;grid-template-columns:260px minmax(0,1fr);gap:24px;align-items:start}
   .sm-side{position:sticky;top:96px}
@@ -1016,7 +1028,18 @@ body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(-
   .sm-col.hoy{background:color-mix(in srgb,var(--ac) 4%,transparent)}
   .sm-col.over{background:color-mix(in srgb,var(--ac) 12%,transparent)}
   .sm-col .tl-b{cursor:grab;padding:3px 6px}
+  .sm-col .tl-b.corta{padding-top:1px;padding-bottom:1px}
+  .sm-col .tl-b.corta .tl-t{display:none}
+  .sm-axis span.first{transform:none;top:2px!important}
   .sm-col .tl-now{left:0}.sm-col .tl-now::before{left:-5px}
+}
+/* Portátiles pequeños: barra lateral y panel de la semana más angostos para que el calendario respire */
+@media (min-width:1024px) and (max-width:1279px){
+  :root{--side:208px}
+  main{padding-left:24px;padding-right:24px}
+  #hdr{padding-left:24px}
+  .semana{grid-template-columns:220px minmax(0,1fr);gap:16px}
+  .hoy-g{column-gap:24px}
 }
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -1449,7 +1472,7 @@ function fusionar(j) {
 }
 function estadoSyncInfo() {
   const n = S.cola.length;
-  if (!S.conn.url) return { k:'off', ic:'cloudOff', t:'Sin respaldo', d:'Tus datos solo están en este teléfono. Conecta tu hoja de Google para respaldarlos.' };
+  if (!S.conn.url) return { k:'off', ic:'cloudOff', t:'Sin respaldo', d:'Tus datos solo están en este dispositivo. Conecta tu hoja de Google para respaldarlos.' };
   if (estadoS === 'run') return { k:'run', ic:'cloudUp', t:'Sincronizando…', d:'Enviando y recibiendo cambios.' };
   if (estadoS === 'err') return { k:'err', ic:'cloudErr', t:'No se pudo sincronizar', d:ui.syncErr || 'Inténtalo de nuevo.' };
   if (n) return { k:'pend', ic:'cloudUp', t:`${n} ${n === 1 ? 'cambio' : 'cambios'} por enviar`, d:'Se enviarán en unos segundos.' };
@@ -1765,6 +1788,9 @@ const grupoDe = v => GRUPOS.find(g => g.vs.includes(v));
 // Escritorio: pantallas anchas usan barra lateral, paneles lado a lado y la semana en columnas.
 const mqDesk = matchMedia('(min-width:1024px)');
 const desk = () => mqDesk.matches;
+// Ratón o trackpad: los textos dicen «Haz clic en» en lugar de «Toca».
+const mqFino = matchMedia('(hover:hover) and (pointer:fine)');
+const TOCA = () => mqFino.matches ? 'Haz clic en' : 'Toca';
 function pintarTabs() {
   const nb = tareasEn('bandeja').length, run = S.timer && S.timer.corriendo, g0 = grupoDe(ui.view);
   $('#tabs').innerHTML = `<div class="brand"><img src="icon-180.png" alt="" width="28" height="28">Foco</div>` + GRUPOS.map((g, i) => { const on = g === g0, v = g.k === 'hoy' ? 'hoy' : ui.ult[g.k] || g.vs[0]; return `<button class="${on ? 'on' : ''}" data-a="tab" data-v="${v}" ${on ? 'aria-current="page"' : ''} aria-label="${g.n}${g.k === 'bandeja' && nb ? `, ${nb} por organizar` : ''}"><span class="tp">${ic(g.ic)}</span><span class="tl">${g.n}</span>${g.k === 'bandeja' && nb ? `<i class="bdg">${nb > 99 ? '99+' : nb}</i>` : ''}${g.k === 'hoy' && run && ui.view !== 'enfoque' ? '<i class="tdot"></i>' : ''}<kbd>${i + 1}</kbd></button>`; }).join('')
@@ -1991,7 +2017,7 @@ function pintarCapForm(pfx) {
   else if (lns.length === 1 && txt.trim().length > 2) {
     const i = analizar(lns[0]).find(x => ['relleno', 'verbo', 'vago'].includes(x.k));
     if (i && i.propuesta) h = `${i.k === 'relleno' ? 'Más corto:' : 'Con verbo:'} <button data-a="clarUsar" data-dest="${pfx}" data-v="${esc(i.propuesta)}">«${esc(i.propuesta)}»</button>`;
-    else if (i && i.k === 'verbo') h = 'Tip: empieza con un verbo. Toca «Elegir» para ver opciones.';
+    else if (i && i.k === 'verbo') h = `Tip: empieza con un verbo. ${TOCA()} «Verbo» para ver opciones.`;
     else if (i && i.k === 'vago') h = `«${esc(i.msg.split('»')[0].slice(1))}» es poco específico. ¿Qué harás exactamente?`;
   }
   $(`#${pfx}Hint`).innerHTML = h;
@@ -2031,7 +2057,7 @@ function pintarBandejaLista(nuevos = []) {
   }
   if (rec.length) html += acc('rec', 'check', 'Organizados hoy', rec.length,
     rec.map(r => { const t = byId(r.id); return `<div class="hr"><i class="dot" style="--a:${colorA(t.area)}"></i><div class="tb"><div class="ht">${esc(t.titulo)}</div><div class="hn">${DEST[r.d] || ''}</div></div><span class="hm">${horaDe(r.t)}</span></div>`; }).join(''));
-  if (!S.conn.url) html += `<div class="panel conn"><span class="ci">${ic('cloudOff')}</span><div class="tb"><b>Respalda en Google Sheets</b><div class="mut sm">Por ahora todo vive solo en este teléfono.</div></div><button class="btn sm" style="color:var(--ac-t)" data-a="ajustes">Conectar</button></div>`;
+  if (!S.conn.url) html += `<div class="panel conn"><span class="ci">${ic('cloudOff')}</span><div class="tb"><b>Respalda en Google Sheets</b><div class="mut sm">Por ahora todo vive solo en este dispositivo.</div></div><button class="btn sm" style="color:var(--ac-t)" data-a="ajustes">Conectar</button></div>`;
   z.innerHTML = html;
 }
 // Valida y captura desde un campo. Pregunta antes de duplicar una tarea existente.
@@ -2287,7 +2313,7 @@ function renderHoy() {
     if (resto.length) zB += `<div class="sec-t">Después</div>
       <div class="group" data-list="hoy" data-base="${deCola ? 1 : 0}" data-hero="${deCola ? ahora.id : ''}" id="hoyList">${vis.map((x, i) => filaHoy(x, i + (deCola ? 2 : 1))).join('')}</div>
       ${resto.length > 2 ? `<button class="mas" data-a="hoyTodas" aria-expanded="${todas}">${todas ? 'Ver menos' : `Ver las ${resto.length} ${prioIds ? 'prioridades' : 'tareas'}`}${ic('chevD', todas ? 'up' : '')}</button>` : ''}
-      ${tip('hoy-orden', 'grip', 'Toca el círculo para completar. Arrastra los puntos para reordenar.')}`;
+      ${tip('hoy-orden', 'grip', `${TOCA()} el círculo para completar. Arrastra los puntos para reordenar.`)}`;
     const otrasR = otras.filter(x => x !== ahora);
     if (otrasR.length) zB += `<details class="sec-d" data-k="otras" ${abierto('otras') ? 'open' : ''}><summary class="sec-t">Otras tareas de hoy <span class="n">${otrasR.length}</span><span class="sp"></span>${ic('chevD', 'chev')}</summary>
       <div class="group">${otrasR.map(x => filaHoy(x, 0, { otra:true })).join('')}</div><p class="hint">${ic('star')} la vuelve prioridad.</p></details>`;
@@ -2418,13 +2444,13 @@ function renderSemana() {
     <div class="sm-nav"><button class="ib" data-a="semMov" data-v="-7" aria-label="Semana anterior">${ic('chevL')}</button><b>${rango}</b><button class="ib" data-a="semMov" data-v="7" aria-label="Semana siguiente">${ic('chevR')}</button></div>
     <div class="sm-acc">${ui.semIni !== hoy() ? `<button class="btn sm ghost" data-a="semMov" data-v="0">Volver a hoy</button>` : ''}<button class="btn sm ghost" data-a="agCompleto" aria-pressed="${!!ui.diaCompleto}">${ui.diaCompleto ? 'Horario de trabajo' : 'Día completo'}</button><label class="sm-ir">${ic('cal')}<input type="date" data-in="semIr" value="${ui.semIni}" aria-label="Ir a una fecha"></label></div>
     ${htmlSolapes(dias)}
-    ${sel ? `<div class="ag-banner">${ic('clock')}<span>Toca una hora en el calendario para colocar «${esc(sel.titulo)}»</span><button class="lnk2" data-a="agSelNo">Cancelar</button></div>` : ''}
+    ${sel ? `<div class="ag-banner">${ic('clock')}<span>${TOCA()} una hora en el calendario para colocar «${esc(sel.titulo)}»</span><button class="lnk2" data-a="agSelNo">Cancelar</button></div>` : ''}
     <div class="sec-t">Por agendar <span class="n">${porAgendar.length}</span></div>
     ${porAgendar.length ? `<div class="sm-list">${porAgendar.map(it).join('')}</div>` : chipsFiltro().length ? `<p class="hint">Sin coincidencias con los filtros.</p>` : `<p class="hint">Nada pendiente. Organiza tu Bandeja como «Próxima acción» para verlas aquí.</p>`}
     ${sinHora.length ? `<div class="sec-t">Con día, sin hora <span class="n">${sinHora.length}</span></div><div class="sm-list">${sinHora.map(it).join('')}</div>` : ''}
   </aside>`;
   const d = new Date(), nm = d.getHours() * 60 + d.getMinutes();
-  let ejes = ''; for (let h = AG_INI + 1; h < AG_FIN; h++) ejes += `<span style="top:${(h - AG_INI) * 60}px">${h}:00</span>`;
+  let ejes = ''; for (let h = AG_INI; h < AG_FIN; h++) ejes += `<span class="${h === AG_INI ? 'first' : ''}" style="top:${(h - AG_INI) * 60}px">${h}:00</span>`;
   const heads = dias.map(x => {
     const c = cargaDia(x), dd = parseYmd(x), over = c.carga > c.cap;
     return `<div class="sm-h ${x === hoy() ? 'hoy' : ''} ${over ? 'over' : ''}" title="${cargaTxt(c)} · ocupado ${txtHM(c.ocup) || '0 min'} de ${txtHM(c.cap)} disponibles"><span>${x === hoy() ? 'Hoy' : DIAS3[dd.getDay()]}</span><b>${dd.getDate()}</b><small>${c.pend.length ? `${c.pend.length} · ${hCorta(c.carga)}` : 'libre'}</small><i class="wk-l"><i style="width:${Math.min(100, c.carga / Math.max(1, c.cap) * 100)}%"></i></i></div>`;
@@ -2432,14 +2458,15 @@ function renderSemana() {
   const cols = dias.map(x => {
     const bl = carriles(tareasDia(x).filter(t => t.hora && pasaFiltro(t, { sinEstado:t.estado === 'hecho' }))).map(ev => {
       const hecha = ev.t.estado === 'hecho', run = ev.t.estado === 'proceso', f = franja(ev.t), h = Math.max(ev.e - ev.s, 24);
-      return `<div class="tl-b ${hecha ? 'hecha' : ''} ${run ? 'run' : ''} ${f ? 'f-' + f.k : ''} ${!hecha && enSolape(x, ev.t.id) ? 'solapa' : ''}" style="--a:${colorA(ev.t.area)};top:${ev.s - AG_INI * 60}px;height:${h - 2}px;left:calc(2px + (100% - 4px) * ${ev.c / ev.n});width:calc((100% - 4px) / ${ev.n} - 2px)" data-id="${ev.t.id}" data-a="abrir" role="button" tabindex="0" ${hecha ? '' : `draggable="true" data-dnd="${ev.t.id}"`} title="${esc(ev.t.titulo)} · ${min2hm(ev.s)} – ${min2hm(ev.e)}"><b>${hecha ? ic('check') : ''}${esc(ev.t.titulo)}</b><span class="tl-t">${min2hm(ev.s)}${f ? ' · ' + f.txt : ''}</span></div>`;
+      return `<div class="tl-b ${h < 44 ? 'corta' : ''} ${hecha ? 'hecha' : ''} ${run ? 'run' : ''} ${f ? 'f-' + f.k : ''} ${!hecha && enSolape(x, ev.t.id) ? 'solapa' : ''}" style="--a:${colorA(ev.t.area)};top:${ev.s - AG_INI * 60}px;height:${h - 2}px;left:calc(2px + (100% - 4px) * ${ev.c / ev.n});width:calc((100% - 4px) / ${ev.n} - 2px)" data-id="${ev.t.id}" data-a="abrir" role="button" tabindex="0" ${hecha ? '' : `draggable="true" data-dnd="${ev.t.id}"`} title="${esc(ev.t.titulo)} · ${min2hm(ev.s)} – ${min2hm(ev.e)}"><b>${hecha ? ic('check') : ''}${esc(ev.t.titulo)}</b><span class="tl-t">${min2hm(ev.s)}${f ? ' · ' + f.txt : ''}</span></div>`;
     }).join('');
     return `<div class="sm-col ${x === hoy() ? 'hoy' : ''}" data-dia="${x}" data-a="semTap">${bl}${x === hoy() && nm >= AG_INI * 60 && nm <= AG_FIN * 60 ? `<div class="tl-now" style="top:${nm - AG_INI * 60}px"></div>` : ''}</div>`;
   }).join('');
   v.innerHTML = `<div class="semana">${side}<div class="sm-cal ${sel ? 'picking' : ''}"><div class="sm-heads"><div></div>${heads}</div>
     <div class="sm-body" id="smBody"><div class="sm-grid" style="height:${(AG_FIN - AG_INI) * 60}px"><div class="sm-axis">${ejes}</div>${cols}</div></div></div></div>`;
   const b = $('#smBody');
-  b.style.height = Math.max(360, innerHeight - b.getBoundingClientRect().top - scrollY - 24 - (document.body.classList.contains('has-mini') ? 56 : 0)) + 'px';
+  const altoGrid = (AG_FIN - AG_INI) * 60;
+  b.style.height = Math.min(altoGrid, Math.max(360, innerHeight - (b.getBoundingClientRect().top + scrollY) - 24 - (document.body.classList.contains('has-mini') ? 56 : 0))) + 'px';
   b.scrollTop = ui.smY != null ? ui.smY : Math.max(0, (ui.semIni === hoy() ? nm - AG_INI * 60 : 0) - 120);
   b.addEventListener('scroll', () => { ui.smY = b.scrollTop; }, { passive:true });
 }
@@ -2511,7 +2538,7 @@ function htmlAgenda(items, hechas) {
   const bloques = evs.map(ev => {
     const top = ev.s - AG_INI * 60, h = Math.max(ev.e - ev.s, 28);
     const hecha = ev.t.estado === 'hecho', run = ev.t.estado === 'proceso', f = franja(ev.t);
-    return `<div class="tl-b ${hecha ? 'hecha' : ''} ${run ? 'run' : ''} ${f ? 'f-' + f.k : ''} ${!hecha && enSolape(ui.dia || hoy(), ev.t.id) ? 'solapa' : ''}" style="--a:${colorA(ev.t.area)};top:${top}px;height:${h - 2}px;left:calc(58px + (100% - 64px) * ${ev.c / ev.n});width:calc((100% - 64px) / ${ev.n} - 4px)" data-id="${ev.t.id}" data-a="abrir" role="button" tabindex="0" ${hecha ? '' : 'data-drag data-free'}><b>${hecha ? ic('check') : ''}${esc(ev.t.titulo)}</b><span class="tl-t">${min2hm(ev.s)} – ${min2hm(ev.e)}${f ? ' · ' + f.txt : ''}</span></div>`;
+    return `<div class="tl-b ${h < 44 ? 'corta' : ''} ${hecha ? 'hecha' : ''} ${run ? 'run' : ''} ${f ? 'f-' + f.k : ''} ${!hecha && enSolape(ui.dia || hoy(), ev.t.id) ? 'solapa' : ''}" style="--a:${colorA(ev.t.area)};top:${top}px;height:${h - 2}px;left:calc(58px + (100% - 64px) * ${ev.c / ev.n});width:calc((100% - 64px) / ${ev.n} - 4px)" data-id="${ev.t.id}" data-a="abrir" role="button" tabindex="0" ${hecha ? '' : 'data-drag data-free'}><b>${hecha ? ic('check') : ''}${esc(ev.t.titulo)}</b><span class="tl-t">${min2hm(ev.s)} – ${min2hm(ev.e)}${f ? ' · ' + f.txt : ''}</span></div>`;
   }).join('');
   const nm = new Date().getHours() * 60 + new Date().getMinutes();
   const sel = ui.agSel && byId(ui.agSel);
@@ -2556,7 +2583,8 @@ function ajustarAgenda(w) {
   w = w || $('#tlWrap'); if (!w) return;
   const top = w.getBoundingClientRect().top + scrollY;
   const extra = document.body.classList.contains('has-mini') ? 54 : 0;
-  w.style.height = Math.max(300, innerHeight - top - (desk() ? 0 : $('#tabs').offsetHeight) - extra - 12) + 'px';
+  const tl = $('#tl', w), alto = tl ? tl.offsetHeight : Infinity;
+  w.style.height = Math.min(alto, Math.max(300, innerHeight - top - (desk() ? 0 : $('#tabs').offsetHeight) - extra - 12)) + 'px';
 }
 // Al abrir la agenda: centra la hora actual (o el bloque en curso si empezó hace poco).
 function posAgenda(w) {
@@ -2923,7 +2951,7 @@ function renderEnfoque() {
       <div class="ctl-l" aria-hidden="true"><span>Terminar</span><span>${t.corriendo ? 'Pausar' : marcha ? 'Reanudar' : 'Empezar'}</span><span>Saltar</span></div>`;
   v.innerHTML = `<div class="enf fase-${t.fase} ${t.corriendo ? 'running' : ''}">
     <div class="panel enf-task" data-a="elegirTarea" role="button" tabindex="0" style="--a:${x ? colorA(x.area) : 'var(--mut2)'}" aria-label="${x ? 'Cambiar tarea: ' + esc(x.titulo) : 'Elegir tarea'}">
-      <div class="tb"><div class="enf-l"><i class="dot"></i>${x ? (marcha && t.fase === 'foco' ? 'Trabajando en' : esc(area(x.area)?.n || 'Tarea elegida')) : 'Sin tarea · toca para elegir'}</div>
+      <div class="tb"><div class="enf-l"><i class="dot"></i>${x ? (marcha && t.fase === 'foco' ? 'Trabajando en' : esc(area(x.area)?.n || 'Tarea elegida')) : `Sin tarea · ${mqFino.matches ? 'clic' : 'toca'} para elegir`}</div>
         <div class="enf-tt">${x ? esc(x.titulo) : 'Elige en qué vas a trabajar'}</div>${x && x.resultado ? `<div class="res-l">${ic('listo')}<span>Listo cuando: ${esc(x.resultado)}</span></div>` : ''}${cyc}</div>
       ${x && x.estado !== 'hecho' ? `<button class="btn sq okb" data-a="enfCompletar" aria-label="Marcar tarea como hecha">${ic('check')}</button>` : `<span class="ib-s">${ic('chevR')}</span>`}
     </div>
@@ -3093,7 +3121,7 @@ function ayuda(k) {
       ['layers', 'Varios a la vez', 'Toca «Seleccionar varios» para asignar área, proyecto, día o destino a muchos pendientes. Se puede deshacer.'],
       ['sparkle', 'Organiza', 'Cuando tengas varios, toca «Organizar». Decides uno por uno: hacerlo ya, agendarlo, esperar a alguien, guardarlo para algún día o eliminarlo (método GTD). Si la redacción no es clara, Foco te sugiere cómo mejorarla o dividirla.']] },
     hoy:{ d:'Tus prioridades del día con el método Ivy Lee: máximo 6 tareas, en orden de importancia, trabajadas una a la vez.', p:[
-      ['play', 'La tarjeta de arriba', 'Es la tarea que toca ahora. Toca «Empezar enfoque» y el reloj corre ahí mismo: puedes pausar, terminar o abrirlo en pantalla completa.'],
+      ['play', 'La tarjeta de arriba', 'Es la tarea que toca ahora. Toca «Empezar» y el reloj corre ahí mismo: puedes pausar, terminar o abrirlo en pantalla completa.'],
       ['check', 'Marcar como hecha', 'Toca el círculo de cualquier tarea o el botón verde. Siempre puedes deshacerlo desde el aviso.'],
       ['grip', 'Cambiar el orden', 'Arrastra desde los seis puntos de la derecha. Si sueltas la tarea sobre la tarjeta de arriba, se vuelve la siguiente.'],
       ['clock', 'Horarios en vivo', 'Las tareas con hora te avisan «en 20 min», «ahora» o «atrasada», y la línea del día muestra tus bloques y la hora actual.'],
@@ -3332,7 +3360,7 @@ function htmlSync() {
   const tono = { ok:['var(--ok-s)', 'var(--ok)'], pend:['var(--warn-s)', 'var(--warn)'], err:['var(--hot-s)', 'var(--hot)'], run:['var(--ac-s)', 'var(--ac-t)'], off:['var(--sf3)', 'var(--mut)'] }[e.k];
   return cab('<h2>Respaldo en Google Sheets</h2>') + `
     <div class="panel st-big"><span class="o" style="background:${tono[0]};color:${tono[1]}">${ic(e.ic)}</span><div><b>${e.t}</b><span>${esc(e.d)}</span></div></div>
-    <p class="hint">Foco guarda todo primero en este teléfono, así funciona sin internet. Cuando hay conexión, respalda los cambios en tu hoja de Google y trae los de tus otros equipos y widgets.</p>
+    <p class="hint">Foco guarda todo primero en este dispositivo, así funciona sin internet. Cuando hay conexión, respalda los cambios en tu hoja de Google y trae los de tus otros equipos y widgets.</p>
     <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px">
       ${S.conn.url ? `<button class="btn pri" data-a="syncAhora" ${estadoS === 'run' ? 'disabled' : ''}>${ic('refresh')}${estadoS === 'run' ? 'Sincronizando…' : 'Sincronizar ahora'}</button>` : ''}
       <button class="btn" data-a="ajustes">${ic('gear')}${S.conn.url ? 'Configuración de la conexión' : 'Conectar mi hoja'}</button></div>
@@ -3425,7 +3453,7 @@ function htmlDetalle(t) {
       `<div class="chips">${estados.map(([k, n]) => `<button class="chip ${t.estado === k ? 'on' : ''}" data-a="dtEstado" data-v="${k}">${n}</button>`).join('')}</div>`),
     fila('area', 'layers', 'teal', 'Área', A ? `<i class="dot" style="--a:${A.c}"></i>${esc(A.n)}` : 'Sin área',
       `<div class="chips">${areas().map(a => `<button class="chip area ${t.area === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="dtArea" data-v="${a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('')}<button class="chip ${!A ? 'on' : ''}" data-a="dtArea" data-v="">Sin área</button><button class="chip" data-a="irAreas">${ic('plus')}Nueva área</button></div>`),
-    fila('prio', 'flag', 'warn', 'Prioridad', q ? pq(t) : 'Sin prioridad', matriz(t.urgente, t.importante, 'dtMx') + '<p class="hint">Toca el cuadro que mejor describa la tarea.</p>'),
+    fila('prio', 'flag', 'warn', 'Prioridad', q ? pq(t) : 'Sin prioridad', matriz(t.urgente, t.importante, 'dtMx') + `<p class="hint">${TOCA()} el cuadro que mejor describa la tarea.</p>`),
     fila('fecha', 'cal', 'hot', 'Día planeado', fechaTxt,
       `<div class="chips">${[['hoy', 'Hoy'], ['manana', 'Mañana'], ['lunes', 'Próximo lunes'], ['semana', 'En una semana'], ['', 'Sin fecha']].map(([v, n]) => `<button class="chip ${(v === 'hoy' && t.fecha === hoy()) || (v === 'manana' && t.fecha === manana()) || (v === '' && !t.fecha) ? 'on' : ''}" data-a="dtCuando" data-v="${v}">${n}</button>`).join('')}</div>
        <label class="f-l" style="margin-top:12px" for="dtFechaIn">Otra fecha</label><input type="date" class="in" id="dtFechaIn" data-in="dtFecha" value="${t.fecha}" ${t.estado !== 'hecho' ? `min="${hoy()}"` : ''}>`),
@@ -3842,7 +3870,7 @@ const ACT = {
   cfgGuardar:async () => {
     const url = $('#cfgUrl').value.trim(), clave = $('#cfgClave').value.trim();
     const err = (campo, txt) => { ui.cfgDraft = { url, clave }; ui.cfgMsg = { tipo:'err', campo, txt }; refrescarSheet(); sacudir($(campo === 'url' ? '#cfgUrl' : '#cfgClave')); };
-    if (!url && !clave) { S.conn = { url:'', clave:'' }; guardarYa(); estadoS = 'sin'; ui.cfgDraft = null; ui.cfgMsg = { tipo:'ok', txt:'Conexión quitada. Tus datos siguen en este teléfono.' }; pintarSync(); refrescarSheet(); return; }
+    if (!url && !clave) { S.conn = { url:'', clave:'' }; guardarYa(); estadoS = 'sin'; ui.cfgDraft = null; ui.cfgMsg = { tipo:'ok', txt:'Conexión quitada. Tus datos siguen en este dispositivo.' }; pintarSync(); refrescarSheet(); return; }
     if (!/^https:\/\/script\.google(usercontent)?\.com\/.+/.test(url)) return err('url', 'La URL debe empezar con https://script.google.com/');
     if (!/\/exec(\?.*)?$/.test(url)) return err('url', 'Usa la URL que termina en /exec (no la de /dev ni la del editor).');
     if (!clave) return err('clave', 'Escribe la clave que pusiste en Codigo.gs.');
