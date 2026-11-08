@@ -1032,6 +1032,10 @@ body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(-
   .sm-col .tl-b.corta .tl-t{display:none}
   .sm-axis span.first{transform:none;top:2px!important}
   .sm-col .tl-now{left:0}.sm-col .tl-now::before{left:-5px}
+  /* Con un panel abierto, los mensajes van abajo y centrados en el espacio libre (no encima del título del panel) */
+  html.lock #toast{top:auto!important;bottom:calc(24px + var(--bot))!important;transform:translate(-50%,30px)}
+  html.lock #toast.on{transform:translate(-50%,0)}
+  html.lock:has(#sheet.on) #toast{left:calc((100% - 480px + var(--side)) / 2)}
 }
 /* Portátiles pequeños: barra lateral y panel de la semana más angostos para que el calendario respire */
 @media (min-width:1024px) and (max-width:1279px){
@@ -1244,6 +1248,7 @@ function guardarYa() {
   try {
     localStorage.setItem(LS, JSON.stringify(S));
     alm.err = '';
+    programarWidget(); programarAvisos();
     if (alm.pendFlash) { alm.pendFlash = false; flashGuardado(); }
     return true;
   } catch (e) {
@@ -1406,11 +1411,115 @@ function pushTimer() {
     encolar('Ajustes', { clave:'timer', valor:JSON.stringify(v), actualizado:nowISO() });
   }, 500);
 }
+/* ================= Widgets: resumen para Scriptable =================
+   La app deja en la hoja (Ajustes › «widget») un resumen ya calculado: lo que va «Ahora», el reloj con sus
+   fases previstas y los bloques con hora de hoy y mañana. El widget hace las cuentas con la hora actual,
+   así sigue siendo correcto entre una actualización y otra aunque Foco esté cerrado. */
+const hexA = id => (area(id) || {}).c || '#8E8E93';
+function fasesTimer() {
+  const t = T(); if (!t || !t.corriendo) return [];
+  const out = [{ f:t.fase, ini:t.fin - t.total * 1000, fin:t.fin }];
+  // En Pomodoro, al terminar el enfoque empieza solo el descanso: se deja previsto.
+  if (t.fase === 'foco' && t.modo === 'pomo') { const f = (t.ciclo + 1) % S.ajustes.cada === 0 ? 'largo' : 'corto'; out.push({ f, ini:t.fin, fin:t.fin + segFase(f) * 1000 }); }
+  return out;
+}
+function bloquesDe(d) {
+  return tareasDia(d).filter(t => t.hora).map(t => { const s = hm2min(t.hora); return { id:t.id, t:t.titulo.slice(0, 90), s, e:Math.min(s + Math.max(+t.dur || 30, 15), 1440), c:hexA(t.area), a:(area(t.area) || {}).n || '', ok:t.estado === 'hecho' ? 1 : 0, run:t.estado === 'proceso' ? 1 : 0 }; }).sort((a, b) => a.s - b.s);
+}
+function datosWidget() {
+  const { prioIds, proceso, cola, otras } = trabajoDeHoy();
+  const hechas = hechasEl(hoy());
+  const total = prioIds ? prioIds.length : proceso.length + cola.length + hechas.length;
+  const hechasP = prioIds ? prioIds.filter(id => byId(id).estado === 'hecho').length : hechas.length;
+  const fila = t => ({ id:t.id, t:t.titulo.slice(0, 90), c:hexA(t.area), a:(area(t.area) || {}).n || '', h:t.hora || '', d:+t.dur || 0, run:t.estado === 'proceso' ? 1 : 0 });
+  const lista = [...new Set([...proceso, ...cola, ...otras])].slice(0, 8).map(fila);
+  const t = T(), x = byId(t.tareaId);
+  return { v:1, gen:nowISO(), dia:hoy(),
+    hoy:{ hechas:hechasP, total, prio:prioIds ? 1 : 0 }, lista, bandeja:tareasEn('bandeja').length,
+    timer:{ fase:t.fase, modo:t.modo, corriendo:t.corriendo ? 1 : 0, fin:t.fin, restante:t.restante, total:t.total, tareaId:t.tareaId || '', tarea:x ? x.titulo.slice(0, 90) : '', c:x ? hexA(x.area) : '#5856D6', fases:fasesTimer() },
+    dias:{ [hoy()]:bloquesDe(hoy()), [manana()]:bloquesDe(manana()) },
+    jornada:{ ini:S.ajustes.jIni, fin:S.ajustes.jFin } };
+}
+// Se envía solo cuando cambia algo que el widget muestra (no en cada guardado).
+let widgetT, widgetUlt = '';
+function programarWidget(ya) {
+  if (!S.conn.url) return;
+  clearTimeout(widgetT);
+  const f = () => {
+    const d = datosWidget(), k = JSON.stringify({ ...d, gen:0 });
+    if (k === widgetUlt) return;
+    widgetUlt = k; encolar('Ajustes', { clave:'widget', valor:JSON.stringify(d), actualizado:d.gen });
+  };
+  if (ya) f(); else widgetT = setTimeout(f, 1500);
+}
+// Al salir de Foco (cambiar de app, bloquear el teléfono): guarda y envía ya, para que el widget lo vea.
+function alSalir() { guardarYa(); programarWidget(true); if (S.cola.length && S.conn.url) sincronizar(false, true); }
+
+/* ================= Avisos del sistema =================
+   Los genera la propia app mientras está abierta (en la computadora, también en segundo plano).
+   En iPhone, con Foco cerrado, los programa el script de Scriptable. */
+const avisos = { ts:[] };
+const avisoCfg = () => Object.assign({ fase:1, inicio:1, antes:5, fin:0 }, pref.v('avisoCfg') || {});
+const avisosSoportados = () => 'Notification' in window;
+const avisosOn = () => !!pref.v('avisos') && avisosSoportados() && Notification.permission === 'granted';
+const esIOS = () => /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const enPantallaInicio = () => !!navigator.standalone || matchMedia('(display-mode: standalone)').matches;
+async function mostrarAviso(titulo, cuerpo, tag) {
+  const op = { body:cuerpo, tag, renotify:true, icon:'icon-180.png', badge:'icon-180.png', data:{ url:location.href.split('?')[0] } };
+  try { const r = 'serviceWorker' in navigator && await navigator.serviceWorker.getRegistration(); if (r) { await r.showNotification(titulo, op); return true; } } catch (e) {}
+  try { new Notification(titulo, op); return true; } catch (e) { return false; }
+}
+let avisoT;
+function programarAvisos() { clearTimeout(avisoT); avisoT = setTimeout(programarAvisosYa, 400); }
+function programarAvisosYa() {
+  avisos.ts.forEach(clearTimeout); avisos.ts = [];
+  if (!avisosOn()) return;
+  const c = avisoCfg(), ahora = Date.now(), lim = ahora + 20 * 3600e3;
+  const en = (ms, fn) => { if (ms > ahora + 500 && ms < lim) avisos.ts.push(setTimeout(fn, ms - ahora)); };
+  // Con Foco a la vista ya suena y se ve el cambio: el aviso es para cuando estás en otra cosa.
+  const aLaVista = () => document.visibilityState === 'visible' && document.hasFocus();
+  if (c.fase) {
+    const t = T(), x = byId(t.tareaId), nom = x ? `«${x.titulo}»` : 'Enfoque libre';
+    fasesTimer().forEach((p, i, arr) => en(p.fin, () => {
+      if (aLaVista()) return;
+      if (p.f === 'foco') {
+        const sig = arr[i + 1];
+        mostrarAviso(t.modo === 'pomo' ? 'Terminó el pomodoro' : 'Terminó el bloque', sig ? `${nom} · Descanso de ${Math.round((sig.fin - sig.ini) / 60000)} min` : nom, 'foco-fase');
+      } else mostrarAviso('Fin del descanso', `Cuando quieras, vuelve a enfocarte${x ? ` en «${x.titulo}»` : ''}.`, 'foco-fase');
+    }));
+  }
+  [hoy(), manana()].forEach(d => {
+    const base = parseYmd(d).getTime();
+    bloquesDe(d).filter(b => !b.ok).forEach(b => {
+      const ini = base + b.s * 60000, fin = base + b.e * 60000, rango = `${min2hm(b.s)}–${min2hm(b.e)}${b.a ? ' · ' + b.a : ''}`;
+      if (c.inicio) {
+        if (c.antes) en(ini - c.antes * 60000, () => mostrarAviso(`En ${c.antes} min: ${b.t}`, rango, 'foco-t-' + b.id));
+        en(ini, () => { if (!aLaVista()) mostrarAviso(`Es hora: ${b.t}`, rango, 'foco-t-' + b.id); });
+      }
+      if (c.fin) en(fin, () => { const t = byId(b.id); if (t && t.estado !== 'hecho' && !aLaVista()) mostrarAviso(`Terminó el tiempo de «${b.t}»`, '¿La marcas como hecha o le das más tiempo?', 'foco-t-' + b.id); });
+    });
+  });
+}
+function estadoAvisos() {
+  if (!avisosSoportados()) return esIOS() && !enPantallaInicio()
+    ? 'En iPhone, abre Foco desde su ícono en la pantalla de inicio (iOS 16.4 o posterior) para activarlos.'
+    : 'Este navegador no permite avisos.';
+  if (Notification.permission === 'denied') return 'Bloqueados. Actívalos en los ajustes de notificaciones del sistema para Foco.';
+  return avisosOn() ? 'Activados en este dispositivo' : 'Desactivados';
+}
+// Opcional en iPhone: al iniciar un enfoque, Scriptable programa el aviso del final aunque bloquees el teléfono.
+function avisoScriptable() {
+  if (!pref.v('scrAvisos') || !esIOS()) return;
+  const t = T(), x = byId(t.tareaId), f = fasesTimer(); if (!f.length) return;
+  const datos = { tarea:x ? x.titulo.slice(0, 90) : '', modo:t.modo, fases:f };
+  setTimeout(() => { location.href = 'scriptable:///run?scriptName=Foco&avisos=' + encodeURIComponent(JSON.stringify(datos)); }, 350);
+}
+
 let syncing = false, syncOtra = false, syncT, estadoS = '';
 const enVuelo = new Set(); // qid de las operaciones que se están enviando ahora
 S.cola.forEach(o => { if (!o.qid) o.qid = uid(); });
 function programarSync(ms = 1800) { clearTimeout(syncT); syncT = setTimeout(() => sincronizar(false), ms); }
-async function sincronizar(manual) {
+async function sincronizar(manual, salir) {
   if (!S.conn.url || !S.conn.clave) { estadoS = 'sin'; pintarSync(); return false; }
   if (syncing) { syncOtra = true; return false; }
   syncing = true; estadoS = 'run'; pintarSync(); refrescarSi(['sync']);
@@ -1420,7 +1529,9 @@ async function sincronizar(manual) {
   let ok = false;
   try {
     const ctrl = new AbortController(); const to = setTimeout(() => ctrl.abort(), 20000);
-    const res = await fetch(S.conn.url, { method:'POST', body:JSON.stringify({ clave:S.conn.clave, accion:'sync', ops:lote.map(o => ({ hoja:o.hoja, fila:o.fila })) }), signal:ctrl.signal });
+    const cuerpo = JSON.stringify({ clave:S.conn.clave, accion:'sync', ops:lote.map(o => ({ hoja:o.hoja, fila:o.fila })) });
+    // Al salir de la app, «keepalive» deja terminar el envío aunque el sistema suspenda la página (límite ~64 KB).
+    const res = await fetch(S.conn.url, { method:'POST', body:cuerpo, signal:ctrl.signal, keepalive:!!salir && cuerpo.length < 60000 });
     clearTimeout(to);
     if (!res.ok) throw new Error(`El servidor respondió con error ${res.status}.`);
     let j; try { j = await res.json(); } catch (e) { throw new Error('La URL no devolvió datos de Foco. Revisa que sea la de la aplicación web.'); }
@@ -2817,7 +2928,7 @@ async function iniciar() {
   if (t.fase === 'foco' && t.tareaId) { const x = byId(t.tareaId); if (x && x.estado !== 'proceso' && x.estado !== 'hecho') setEstado(x, 'proceso'); }
   if (!t.inicio) t.inicio = new Date(Date.now() - (t.total - t.restante) * 1000).toISOString();
   t.fin = Date.now() + t.restante * 1000; t.corriendo = true; t.dia = hoy();
-  save(); pantallaActiva(true); pushTimer();
+  save(); pantallaActiva(true); pushTimer(); avisoScriptable();
   if (ui.view === 'enfoque') renderEnfoque(); else renderVista();
   pintarMini(); pintarTabs(); actualizarReloj();
 }
@@ -3199,7 +3310,7 @@ function abrirSheet(ctx) {
   // Encima de «Organizar» cuando se abre desde ahí
   sh.classList.toggle('top', !!ctx.top); $('#sheetBg').classList.toggle('top', !!ctx.top);
   sh.style.setProperty('--dy', '0px');
-  sh.setAttribute('aria-label', { detalle:'Detalle de la tarea', plan:'Planear', ajustes:'Ajustes', captura:'Capturar', picker:'Elegir tarea', filtro:'Filtrar', buscar:'Buscar', menu:'Opciones', lote:'Asignar a varios', sync:'Sincronización', ayuda:'Ayuda', verbo:'Elegir verbo', areaSel:'Elegir área', dividir:'Dividir en pasos' }[ctx.k] || '');
+  sh.setAttribute('aria-label', { detalle:'Detalle de la tarea', plan:'Planear', ajustes:'Ajustes', captura:'Capturar', picker:'Elegir tarea', filtro:'Filtrar', buscar:'Buscar', menu:'Opciones', lote:'Asignar a varios', sync:'Sincronización', ayuda:'Ayuda', verbo:'Elegir verbo', areaSel:'Elegir área', dividir:'Dividir en pasos', widgets:'Widgets' }[ctx.k] || '');
   $('#sheetBg').classList.add('on'); sh.classList.add('on');
   document.documentElement.classList.add('lock');
   if (ctx.k === 'captura') setTimeout(() => $('#capSheetIn')?.focus(), 320);
@@ -3247,6 +3358,7 @@ function refrescarSheet(inicio) {
   else if (c.k === 'verbo') html = htmlVerbo();
   else if (c.k === 'areaSel') html = htmlAreaSel();
   else if (c.k === 'dividir') html = htmlDividir();
+  else if (c.k === 'widgets') html = htmlWidgets();
   b.innerHTML = html; b.scrollTop = y;
   if (c.k === 'captura') { const ta = $('#capSheetIn'); if (c.draft != null) ta.value = c.draft; pintarCapForm('capSheet'); }
   if (c.k === 'verbo') pintarVerbos();
@@ -3541,6 +3653,7 @@ function htmlAjustes() {
     <div class="f-sec"><span class="f-l">Pomodoro</span><div class="group">
       ${stp('pomo', 'Enfoque', 'Minutos por pomodoro', 5, 90)}${stp('corto', 'Descanso corto', 'Minutos', 1, 30)}${stp('largo', 'Descanso largo', 'Minutos', 5, 60)}${stp('cada', 'Descanso largo cada', 'Pomodoros', 2, 8)}${stp('meta', 'Meta diaria', 'Pomodoros por día', 1, 16)}
       <div class="set-r"><span class="sl">Sonido al terminar</span><button class="sw ${a.sonido ? 'on' : ''}" data-a="cfgSonido" role="switch" aria-checked="${a.sonido}" aria-label="Sonido al terminar"></button></div></div></div>
+    ${htmlAvisosCfg()}
     <div class="f-sec"><span class="f-l">Ayuda y datos</span><div class="group">
       <button class="set-r" data-a="verGuia"><span class="sl">Guía de Foco<small>Cómo funciona el método, paso a paso</small></span>${ic('chevR')}</button>
       <button class="set-r" data-a="resetTips"><span class="sl">Mostrar consejos otra vez<small>Vuelve a ver las pistas que ocultaste</small></span>${ic('chevR')}</button>
@@ -3549,6 +3662,31 @@ function htmlAjustes() {
     <div class="sh-end"></div>`;
 }
 
+function htmlAvisosCfg() {
+  const c = avisoCfg(), on = avisosOn(), sw = (k, n, sub, v) => `<div class="set-r"><span class="sl">${n}${sub ? `<small>${sub}</small>` : ''}</span><button class="sw ${v ? 'on' : ''}" data-a="${k}" role="switch" aria-checked="${!!v}" aria-label="${n}"></button></div>`;
+  const avc = (k, n, sub) => `<div class="set-r"><span class="sl">${n}${sub ? `<small>${sub}</small>` : ''}</span><button class="sw ${c[k] ? 'on' : ''}" data-a="avisoCfg" data-k="${k}" role="switch" aria-checked="${!!c[k]}" aria-label="${n}"></button></div>`;
+  return `<div class="f-sec"><span class="f-l">Avisos</span><div class="group">
+      ${sw('avisos', 'Avisos de Foco', esc(estadoAvisos()), on)}
+      ${on ? `${avc('fase', 'Fin de enfoque y de descanso')}${avc('inicio', 'Inicio de tareas con hora')}
+        ${c.inicio ? `<div class="set-r"><span class="sl">Avisar antes</span><div class="chips">${[0, 5, 10, 15].map(m => `<button class="chip ${c.antes === m ? 'on' : ''}" style="min-height:34px;padding:0 12px" data-a="avisoAntes" data-v="${m}" aria-pressed="${c.antes === m}">${m ? m + ' min' : 'No'}</button>`).join('')}</div></div>` : ''}
+        ${avc('fin', 'Fin del tiempo de cada tarea', 'Como un temporizador por actividad')}
+        <button class="set-r" data-a="avisoProbar"><span class="sl">Probar un aviso</span>${ic('chevR')}</button>` : ''}</div>
+      <p class="hint">La app genera los avisos mientras está abierta; en la computadora también en segundo plano (pestaña o app instalada). En iPhone, con Foco cerrado, los avisos los programa el widget de Scriptable.</p></div>
+    <div class="f-sec"><span class="f-l">Widgets del iPhone</span><div class="group">
+      <button class="set-r" data-a="widgetsGuia"><span class="sl">Widgets con Scriptable<small>${S.conn.url ? 'Leen tu hoja de Google; las cuentas regresivas avanzan solas' : 'Primero conecta tu hoja de Google (arriba)'}</small></span>${ic('chevR')}</button>
+      ${esIOS() ? sw('scrAvisos', 'Aviso exacto al terminar el enfoque', 'Al empezar, abre Scriptable un instante para programar el aviso aunque bloquees el iPhone', pref.v('scrAvisos')) : ''}</div></div>`;
+}
+function htmlWidgets() {
+  const paso = (n, t, d) => `<div class="help-i"><span class="o">${n}</span><div><b>${t}</b><span>${d}</span></div></div>`;
+  return cab('<h2>Widgets</h2>') + `<p class="help-d">Muestran lo que va ahora, cuánto le queda y lo que sigue. La cuenta regresiva la avanza el propio iPhone, así que no depende de que el widget se actualice.</p>
+    <div class="panel">${paso(1, 'Instala Scriptable', 'Es gratis, en la App Store.')}
+      ${paso(2, 'Copia el script', 'Con el botón de abajo. En Scriptable toca +, pega y nómbralo exactamente «Foco».')}
+      ${paso(3, 'Ejecútalo una vez', 'Te pedirá la URL y la clave de tu hoja (las mismas de Ajustes) y permiso para avisos.')}
+      ${paso(4, 'Agrega los widgets', 'Mantén presionada la pantalla de inicio o la de bloqueo › + › Scriptable › elige «Foco». En «Parameter» escribe ahora, hoy o agenda (o déjalo vacío para que se adapte al tamaño).')}</div>
+    <button class="btn pri full" style="margin-top:16px" data-a="widgetsCopiar">${ic('note')}Copiar el script</button>
+    <p class="hint">Para que el widget vea un cambio, Foco lo envía a tu hoja al instante y también al salir de la app. El iPhone decide cuándo redibuja el widget (normalmente cada 5–15 min); el script le pide hacerlo justo cuando termina un enfoque o empieza la siguiente tarea.</p>
+    <div class="sh-end"></div>`;
+}
 function aplicarTema(t) {
   const r = document.documentElement;
   if (t === 'light' || t === 'dark') r.dataset.theme = t; else { delete r.dataset.theme; t = 'auto'; }
@@ -3584,6 +3722,29 @@ const ACT = {
   tipOk:el => { pref.set('tip-' + el.dataset.k, 1); const t = el.closest('.tip'); if (t) t.remove(); ajustarBoard(); },
   resetTips:() => { Object.keys(pref.get()).filter(k => k.startsWith('tip-')).forEach(k => pref.set(k, 0)); toast('Los consejos volverán a aparecer'); },
   ajustes:() => abrirSheet({ k:'ajustes' }),
+  avisos:async () => {
+    if (avisosOn()) { pref.set('avisos', 0); programarAvisos(); refrescarSheet(); return; }
+    if (!avisosSoportados()) { toast(estadoAvisos()); return; }
+    let p = Notification.permission;
+    if (p === 'default') { try { p = await Notification.requestPermission(); } catch (e) {} }
+    if (p !== 'granted') { toast(p === 'denied' ? 'Los avisos están bloqueados en el sistema' : 'No se activaron los avisos'); refrescarSheet(); return; }
+    pref.set('avisos', 1); programarAvisos(); refrescarSheet(); toast('Avisos activados');
+  },
+  avisoCfg:el => { const c = avisoCfg(); c[el.dataset.k] = c[el.dataset.k] ? 0 : 1; pref.set('avisoCfg', c); programarAvisos(); refrescarSheet(); },
+  avisoAntes:el => { const c = avisoCfg(); c.antes = +el.dataset.v; pref.set('avisoCfg', c); programarAvisos(); refrescarSheet(); },
+  avisoProbar:async () => { const ok = await mostrarAviso('Así se ven los avisos de Foco', 'Te avisaré cuando termine un enfoque o empiece una tarea.', 'foco-prueba'); if (!ok) toast('No se pudo mostrar el aviso'); },
+  scrAvisos:() => { pref.set('scrAvisos', pref.v('scrAvisos') ? 0 : 1); refrescarSheet(); },
+  widgetsGuia:() => {
+    abrirSheet({ k:'widgets', volver:{ k:'ajustes' } });
+    // Se descarga al abrir: Safari solo deja copiar dentro del mismo toque, sin esperar a la red.
+    if (!ui.scriptTxt) fetch('widgets/Foco.js', { cache:'no-store' }).then(r => r.ok ? r.text() : '').then(t => { ui.scriptTxt = t; }).catch(() => {});
+  },
+  widgetsCopiar:async () => {
+    try {
+      if (!ui.scriptTxt) { const r = await fetch('widgets/Foco.js', { cache:'no-store' }); if (!r.ok) throw new Error(); ui.scriptTxt = await r.text(); }
+      await navigator.clipboard.writeText(ui.scriptTxt); toast('Script copiado. Pégalo en Scriptable');
+    } catch (e) { toast('No se pudo copiar. Búscalo en widgets/Foco.js del repositorio'); }
+  },
   cerrarSheet:() => cerrarSheet(),
   cerrarNivel:() => $('#lvlUp').classList.remove('on'),
   capFab:() => abrirSheet({ k:'captura' }),
@@ -4294,14 +4455,14 @@ function arrancar() {
   else if (q.get('capturar')) abrirSheet({ k:'captura' });
   setInterval(tic, 500);
   setInterval(() => { if (document.visibilityState === 'visible' && !syncing) sincronizar(false); }, 60000);
-  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { tic(); sincronizar(false); if (T().corriendo) pantallaActiva(true); } else guardarYa(); });
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { tic(); sincronizar(false); if (T().corriendo) pantallaActiva(true); programarAvisos(); } else alSalir(); });
   addEventListener('online', () => sincronizar(false));
-  addEventListener('pagehide', guardarYa);
+  addEventListener('pagehide', alSalir);
   addEventListener('resize', () => { if (ui.view === 'tablero') ajustarBoard(); if (ui.view === 'agenda') { if (desk()) renderSemana(); else ajustarAgenda(); } });
   mqDesk.addEventListener('change', () => render());
   mqMovil.addEventListener('change', () => { if (mqMovil.matches && ui.view === 'tablero') ir('lista'); else render(); });
   document.addEventListener('touchend', audioListo, { once:true });
-  sincronizar(false);
+  sincronizar(false); programarAvisos();
   if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 arrancar();
