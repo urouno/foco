@@ -360,7 +360,7 @@ function wLinea(w, d) {
 }
 
 /* ---------- Widget «Pendientes»: lo que no tiene plan ---------- */
-const TIPOS = { atrasada:['Atrasadas', '#FF3B30'], espera:['En espera', '#FF9500'], prox:['Sin día', '#5856D6'], bandeja:['Sin organizar', '#32ADE6'] };
+const TIPOS = { atrasada:['Atrasadas', '#FF3B30'], espera:['En espera', '#FF9500'], prox:['Sin día', '#5856D6'], bandeja:['Sin organizar', '#A09EEB'] };
 const diasRev = sp => sp && sp.rev ? Math.max(0, Math.round((inicioDia(new Date()) - inicioDia(new Date(sp.rev))) / 864e5)) : null;
 const txtRev = sp => { const d = diasRev(sp); return d == null ? 'Sin revisión todavía' : d === 0 ? 'Revisaste hoy' : `Revisión hace ${d} ${d === 1 ? 'día' : 'días'}`; };
 const revVencida = sp => { const d = diasRev(sp); return sp && sp.total > 0 && (d == null || d >= 7); };
