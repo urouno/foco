@@ -12,8 +12,11 @@
      · Pequeño  → ahora   Lo que va ahora y cuánto le queda.
      · Mediano  → hoy     Ahora + avance del día + lo que sigue.
      · Grande   → agenda  Línea del día con cada actividad y su tiempo.
+     · Cualquier tamaño → pendientes  Lo que no tiene plan: cuántos,
+       cuántos olvidados y cuáles atender primero.
      · Pantalla de bloqueo: rectangular, circular y en línea.
-   Escribe ahora, hoy o agenda en «Parameter» para forzar un diseño.
+   Escribe ahora, hoy, agenda o pendientes en «Parameter» para forzar
+   un diseño (también en la pantalla de bloqueo).
 
    Cómo se mantiene correcto:
      · Las cuentas regresivas las avanza iOS cada segundo (no dependen
@@ -54,7 +57,7 @@ const DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', '
 const corta = (s, n) => s && s.length > n ? s.slice(0, n - 1) + '…' : (s || '');
 
 /* ---------- Configuración ---------- */
-const cfgAvisos = () => { try { return Object.assign({ on:1, fase:1, inicio:1, antes:5, fin:0 }, JSON.parse(Keychain.get(K.avisos))); } catch (e) { return { on:1, fase:1, inicio:1, antes:5, fin:0 }; } };
+const cfgAvisos = () => { try { return Object.assign({ on:1, fase:1, inicio:1, antes:5, fin:0, rev:1 }, JSON.parse(Keychain.get(K.avisos))); } catch (e) { return { on:1, fase:1, inicio:1, antes:5, fin:0, rev:1 }; } };
 const guardarAvisos = c => Keychain.set(K.avisos, JSON.stringify(c));
 const conectado = () => Keychain.contains(K.url) && !!Keychain.get(K.url);
 
@@ -128,7 +131,23 @@ function respaldo(j, aj) {
     hoy:{ hechas, total:hechas + vivas.length, prio:0 }, bandeja:ts.filter(t => t.estado === 'bandeja').length,
     lista:vivas.slice(0, 8).map(t => ({ id:t.id, t:String(t.titulo).slice(0, 90), c:ar(t.area).c || '#8E8E93', a:ar(t.area).n || '', h:t.hora || '', d:+t.dur || 0, run:t.estado === 'proceso' ? 1 : 0 })),
     timer:{ ...tm, c:x ? ar(x.area).c || '#5856D6' : '#5856D6', fases:tm.corriendo && tm.fin ? [{ f:tm.fase, ini:tm.fin - (tm.total || 0) * 1000, fin:tm.fin }] : [] },
-    dias:{ [hoyS]:bloques(hoyS), [manS]:bloques(manS) } };
+    dias:{ [hoyS]:bloques(hoyS), [manS]:bloques(manS) }, sinPlan:sinPlanRespaldo(ts, ar, hoyS, cfg) };
+}
+// Misma regla que la vista Pendientes de Foco, simplificada.
+function sinPlanRespaldo(ts, ar, hoyS, cfg) {
+  const dias = iso => iso ? Math.max(0, Math.round((inicioDia(new Date()) - inicioDia(new Date(iso))) / 864e5)) : 0;
+  const tipo = t => t.estado === 'bandeja' ? 'bandeja' : t.estado === 'algun' ? 'algun' : t.estado === 'espera' ? (!t.seg || t.seg <= hoyS ? 'espera' : null)
+    : ['prox', 'hoy', 'proceso'].includes(t.estado) && t.fecha && t.fecha < hoyS ? 'atrasada' : t.estado === 'prox' && !t.fecha ? 'prox' : null;
+  const xs = ts.map(t => { const k = tipo(t); if (!k) return null; const d = dias(t.actualizado || t.creado), o = d >= (k === 'algun' ? 60 : 14);
+    const pr = isTrue(t.urgente) && isTrue(t.importante) ? 30 : isTrue(t.importante) ? 20 : isTrue(t.urgente) ? 10 : 0;
+    const lim = t.limite && t.limite <= ymd(masDias(new Date(), 7));
+    return { t, k, o, d, u:lim || k === 'atrasada' ? 1 : 0, sc:Math.min(d, 60) / 2 + pr + (lim ? 50 : 0) + (k === 'atrasada' ? 25 : k === 'espera' ? 20 : k === 'bandeja' ? 8 : k === 'algun' ? -40 : 0),
+      m:lim ? `Vence ${t.limite.slice(5).split('-').reverse().join('/')}` : k === 'atrasada' ? `Era para el ${t.fecha.slice(8)}` : k === 'espera' ? 'Toca dar seguimiento' : k === 'bandeja' ? 'Sin organizar' : o ? `${d} días sin moverse` : 'Sin día' }; })
+    .filter(Boolean).sort((a, b) => b.sc - a.sc);
+  const acc = xs.filter(x => x.k !== 'algun'), por = {};
+  xs.forEach(x => { por[x.k] = (por[x.k] || 0) + 1; });
+  return { total:acc.length, olvidadas:acc.filter(x => x.o).length, por, rev:cfg.ultRevision || '', umbral:14,
+    top:acc.slice(0, 6).map(x => ({ id:x.t.id, t:String(x.t.titulo).slice(0, 90), c:ar(x.t.area).c || '#8E8E93', m:x.m, k:x.k, o:x.o ? 1 : 0, u:x.u })) };
 }
 
 /* ---------- Qué va ahora (calculado con la hora actual) ---------- */
@@ -340,6 +359,82 @@ function wLinea(w, d) {
   w.addText(t);
 }
 
+/* ---------- Widget «Pendientes»: lo que no tiene plan ---------- */
+const TIPOS = { atrasada:['Atrasadas', '#FF3B30'], espera:['En espera', '#FF9500'], prox:['Sin día', '#5856D6'], bandeja:['Sin organizar', '#32ADE6'] };
+const diasRev = sp => sp && sp.rev ? Math.max(0, Math.round((inicioDia(new Date()) - inicioDia(new Date(sp.rev))) / 864e5)) : null;
+const txtRev = sp => { const d = diasRev(sp); return d == null ? 'Sin revisión todavía' : d === 0 ? 'Revisaste hoy' : `Revisión hace ${d} ${d === 1 ? 'día' : 'días'}`; };
+const revVencida = sp => { const d = diasRev(sp); return sp && sp.total > 0 && (d == null || d >= 7); };
+function resumenPend(st, sp, grande) {
+  const r = st.addStack(); r.centerAlignContent(); r.spacing = 4;
+  simbolo(r, 'square.stack.3d.up', 10, C.ac); texto(r, 'SIN PLAN', Font.boldSystemFont(11), C.ac);
+  st.addSpacer(2);
+  const n = st.addStack(); n.bottomAlignContent(); n.spacing = 6;
+  texto(n, String(sp.total), Font.boldRoundedSystemFont(grande ? 44 : 40), C.ink);
+  texto(n, sp.total === 1 ? 'pendiente' : 'pendientes', Font.mediumSystemFont(12), C.mut);
+  st.addSpacer();
+  if (sp.olvidadas) texto(st, `${sp.olvidadas} ${sp.olvidadas === 1 ? 'olvidado' : 'olvidados'} · +${sp.umbral || 14} días`, Font.semiboldSystemFont(12), C.warn);
+  texto(st, txtRev(sp), Font.mediumSystemFont(11), revVencida(sp) ? C.warn : C.mut);
+}
+function barraTipos(st, sp, w) {
+  const tot = Object.keys(TIPOS).reduce((a, k) => a + ((sp.por || {})[k] || 0), 0); if (!tot) return;
+  const s = st.addStack(); s.size = new Size(w, 8); s.cornerRadius = 4; s.spacing = 2; s.backgroundColor = C.track;
+  Object.keys(TIPOS).forEach(k => { const n = (sp.por || {})[k]; if (!n) return; const i = s.addStack(); i.size = new Size(Math.max(4, (w - 6) * n / tot), 8); i.backgroundColor = new Color(TIPOS[k][1]); });
+  st.addSpacer(6);
+  const l = st.addStack(); l.spacing = 10; l.centerAlignContent();
+  Object.keys(TIPOS).forEach(k => { const n = (sp.por || {})[k]; if (!n) return; const x = l.addStack(); x.spacing = 4; x.centerAlignContent();
+    const dot = x.addStack(); dot.size = new Size(7, 7); dot.cornerRadius = 2; dot.backgroundColor = new Color(TIPOS[k][1]); texto(x, `${TIPOS[k][0]} ${n}`, Font.mediumSystemFont(10), C.mut); });
+}
+function itemPend(st, x, conMotivo = true) {
+  const r = st.addStack(); r.spacing = 8; r.centerAlignContent();
+  const p = r.addStack(); p.size = new Size(3, conMotivo ? 28 : 14); p.cornerRadius = 1.5; p.backgroundColor = hex(x.c);
+  const c = r.addStack(); c.layoutVertically();
+  texto(c, x.t, Font.semiboldSystemFont(13), C.ink, 1);
+  if (conMotivo) texto(c, x.m, Font.mediumSystemFont(11), x.u || x.o ? C.warn : C.mut, 1);
+  r.addSpacer();
+}
+function wPendientes(w, sp, fam) {
+  const an = anchos();
+  if (!sp) { texto(w, 'Pendientes', Font.boldSystemFont(15), C.ink); w.addSpacer(6); texto(w, 'Abre Foco una vez para enviar tus pendientes al widget.', Font.mediumSystemFont(12), C.mut, 4); return; }
+  if (fam === 'small') { resumenPend(w, sp, false); return; }
+  if (fam === 'medium') {
+    const col = (an.mediano - 14) / 2, f = w.addStack(); f.spacing = 14;
+    const izq = f.addStack(); izq.layoutVertically(); izq.size = new Size(col * 0.8, 0); resumenPend(izq, sp, false);
+    const der = f.addStack(); der.layoutVertically(); der.size = new Size(col * 1.2, 0);
+    texto(der, 'Primero atiende', Font.boldSystemFont(13), C.ink); der.addSpacer(6);
+    if (!sp.top.length) texto(der, 'Todo tiene plan', Font.mediumSystemFont(12), C.mut);
+    sp.top.slice(0, 3).forEach((x, i) => { if (i) der.addSpacer(6); itemPend(der, x, false); const m = der.addStack(); m.addSpacer(11); texto(m, x.m, Font.mediumSystemFont(10), x.u || x.o ? C.warn : C.mut, 1); });
+    der.addSpacer();
+    return;
+  }
+  const W = an.mediano, cab = w.addStack(); cab.bottomAlignContent();
+  texto(cab, 'Pendientes', Font.boldSystemFont(17), C.ink); cab.addSpacer(8);
+  texto(cab, `${sp.total} sin planificar`, Font.mediumSystemFont(13), C.mut); cab.addSpacer();
+  if (sp.olvidadas) texto(cab, `${sp.olvidadas} olvidados`, Font.semiboldSystemFont(12), C.warn);
+  w.addSpacer(10); barraTipos(w, sp, W); w.addSpacer(14);
+  texto(w, 'PRIMERO ATIENDE', Font.boldSystemFont(11), C.ac); w.addSpacer(8);
+  if (!sp.top.length) texto(w, 'Todo tiene un siguiente paso.', Font.mediumSystemFont(13), C.mut);
+  sp.top.slice(0, 5).forEach((x, i) => { if (i) w.addSpacer(8); itemPend(w, x); });
+  w.addSpacer();
+  const pie_ = w.addStack(); pie_.centerAlignContent();
+  texto(pie_, txtRev(sp), Font.mediumSystemFont(11), revVencida(sp) ? C.warn : C.mut); pie_.addSpacer();
+  texto(pie_, 'Planifica › Pendientes', Font.mediumSystemFont(11), C.mut2);
+}
+function accPendientes(w, sp, fam) {
+  const n = sp ? sp.total : 0, o = sp ? sp.olvidadas : 0;
+  if (fam === 'accessoryInline') { const s = SFSymbol.named('square.stack.3d.up'); if (s) w.addImage(s.image); w.addText(sp ? `${n} sin plan${o ? ` · ${o} olvidados` : ''}` : 'Pendientes: abre Foco'); return; }
+  if (fam === 'accessoryCircular') {
+    w.addAccessoryWidgetBackground = true; w.backgroundImage = anillo(n ? o / n : 0);
+    w.addSpacer(); const r = w.addStack(); r.addSpacer(); const c = r.addStack(); c.layoutVertically(); c.centerAlignContent();
+    texto(c, String(n), Font.boldRoundedSystemFont(18), Color.white()).centerAlignText();
+    texto(c, 'sin plan', Font.mediumSystemFont(9), Color.white()).centerAlignText(); r.addSpacer(); w.addSpacer(); return;
+  }
+  const l1 = w.addStack(); l1.centerAlignContent(); l1.spacing = 4;
+  simbolo(l1, 'square.stack.3d.up', 10, Color.white()); texto(l1, `Sin plan · ${n}${o ? ` · ${o} olvidados` : ''}`, Font.semiboldSystemFont(12), Color.white());
+  const top = sp && sp.top[0];
+  texto(w, top ? top.t : 'Todo tiene plan', Font.boldSystemFont(14), Color.white(), 1);
+  texto(w, top ? top.m : (sp ? txtRev(sp) : 'Abre Foco'), Font.mediumSystemFont(12), new Color('#ffffff', 0.8), 1);
+}
+
 /* ---------- Avisos locales (funcionan con Foco cerrado) ---------- */
 function planAvisos(snap, cfg) {
   const out = [], ahora = Date.now(), lim = ahora + 20 * 3600e3, tm = snap.timer || {};
@@ -360,6 +455,11 @@ function planAvisos(snap, cfg) {
       if (cfg.fin) out.push({ id:`foco-f-${b.id}-${fin}`, ms:fin, t:`Terminó el tiempo de «${b.t}»`, b:'Márcala como hecha en Foco o dale más tiempo.' });
     });
   });
+  // Revisión semanal: si pasaron 7 días (o nunca la hiciste), un recordatorio a las 9:30.
+  if (cfg.rev && revVencida(snap.sinPlan)) {
+    const sp = snap.sinPlan, d = new Date(); d.setHours(9, 30, 0, 0); if (d.getTime() < ahora + 60000) d.setDate(d.getDate() + 1);
+    out.push({ id:`foco-rev-${ymd(d)}`, ms:d.getTime(), t:'Revisión de pendientes', b:`${sp.total} sin planificar${sp.olvidadas ? `, ${sp.olvidadas} olvidados` : ''}. Dale un siguiente paso a cada uno en Planifica › Pendientes.` });
+  }
   return out.filter(p => p.ms > ahora + 20000 && p.ms < lim);
 }
 async function programarAvisos(snap, soloFases) {
@@ -403,7 +503,12 @@ async function crear(familia, tipo) {
     return w;
   }
   const d = { ...calcular(r.snap), fam:familia, error:r.error && r.error !== 'sin-config' ? r.error : '', snapGen:r.snap.gen };
-  if (familia === 'accessoryCircular') wCircular(w, d);
+  if (tipo === 'pendientes' || tipo === 'sinplan') {
+    if (acc) accPendientes(w, r.snap.sinPlan, familia); else wPendientes(w, r.snap.sinPlan, familia);
+    const m = inicioDia(masDias(new Date(), 1)); m.setMinutes(1);
+    d.refrescar = new Date(Math.min(m.getTime(), Date.now() + 60 * 60000));
+  }
+  else if (familia === 'accessoryCircular') wCircular(w, d);
   else if (familia === 'accessoryRectangular') wRectangular(w, d);
   else if (familia === 'accessoryInline') wLinea(w, d);
   else {
@@ -423,6 +528,7 @@ async function menu() {
   const a = new Alert(); a.title = 'Foco';
   a.message = `Avisos: ${c.on ? 'activados' : 'desactivados'}. Agrega los widgets desde la pantalla de inicio o la de bloqueo.`;
   const ops = [['Ver «Ahora» (pequeño)', () => vista('small', 'ahora')], ['Ver «Hoy» (mediano)', () => vista('medium', 'hoy')], ['Ver «Agenda» (grande)', () => vista('large', 'agenda')],
+    ['Ver «Pendientes» (grande)', () => vista('large', 'pendientes')], ['Ver «Pendientes» (mediano)', () => vista('medium', 'pendientes')],
     ['Ver pantalla de bloqueo (rectangular)', () => vista('accessoryRectangular')], ['Ver pantalla de bloqueo (circular)', () => vista('accessoryCircular')],
     ['Avisos…', menuAvisos], ['Actualizar ahora', async () => { const r = await cargar(true); if (r.snap) { const n = await programarAvisos(r.snap); await aviso('Actualizado', `${n} avisos programados.`); } else await aviso('No se pudo leer tu hoja', r.error); }],
     ['Cambiar conexión', configurar]];
@@ -439,7 +545,7 @@ async function menuAvisos() {
   const a = new Alert(); a.title = 'Avisos'; a.message = 'Se programan en el iPhone cada vez que el widget se actualiza, así llegan aunque Foco esté cerrado.';
   const ops = [[`Avisos: ${c.on ? 'activados' : 'desactivados'}`, () => { c.on = c.on ? 0 : 1; }], [`Fin de enfoque y descanso: ${si(c.fase)}`, () => { c.fase = c.fase ? 0 : 1; }],
     [`Inicio de tareas con hora: ${si(c.inicio)}`, () => { c.inicio = c.inicio ? 0 : 1; }], [`Avisar antes: ${c.antes ? c.antes + ' min' : 'No'}`, () => { c.antes = { 0:5, 5:10, 10:15, 15:0 }[c.antes] ?? 5; }],
-    [`Fin del tiempo de cada tarea: ${si(c.fin)}`, () => { c.fin = c.fin ? 0 : 1; }]];
+    [`Fin del tiempo de cada tarea: ${si(c.fin)}`, () => { c.fin = c.fin ? 0 : 1; }], [`Recordar la revisión semanal: ${si(c.rev)}`, () => { c.rev = c.rev ? 0 : 1; }]];
   ops.forEach(o => a.addAction(o[0])); a.addCancelAction('Listo');
   const i = await a.presentSheet();
   if (i < 0) { const r = await cargar(); if (r.snap) await programarAvisos(r.snap); return; }

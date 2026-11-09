@@ -40,7 +40,23 @@ Foco (app web) ──al cambiar algo y al salir──▶ Hoja de Google (Ajustes
 | Bloqueo | Circular | Anillo de avance con la cuenta regresiva al centro; sin actividad, «hechas / total» del día. |
 | Bloqueo | En línea | «Título · hasta 10:25» o «Sigue 11:30 · Título». |
 
-En **Parameter** puedes escribir `ahora`, `hoy` o `agenda` para elegir el diseño sin importar el tamaño (en pequeño siempre es `ahora`).
+En **Parameter** puedes escribir `ahora`, `hoy`, `agenda` o `pendientes` para elegir el diseño sin importar el tamaño (en pequeño, `hoy` y `agenda` muestran `ahora`).
+
+### Widget «Pendientes» (Parameter: `pendientes`)
+Para que nada sin fecha se quede olvidado. Usa la misma regla que la vista **Planifica › Pendientes** de Foco.
+
+| Tamaño | Qué muestra |
+|---|---|
+| Pequeño | Cuántos pendientes no tienen plan, cuántos están olvidados (más de 14 días sin moverse) y hace cuánto fue tu última revisión. |
+| Mediano | Lo anterior + los 3 que más atención piden, con el motivo (vence, atrasada, seguimiento, días sin moverse). |
+| Grande | Reparto por tipo (atrasadas, en espera, sin día, sin organizar) y los 5 primeros con su motivo. |
+| Bloqueo rectangular | «Sin plan · 8 · 3 olvidados» y el primero que atender. |
+| Bloqueo circular | El número sin plan; el anillo marca qué parte está olvidada. |
+| Bloqueo en línea | «8 sin plan · 3 olvidados». |
+
+**Qué cuenta como «sin plan»:** lo que sigue en la Bandeja, próximas acciones sin día, tareas cuyo día ya pasó, y en espera sin fecha de seguimiento o con el seguimiento vencido. Algún día va aparte y solo se señala si lleva 60 días sin revisarse.
+
+**Recordatorio de revisión:** si pasan 7 días sin revisión (o nunca la has hecho), Scriptable te avisa a las 9:30. Se apaga en Scriptable › Foco › Avisos…
 
 ### Qué cuenta como «Ahora» (en este orden)
 1. Un enfoque o descanso corriendo en Foco.
@@ -56,7 +72,7 @@ En **Parameter** puedes escribir `ahora`, `hoy` o `agenda` para elegir el diseñ
 | iPhone, Foco cerrado | Scriptable | Siempre: son avisos locales de iOS. Se programan cada vez que el widget se actualiza o abres el script. |
 | iPhone, Foco abierto | La app | Solo en iOS 16.4 o posterior y abriendo Foco desde el ícono de la pantalla de inicio. |
 
-Tipos: fin de enfoque y de descanso; inicio de tareas con hora (con 5, 10 o 15 min de antelación); fin del tiempo de cada tarea (estilo temporizador por actividad, apagado por defecto). Se configuran en Foco › Ajustes › Avisos (computadora) y en Scriptable › Foco › Avisos… (iPhone).
+Tipos: revisión semanal de pendientes sin plan (solo Scriptable); fin de enfoque y de descanso; inicio de tareas con hora (con 5, 10 o 15 min de antelación); fin del tiempo de cada tarea (estilo temporizador por actividad, apagado por defecto). Se configuran en Foco › Ajustes › Avisos (computadora) y en Scriptable › Foco › Avisos… (iPhone).
 
 ### Aviso exacto al terminar un enfoque (iPhone)
 Si inicias un pomodoro y bloqueas el teléfono antes de que el widget se actualice, Scriptable todavía no sabe la hora de término. Activa **Ajustes › Widgets del iPhone › Aviso exacto al terminar el enfoque**: al pulsar Empezar, Foco abre Scriptable un instante, programa el aviso sin usar la red y te dice a qué hora llegará. Después vuelve a Foco.
