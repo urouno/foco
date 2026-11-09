@@ -516,6 +516,10 @@ body.inmersivo #tabs,body.inmersivo #menuBtn,body.inmersivo #hSub,body.inmersivo
 .sol-i b{display:block;color:var(--warn);font-size:var(--fs-s)}
 .sol-i span{display:block;margin-top:2px}
 .tl-b.solapa{box-shadow:inset 0 0 0 2px var(--warn-f)}
+/* Bloques cortos (≤ 30 min): título y hora en un renglón para que nada quede cortado */
+.tl-b.corta{display:flex;align-items:center;gap:8px;padding-top:2px;padding-bottom:2px}
+.tl-b.corta b{flex:0 1 auto;min-width:0}
+.tl-b.corta .tl-t{flex:none;white-space:nowrap}
 .sm-in{width:auto;min-width:110px;min-height:40px}
 /* Densidad compacta: menos aire, mismo tamaño de texto y de controles */
 .compacta .tr{min-height:52px;padding-top:8px;padding-bottom:8px}
@@ -524,6 +528,29 @@ body.inmersivo #tabs,body.inmersivo #menuBtn,body.inmersivo #hSub,body.inmersivo
 .compacta .kc{padding:8px 10px 8px 12px}
 .compacta .col .list{gap:6px}
 .compacta .kc-f{margin-top:4px}
+
+/* ===== Pendientes: lo que no tiene plan ===== */
+.pd-sum .pm-n b{font-size:40px}
+.pd-sum .sum-e b{color:var(--warn);font-weight:600}
+.pd-bar{display:flex;gap:2px;height:8px;border-radius:4px;overflow:hidden;margin-top:12px;background:var(--sf3)}
+.pd-bar i{display:block;height:100%}
+.pd-ley{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px;font-size:var(--fs-s);color:var(--mut)}
+.pd-ley span{display:inline-flex;align-items:center;gap:6px}
+.pd-ley i{width:8px;height:8px;border-radius:2px;display:inline-block}
+.pd-sum .btn{margin-top:16px}
+.tag.f-olv{color:var(--warn);font-weight:600}
+.tr.pd{align-items:flex-start}
+.tr.pd .dec-b{margin-top:8px}
+.rv-card{margin:12px 0 4px;border-radius:20px}
+.rv-card .hero-t{margin-top:6px}
+.rv-acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.rv-acts .act{position:relative;min-height:72px;padding:12px;gap:6px}
+.rv-acts .act .ico{width:32px;height:32px;border-radius:10px}
+.rv-acts .act input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.rv-acts .act.pri .ico{background:var(--ac-s);color:var(--ac-t)}
+.rv-acts .act.del .ico{color:var(--hot)}
+.pg-l{display:flex;flex-direction:column;gap:2px}
+.pg-l .tr small{margin-left:auto;color:var(--mut);font-size:var(--fs-s);flex:none}
 
 /* ===== Bandeja: selección múltiple ===== */
 .lote-bar{position:sticky;top:calc(var(--top) + 64px);z-index:5;display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:8px;border-radius:12px;background:var(--sf);box-shadow:0 2px 10px rgba(0,0,0,.08)}
@@ -781,6 +808,7 @@ body.dragging .board{scroll-snap-type:none}
 .sh-row h2{margin:0;font-size:var(--fs-l);font-weight:700;letter-spacing:-.01em;flex:1;min-width:0}
 .sh-row .x{background:var(--sf3);border-radius:50%;width:36px;height:36px;color:var(--mut)}
 .sh-row .x svg.i{width:18px;height:18px;stroke-width:2.4}
+.sh-row .x:focus-visible{outline-offset:-2px}
 .sh-foot{position:sticky;bottom:0;z-index:3;display:flex;gap:8px;margin:16px -16px 0;padding:12px 16px calc(12px + var(--bot));background:var(--bg);border-top:1px solid var(--ln)}
 .sh-foot .btn{flex:1}
 .sh-foot .btn.sq{flex:none}
@@ -949,6 +977,12 @@ body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(-
   #tabs .tcap .tl{position:static;width:auto;height:auto;overflow:visible;clip:auto}
   #tabs .tcap kbd{background:color-mix(in srgb,var(--on-ac) 18%,transparent);border-color:transparent;color:var(--on-ac)}
   #tabs > button{order:1}
+  /* El atajo de cada sección solo aparece al pasar el cursor: no compite con el contador de la Bandeja */
+  #tabs > button:not(.tcap) > kbd{opacity:0;transition:opacity .15s}
+  #tabs > button:not(.tcap):hover > kbd,#tabs > button:not(.tcap):focus-visible > kbd{opacity:1}
+  body.inmersivo #hdr{padding-left:max(32px,calc(50% - 360px));padding-right:max(24px,calc(50% - 368px))}
+  .sh-top{padding-top:12px}
+  .sh-top .grab{display:none}
   body.inmersivo{padding-left:0}
   body.inmersivo main{margin:0 auto;max-width:720px}
   #tabs .side-f{display:flex;flex-direction:column;gap:8px;margin-top:auto;padding:16px 12px 0;border-top:1px solid var(--ln);font-size:var(--fs-s);color:var(--mut)}
@@ -959,6 +993,7 @@ body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(-
   body.has-mini #fab{bottom:calc(var(--mini) + 24px)}
   #toast{left:calc(50% + var(--side) / 2)}
   .subnav{display:inline-flex;min-width:360px}
+  .subnav button{flex:1 0 auto;padding:0 16px}
   .subnav.hide{display:none}
   /* Hojas: panel lateral a la derecha */
   #sheet,#sheet.on{left:auto;right:0;top:0;bottom:0;width:480px;max-height:none;border-radius:24px 0 0 24px}
@@ -966,10 +1001,11 @@ body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(-
   #sheet.on{transform:translateX(0)}
   #proc,#onb{padding-left:max(24px,calc(50% - 320px));padding-right:max(24px,calc(50% - 320px))}
   /* Ingresa: captura a la izquierda, lista a la derecha */
-  #v-bandeja.on{display:grid;grid-template-columns:minmax(320px,400px) minmax(0,1fr);column-gap:32px;align-items:start}
+  #v-bandeja.on{display:grid;grid-template-columns:minmax(340px,440px) minmax(0,1fr);column-gap:32px;align-items:start}
   #v-bandeja>*{grid-column:1}
   #v-bandeja>#bandejaZona{grid-column:2;grid-row:1 / span 5}
   #bandejaZona>.sec-t:first-of-type{margin-top:24px}
+  #bandejaZona>:first-child{margin-top:0}
   /* Ejecuta: tarea actual a la izquierda, avance y lista a la derecha */
   .hoy-g{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"a t" "a b";column-gap:32px;align-items:start}
   .hoy-t{grid-area:t}.hoy-b{grid-area:b}
@@ -978,11 +1014,12 @@ body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(-
   .hoy-a .hero{padding:32px 28px 28px}
   .hoy-a .hero-t{font-size:26px}
   #v-enfoque,#v-progreso{max-width:720px}
+  #v-pendientes{max-width:880px}
   #v-lista{max-width:880px}
   /* Tablero: todas las columnas a la vista */
   .coltabs{display:none}
   .board{margin:12px 0 0;padding:0 0 8px;overflow-x:auto;scroll-snap-type:none;scrollbar-width:thin}
-  .col{flex:1 0 260px;min-width:260px;max-width:340px}
+  .col{flex:1 1 0;min-width:208px;max-width:340px}
   /* Planifica: semana en columnas */
   .semana{display:grid;grid-template-columns:260px minmax(0,1fr);gap:24px;align-items:start}
   .sm-side{position:sticky;top:96px}
@@ -1016,7 +1053,22 @@ body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(-
   .sm-col.hoy{background:color-mix(in srgb,var(--ac) 4%,transparent)}
   .sm-col.over{background:color-mix(in srgb,var(--ac) 12%,transparent)}
   .sm-col .tl-b{cursor:grab;padding:3px 6px}
+  .sm-col .tl-b.corta{padding-top:1px;padding-bottom:1px}
+  .sm-col .tl-b.corta .tl-t{display:none}
+  .sm-axis span.first{transform:none;top:2px!important}
   .sm-col .tl-now{left:0}.sm-col .tl-now::before{left:-5px}
+  /* Con un panel abierto, los mensajes van abajo y centrados en el espacio libre (no encima del título del panel) */
+  html.lock #toast{top:auto!important;bottom:calc(24px + var(--bot))!important;transform:translate(-50%,30px)}
+  html.lock #toast.on{transform:translate(-50%,0)}
+  html.lock:has(#sheet.on) #toast{left:calc((100% - 480px + var(--side)) / 2)}
+}
+/* Portátiles pequeños: barra lateral y panel de la semana más angostos para que el calendario respire */
+@media (min-width:1024px) and (max-width:1279px){
+  :root{--side:208px}
+  main{padding-left:24px;padding-right:24px}
+  #hdr{padding-left:24px}
+  .semana{grid-template-columns:220px minmax(0,1fr);gap:16px}
+  .hoy-g{column-gap:24px}
 }
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -1040,6 +1092,7 @@ body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(-
   <section class="view" id="v-hoy"></section>
   <section class="view" id="v-tablero"></section>
   <section class="view" id="v-enfoque"></section>
+  <section class="view" id="v-pendientes"></section>
   <section class="view" id="v-progreso"></section>
 </main>
 <nav id="tabs" aria-label="Secciones"></nav>
@@ -1221,6 +1274,7 @@ function guardarYa() {
   try {
     localStorage.setItem(LS, JSON.stringify(S));
     alm.err = '';
+    programarWidget(); programarAvisos();
     if (alm.pendFlash) { alm.pendFlash = false; flashGuardado(); }
     return true;
   } catch (e) {
@@ -1383,11 +1437,122 @@ function pushTimer() {
     encolar('Ajustes', { clave:'timer', valor:JSON.stringify(v), actualizado:nowISO() });
   }, 500);
 }
+/* ================= Widgets: resumen para Scriptable =================
+   La app deja en la hoja (Ajustes › «widget») un resumen ya calculado: lo que va «Ahora», el reloj con sus
+   fases previstas y los bloques con hora de hoy y mañana. El widget hace las cuentas con la hora actual,
+   así sigue siendo correcto entre una actualización y otra aunque Foco esté cerrado. */
+const hexA = id => (area(id) || {}).c || '#8E8E93';
+function fasesTimer() {
+  const t = T(); if (!t || !t.corriendo) return [];
+  const out = [{ f:t.fase, ini:t.fin - t.total * 1000, fin:t.fin }];
+  // En Pomodoro, al terminar el enfoque empieza solo el descanso: se deja previsto.
+  if (t.fase === 'foco' && t.modo === 'pomo') { const f = (t.ciclo + 1) % S.ajustes.cada === 0 ? 'largo' : 'corto'; out.push({ f, ini:t.fin, fin:t.fin + segFase(f) * 1000 }); }
+  return out;
+}
+function bloquesDe(d) {
+  return tareasDia(d).filter(t => t.hora).map(t => { const s = hm2min(t.hora); return { id:t.id, t:t.titulo.slice(0, 90), s, e:Math.min(s + Math.max(+t.dur || 30, 15), 1440), c:hexA(t.area), a:(area(t.area) || {}).n || '', ok:t.estado === 'hecho' ? 1 : 0, run:t.estado === 'proceso' ? 1 : 0 }; }).sort((a, b) => a.s - b.s);
+}
+function datosWidget() {
+  const { prioIds, proceso, cola, otras } = trabajoDeHoy();
+  const hechas = hechasEl(hoy());
+  const total = prioIds ? prioIds.length : proceso.length + cola.length + hechas.length;
+  const hechasP = prioIds ? prioIds.filter(id => byId(id).estado === 'hecho').length : hechas.length;
+  const fila = t => ({ id:t.id, t:t.titulo.slice(0, 90), c:hexA(t.area), a:(area(t.area) || {}).n || '', h:t.hora || '', d:+t.dur || 0, run:t.estado === 'proceso' ? 1 : 0 });
+  const lista = [...new Set([...proceso, ...cola, ...otras])].slice(0, 8).map(fila);
+  const t = T(), x = byId(t.tareaId);
+  return { v:1, gen:nowISO(), dia:hoy(),
+    hoy:{ hechas:hechasP, total, prio:prioIds ? 1 : 0 }, lista, bandeja:tareasEn('bandeja').length,
+    timer:{ fase:t.fase, modo:t.modo, corriendo:t.corriendo ? 1 : 0, fin:t.fin, restante:t.restante, total:t.total, tareaId:t.tareaId || '', tarea:x ? x.titulo.slice(0, 90) : '', c:x ? hexA(x.area) : '#5856D6', fases:fasesTimer() },
+    dias:{ [hoy()]:bloquesDe(hoy()), [manana()]:bloquesDe(manana()) },
+    jornada:{ ini:S.ajustes.jIni, fin:S.ajustes.jFin }, sinPlan:datosSinPlan() };
+}
+// Pendientes sin plan para el widget «pendientes»: totales por tipo y los que más atención piden.
+function datosSinPlan() {
+  const xs = pendientesSinPlan(), acc = xs.filter(x => x.tipo !== 'algun'), por = {};
+  xs.forEach(x => { por[x.tipo] = (por[x.tipo] || 0) + 1; });
+  return { total:acc.length, olvidadas:acc.filter(x => x.olvidada).length, por, rev:S.ajustes.ultRevision || '', umbral:OLVIDO_DIAS,
+    top:acc.slice(0, 6).map(x => ({ id:x.t.id, t:x.t.titulo.slice(0, 90), c:hexA(x.t.area), m:x.motivo || PEND_G[x.tipo].n, k:x.tipo, o:x.olvidada ? 1 : 0, u:x.mk === 'f-tarde' ? 1 : 0 })) };
+}
+// Se envía solo cuando cambia algo que el widget muestra (no en cada guardado).
+let widgetT, widgetUlt = '';
+function programarWidget(ya) {
+  if (!S.conn.url) return;
+  clearTimeout(widgetT);
+  const f = () => {
+    const d = datosWidget(), k = JSON.stringify({ ...d, gen:0 });
+    if (k === widgetUlt) return;
+    widgetUlt = k; encolar('Ajustes', { clave:'widget', valor:JSON.stringify(d), actualizado:d.gen });
+  };
+  if (ya) f(); else widgetT = setTimeout(f, 1500);
+}
+// Al salir de Foco (cambiar de app, bloquear el teléfono): guarda y envía ya, para que el widget lo vea.
+function alSalir() { guardarYa(); programarWidget(true); if (S.cola.length && S.conn.url) sincronizar(false, true); }
+
+/* ================= Avisos del sistema =================
+   Los genera la propia app mientras está abierta (en la computadora, también en segundo plano).
+   En iPhone, con Foco cerrado, los programa el script de Scriptable. */
+const avisos = { ts:[] };
+const avisoCfg = () => Object.assign({ fase:1, inicio:1, antes:5, fin:0 }, pref.v('avisoCfg') || {});
+const avisosSoportados = () => 'Notification' in window;
+const avisosOn = () => !!pref.v('avisos') && avisosSoportados() && Notification.permission === 'granted';
+const esIOS = () => /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const enPantallaInicio = () => !!navigator.standalone || matchMedia('(display-mode: standalone)').matches;
+async function mostrarAviso(titulo, cuerpo, tag) {
+  const op = { body:cuerpo, tag, renotify:true, icon:'icon-180.png', badge:'icon-180.png', data:{ url:location.href.split('?')[0] } };
+  try { const r = 'serviceWorker' in navigator && await navigator.serviceWorker.getRegistration(); if (r) { await r.showNotification(titulo, op); return true; } } catch (e) {}
+  try { new Notification(titulo, op); return true; } catch (e) { return false; }
+}
+let avisoT;
+function programarAvisos() { clearTimeout(avisoT); avisoT = setTimeout(programarAvisosYa, 400); }
+function programarAvisosYa() {
+  avisos.ts.forEach(clearTimeout); avisos.ts = [];
+  if (!avisosOn()) return;
+  const c = avisoCfg(), ahora = Date.now(), lim = ahora + 20 * 3600e3;
+  const en = (ms, fn) => { if (ms > ahora + 500 && ms < lim) avisos.ts.push(setTimeout(fn, ms - ahora)); };
+  // Con Foco a la vista ya suena y se ve el cambio: el aviso es para cuando estás en otra cosa.
+  const aLaVista = () => document.visibilityState === 'visible' && document.hasFocus();
+  if (c.fase) {
+    const t = T(), x = byId(t.tareaId), nom = x ? `«${x.titulo}»` : 'Enfoque libre';
+    fasesTimer().forEach((p, i, arr) => en(p.fin, () => {
+      if (aLaVista()) return;
+      if (p.f === 'foco') {
+        const sig = arr[i + 1];
+        mostrarAviso(t.modo === 'pomo' ? 'Terminó el pomodoro' : 'Terminó el bloque', sig ? `${nom} · Descanso de ${Math.round((sig.fin - sig.ini) / 60000)} min` : nom, 'foco-fase');
+      } else mostrarAviso('Fin del descanso', `Cuando quieras, vuelve a enfocarte${x ? ` en «${x.titulo}»` : ''}.`, 'foco-fase');
+    }));
+  }
+  [hoy(), manana()].forEach(d => {
+    const base = parseYmd(d).getTime();
+    bloquesDe(d).filter(b => !b.ok).forEach(b => {
+      const ini = base + b.s * 60000, fin = base + b.e * 60000, rango = `${min2hm(b.s)}–${min2hm(b.e)}${b.a ? ' · ' + b.a : ''}`;
+      if (c.inicio) {
+        if (c.antes) en(ini - c.antes * 60000, () => mostrarAviso(`En ${c.antes} min: ${b.t}`, rango, 'foco-t-' + b.id));
+        en(ini, () => { if (!aLaVista()) mostrarAviso(`Es hora: ${b.t}`, rango, 'foco-t-' + b.id); });
+      }
+      if (c.fin) en(fin, () => { const t = byId(b.id); if (t && t.estado !== 'hecho' && !aLaVista()) mostrarAviso(`Terminó el tiempo de «${b.t}»`, '¿La marcas como hecha o le das más tiempo?', 'foco-t-' + b.id); });
+    });
+  });
+}
+function estadoAvisos() {
+  if (!avisosSoportados()) return esIOS() && !enPantallaInicio()
+    ? 'En iPhone, abre Foco desde su ícono en la pantalla de inicio (iOS 16.4 o posterior) para activarlos.'
+    : 'Este navegador no permite avisos.';
+  if (Notification.permission === 'denied') return 'Bloqueados. Actívalos en los ajustes de notificaciones del sistema para Foco.';
+  return avisosOn() ? 'Activados en este dispositivo' : 'Desactivados';
+}
+// Opcional en iPhone: al iniciar un enfoque, Scriptable programa el aviso del final aunque bloquees el teléfono.
+function avisoScriptable() {
+  if (!pref.v('scrAvisos') || !esIOS()) return;
+  const t = T(), x = byId(t.tareaId), f = fasesTimer(); if (!f.length) return;
+  const datos = { tarea:x ? x.titulo.slice(0, 90) : '', modo:t.modo, fases:f };
+  setTimeout(() => { location.href = 'scriptable:///run?scriptName=Foco&avisos=' + encodeURIComponent(JSON.stringify(datos)); }, 350);
+}
+
 let syncing = false, syncOtra = false, syncT, estadoS = '';
 const enVuelo = new Set(); // qid de las operaciones que se están enviando ahora
 S.cola.forEach(o => { if (!o.qid) o.qid = uid(); });
 function programarSync(ms = 1800) { clearTimeout(syncT); syncT = setTimeout(() => sincronizar(false), ms); }
-async function sincronizar(manual) {
+async function sincronizar(manual, salir) {
   if (!S.conn.url || !S.conn.clave) { estadoS = 'sin'; pintarSync(); return false; }
   if (syncing) { syncOtra = true; return false; }
   syncing = true; estadoS = 'run'; pintarSync(); refrescarSi(['sync']);
@@ -1397,7 +1562,9 @@ async function sincronizar(manual) {
   let ok = false;
   try {
     const ctrl = new AbortController(); const to = setTimeout(() => ctrl.abort(), 20000);
-    const res = await fetch(S.conn.url, { method:'POST', body:JSON.stringify({ clave:S.conn.clave, accion:'sync', ops:lote.map(o => ({ hoja:o.hoja, fila:o.fila })) }), signal:ctrl.signal });
+    const cuerpo = JSON.stringify({ clave:S.conn.clave, accion:'sync', ops:lote.map(o => ({ hoja:o.hoja, fila:o.fila })) });
+    // Al salir de la app, «keepalive» deja terminar el envío aunque el sistema suspenda la página (límite ~64 KB).
+    const res = await fetch(S.conn.url, { method:'POST', body:cuerpo, signal:ctrl.signal, keepalive:!!salir && cuerpo.length < 60000 });
     clearTimeout(to);
     if (!res.ok) throw new Error(`El servidor respondió con error ${res.status}.`);
     let j; try { j = await res.json(); } catch (e) { throw new Error('La URL no devolvió datos de Foco. Revisa que sea la de la aplicación web.'); }
@@ -1449,7 +1616,7 @@ function fusionar(j) {
 }
 function estadoSyncInfo() {
   const n = S.cola.length;
-  if (!S.conn.url) return { k:'off', ic:'cloudOff', t:'Sin respaldo', d:'Tus datos solo están en este teléfono. Conecta tu hoja de Google para respaldarlos.' };
+  if (!S.conn.url) return { k:'off', ic:'cloudOff', t:'Sin respaldo', d:'Tus datos solo están en este dispositivo. Conecta tu hoja de Google para respaldarlos.' };
   if (estadoS === 'run') return { k:'run', ic:'cloudUp', t:'Sincronizando…', d:'Enviando y recibiendo cambios.' };
   if (estadoS === 'err') return { k:'err', ic:'cloudErr', t:'No se pudo sincronizar', d:ui.syncErr || 'Inténtalo de nuevo.' };
   if (n) return { k:'pend', ic:'cloudUp', t:`${n} ${n === 1 ? 'cambio' : 'cambios'} por enviar`, d:'Se enviarán en unos segundos.' };
@@ -1746,6 +1913,7 @@ const VISTAS = [
   { k:'lista', n:'Lista', ic:'list', sub:() => { const n = activas().filter(t => !['bandeja', 'algun'].includes(t.estado)).length; return n ? `${n} ${n === 1 ? 'tarea organizada' : 'tareas organizadas'}` : 'Todo lo que tienes organizado'; } },
   { k:'agenda', n:'Agenda', ic:'cal', sub:() => 'Asigna día y hora a tus tareas' },
   { k:'tablero', n:'Tablero', ic:'kanban', sub:() => 'Todas tus tareas por estado' },
+  { k:'pendientes', n:'Pendientes', ic:'layers', sub:() => { const n = pendientesSinPlan().filter(x => x.tipo !== 'algun').length; return n ? `${n} sin planificar` : 'Todo tiene un siguiente paso'; } },
   { k:'hoy', n:'Hoy', ic:'sun', sub:() => { const d = new Date(); return `${DIAS[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]}`; } },
   { k:'enfoque', n:'Enfoque', ic:'timer', sub:() => 'Pomodoro y bloques de tiempo' },
   { k:'progreso', n:'Progreso', ic:'chart', sub:() => 'Tu avance y tus logros' }
@@ -1755,7 +1923,7 @@ const VISTAS = [
 const GRUPOS = [
   { k:'hoy', n:'Hoy', ic:'sun', vs:['hoy', 'enfoque'], ocultas:['enfoque'] },
   { k:'bandeja', n:'Bandeja', ic:'inbox', vs:['bandeja'] },
-  { k:'planifica', n:'Planifica', ic:'cal', vs:['lista', 'tablero', 'agenda'] },
+  { k:'planifica', n:'Planifica', ic:'cal', vs:['lista', 'tablero', 'agenda', 'pendientes'] },
   { k:'progreso', n:'Progreso', ic:'chart', vs:['progreso'] }
 ];
 // En teléfonos el Tablero no cabe; la Lista cubre esa función.
@@ -1765,6 +1933,9 @@ const grupoDe = v => GRUPOS.find(g => g.vs.includes(v));
 // Escritorio: pantallas anchas usan barra lateral, paneles lado a lado y la semana en columnas.
 const mqDesk = matchMedia('(min-width:1024px)');
 const desk = () => mqDesk.matches;
+// Ratón o trackpad: los textos dicen «Haz clic en» en lugar de «Toca».
+const mqFino = matchMedia('(hover:hover) and (pointer:fine)');
+const TOCA = () => mqFino.matches ? 'Haz clic en' : 'Toca';
 function pintarTabs() {
   const nb = tareasEn('bandeja').length, run = S.timer && S.timer.corriendo, g0 = grupoDe(ui.view);
   $('#tabs').innerHTML = `<div class="brand"><img src="icon-180.png" alt="" width="28" height="28">Foco</div>` + GRUPOS.map((g, i) => { const on = g === g0, v = g.k === 'hoy' ? 'hoy' : ui.ult[g.k] || g.vs[0]; return `<button class="${on ? 'on' : ''}" data-a="tab" data-v="${v}" ${on ? 'aria-current="page"' : ''} aria-label="${g.n}${g.k === 'bandeja' && nb ? `, ${nb} por organizar` : ''}"><span class="tp">${ic(g.ic)}</span><span class="tl">${g.n}</span>${g.k === 'bandeja' && nb ? `<i class="bdg">${nb > 99 ? '99+' : nb}</i>` : ''}${g.k === 'hoy' && run && ui.view !== 'enfoque' ? '<i class="tdot"></i>' : ''}<kbd>${i + 1}</kbd></button>`; }).join('')
@@ -1775,7 +1946,7 @@ function pintarTabs() {
   sn.classList.toggle('hide', sv.length < 2);
   sn.innerHTML = sv.map(k => { const V = VISTAS.find(x => x.k === k); return `<button class="${ui.view === k ? 'on' : ''}" data-a="tab" data-v="${k}" role="tab" aria-selected="${ui.view === k}">${ic(V.ic)}${V.n}</button>`; }).join('');
 }
-const RECUERDA_POS = ['lista', 'tablero', 'agenda', 'progreso'];
+const RECUERDA_POS = ['lista', 'tablero', 'agenda', 'pendientes', 'progreso'];
 function ir(v) {
   if (!VISTAS.some(x => x.k === v)) return;
   if (v === 'tablero' && mqMovil.matches) v = 'lista';
@@ -1810,7 +1981,7 @@ function render() {
   $('#proyectos').innerHTML = pr.map(p => `<option value="${esc(p)}">`).join('');
 }
 function renderVista() {
-  ({ bandeja:renderBandeja, lista:renderLista, agenda:renderAgenda, hoy:renderHoy, tablero:renderTablero, enfoque:renderEnfoque, progreso:renderProgreso })[ui.view]();
+  ({ bandeja:renderBandeja, lista:renderLista, agenda:renderAgenda, hoy:renderHoy, tablero:renderTablero, enfoque:renderEnfoque, progreso:renderProgreso, pendientes:renderPendientes })[ui.view]();
   pintarTabs(); encabezado(); pintarMini();
 }
 let renderPend = false;
@@ -1991,7 +2162,7 @@ function pintarCapForm(pfx) {
   else if (lns.length === 1 && txt.trim().length > 2) {
     const i = analizar(lns[0]).find(x => ['relleno', 'verbo', 'vago'].includes(x.k));
     if (i && i.propuesta) h = `${i.k === 'relleno' ? 'Más corto:' : 'Con verbo:'} <button data-a="clarUsar" data-dest="${pfx}" data-v="${esc(i.propuesta)}">«${esc(i.propuesta)}»</button>`;
-    else if (i && i.k === 'verbo') h = 'Tip: empieza con un verbo. Toca «Elegir» para ver opciones.';
+    else if (i && i.k === 'verbo') h = `Tip: empieza con un verbo. ${TOCA()} «Verbo» para ver opciones.`;
     else if (i && i.k === 'vago') h = `«${esc(i.msg.split('»')[0].slice(1))}» es poco específico. ¿Qué harás exactamente?`;
   }
   $(`#${pfx}Hint`).innerHTML = h;
@@ -2031,7 +2202,7 @@ function pintarBandejaLista(nuevos = []) {
   }
   if (rec.length) html += acc('rec', 'check', 'Organizados hoy', rec.length,
     rec.map(r => { const t = byId(r.id); return `<div class="hr"><i class="dot" style="--a:${colorA(t.area)}"></i><div class="tb"><div class="ht">${esc(t.titulo)}</div><div class="hn">${DEST[r.d] || ''}</div></div><span class="hm">${horaDe(r.t)}</span></div>`; }).join(''));
-  if (!S.conn.url) html += `<div class="panel conn"><span class="ci">${ic('cloudOff')}</span><div class="tb"><b>Respalda en Google Sheets</b><div class="mut sm">Por ahora todo vive solo en este teléfono.</div></div><button class="btn sm" style="color:var(--ac-t)" data-a="ajustes">Conectar</button></div>`;
+  if (!S.conn.url) html += `<div class="panel conn"><span class="ci">${ic('cloudOff')}</span><div class="tb"><b>Respalda en Google Sheets</b><div class="mut sm">Por ahora todo vive solo en este dispositivo.</div></div><button class="btn sm" style="color:var(--ac-t)" data-a="ajustes">Conectar</button></div>`;
   z.innerHTML = html;
 }
 // Valida y captura desde un campo. Pregunta antes de duplicar una tarea existente.
@@ -2287,7 +2458,7 @@ function renderHoy() {
     if (resto.length) zB += `<div class="sec-t">Después</div>
       <div class="group" data-list="hoy" data-base="${deCola ? 1 : 0}" data-hero="${deCola ? ahora.id : ''}" id="hoyList">${vis.map((x, i) => filaHoy(x, i + (deCola ? 2 : 1))).join('')}</div>
       ${resto.length > 2 ? `<button class="mas" data-a="hoyTodas" aria-expanded="${todas}">${todas ? 'Ver menos' : `Ver las ${resto.length} ${prioIds ? 'prioridades' : 'tareas'}`}${ic('chevD', todas ? 'up' : '')}</button>` : ''}
-      ${tip('hoy-orden', 'grip', 'Toca el círculo para completar. Arrastra los puntos para reordenar.')}`;
+      ${tip('hoy-orden', 'grip', `${TOCA()} el círculo para completar. Arrastra los puntos para reordenar.`)}`;
     const otrasR = otras.filter(x => x !== ahora);
     if (otrasR.length) zB += `<details class="sec-d" data-k="otras" ${abierto('otras') ? 'open' : ''}><summary class="sec-t">Otras tareas de hoy <span class="n">${otrasR.length}</span><span class="sp"></span>${ic('chevD', 'chev')}</summary>
       <div class="group">${otrasR.map(x => filaHoy(x, 0, { otra:true })).join('')}</div><p class="hint">${ic('star')} la vuelve prioridad.</p></details>`;
@@ -2310,6 +2481,8 @@ function renderHoy() {
       ${ant.length > 1 ? `<button class="mas" data-a="pendTodasHoy">${ic('sun')}Pasar todas a hoy</button>` : ''}` : ''}</details>`;
   if (hechas.length) zB += `<details class="sec-d" data-k="hechas" ${abierto('hechas') ? 'open' : ''}><summary class="sec-t">${ic('check')}Completadas hoy <span class="n">${hechas.length}</span><span class="sp"></span>${ic('chevD', 'chev')}</summary><div class="group">${hechas.map(filaHecha).join('')}</div></details>`;
   const plMan = tareasEn('prox').filter(x => x.fecha === manana()).length;
+  const spH = pendientesSinPlan().filter(x => x.tipo !== 'algun'), olvH = spH.filter(x => x.olvidada).length, dRevH = diasRevision();
+  if (spH.length && (olvH || dRevH == null || dRevH >= 7)) zB += `<button class="panel row-link" data-a="tab" data-v="pendientes">${ic('layers')}<span><b>${spH.length} sin planificar</b>${olvH ? ` · ${olvH} ${olvH === 1 ? 'olvidado' : 'olvidados'}` : dRevH == null ? ' · haz tu primera revisión' : ` · revisión hace ${dRevH} días`}</span>${ic('chevR')}</button>`;
   if (plMan && tarde) zB += `<button class="panel row-link" data-a="plan" data-v="manana">${ic('moon')}<span><b>Mañana</b> · ${plMan} ${plMan === 1 ? 'tarea planeada' : 'tareas planeadas'}</span>${ic('chevR')}</button>`;
   v.innerHTML = `<div class="hoy-g"><div class="hoy-a">${zA}</div><div class="hoy-t">${zT}</div><div class="hoy-b">${zB}</div></div>`;
 }
@@ -2418,13 +2591,13 @@ function renderSemana() {
     <div class="sm-nav"><button class="ib" data-a="semMov" data-v="-7" aria-label="Semana anterior">${ic('chevL')}</button><b>${rango}</b><button class="ib" data-a="semMov" data-v="7" aria-label="Semana siguiente">${ic('chevR')}</button></div>
     <div class="sm-acc">${ui.semIni !== hoy() ? `<button class="btn sm ghost" data-a="semMov" data-v="0">Volver a hoy</button>` : ''}<button class="btn sm ghost" data-a="agCompleto" aria-pressed="${!!ui.diaCompleto}">${ui.diaCompleto ? 'Horario de trabajo' : 'Día completo'}</button><label class="sm-ir">${ic('cal')}<input type="date" data-in="semIr" value="${ui.semIni}" aria-label="Ir a una fecha"></label></div>
     ${htmlSolapes(dias)}
-    ${sel ? `<div class="ag-banner">${ic('clock')}<span>Toca una hora en el calendario para colocar «${esc(sel.titulo)}»</span><button class="lnk2" data-a="agSelNo">Cancelar</button></div>` : ''}
+    ${sel ? `<div class="ag-banner">${ic('clock')}<span>${TOCA()} una hora en el calendario para colocar «${esc(sel.titulo)}»</span><button class="lnk2" data-a="agSelNo">Cancelar</button></div>` : ''}
     <div class="sec-t">Por agendar <span class="n">${porAgendar.length}</span></div>
     ${porAgendar.length ? `<div class="sm-list">${porAgendar.map(it).join('')}</div>` : chipsFiltro().length ? `<p class="hint">Sin coincidencias con los filtros.</p>` : `<p class="hint">Nada pendiente. Organiza tu Bandeja como «Próxima acción» para verlas aquí.</p>`}
     ${sinHora.length ? `<div class="sec-t">Con día, sin hora <span class="n">${sinHora.length}</span></div><div class="sm-list">${sinHora.map(it).join('')}</div>` : ''}
   </aside>`;
   const d = new Date(), nm = d.getHours() * 60 + d.getMinutes();
-  let ejes = ''; for (let h = AG_INI + 1; h < AG_FIN; h++) ejes += `<span style="top:${(h - AG_INI) * 60}px">${h}:00</span>`;
+  let ejes = ''; for (let h = AG_INI; h < AG_FIN; h++) ejes += `<span class="${h === AG_INI ? 'first' : ''}" style="top:${(h - AG_INI) * 60}px">${h}:00</span>`;
   const heads = dias.map(x => {
     const c = cargaDia(x), dd = parseYmd(x), over = c.carga > c.cap;
     return `<div class="sm-h ${x === hoy() ? 'hoy' : ''} ${over ? 'over' : ''}" title="${cargaTxt(c)} · ocupado ${txtHM(c.ocup) || '0 min'} de ${txtHM(c.cap)} disponibles"><span>${x === hoy() ? 'Hoy' : DIAS3[dd.getDay()]}</span><b>${dd.getDate()}</b><small>${c.pend.length ? `${c.pend.length} · ${hCorta(c.carga)}` : 'libre'}</small><i class="wk-l"><i style="width:${Math.min(100, c.carga / Math.max(1, c.cap) * 100)}%"></i></i></div>`;
@@ -2432,14 +2605,15 @@ function renderSemana() {
   const cols = dias.map(x => {
     const bl = carriles(tareasDia(x).filter(t => t.hora && pasaFiltro(t, { sinEstado:t.estado === 'hecho' }))).map(ev => {
       const hecha = ev.t.estado === 'hecho', run = ev.t.estado === 'proceso', f = franja(ev.t), h = Math.max(ev.e - ev.s, 24);
-      return `<div class="tl-b ${hecha ? 'hecha' : ''} ${run ? 'run' : ''} ${f ? 'f-' + f.k : ''} ${!hecha && enSolape(x, ev.t.id) ? 'solapa' : ''}" style="--a:${colorA(ev.t.area)};top:${ev.s - AG_INI * 60}px;height:${h - 2}px;left:calc(2px + (100% - 4px) * ${ev.c / ev.n});width:calc((100% - 4px) / ${ev.n} - 2px)" data-id="${ev.t.id}" data-a="abrir" role="button" tabindex="0" ${hecha ? '' : `draggable="true" data-dnd="${ev.t.id}"`} title="${esc(ev.t.titulo)} · ${min2hm(ev.s)} – ${min2hm(ev.e)}"><b>${hecha ? ic('check') : ''}${esc(ev.t.titulo)}</b><span class="tl-t">${min2hm(ev.s)}${f ? ' · ' + f.txt : ''}</span></div>`;
+      return `<div class="tl-b ${h < 44 ? 'corta' : ''} ${hecha ? 'hecha' : ''} ${run ? 'run' : ''} ${f ? 'f-' + f.k : ''} ${!hecha && enSolape(x, ev.t.id) ? 'solapa' : ''}" style="--a:${colorA(ev.t.area)};top:${ev.s - AG_INI * 60}px;height:${h - 2}px;left:calc(2px + (100% - 4px) * ${ev.c / ev.n});width:calc((100% - 4px) / ${ev.n} - 2px)" data-id="${ev.t.id}" data-a="abrir" role="button" tabindex="0" ${hecha ? '' : `draggable="true" data-dnd="${ev.t.id}"`} title="${esc(ev.t.titulo)} · ${min2hm(ev.s)} – ${min2hm(ev.e)}"><b>${hecha ? ic('check') : ''}${esc(ev.t.titulo)}</b><span class="tl-t">${min2hm(ev.s)}${f ? ' · ' + f.txt : ''}</span></div>`;
     }).join('');
     return `<div class="sm-col ${x === hoy() ? 'hoy' : ''}" data-dia="${x}" data-a="semTap">${bl}${x === hoy() && nm >= AG_INI * 60 && nm <= AG_FIN * 60 ? `<div class="tl-now" style="top:${nm - AG_INI * 60}px"></div>` : ''}</div>`;
   }).join('');
   v.innerHTML = `<div class="semana">${side}<div class="sm-cal ${sel ? 'picking' : ''}"><div class="sm-heads"><div></div>${heads}</div>
     <div class="sm-body" id="smBody"><div class="sm-grid" style="height:${(AG_FIN - AG_INI) * 60}px"><div class="sm-axis">${ejes}</div>${cols}</div></div></div></div>`;
   const b = $('#smBody');
-  b.style.height = Math.max(360, innerHeight - b.getBoundingClientRect().top - scrollY - 24 - (document.body.classList.contains('has-mini') ? 56 : 0)) + 'px';
+  const altoGrid = (AG_FIN - AG_INI) * 60;
+  b.style.height = Math.min(altoGrid, Math.max(360, innerHeight - (b.getBoundingClientRect().top + scrollY) - 24 - (document.body.classList.contains('has-mini') ? 56 : 0))) + 'px';
   b.scrollTop = ui.smY != null ? ui.smY : Math.max(0, (ui.semIni === hoy() ? nm - AG_INI * 60 : 0) - 120);
   b.addEventListener('scroll', () => { ui.smY = b.scrollTop; }, { passive:true });
 }
@@ -2511,7 +2685,7 @@ function htmlAgenda(items, hechas) {
   const bloques = evs.map(ev => {
     const top = ev.s - AG_INI * 60, h = Math.max(ev.e - ev.s, 28);
     const hecha = ev.t.estado === 'hecho', run = ev.t.estado === 'proceso', f = franja(ev.t);
-    return `<div class="tl-b ${hecha ? 'hecha' : ''} ${run ? 'run' : ''} ${f ? 'f-' + f.k : ''} ${!hecha && enSolape(ui.dia || hoy(), ev.t.id) ? 'solapa' : ''}" style="--a:${colorA(ev.t.area)};top:${top}px;height:${h - 2}px;left:calc(58px + (100% - 64px) * ${ev.c / ev.n});width:calc((100% - 64px) / ${ev.n} - 4px)" data-id="${ev.t.id}" data-a="abrir" role="button" tabindex="0" ${hecha ? '' : 'data-drag data-free'}><b>${hecha ? ic('check') : ''}${esc(ev.t.titulo)}</b><span class="tl-t">${min2hm(ev.s)} – ${min2hm(ev.e)}${f ? ' · ' + f.txt : ''}</span></div>`;
+    return `<div class="tl-b ${h < 44 ? 'corta' : ''} ${hecha ? 'hecha' : ''} ${run ? 'run' : ''} ${f ? 'f-' + f.k : ''} ${!hecha && enSolape(ui.dia || hoy(), ev.t.id) ? 'solapa' : ''}" style="--a:${colorA(ev.t.area)};top:${top}px;height:${h - 2}px;left:calc(58px + (100% - 64px) * ${ev.c / ev.n});width:calc((100% - 64px) / ${ev.n} - 4px)" data-id="${ev.t.id}" data-a="abrir" role="button" tabindex="0" ${hecha ? '' : 'data-drag data-free'}><b>${hecha ? ic('check') : ''}${esc(ev.t.titulo)}</b><span class="tl-t">${min2hm(ev.s)} – ${min2hm(ev.e)}${f ? ' · ' + f.txt : ''}</span></div>`;
   }).join('');
   const nm = new Date().getHours() * 60 + new Date().getMinutes();
   const sel = ui.agSel && byId(ui.agSel);
@@ -2556,7 +2730,8 @@ function ajustarAgenda(w) {
   w = w || $('#tlWrap'); if (!w) return;
   const top = w.getBoundingClientRect().top + scrollY;
   const extra = document.body.classList.contains('has-mini') ? 54 : 0;
-  w.style.height = Math.max(300, innerHeight - top - (desk() ? 0 : $('#tabs').offsetHeight) - extra - 12) + 'px';
+  const tl = $('#tl', w), alto = tl ? tl.offsetHeight : Infinity;
+  w.style.height = Math.min(alto, Math.max(300, innerHeight - top - (desk() ? 0 : $('#tabs').offsetHeight) - extra - 12)) + 'px';
 }
 // Al abrir la agenda: centra la hora actual (o el bloque en curso si empezó hace poco).
 function posAgenda(w) {
@@ -2635,6 +2810,165 @@ function renderLista() {
   }
   v.innerHTML = html;
   if (qVal || qFoc) { const i = $('#qaddIn', v); i.value = qVal; if (qFoc) i.focus(); }
+}
+
+/* ================= Vista: Pendientes =================
+   Seguimiento de todo lo que no tiene un plan: sin organizar, próximas sin día, atrasadas,
+   en espera sin seguimiento y lo olvidado en Algún día. Ordena por lo que más atención pide
+   y convierte cada pendiente en una acción con día en uno o dos toques. */
+const OLVIDO_DIAS = 14, OLVIDO_ALGUN = 60;
+const PEND_G = {
+  atrasada:{ n:'Atrasadas', ic:'refresh', c:'var(--hot-f)', hex:'#FF3B30' },
+  espera:{ n:'En espera', ic:'hourglass', c:'var(--warn-f)', hex:'#FF9500' },
+  prox:{ n:'Próximas sin día', ic:'list', c:'var(--ac)', hex:'#5856D6' },
+  bandeja:{ n:'Sin organizar', ic:'inbox', c:'#32ADE6', hex:'#32ADE6' },
+  algun:{ n:'Algún día', ic:'bulb', c:'var(--mut2)', hex:'#8E8E93' }
+};
+const diasEntre = (a, b) => Math.round((parseYmd(b) - parseYmd(a)) / 864e5);
+const diasDesde = iso => iso ? Math.max(0, diasEntre(diaDeISO(iso), hoy())) : 0;
+function tipoPend(t) {
+  if (t.borrado || t.estado === 'hecho') return null;
+  if (t.estado === 'bandeja') return 'bandeja';
+  if (t.estado === 'algun') return 'algun';
+  if (t.estado === 'espera') return !t.seg || t.seg <= hoy() ? 'espera' : null;
+  if (['prox', 'hoy', 'proceso'].includes(t.estado) && t.fecha && t.fecha < hoy()) return T().tareaId === t.id ? null : 'atrasada';
+  if (t.estado === 'prox' && !t.fecha) return 'prox';
+  return null;
+}
+// Cuánta atención pide: fecha límite cercana, atraso, seguimiento vencido, prioridad y tiempo sin moverse.
+function infoPend(t) {
+  const tipo = tipoPend(t); if (!tipo) return null;
+  const dias = diasDesde(t.actualizado || t.creado), olvidada = dias >= (tipo === 'algun' ? OLVIDO_ALGUN : OLVIDO_DIAS);
+  const dl = t.limite ? diasEntre(hoy(), t.limite) : null;
+  let score = Math.min(dias, 60) / 2, motivo = '', mk = '';
+  if (dl != null && dl <= 7) { score += 60 - dl * 5; motivo = dl < 0 ? `Venció ${fechaCorta(t.limite).toLowerCase()}` : dl === 0 ? 'Vence hoy' : `Vence ${fechaCorta(t.limite).toLowerCase()}`; mk = 'f-tarde'; }
+  if (tipo === 'atrasada') { score += 25; motivo = motivo || `Era para ${fechaCorta(t.fecha).toLowerCase()}`; mk = mk || 'f-tarde'; }
+  if (tipo === 'espera') { score += 20; motivo = motivo || (t.seg ? 'Toca dar seguimiento' : 'Sin fecha de seguimiento'); }
+  score += t.urgente && t.importante ? 30 : t.importante ? 20 : t.urgente ? 10 : 0;
+  if (tipo === 'bandeja') { score += 8; motivo = motivo || 'Sin organizar'; }
+  if (tipo === 'algun') score -= 40;
+  if (olvidada) { motivo = motivo || `${dias} días sin moverse`; mk = mk || 'f-olv'; }
+  return { t, tipo, dias, olvidada, score, motivo, mk };
+}
+const pendientesSinPlan = () => vivas().map(infoPend).filter(Boolean).sort((a, b) => b.score - a.score);
+const diasRevision = () => S.ajustes.ultRevision ? diasDesde(S.ajustes.ultRevision) : null;
+function filaPend(x) {
+  const t = x.t, G = PEND_G[x.tipo];
+  return `<div class="tr pd" style="--a:${colorA(t.area)}" data-a="abrir" data-id="${t.id}" role="button" tabindex="0" aria-label="${esc(t.titulo)}. Abrir detalle">
+    <div class="tb"><div class="tt">${esc(t.titulo)}</div>
+      <div class="mt"><span class="tag ${x.mk}">${ic(x.olvidada && !x.mk.includes('tarde') ? 'hourglass' : G.ic)}${esc(x.motivo || G.n)}</span>${x.tipo === 'espera' && t.espera ? `<span class="tag">${ic('hourglass')}${esc(t.espera)}</span>` : ''}${cuad(t) ? pq(t) : ''}${area(t.area) ? `<span class="tag"><i class="dot" style="--a:${colorA(t.area)}"></i>${esc(area(t.area).n)}</span>` : ''}${t.proyecto ? `<span class="tag">${ic('folder')}${esc(t.proyecto)}</span>` : ''}</div>
+      <div class="dec-b"><button class="qk pri" data-a="pdHoy" data-id="${t.id}">${ic('sun')}Hoy</button><button class="qk" data-a="pdProg" data-id="${t.id}">${ic('cal')}Programar</button>${x.tipo === 'espera' ? `<button class="qk" data-a="segOtro" data-id="${t.id}">${ic('refresh')}Seguimiento</button>` : ''}</div></div>
+  </div>`;
+}
+function renderPendientes() {
+  const v = $('#v-pendientes');
+  const todos = pendientesSinPlan(), acc = todos.filter(x => x.tipo !== 'algun');
+  const olv = acc.filter(x => x.olvidada), algun = todos.filter(x => x.tipo === 'algun'), algOlv = algun.filter(x => x.olvidada);
+  const cuenta = k => todos.filter(x => x.tipo === k).length;
+  const fils = [['todos', 'Todos', acc.length], ['olv', 'Olvidados', olv.length], ...['atrasada', 'espera', 'prox', 'bandeja', 'algun'].map(k => [k, PEND_G[k].n, cuenta(k)])].filter(([k, , n]) => k === 'todos' || n);
+  if (!fils.some(([k]) => k === ui.pf)) ui.pf = 'todos';
+  const f = ui.pf, dRev = diasRevision(), porRevisar = acc.length + algOlv.length;
+  // Resumen: cuánto hay sin plan, de qué tipo y cuándo fue la última revisión.
+  let html = `<div class="panel pd-sum"><div class="pm-n"><b>${acc.length}</b><span>${acc.length === 1 ? 'pendiente sin planificar' : 'pendientes sin planificar'}</span></div>
+    <p class="sum-e">${olv.length ? `<b>${olv.length} ${olv.length === 1 ? 'olvidado' : 'olvidados'}</b> (más de ${OLVIDO_DIAS} días sin moverse) · ` : ''}${dRev == null ? 'Aún no haces una revisión' : dRev === 0 ? 'Revisaste hoy' : `Última revisión hace ${dRev} ${dRev === 1 ? 'día' : 'días'}`}</p>
+    ${acc.length ? `<div class="pd-bar" role="img" aria-label="Reparto por tipo">${['atrasada', 'espera', 'prox', 'bandeja'].map(k => { const n = cuenta(k); return n ? `<i style="width:${n / acc.length * 100}%;background:${PEND_G[k].c}"></i>` : ''; }).join('')}</div>
+      <div class="pd-ley">${['atrasada', 'espera', 'prox', 'bandeja'].filter(cuenta).map(k => `<span><i style="background:${PEND_G[k].c}"></i>${PEND_G[k].n} ${cuenta(k)}</span>`).join('')}</div>` : ''}
+    ${porRevisar ? `<button class="btn pri full" data-a="revisar">${ic('sparkle')}Revisar uno por uno</button>` : ''}</div>`;
+  if (!todos.length) {
+    v.innerHTML = html + `<div class="zero"><div class="orb">${ic('check')}</div><h3>Todo tiene un plan</h3><p>Cada pendiente tiene día, está en espera con seguimiento o ya está hecho.</p></div>`;
+    return;
+  }
+  html += `<div class="chips vf" role="group" aria-label="Filtrar pendientes" style="margin-top:16px">${fils.map(([k, n, c]) => `<button class="chip ${f === k ? 'on' : ''}" data-a="pdFiltro" data-v="${k}" aria-pressed="${f === k}">${n} <span class="n">${c}</span></button>`).join('')}</div>`;
+  const grupo = (titulo, icono, xs, sub = '') => xs.length ? `<div class="sec-t">${ic(icono)}${titulo} <span class="n">${xs.length}</span>${sub ? `<small>${sub}</small>` : ''}</div><div class="group">${xs.map(filaPend).join('')}</div>` : '';
+  if (f === 'todos') {
+    const top = acc.slice(0, 5), resto = acc.slice(5);
+    html += grupo('Primero atiende', 'flag', top, 'Lo más urgente');
+    ['atrasada', 'espera', 'prox', 'bandeja'].forEach(k => { html += grupo(PEND_G[k].n, PEND_G[k].ic, resto.filter(x => x.tipo === k)); });
+    if (algun.length) html += `<details class="sec-d" data-k="pd-algun" ${abierto('pd-algun') ? 'open' : ''}><summary class="sec-t">${ic('bulb')}Algún día <span class="n">${algun.length}</span>${algOlv.length ? `<small>${algOlv.length} sin revisar en ${OLVIDO_ALGUN} días</small>` : ''}<span class="sp"></span>${ic('chevD', 'chev')}</summary><div class="group">${algun.map(filaPend).join('')}</div></details>`;
+  } else {
+    const xs = f === 'olv' ? olv : todos.filter(x => x.tipo === f);
+    html += grupo(f === 'olv' ? 'Olvidados' : PEND_G[f].n, f === 'olv' ? 'hourglass' : PEND_G[f].ic, xs);
+    if (f === 'bandeja') html += `<button class="row-add" data-a="procesar">${ic('sparkle')}Organizar la Bandeja</button>`;
+  }
+  html += tip('pendientes', 'layers', '<b>Hoy</b> la pasa a tu día; <b>Programar</b> le da otra fecha. Lo que no toques en 14 días se marca como olvidado.');
+  v.innerHTML = html;
+}
+// Programar: elegir día (o decidir otra cosa) para un pendiente.
+function opcionesDia() {
+  const h = hoy(), lun = proxLunes(), out = [['hoy', 'sun', 'Hoy', h], ['man', 'moon', 'Mañana', manana()]];
+  const fin = (() => { const d = parseYmd(h); const n = (6 - d.getDay() + 7) % 7; return n >= 2 ? addDays(h, n) : null; })();
+  if (fin) out.push(['fin', 'cal', 'Este sábado', fin]);
+  out.push(['lun', 'cal', 'Próximo lunes', lun]);
+  if (addDays(h, 7) !== lun) out.push(['sem', 'cal', 'En una semana', addDays(h, 7)]);
+  return out;
+}
+function programarEn(t, d, aviso = true) {
+  if (!t) return;
+  const prev = { estado:t.estado, fecha:t.fecha, hora:t.hora, seg:t.seg };
+  if (d === hoy()) { if (t.estado !== 'proceso') { t.estado = 'hoy'; } t.fecha = d; upsertT(t); }
+  else { if (t.estado !== 'espera') t.estado = 'prox'; if (t.estado === 'espera') t.seg = d; else t.fecha = d; upsertT(t); }
+  if (aviso) toast(`«${t.titulo.length > 28 ? t.titulo.slice(0, 27) + '…' : t.titulo}» ${t.estado === 'espera' ? 'seguimiento' : ''} ${d === hoy() ? 'para hoy' : fechaCorta(d).toLowerCase()}`.replace(/\s+/g, ' '), 'Deshacer', () => { Object.assign(t, prev); upsertT(t); renderVista(); });
+}
+function decidirSinDia(t, dest) {
+  const prev = { estado:t.estado, fecha:t.fecha, hora:t.hora };
+  if (dest === 'hecho') { completar(t); return; }
+  if (dest === 'borrar') { t.borrado = true; upsertT(t); toast('Pendiente eliminado', 'Deshacer', () => { t.borrado = false; upsertT(t); renderVista(); }); return; }
+  if (dest === 'algun') { t.estado = 'algun'; t.fecha = ''; t.hora = ''; upsertT(t); toast('Guardado en Algún día', 'Deshacer', () => { Object.assign(t, prev); upsertT(t); renderVista(); }); return; }
+  // Mantener sin día: es una decisión consciente, así que reinicia el contador de olvido.
+  if (dest === 'mantener') { if (t.estado === 'bandeja' || (t.fecha && t.fecha < hoy())) { t.estado = 'prox'; t.fecha = ''; t.hora = ''; } upsertT(t); toast('Sigue sin día. Te lo vuelvo a mostrar si no se mueve en 14 días'); }
+}
+function htmlProgramar() {
+  const t = byId(ui.sheet.id); if (!t) return '';
+  const espera = t.estado === 'espera';
+  return cab(`<h2>${espera ? 'Dar seguimiento' : 'Programar'}</h2>`) + `<p class="help-d" style="font-weight:600">${esc(t.titulo)}</p>
+    <div class="group pg-l">${opcionesDia().map(([k, i, n, d]) => `<button class="tr opt" data-a="pgDia" data-v="${d}"><span class="mi">${ic(i)}</span><span class="tb"><span class="tt">${n}</span></span><small>${d === hoy() ? '' : (x => `${DIAS3[x.getDay()]} ${x.getDate()} ${MES3[x.getMonth()]}`)(parseYmd(d))}</small></button>`).join('')}</div>
+    <div class="f-sec" style="margin-top:16px"><label class="f-l" for="pgFecha">Otro día</label><input type="date" class="in" id="pgFecha" data-in="pgFecha" min="${hoy()}" value=""></div>
+    <div class="sec-t">Otras decisiones</div>
+    <div class="group">
+      <button class="tr opt" data-a="pgDec" data-v="mantener"><span class="mi">${ic('list')}</span><span class="tb"><span class="tt">${t.estado === 'bandeja' ? 'Próxima acción, sin día' : 'Mantener sin día'}</span><span class="mt"><span class="tag">Reinicia el aviso de olvido</span></span></span></button>
+      ${t.estado !== 'algun' ? `<button class="tr opt" data-a="pgDec" data-v="algun"><span class="mi">${ic('bulb')}</span><span class="tb"><span class="tt">Algún día</span></span></button>` : ''}
+      <button class="tr opt" data-a="pgDec" data-v="hecho"><span class="mi">${ic('check')}</span><span class="tb"><span class="tt">Ya está hecha</span></span></button>
+      <button class="tr opt" data-a="pgDec" data-v="borrar"><span class="mi" style="color:var(--hot)">${ic('trash')}</span><span class="tb"><span class="tt">Ya no hace falta</span></span></button>
+    </div><div class="sh-end"></div>`;
+}
+// Revisión: uno por uno, decidir el siguiente paso de cada pendiente sin plan.
+function abrirRevision() {
+  const xs = pendientesSinPlan().filter(x => x.tipo !== 'algun' || x.olvidada);
+  if (!xs.length) { toast('No hay pendientes por revisar'); return; }
+  ui.rev = { ids:xs.map(x => x.t.id), i:0, n:{ prog:0, hoy:0, sin:0, fuera:0 } };
+  abrirSheet({ k:'revision' });
+}
+function htmlRevision() {
+  const R = ui.rev; if (!R) return '';
+  while (R.i < R.ids.length && !infoPend(byId(R.ids[R.i]) || {})) R.i++;
+  if (R.i >= R.ids.length) { setTimeout(finRevision, 0); return cab('<h2>Revisión</h2>'); }
+  const x = infoPend(byId(R.ids[R.i])), t = x.t, G = PEND_G[x.tipo];
+  const act = (a, v, i, n, s, cls = '') => `<button class="act ${cls}" data-a="${a}" data-v="${v}"><span class="ico">${ic(i)}</span><span><b>${n}</b>${s ? `<span>${s}</span>` : ''}</span></button>`;
+  return cab('<h2>Revisión</h2>', `<span class="pl-cnt">${R.i + 1}/${R.ids.length}</span>`) + `
+    <div class="proc-prog"><div style="width:${R.i / R.ids.length * 100}%"></div></div>
+    <div class="panel rv-card"><div class="proc-q">${G.n}</div><div class="hero-t">${esc(t.titulo)}</div>
+      <div class="mt" style="margin-top:8px"><span class="tag ${x.mk}">${ic(G.ic)}${esc(x.motivo || G.n)}</span>${metaCorta(t, 2, { area:true })}</div>
+      ${t.notas && t.notas.length ? `<div class="bnota">${ic('note')}<span>${esc(String(t.notas[t.notas.length - 1].x).slice(0, 140))}</span></div>` : ''}</div>
+    <p class="proc-h" style="margin-top:12px">¿Cuál es el siguiente paso?</p>
+    <div class="rv-acts">
+      ${act('rvDia', hoy(), 'sun', 'Hoy', '', 'pri')}${act('rvDia', manana(), 'moon', 'Mañana', '', 'pri')}
+      ${act('rvDia', proxLunes(), 'cal', 'Próximo lunes', fechaCorta(proxLunes()))}
+      <label class="act"><span class="ico">${ic('cal')}</span><span><b>Otro día</b><span>Elegir fecha</span></span><input type="date" data-in="rvFecha" min="${hoy()}" aria-label="Elegir otro día"></label>
+      ${act('rvDec', 'mantener', 'list', 'Sin día por ahora', 'Sigue en próximas')}${x.tipo !== 'algun' ? act('rvDec', 'algun', 'bulb', 'Algún día', 'Sin compromiso') : act('rvDec', 'mantener', 'bulb', 'Sigue en Algún día', '')}
+      ${act('rvDec', 'hecho', 'check', 'Ya está hecha', '')}${act('rvDec', 'borrar', 'trash', 'Ya no hace falta', '', 'del')}
+    </div>
+    <div class="sh-foot"><button class="btn" data-a="rvSaltar">Saltar</button><button class="btn" data-a="rvEditar">${ic('note')}Detalle</button><button class="btn" data-a="rvFin">Terminar</button></div>`;
+}
+function rvSiguiente(k) { const R = ui.rev; if (!R) return; if (k) R.n[k]++; R.i++; refrescarSheet(); renderVista(); }
+function finRevision() {
+  const R = ui.rev; if (!R) return;
+  S.ajustes.ultRevision = nowISO(); guardarAjustes();
+  const n = R.n; ui.rev = null;
+  if (ui.sheet && ui.sheet.k === 'revision') cerrarSheet();
+  const pl = (k, uno, var_) => k === 1 ? uno : var_;
+  const partes = [n.hoy && `${n.hoy} para hoy`, n.prog && `${n.prog} ${pl(n.prog, 'programado', 'programados')}`, n.sin && `${n.sin} sin día`, n.fuera && `${n.fuera} ${pl(n.fuera, 'resuelto', 'resueltos')}`].filter(Boolean);
+  toast(`Revisión lista${partes.length ? ': ' + partes.join(', ') : ''}`, null, null, 'check');
+  render();
 }
 
 /* ================= Vista: Tablero ================= */
@@ -2789,7 +3123,7 @@ async function iniciar() {
   if (t.fase === 'foco' && t.tareaId) { const x = byId(t.tareaId); if (x && x.estado !== 'proceso' && x.estado !== 'hecho') setEstado(x, 'proceso'); }
   if (!t.inicio) t.inicio = new Date(Date.now() - (t.total - t.restante) * 1000).toISOString();
   t.fin = Date.now() + t.restante * 1000; t.corriendo = true; t.dia = hoy();
-  save(); pantallaActiva(true); pushTimer();
+  save(); pantallaActiva(true); pushTimer(); avisoScriptable();
   if (ui.view === 'enfoque') renderEnfoque(); else renderVista();
   pintarMini(); pintarTabs(); actualizarReloj();
 }
@@ -2923,7 +3257,7 @@ function renderEnfoque() {
       <div class="ctl-l" aria-hidden="true"><span>Terminar</span><span>${t.corriendo ? 'Pausar' : marcha ? 'Reanudar' : 'Empezar'}</span><span>Saltar</span></div>`;
   v.innerHTML = `<div class="enf fase-${t.fase} ${t.corriendo ? 'running' : ''}">
     <div class="panel enf-task" data-a="elegirTarea" role="button" tabindex="0" style="--a:${x ? colorA(x.area) : 'var(--mut2)'}" aria-label="${x ? 'Cambiar tarea: ' + esc(x.titulo) : 'Elegir tarea'}">
-      <div class="tb"><div class="enf-l"><i class="dot"></i>${x ? (marcha && t.fase === 'foco' ? 'Trabajando en' : esc(area(x.area)?.n || 'Tarea elegida')) : 'Sin tarea · toca para elegir'}</div>
+      <div class="tb"><div class="enf-l"><i class="dot"></i>${x ? (marcha && t.fase === 'foco' ? 'Trabajando en' : esc(area(x.area)?.n || 'Tarea elegida')) : `Sin tarea · ${mqFino.matches ? 'clic' : 'toca'} para elegir`}</div>
         <div class="enf-tt">${x ? esc(x.titulo) : 'Elige en qué vas a trabajar'}</div>${x && x.resultado ? `<div class="res-l">${ic('listo')}<span>Listo cuando: ${esc(x.resultado)}</span></div>` : ''}${cyc}</div>
       ${x && x.estado !== 'hecho' ? `<button class="btn sq okb" data-a="enfCompletar" aria-label="Marcar tarea como hecha">${ic('check')}</button>` : `<span class="ib-s">${ic('chevR')}</span>`}
     </div>
@@ -3093,7 +3427,7 @@ function ayuda(k) {
       ['layers', 'Varios a la vez', 'Toca «Seleccionar varios» para asignar área, proyecto, día o destino a muchos pendientes. Se puede deshacer.'],
       ['sparkle', 'Organiza', 'Cuando tengas varios, toca «Organizar». Decides uno por uno: hacerlo ya, agendarlo, esperar a alguien, guardarlo para algún día o eliminarlo (método GTD). Si la redacción no es clara, Foco te sugiere cómo mejorarla o dividirla.']] },
     hoy:{ d:'Tus prioridades del día con el método Ivy Lee: máximo 6 tareas, en orden de importancia, trabajadas una a la vez.', p:[
-      ['play', 'La tarjeta de arriba', 'Es la tarea que toca ahora. Toca «Empezar enfoque» y el reloj corre ahí mismo: puedes pausar, terminar o abrirlo en pantalla completa.'],
+      ['play', 'La tarjeta de arriba', 'Es la tarea que toca ahora. Toca «Empezar» y el reloj corre ahí mismo: puedes pausar, terminar o abrirlo en pantalla completa.'],
       ['check', 'Marcar como hecha', 'Toca el círculo de cualquier tarea o el botón verde. Siempre puedes deshacerlo desde el aviso.'],
       ['grip', 'Cambiar el orden', 'Arrastra desde los seis puntos de la derecha. Si sueltas la tarea sobre la tarjeta de arriba, se vuelve la siguiente.'],
       ['clock', 'Horarios en vivo', 'Las tareas con hora te avisan «en 20 min», «ahora» o «atrasada», y la línea del día muestra tus bloques y la hora actual.'],
@@ -3126,6 +3460,11 @@ function ayuda(k) {
       ['clock', 'Bloque de tiempo', 'Tú eliges la duración. Útil para tareas largas o trabajo profundo.'],
       ['bulb', 'Captura sin salir', 'Si se te ocurre algo, anótalo abajo: se va a tu Bandeja y el reloj sigue.'],
       ['check', 'Terminar la tarea', 'Toca el botón verde junto a la tarea. Foco te propone la siguiente de tu lista.']] },
+    pendientes:{ d:'Todo lo que no tiene un plan, en un solo lugar, para que nada se quede olvidado. Cada pendiente se convierte en acción dándole un día.', p:[
+      ['layers', 'Qué aparece', 'Atrasadas (su día ya pasó), en espera sin seguimiento o con seguimiento vencido, próximas acciones sin día, lo que sigue en la Bandeja y, aparte, Algún día.'],
+      ['flag', 'Primero atiende', 'Arriba va lo que más atención pide: fecha límite cercana, atraso, seguimiento vencido, prioridad y tiempo sin moverse.'],
+      ['hourglass', 'Olvidados', `Un pendiente que no cambia en ${OLVIDO_DIAS} días se marca como olvidado (en Algún día, a los ${OLVIDO_ALGUN}). «Mantener sin día» cuenta como decisión y reinicia el contador.`],
+      ['sparkle', 'Revisión', 'Revisa uno por uno y elige el siguiente paso: hoy, otro día, sin día, Algún día, hecho o eliminar. Hazla una vez por semana; Hoy te la recuerda.']] },
     progreso:{ d:'Lo que terminaste en el periodo elegido. Toca enfoque o prioridades para ver el detalle.', p:[
       ['star', 'Prioridades', 'Se mide contra el primer plan del día. Las que agregas después y lo que terminas fuera del plan se muestran aparte. Si un día no tiene plan registrado, no se inventa un porcentaje.'],
       ['star', 'Puntos (XP)', 'Tarea hecha: +10, +10 más si era importante y +5 si además era urgente. Pomodoro: +25. Vaciar la bandeja: +15. Planear el día: +10.'],
@@ -3171,7 +3510,7 @@ function abrirSheet(ctx) {
   // Encima de «Organizar» cuando se abre desde ahí
   sh.classList.toggle('top', !!ctx.top); $('#sheetBg').classList.toggle('top', !!ctx.top);
   sh.style.setProperty('--dy', '0px');
-  sh.setAttribute('aria-label', { detalle:'Detalle de la tarea', plan:'Planear', ajustes:'Ajustes', captura:'Capturar', picker:'Elegir tarea', filtro:'Filtrar', buscar:'Buscar', menu:'Opciones', lote:'Asignar a varios', sync:'Sincronización', ayuda:'Ayuda', verbo:'Elegir verbo', areaSel:'Elegir área', dividir:'Dividir en pasos' }[ctx.k] || '');
+  sh.setAttribute('aria-label', { detalle:'Detalle de la tarea', plan:'Planear', ajustes:'Ajustes', captura:'Capturar', picker:'Elegir tarea', filtro:'Filtrar', buscar:'Buscar', menu:'Opciones', lote:'Asignar a varios', sync:'Sincronización', ayuda:'Ayuda', verbo:'Elegir verbo', areaSel:'Elegir área', dividir:'Dividir en pasos', widgets:'Widgets', programar:'Programar', revision:'Revisión de pendientes' }[ctx.k] || '');
   $('#sheetBg').classList.add('on'); sh.classList.add('on');
   document.documentElement.classList.add('lock');
   if (ctx.k === 'captura') setTimeout(() => $('#capSheetIn')?.focus(), 320);
@@ -3219,6 +3558,9 @@ function refrescarSheet(inicio) {
   else if (c.k === 'verbo') html = htmlVerbo();
   else if (c.k === 'areaSel') html = htmlAreaSel();
   else if (c.k === 'dividir') html = htmlDividir();
+  else if (c.k === 'widgets') html = htmlWidgets();
+  else if (c.k === 'programar') html = htmlProgramar();
+  else if (c.k === 'revision') html = htmlRevision();
   b.innerHTML = html; b.scrollTop = y;
   if (c.k === 'captura') { const ta = $('#capSheetIn'); if (c.draft != null) ta.value = c.draft; pintarCapForm('capSheet'); }
   if (c.k === 'verbo') pintarVerbos();
@@ -3332,7 +3674,7 @@ function htmlSync() {
   const tono = { ok:['var(--ok-s)', 'var(--ok)'], pend:['var(--warn-s)', 'var(--warn)'], err:['var(--hot-s)', 'var(--hot)'], run:['var(--ac-s)', 'var(--ac-t)'], off:['var(--sf3)', 'var(--mut)'] }[e.k];
   return cab('<h2>Respaldo en Google Sheets</h2>') + `
     <div class="panel st-big"><span class="o" style="background:${tono[0]};color:${tono[1]}">${ic(e.ic)}</span><div><b>${e.t}</b><span>${esc(e.d)}</span></div></div>
-    <p class="hint">Foco guarda todo primero en este teléfono, así funciona sin internet. Cuando hay conexión, respalda los cambios en tu hoja de Google y trae los de tus otros equipos y widgets.</p>
+    <p class="hint">Foco guarda todo primero en este dispositivo, así funciona sin internet. Cuando hay conexión, respalda los cambios en tu hoja de Google y trae los de tus otros equipos y widgets.</p>
     <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px">
       ${S.conn.url ? `<button class="btn pri" data-a="syncAhora" ${estadoS === 'run' ? 'disabled' : ''}>${ic('refresh')}${estadoS === 'run' ? 'Sincronizando…' : 'Sincronizar ahora'}</button>` : ''}
       <button class="btn" data-a="ajustes">${ic('gear')}${S.conn.url ? 'Configuración de la conexión' : 'Conectar mi hoja'}</button></div>
@@ -3425,7 +3767,7 @@ function htmlDetalle(t) {
       `<div class="chips">${estados.map(([k, n]) => `<button class="chip ${t.estado === k ? 'on' : ''}" data-a="dtEstado" data-v="${k}">${n}</button>`).join('')}</div>`),
     fila('area', 'layers', 'teal', 'Área', A ? `<i class="dot" style="--a:${A.c}"></i>${esc(A.n)}` : 'Sin área',
       `<div class="chips">${areas().map(a => `<button class="chip area ${t.area === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="dtArea" data-v="${a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('')}<button class="chip ${!A ? 'on' : ''}" data-a="dtArea" data-v="">Sin área</button><button class="chip" data-a="irAreas">${ic('plus')}Nueva área</button></div>`),
-    fila('prio', 'flag', 'warn', 'Prioridad', q ? pq(t) : 'Sin prioridad', matriz(t.urgente, t.importante, 'dtMx') + '<p class="hint">Toca el cuadro que mejor describa la tarea.</p>'),
+    fila('prio', 'flag', 'warn', 'Prioridad', q ? pq(t) : 'Sin prioridad', matriz(t.urgente, t.importante, 'dtMx') + `<p class="hint">${TOCA()} el cuadro que mejor describa la tarea.</p>`),
     fila('fecha', 'cal', 'hot', 'Día planeado', fechaTxt,
       `<div class="chips">${[['hoy', 'Hoy'], ['manana', 'Mañana'], ['lunes', 'Próximo lunes'], ['semana', 'En una semana'], ['', 'Sin fecha']].map(([v, n]) => `<button class="chip ${(v === 'hoy' && t.fecha === hoy()) || (v === 'manana' && t.fecha === manana()) || (v === '' && !t.fecha) ? 'on' : ''}" data-a="dtCuando" data-v="${v}">${n}</button>`).join('')}</div>
        <label class="f-l" style="margin-top:12px" for="dtFechaIn">Otra fecha</label><input type="date" class="in" id="dtFechaIn" data-in="dtFecha" value="${t.fecha}" ${t.estado !== 'hecho' ? `min="${hoy()}"` : ''}>`),
@@ -3513,6 +3855,7 @@ function htmlAjustes() {
     <div class="f-sec"><span class="f-l">Pomodoro</span><div class="group">
       ${stp('pomo', 'Enfoque', 'Minutos por pomodoro', 5, 90)}${stp('corto', 'Descanso corto', 'Minutos', 1, 30)}${stp('largo', 'Descanso largo', 'Minutos', 5, 60)}${stp('cada', 'Descanso largo cada', 'Pomodoros', 2, 8)}${stp('meta', 'Meta diaria', 'Pomodoros por día', 1, 16)}
       <div class="set-r"><span class="sl">Sonido al terminar</span><button class="sw ${a.sonido ? 'on' : ''}" data-a="cfgSonido" role="switch" aria-checked="${a.sonido}" aria-label="Sonido al terminar"></button></div></div></div>
+    ${htmlAvisosCfg()}
     <div class="f-sec"><span class="f-l">Ayuda y datos</span><div class="group">
       <button class="set-r" data-a="verGuia"><span class="sl">Guía de Foco<small>Cómo funciona el método, paso a paso</small></span>${ic('chevR')}</button>
       <button class="set-r" data-a="resetTips"><span class="sl">Mostrar consejos otra vez<small>Vuelve a ver las pistas que ocultaste</small></span>${ic('chevR')}</button>
@@ -3521,6 +3864,31 @@ function htmlAjustes() {
     <div class="sh-end"></div>`;
 }
 
+function htmlAvisosCfg() {
+  const c = avisoCfg(), on = avisosOn(), sw = (k, n, sub, v) => `<div class="set-r"><span class="sl">${n}${sub ? `<small>${sub}</small>` : ''}</span><button class="sw ${v ? 'on' : ''}" data-a="${k}" role="switch" aria-checked="${!!v}" aria-label="${n}"></button></div>`;
+  const avc = (k, n, sub) => `<div class="set-r"><span class="sl">${n}${sub ? `<small>${sub}</small>` : ''}</span><button class="sw ${c[k] ? 'on' : ''}" data-a="avisoCfg" data-k="${k}" role="switch" aria-checked="${!!c[k]}" aria-label="${n}"></button></div>`;
+  return `<div class="f-sec"><span class="f-l">Avisos</span><div class="group">
+      ${sw('avisos', 'Avisos de Foco', esc(estadoAvisos()), on)}
+      ${on ? `${avc('fase', 'Fin de enfoque y de descanso')}${avc('inicio', 'Inicio de tareas con hora')}
+        ${c.inicio ? `<div class="set-r"><span class="sl">Avisar antes</span><div class="chips">${[0, 5, 10, 15].map(m => `<button class="chip ${c.antes === m ? 'on' : ''}" style="min-height:34px;padding:0 12px" data-a="avisoAntes" data-v="${m}" aria-pressed="${c.antes === m}">${m ? m + ' min' : 'No'}</button>`).join('')}</div></div>` : ''}
+        ${avc('fin', 'Fin del tiempo de cada tarea', 'Como un temporizador por actividad')}
+        <button class="set-r" data-a="avisoProbar"><span class="sl">Probar un aviso</span>${ic('chevR')}</button>` : ''}</div>
+      <p class="hint">La app genera los avisos mientras está abierta; en la computadora también en segundo plano (pestaña o app instalada). En iPhone, con Foco cerrado, los avisos los programa el widget de Scriptable.</p></div>
+    <div class="f-sec"><span class="f-l">Widgets del iPhone</span><div class="group">
+      <button class="set-r" data-a="widgetsGuia"><span class="sl">Widgets con Scriptable<small>${S.conn.url ? 'Leen tu hoja de Google; las cuentas regresivas avanzan solas' : 'Primero conecta tu hoja de Google (arriba)'}</small></span>${ic('chevR')}</button>
+      ${esIOS() ? sw('scrAvisos', 'Aviso exacto al terminar el enfoque', 'Al empezar, abre Scriptable un instante para programar el aviso aunque bloquees el iPhone', pref.v('scrAvisos')) : ''}</div></div>`;
+}
+function htmlWidgets() {
+  const paso = (n, t, d) => `<div class="help-i"><span class="o">${n}</span><div><b>${t}</b><span>${d}</span></div></div>`;
+  return cab('<h2>Widgets</h2>') + `<p class="help-d">Muestran lo que va ahora, cuánto le queda y lo que sigue. La cuenta regresiva la avanza el propio iPhone, así que no depende de que el widget se actualice.</p>
+    <div class="panel">${paso(1, 'Instala Scriptable', 'Es gratis, en la App Store.')}
+      ${paso(2, 'Copia el script', 'Con el botón de abajo. En Scriptable toca +, pega y nómbralo exactamente «Foco».')}
+      ${paso(3, 'Ejecútalo una vez', 'Te pedirá la URL y la clave de tu hoja (las mismas de Ajustes) y permiso para avisos.')}
+      ${paso(4, 'Agrega los widgets', 'Mantén presionada la pantalla de inicio o la de bloqueo › + › Scriptable › elige «Foco». En «Parameter» escribe ahora, hoy, agenda o pendientes (o déjalo vacío para que se adapte al tamaño). «pendientes» muestra lo que no tiene plan y también sirve en la pantalla de bloqueo.')}</div>
+    <button class="btn pri full" style="margin-top:16px" data-a="widgetsCopiar">${ic('note')}Copiar el script</button>
+    <p class="hint">Para que el widget vea un cambio, Foco lo envía a tu hoja al instante y también al salir de la app. El iPhone decide cuándo redibuja el widget (normalmente cada 5–15 min); el script le pide hacerlo justo cuando termina un enfoque o empieza la siguiente tarea.</p>
+    <div class="sh-end"></div>`;
+}
 function aplicarTema(t) {
   const r = document.documentElement;
   if (t === 'light' || t === 'dark') r.dataset.theme = t; else { delete r.dataset.theme; t = 'auto'; }
@@ -3556,6 +3924,29 @@ const ACT = {
   tipOk:el => { pref.set('tip-' + el.dataset.k, 1); const t = el.closest('.tip'); if (t) t.remove(); ajustarBoard(); },
   resetTips:() => { Object.keys(pref.get()).filter(k => k.startsWith('tip-')).forEach(k => pref.set(k, 0)); toast('Los consejos volverán a aparecer'); },
   ajustes:() => abrirSheet({ k:'ajustes' }),
+  avisos:async () => {
+    if (avisosOn()) { pref.set('avisos', 0); programarAvisos(); refrescarSheet(); return; }
+    if (!avisosSoportados()) { toast(estadoAvisos()); return; }
+    let p = Notification.permission;
+    if (p === 'default') { try { p = await Notification.requestPermission(); } catch (e) {} }
+    if (p !== 'granted') { toast(p === 'denied' ? 'Los avisos están bloqueados en el sistema' : 'No se activaron los avisos'); refrescarSheet(); return; }
+    pref.set('avisos', 1); programarAvisos(); refrescarSheet(); toast('Avisos activados');
+  },
+  avisoCfg:el => { const c = avisoCfg(); c[el.dataset.k] = c[el.dataset.k] ? 0 : 1; pref.set('avisoCfg', c); programarAvisos(); refrescarSheet(); },
+  avisoAntes:el => { const c = avisoCfg(); c.antes = +el.dataset.v; pref.set('avisoCfg', c); programarAvisos(); refrescarSheet(); },
+  avisoProbar:async () => { const ok = await mostrarAviso('Así se ven los avisos de Foco', 'Te avisaré cuando termine un enfoque o empiece una tarea.', 'foco-prueba'); if (!ok) toast('No se pudo mostrar el aviso'); },
+  scrAvisos:() => { pref.set('scrAvisos', pref.v('scrAvisos') ? 0 : 1); refrescarSheet(); },
+  widgetsGuia:() => {
+    abrirSheet({ k:'widgets', volver:{ k:'ajustes' } });
+    // Se descarga al abrir: Safari solo deja copiar dentro del mismo toque, sin esperar a la red.
+    if (!ui.scriptTxt) fetch('widgets/Foco.js', { cache:'no-store' }).then(r => r.ok ? r.text() : '').then(t => { ui.scriptTxt = t; }).catch(() => {});
+  },
+  widgetsCopiar:async () => {
+    try {
+      if (!ui.scriptTxt) { const r = await fetch('widgets/Foco.js', { cache:'no-store' }); if (!r.ok) throw new Error(); ui.scriptTxt = await r.text(); }
+      await navigator.clipboard.writeText(ui.scriptTxt); toast('Script copiado. Pégalo en Scriptable');
+    } catch (e) { toast('No se pudo copiar. Búscalo en widgets/Foco.js del repositorio'); }
+  },
   cerrarSheet:() => cerrarSheet(),
   cerrarNivel:() => $('#lvlUp').classList.remove('on'),
   capFab:() => abrirSheet({ k:'captura' }),
@@ -3569,6 +3960,17 @@ const ACT = {
   blocAdd:async () => { const c = await capturarDe('#blocIn', 'algun'); if (c.length) renderVista(); },
   procesar:() => abrirProc(),
   abrir:el => abrirSheet({ k:'detalle', id:el.dataset.id }),
+  pdFiltro:el => { ui.pf = el.dataset.v; renderVista(); },
+  pdHoy:el => { programarEn(byId(el.dataset.id), hoy()); renderVista(); },
+  pdProg:el => abrirSheet({ k:'programar', id:el.dataset.id }),
+  pgDia:el => { const t = byId(ui.sheet.id); cerrarSheet(true); programarEn(t, el.dataset.v); render(); },
+  pgDec:el => { const t = byId(ui.sheet.id); cerrarSheet(true); if (t) decidirSinDia(t, el.dataset.v); render(); },
+  revisar:() => abrirRevision(),
+  rvDia:el => { const R = ui.rev, t = byId(R.ids[R.i]); programarEn(t, el.dataset.v, false); rvSiguiente(el.dataset.v === hoy() ? 'hoy' : 'prog'); },
+  rvDec:el => { const R = ui.rev, t = byId(R.ids[R.i]), v = el.dataset.v; decidirSinDia(t, v); rvSiguiente(v === 'mantener' ? 'sin' : 'fuera'); },
+  rvSaltar:() => rvSiguiente(),
+  rvEditar:() => { const R = ui.rev; abrirSheet({ k:'detalle', id:R.ids[R.i], volver:{ k:'revision' } }); },
+  rvFin:() => finRevision(),
   quitar:el => {
     const t = byId(el.dataset.id), card = el.closest('.tr'); if (!t) return;
     if (card) card.classList.add('out');
@@ -3842,7 +4244,7 @@ const ACT = {
   cfgGuardar:async () => {
     const url = $('#cfgUrl').value.trim(), clave = $('#cfgClave').value.trim();
     const err = (campo, txt) => { ui.cfgDraft = { url, clave }; ui.cfgMsg = { tipo:'err', campo, txt }; refrescarSheet(); sacudir($(campo === 'url' ? '#cfgUrl' : '#cfgClave')); };
-    if (!url && !clave) { S.conn = { url:'', clave:'' }; guardarYa(); estadoS = 'sin'; ui.cfgDraft = null; ui.cfgMsg = { tipo:'ok', txt:'Conexión quitada. Tus datos siguen en este teléfono.' }; pintarSync(); refrescarSheet(); return; }
+    if (!url && !clave) { S.conn = { url:'', clave:'' }; guardarYa(); estadoS = 'sin'; ui.cfgDraft = null; ui.cfgMsg = { tipo:'ok', txt:'Conexión quitada. Tus datos siguen en este dispositivo.' }; pintarSync(); refrescarSheet(); return; }
     if (!/^https:\/\/script\.google(usercontent)?\.com\/.+/.test(url)) return err('url', 'La URL debe empezar con https://script.google.com/');
     if (!/\/exec(\?.*)?$/.test(url)) return err('url', 'Usa la URL que termina en /exec (no la de /dev ni la del editor).');
     if (!clave) return err('clave', 'Escribe la clave que pusiste en Codigo.gs.');
@@ -3963,6 +4365,8 @@ function flushDebs(prefijo = '') { Object.keys(debs).filter(k => k.startsWith(pr
 const dtCampo = (k, el, aplicar) => { const id = ui.sheet && ui.sheet.id; if (!id) return; guardando(); deb('dt:' + k + ':' + id, () => { const t = byId(id); if (t) aplicar(t, id); }); };
 const dtVisible = id => ui.sheet && ui.sheet.k === 'detalle' && ui.sheet.id === id;
 const IN = {
+  pgFecha:el => { if (!el.value || !ui.sheet) return; const t = byId(ui.sheet.id), d = el.value; cerrarSheet(true); programarEn(t, d); render(); },
+  rvFecha:el => { if (!el.value || !ui.rev) return; const t = byId(ui.rev.ids[ui.rev.i]); programarEn(t, el.value, false); rvSiguiente('prog'); },
   dtTitulo:el => { autoAlto(el); const v = el.value; dtCampo('tt', el, (t, id) => { if (!v.trim()) return; t.titulo = limpiarTitulo(v); upsertT(t); renderVista(); const c = dtVisible(id) && $('#dtClar'); if (c) c.innerHTML = htmlClaridad(v, 'dt'); }); },
   dtResultado:el => { autoAlto(el); const v = el.value; dtCampo('res', el, (t, id) => { t.resultado = v.trim().slice(0, 160); upsertT(t); const d = dtVisible(id) && $('.dr.open .dr-v'); if (d) d.innerHTML = t.resultado ? esc(t.resultado) : '<span class="mut2">Sin definir</span>'; }); },
   dtLimite:el => { const t = dtT(); if (!t) return; t.limite = el.value || ''; upsertT(t); renderVista(); const v = $('.dr.open .dr-v'); if (v) v.textContent = t.limite ? fechaCorta(t.limite) : 'Opcional'; },
@@ -4266,14 +4670,14 @@ function arrancar() {
   else if (q.get('capturar')) abrirSheet({ k:'captura' });
   setInterval(tic, 500);
   setInterval(() => { if (document.visibilityState === 'visible' && !syncing) sincronizar(false); }, 60000);
-  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { tic(); sincronizar(false); if (T().corriendo) pantallaActiva(true); } else guardarYa(); });
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { tic(); sincronizar(false); if (T().corriendo) pantallaActiva(true); programarAvisos(); } else alSalir(); });
   addEventListener('online', () => sincronizar(false));
-  addEventListener('pagehide', guardarYa);
+  addEventListener('pagehide', alSalir);
   addEventListener('resize', () => { if (ui.view === 'tablero') ajustarBoard(); if (ui.view === 'agenda') { if (desk()) renderSemana(); else ajustarAgenda(); } });
   mqDesk.addEventListener('change', () => render());
   mqMovil.addEventListener('change', () => { if (mqMovil.matches && ui.view === 'tablero') ir('lista'); else render(); });
   document.addEventListener('touchend', audioListo, { once:true });
-  sincronizar(false);
+  sincronizar(false); programarAvisos();
   if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 arrancar();

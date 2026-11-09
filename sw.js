@@ -1,6 +1,6 @@
 // Foco: funciona sin conexión. Cambia la versión cuando subas cambios para forzar la actualización.
 const PREFIJO = 'foco-';
-const CACHE = PREFIJO + 'v13';
+const CACHE = PREFIJO + 'v16';
 const ARCHIVOS = ['./', './index.html', './manifest.json', './icon-180.png', './icon-512.png', './icon-maskable-512.png'];
 const ESPERA_RED = 3500; // con red lenta, después de esto se usa la copia guardada
 
@@ -50,4 +50,14 @@ self.addEventListener('fetch', e => {
       return copia || red;
     })
   );
+});
+
+// Tocar un aviso de Foco abre (o trae al frente) la app.
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  const url = (e.notification.data && e.notification.data.url) || './';
+  e.waitUntil(self.clients.matchAll({ type:'window', includeUncontrolled:true }).then(cs => {
+    const c = cs.find(x => 'focus' in x);
+    return c ? c.focus() : self.clients.openWindow(url);
+  }));
 });
