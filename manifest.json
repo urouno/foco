@@ -9,6 +9,9 @@
   "orientation": "any",
   "background_color": "#F2F2F7",
   "theme_color": "#F2F2F7",
+  "shortcuts": [
+    { "name": "Vaciar la mente", "short_name": "Mente", "description": "Escribe lo que traes en la cabeza", "url": "./?v=mente", "icons": [{ "src": "icon-180.png", "sizes": "180x180", "type": "image/png" }] }
+  ],
   "icons": [
     {
       "src": "icon-180.png",
