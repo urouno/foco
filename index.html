@@ -107,6 +107,7 @@ body.has-mini main{padding-bottom:calc(var(--tabs) + var(--mini) + 112px + var(-
 #tabs button.on{color:var(--ac-t)}
 #tabs button.on .tp{background:var(--ac-s)}
 #tabs .bdg{position:absolute;top:2px;left:calc(50% + 9px);min-width:19px;height:19px;padding:0 4px;border-radius:8px;background:var(--ac);color:var(--on-ac);font-size:var(--fs-s);line-height:19px;font-weight:700;font-style:normal}
+#tabs .tdot.warn{background:var(--warn-f)}
 #tabs .tdot{position:absolute;top:6px;left:calc(50% + 13px);width:9px;height:9px;border-radius:50%;background:var(--ok-f);border:2px solid var(--sf);}
 
 /* ===== Botón de captura ===== */
@@ -192,7 +193,7 @@ textarea.in{resize:none}
 /* ===== Filas de tarea ===== */
 .tr{position:relative;display:flex;align-items:center;gap:12px;width:100%;min-height:64px;padding:12px 8px 12px 16px;background:var(--sf);transition:opacity .3s,transform .3s var(--ease),background .15s;color:var(--ink)}
 .tr + .tr::after{content:"";position:absolute;top:0;left:58px;right:0;border-top:1px solid var(--ln)}
-.tr.nock + .tr::after,.tr.opt + .tr::after{left:16px}
+.tr.nock + .tr::after,.tr.opt + .tr::after,.tr.pd + .tr::after,.tr.dec + .tr::after{left:16px}
 
 .tr:active{background:var(--sf2)}
 .tb{flex:1;min-width:0}
@@ -539,8 +540,7 @@ body.inmersivo #tabs,body.inmersivo #menuBtn,body.inmersivo #hSub,body.inmersivo
 .pd-ley i{width:8px;height:8px;border-radius:2px;display:inline-block}
 .pd-sum .btn{margin-top:16px}
 .tag.f-olv{color:var(--warn);font-weight:600}
-.tr.pd{align-items:flex-start}
-.tr.pd .dec-b{margin-top:8px}
+.tr.pd{padding-right:8px}
 .rv-card{margin:12px 0 4px;border-radius:20px}
 .rv-card .hero-t{margin-top:6px}
 .rv-acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -985,7 +985,14 @@ body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(-
   .sh-top .grab{display:none}
   body.inmersivo{padding-left:0}
   body.inmersivo main{margin:0 auto;max-width:720px}
-  #tabs .side-f{display:flex;flex-direction:column;gap:8px;margin-top:auto;padding:16px 12px 0;border-top:1px solid var(--ln);font-size:var(--fs-s);color:var(--mut)}
+  #tabs .side-f{display:flex;flex-direction:column;gap:8px;margin-top:auto;padding:12px 12px 0;border-top:1px solid var(--ln);font-size:var(--fs-s);color:var(--mut)}
+  .side-f summary{list-style:none;display:flex;align-items:center;gap:8px;min-height:32px;cursor:pointer;font-weight:600;color:var(--mut)}
+  .side-f summary::-webkit-details-marker{display:none}
+  .side-f summary svg.i{width:16px;height:16px}
+  .side-f summary:hover{color:var(--ink)}
+  .side-f[open] summary{margin-bottom:4px}
+  .side-f > span{margin-top:6px}
+  .chips.vf{flex-wrap:wrap;overflow:visible;margin-left:0;margin-right:0;padding-left:0;padding-right:0}
   .side-f b{font-weight:600;color:var(--ink)}
   .side-f span{display:flex;align-items:center;gap:4px}.side-f span kbd:last-of-type{margin-right:6px}
   #mini{left:var(--side)}
@@ -1938,9 +1945,10 @@ const mqFino = matchMedia('(hover:hover) and (pointer:fine)');
 const TOCA = () => mqFino.matches ? 'Haz clic en' : 'Toca';
 function pintarTabs() {
   const nb = tareasEn('bandeja').length, run = S.timer && S.timer.corriendo, g0 = grupoDe(ui.view);
-  $('#tabs').innerHTML = `<div class="brand"><img src="icon-180.png" alt="" width="28" height="28">Foco</div>` + GRUPOS.map((g, i) => { const on = g === g0, v = g.k === 'hoy' ? 'hoy' : ui.ult[g.k] || g.vs[0]; return `<button class="${on ? 'on' : ''}" data-a="tab" data-v="${v}" ${on ? 'aria-current="page"' : ''} aria-label="${g.n}${g.k === 'bandeja' && nb ? `, ${nb} por organizar` : ''}"><span class="tp">${ic(g.ic)}</span><span class="tl">${g.n}</span>${g.k === 'bandeja' && nb ? `<i class="bdg">${nb > 99 ? '99+' : nb}</i>` : ''}${g.k === 'hoy' && run && ui.view !== 'enfoque' ? '<i class="tdot"></i>' : ''}<kbd>${i + 1}</kbd></button>`; }).join('')
+  const olvN = pendientesSinPlan().filter(x => x.tipo !== 'algun' && x.olvidada).length;
+  $('#tabs').innerHTML = `<div class="brand"><img src="icon-180.png" alt="" width="28" height="28">Foco</div>` + GRUPOS.map((g, i) => { const on = g === g0, v = g.k === 'hoy' ? 'hoy' : ui.ult[g.k] || g.vs[0]; return `<button class="${on ? 'on' : ''}" data-a="tab" data-v="${v}" ${on ? 'aria-current="page"' : ''} aria-label="${g.n}${g.k === 'bandeja' && nb ? `, ${nb} por organizar` : ''}${g.k === 'planifica' && olvN ? `, ${olvN} pendientes olvidados` : ''}"><span class="tp">${ic(g.ic)}</span><span class="tl">${g.n}</span>${g.k === 'bandeja' && nb ? `<i class="bdg">${nb > 99 ? '99+' : nb}</i>` : ''}${g.k === 'hoy' && run && ui.view !== 'enfoque' ? '<i class="tdot"></i>' : ''}${g.k === 'planifica' && olvN ? '<i class="tdot warn"></i>' : ''}<kbd>${i + 1}</kbd></button>`; }).join('')
     + `<button class="tcap" data-a="capFab" aria-label="Capturar pendiente"><span class="tp">${ic('plus')}</span><span class="tl">Capturar</span><kbd>N</kbd></button>`
-    + `<div class="side-f"><b>Atajos</b><span><kbd>N</kbd>Capturar</span><span><kbd>1</kbd>–<kbd>4</kbd>Cambiar de sección</span><span><kbd>/</kbd>Buscar</span><span><kbd>F</kbd>Enfoque</span><span><kbd>Espacio</kbd>Pausar o seguir</span><span><kbd>Esc</kbd>Cerrar</span></div>`;
+    + `<details class="side-f"><summary>${ic('info')}Atajos de teclado</summary><span><kbd>N</kbd>Capturar</span><span><kbd>1</kbd>–<kbd>4</kbd>Cambiar de sección</span><span><kbd>/</kbd>Buscar</span><span><kbd>F</kbd>Enfoque</span><span><kbd>Espacio</kbd>Pausar o seguir</span><span><kbd>Esc</kbd>Cerrar</span></details>`;
   const sn = $('#subnav');
   const sv = subVistas(g0);
   sn.classList.toggle('hide', sv.length < 2);
@@ -2181,7 +2189,7 @@ function pintarBandejaLista(nuevos = []) {
   if (ui.bVerbo && !cuenta[ui.bVerbo === '-' ? '' : ui.bVerbo]) ui.bVerbo = '';
   const items = ui.bVerbo ? todos.filter(t => vb(t) === (ui.bVerbo === '-' ? '' : ui.bVerbo)) : todos;
   const verbos = Object.keys(cuenta).filter(Boolean).sort((a, b) => cuenta[b] - cuenta[a] || a.localeCompare(b));
-  const filtroV = todos.length > 1 && (verbos.length > 1 || cuenta['']) ? `<div class="chips vf" role="group" aria-label="Filtrar por verbo">
+  const filtroV = todos.length >= 5 && (verbos.length > 1 || cuenta['']) ? `<div class="chips vf" role="group" aria-label="Filtrar por verbo">
     <button class="chip ${!ui.bVerbo ? 'on' : ''}" data-a="bVerbo" data-v="">Todos <span class="n">${todos.length}</span></button>
     ${verbos.map(v => `<button class="chip ${ui.bVerbo === v ? 'on' : ''}" data-a="bVerbo" data-v="${esc(v)}" aria-pressed="${ui.bVerbo === v}">${esc(v)} <span class="n">${cuenta[v]}</span></button>`).join('')}
     ${cuenta[''] ? `<button class="chip ${ui.bVerbo === '-' ? 'on' : ''}" data-a="bVerbo" data-v="-">Sin verbo <span class="n">${cuenta['']}</span></button>` : ''}</div>` : '';
@@ -2776,7 +2784,7 @@ function gruposLista(por, ts) {
     { k:'man', n:'Mañana', ic:'moon', ts:prox.filter(t => t.fecha === m).sort(ordFecha) },
     { k:'sem', n:'Esta semana', ic:'cal', ts:prox.filter(t => t.fecha > m && t.fecha <= sem).sort(ordFecha) },
     { k:'mas', n:'Más adelante', ic:'cal', fold:true, ts:prox.filter(t => t.fecha > sem).sort(ordFecha) },
-    { k:'sinf', n:'Sin fecha', ic:'list', ts:prox.filter(t => !t.fecha).sort(ordenPrioridad) },
+    { k:'sinf', n:'Sin día', ic:'list', ts:prox.filter(t => !t.fecha).sort(ordenPrioridad) },
     { k:'esp', n:'En espera', ic:'hourglass', ts:ts.filter(t => t.estado === 'espera').sort(ordFecha) }
   ];
 }
@@ -2820,8 +2828,8 @@ const OLVIDO_DIAS = 14, OLVIDO_ALGUN = 60;
 const PEND_G = {
   atrasada:{ n:'Atrasadas', ic:'refresh', c:'var(--hot-f)', hex:'#FF3B30' },
   espera:{ n:'En espera', ic:'hourglass', c:'var(--warn-f)', hex:'#FF9500' },
-  prox:{ n:'Próximas sin día', ic:'list', c:'var(--ac)', hex:'#5856D6' },
-  bandeja:{ n:'Sin organizar', ic:'inbox', c:'#32ADE6', hex:'#32ADE6' },
+  prox:{ n:'Sin día', ic:'list', c:'var(--ac)', hex:'#5856D6' },
+  bandeja:{ n:'Sin organizar', ic:'inbox', c:'color-mix(in srgb,var(--ac) 40%,var(--sf3))', hex:'#A09EEB' },
   algun:{ n:'Algún día', ic:'bulb', c:'var(--mut2)', hex:'#8E8E93' }
 };
 const diasEntre = (a, b) => Math.round((parseYmd(b) - parseYmd(a)) / 864e5);
@@ -2856,8 +2864,8 @@ function filaPend(x) {
   const t = x.t, G = PEND_G[x.tipo];
   return `<div class="tr pd" style="--a:${colorA(t.area)}" data-a="abrir" data-id="${t.id}" role="button" tabindex="0" aria-label="${esc(t.titulo)}. Abrir detalle">
     <div class="tb"><div class="tt">${esc(t.titulo)}</div>
-      <div class="mt"><span class="tag ${x.mk}">${ic(x.olvidada && !x.mk.includes('tarde') ? 'hourglass' : G.ic)}${esc(x.motivo || G.n)}</span>${x.tipo === 'espera' && t.espera ? `<span class="tag">${ic('hourglass')}${esc(t.espera)}</span>` : ''}${cuad(t) ? pq(t) : ''}${area(t.area) ? `<span class="tag"><i class="dot" style="--a:${colorA(t.area)}"></i>${esc(area(t.area).n)}</span>` : ''}${t.proyecto ? `<span class="tag">${ic('folder')}${esc(t.proyecto)}</span>` : ''}</div>
-      <div class="dec-b"><button class="qk pri" data-a="pdHoy" data-id="${t.id}">${ic('sun')}Hoy</button><button class="qk" data-a="pdProg" data-id="${t.id}">${ic('cal')}Programar</button>${x.tipo === 'espera' ? `<button class="qk" data-a="segOtro" data-id="${t.id}">${ic('refresh')}Seguimiento</button>` : ''}</div></div>
+      <div class="mt">${x.motivo ? `<span class="tag ${x.mk}">${ic(x.olvidada && !x.mk.includes('tarde') ? 'hourglass' : G.ic)}${esc(x.motivo)}</span>` : ''}${x.tipo === 'espera' && t.espera ? `<span class="tag">${ic('hourglass')}${esc(t.espera)}</span>` : ''}${cuad(t) ? pq(t) : ''}${area(t.area) ? `<span class="tag"><i class="dot" style="--a:${colorA(t.area)}"></i>${esc(area(t.area).n)}</span>` : ''}${t.proyecto ? `<span class="tag">${ic('folder')}${esc(t.proyecto)}</span>` : ''}</div></div>
+    <button class="ls-ag pend" data-a="pdProg" data-id="${t.id}" aria-label="Programar: ${esc(t.titulo)}">${ic(x.tipo === 'espera' ? 'refresh' : 'cal')}<span>${x.tipo === 'espera' ? 'Seguir' : 'Programar'}</span></button>
   </div>`;
 }
 function renderPendientes() {
@@ -2870,12 +2878,12 @@ function renderPendientes() {
   const f = ui.pf, dRev = diasRevision(), porRevisar = acc.length + algOlv.length;
   // Resumen: cuánto hay sin plan, de qué tipo y cuándo fue la última revisión.
   let html = `<div class="panel pd-sum"><div class="pm-n"><b>${acc.length}</b><span>${acc.length === 1 ? 'pendiente sin planificar' : 'pendientes sin planificar'}</span></div>
-    <p class="sum-e">${olv.length ? `<b>${olv.length} ${olv.length === 1 ? 'olvidado' : 'olvidados'}</b> (más de ${OLVIDO_DIAS} días sin moverse) · ` : ''}${dRev == null ? 'Aún no haces una revisión' : dRev === 0 ? 'Revisaste hoy' : `Última revisión hace ${dRev} ${dRev === 1 ? 'día' : 'días'}`}</p>
+    <p class="sum-e">${olv.length ? `<b>${olv.length} ${olv.length === 1 ? 'olvidado' : 'olvidados'}</b> · ` : ''}${dRev == null ? 'Sin revisión todavía' : dRev === 0 ? 'Revisaste hoy' : `Revisaste hace ${dRev} ${dRev === 1 ? 'día' : 'días'}`}</p>
     ${acc.length ? `<div class="pd-bar" role="img" aria-label="Reparto por tipo">${['atrasada', 'espera', 'prox', 'bandeja'].map(k => { const n = cuenta(k); return n ? `<i style="width:${n / acc.length * 100}%;background:${PEND_G[k].c}"></i>` : ''; }).join('')}</div>
       <div class="pd-ley">${['atrasada', 'espera', 'prox', 'bandeja'].filter(cuenta).map(k => `<span><i style="background:${PEND_G[k].c}"></i>${PEND_G[k].n} ${cuenta(k)}</span>`).join('')}</div>` : ''}
     ${porRevisar ? `<button class="btn pri full" data-a="revisar">${ic('sparkle')}Revisar uno por uno</button>` : ''}</div>`;
   if (!todos.length) {
-    v.innerHTML = html + `<div class="zero"><div class="orb">${ic('check')}</div><h3>Todo tiene un plan</h3><p>Cada pendiente tiene día, está en espera con seguimiento o ya está hecho.</p></div>`;
+    v.innerHTML = `<div class="zero"><div class="orb">${ic('check')}</div><h3>Todo tiene un plan</h3><p>Cada pendiente tiene día, está en espera con seguimiento o ya está hecho.</p></div>`;
     return;
   }
   html += `<div class="chips vf" role="group" aria-label="Filtrar pendientes" style="margin-top:16px">${fils.map(([k, n, c]) => `<button class="chip ${f === k ? 'on' : ''}" data-a="pdFiltro" data-v="${k}" aria-pressed="${f === k}">${n} <span class="n">${c}</span></button>`).join('')}</div>`;
@@ -2890,7 +2898,7 @@ function renderPendientes() {
     html += grupo(f === 'olv' ? 'Olvidados' : PEND_G[f].n, f === 'olv' ? 'hourglass' : PEND_G[f].ic, xs);
     if (f === 'bandeja') html += `<button class="row-add" data-a="procesar">${ic('sparkle')}Organizar la Bandeja</button>`;
   }
-  html += tip('pendientes', 'layers', '<b>Hoy</b> la pasa a tu día; <b>Programar</b> le da otra fecha. Lo que no toques en 14 días se marca como olvidado.');
+  html += tip('pendientes', 'layers', `<b>Programar</b> le da día (o la pasa a hoy). Lo que no se mueve en ${OLVIDO_DIAS} días se marca como olvidado.`);
   v.innerHTML = html;
 }
 // Programar: elegir día (o decidir otra cosa) para un pendiente.
@@ -3376,8 +3384,8 @@ function renderProgreso() {
     ? `<div class="panel pmain"><div class="pm-n"><b>${hechas.length}</b><span>${hechas.length === 1 ? 'tarea terminada' : 'tareas terminadas'}</span>${per !== 'hoy' ? `<button class="lnk2" data-a="pDet" data-v="hechas" aria-expanded="${det === 'hechas'}">${det === 'hechas' ? 'Ocultar' : 'Ver cuáles'}</button>` : ''}</div>${grafica}${per === 'hoy' ? `<div style="margin-top:12px">${listaHechas(8)}</div>` : ''}</div>`
     : `<div class="panel pmain vacio"><div class="pm-n"><b>0</b><span>tareas terminadas</span></div>${grafica}<p>Aún nada en este periodo. Empezar con algo pequeño cuenta.</p><button class="btn pri" data-a="tab" data-v="hoy">${ic('sun')}Ir a Hoy</button></div>`;
   const tile = (k, icono, val, label) => `<button class="ptile ${det === k ? 'on' : ''}" data-a="pDet" data-v="${k}" aria-expanded="${det === k}"><span class="mi">${ic(icono)}</span><span class="tb"><b>${val}</b><small>${label}</small></span>${ic('chevD', det === k ? 'chev up' : 'chev')}</button>`;
-  const prioVal = C.ini ? `${C.ok} de ${C.ini}` : 'Sin plan';
-  const prioLbl = C.ini ? 'prioridades' : 'de prioridades';
+  const prioVal = C.ini ? `${C.ok} de ${C.ini}` : 'Sin elegir';
+  const prioLbl = C.ini ? 'prioridades' : 'prioridades del día';
   let detalle = '';
   if (det === 'hechas') detalle = listaHechas();
   if (det === 'enfoque') detalle = ses.length ? `<div class="group">${ses.slice(0, 60).map(x => `<div class="hr" style="--a:${area(x.area) ? colorA(x.area) : 'var(--mut2)'}"><i class="dot"></i><span class="tb"><span class="ht" style="display:block">${esc(x.tareaTitulo || 'Enfoque libre')}</span><span class="hn">${x.tipo === 'pomodoro' ? 'Pomodoro' : 'Bloque'}${isTrue(x.completa) ? '' : ' parcial'}</span></span><span class="hm">${x.min} min · ${fechaCorta(diaDeISO(x.fin))}</span></div>`).join('')}</div>` : '<div class="empty">Sin sesiones de enfoque en este periodo.</div>';
