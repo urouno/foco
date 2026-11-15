@@ -101,11 +101,11 @@ body.has-mini main{padding-bottom:calc(var(--tabs) + var(--mini) + 112px + var(-
 
 /* ===== Barra inferior ===== */
 #tabs{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;padding:4px 4px calc(4px + var(--bot));background:color-mix(in srgb,var(--sf) 90%,transparent);-webkit-backdrop-filter:saturate(1.8) blur(20px);backdrop-filter:saturate(1.8) blur(20px);border-top:1px solid var(--ln)}
-#tabs button{flex:1;min-height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:var(--fs-s);font-weight:600;color:var(--mut);position:relative;text-align:center}
+#tabs > button{flex:1;min-height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:var(--fs-s);font-weight:600;color:var(--mut);position:relative;text-align:center}
 #tabs .tp{width:58px;height:30px;border-radius:999px;display:grid;place-items:center;transition:background .25s var(--ease)}
 #tabs .tp svg.i{width:23px;height:23px}
-#tabs button.on{color:var(--ac-t)}
-#tabs button.on .tp{background:var(--ac-s)}
+#tabs > button.on{color:var(--ac-t)}
+#tabs > button.on .tp{background:var(--ac-s)}
 #tabs .bdg{position:absolute;top:2px;left:calc(50% + 9px);min-width:19px;height:19px;padding:0 4px;border-radius:8px;background:var(--ac);color:var(--on-ac);font-size:var(--fs-s);line-height:19px;font-weight:700;font-style:normal}
 #tabs .tdot.warn{background:var(--warn-f)}
 #tabs .tdot{position:absolute;top:6px;left:calc(50% + 13px);width:9px;height:9px;border-radius:50%;background:var(--ok-f);border:2px solid var(--sf);}
@@ -122,6 +122,13 @@ body.has-mini #fab{bottom:calc(var(--tabs) + var(--mini) + 16px + var(--bot))}
 .sec-t{display:flex;align-items:center;gap:8px;margin:32px 4px 8px;font-size:var(--fs-s);font-weight:600;color:var(--mut)}
 .sec-t svg.i{width:17px;height:17px}
 .sec-t .n{font-weight:600;color:var(--mut);background:var(--sf3);border-radius:8px;padding:0 8px;font-size:var(--fs-s);line-height:20px}
+/* Jerarquía: título de pantalla > encabezado de grupo > título de tarea > metadatos */
+main .sec-t{margin-bottom:12px;font-size:var(--fs-m);font-weight:700;letter-spacing:-.01em;color:var(--ink)}
+main .sec-t > svg.i:first-child{color:var(--mut)}
+main .sec-t .n{background:none;padding:0;font-weight:500;color:var(--mut2);letter-spacing:0}
+main .sec-t small{font-size:var(--fs-s);letter-spacing:0}
+main .sec-t.hot{color:var(--warn)}
+main .tr .tt{font-weight:500}
 .hint{color:var(--mut);font-size:var(--fs-s);margin:12px 4px 0;line-height:1.45}
 .hint svg.i{width:15px;height:15px;vertical-align:-3px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -406,6 +413,8 @@ details.sec-d[open] .chev{transform:rotate(180deg)}
 .nx.toca{margin:16px 0 0;box-shadow:inset 0 0 0 1.5px var(--ok-f)}.nx.toca .ni{background:var(--ok-s);color:var(--ok)}
 /* Subpestañas y filtro por verbo */
 .subnav{margin-bottom:16px}
+.subnav button{font-size:15px;gap:6px}
+@media (max-width:480px){.subnav button svg.i{display:none}}
 .chips.vf{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -16px 12px;padding:2px 16px}
 .chips.vf::-webkit-scrollbar{display:none}
 .chip .n{font-size:var(--fs-s);color:var(--mut);font-weight:600}.chip.on .n{color:var(--ac-t)}
@@ -462,8 +471,8 @@ kbd.mk{font:600 12px/1 inherit;color:var(--mut);padding:4px 7px;border-radius:6p
 #tabs .tcap .tp{width:48px;height:48px;border-radius:50%;background:var(--ac);color:var(--on-ac);box-shadow:0 4px 14px color-mix(in srgb,var(--ac) 35%,transparent)}
 #tabs .tcap .tp svg.i{width:24px;height:24px;stroke-width:2.4}
 #tabs .tcap .tl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-#tabs > button:nth-of-type(1),#tabs > button:nth-of-type(2){order:1}
-#tabs > button:nth-of-type(3),#tabs > button:nth-of-type(4){order:4}
+@media (max-width:1023px){#tabs > button:nth-of-type(1),#tabs > button:nth-of-type(2){order:1}
+#tabs > button:nth-of-type(3),#tabs > button:nth-of-type(4){order:4}}
 #tabs .brand{order:0}#tabs .side-f{order:9}
 /* Enfoque inmersivo: solo el tiempo, un control y la salida */
 body.inmersivo{--tabs:0px}
@@ -952,56 +961,69 @@ body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(-
   .bloc{columns:3}
 }
 /* ===== Escritorio: barra lateral, paneles lado a lado y semana en columnas ===== */
-#tabs .brand,#tabs .side-f,#tabs kbd{display:none}
+#tabs .brand,#tabs .side-f,#tabs kbd,#tabs .sub,#tabs .tbus,#tabs .side-p{display:none}
 .sm-it.dragging,.tl-b.dragging{opacity:.4}
 @media (min-width:1024px){
-  :root{--side:232px;--tabs:0px}
+  :root{--side:272px;--tabs:0px}
   body{padding-left:var(--side)}
-  main{max-width:1440px;margin:0;padding:4px 32px 48px}
+  main{max-width:1440px;margin:0;padding:8px 32px 48px}
   #hdr{padding-left:32px;padding-right:24px}
-  #tabs{top:0;right:auto;width:var(--side);flex-direction:column;gap:4px;padding:calc(var(--top) + 12px) 12px 16px;border-top:0;border-right:1px solid var(--ln);background:var(--sf)}
-  #tabs .brand{display:flex;align-items:center;gap:12px;padding:4px 12px 20px;font-size:var(--fs-l);font-weight:700;letter-spacing:-.01em}
+  #tabs{top:0;right:auto;width:var(--side);flex-direction:column;gap:2px;padding:calc(var(--top) + 12px) 12px 12px;border-top:0;border-right:1px solid var(--ln);background:var(--sf);overflow-y:auto}
+  #tabs .brand{display:flex;align-items:center;gap:12px;padding:4px 12px 16px;font-size:var(--fs-l);font-weight:700;letter-spacing:-.01em}
   #tabs .brand img{border-radius:8px}
-  #tabs button{flex:none;flex-direction:row;justify-content:flex-start;min-height:44px;padding:0 12px;gap:12px;font-size:var(--fs-m);border-radius:12px;transition:background .15s}
-  #tabs button:hover{background:var(--sf2)}
-  #tabs button.on{background:var(--ac-s)}
+  #tabs > button{flex:none;flex-direction:row;justify-content:flex-start;min-height:38px;padding:0 12px;gap:12px;font-size:15px;font-weight:500;color:var(--ink);border-radius:10px;transition:background .15s}
+  #tabs > button:hover{background:var(--sf2)}
+  #tabs > button .tp{color:var(--mut)}
+  #tabs > button.eng{font-weight:600}
+  #tabs > button.on{background:var(--ac-s);font-weight:600}
+  #tabs > button.on .tp{color:inherit}
   #tabs .tp{width:auto;height:auto;background:none!important}
-  #tabs .tp svg.i{width:20px;height:20px}
+  #tabs .tp svg.i{width:19px;height:19px}
   #tabs .tl{flex:1;text-align:left}
   #tabs .bdg,#tabs .tdot{position:static;margin:0}
   #tabs kbd,.side-f kbd{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:6px;background:var(--sf2);border:1px solid var(--ln);font:600 12px/1 inherit;color:var(--mut)}
-  #tabs .tcap{order:0;margin:0 0 12px;background:var(--ac);color:var(--on-ac)}
+  #tabs .tcap{order:0;min-height:44px;margin:0 0 8px;background:var(--ac);color:var(--on-ac);font-weight:600;border-radius:12px}
   #tabs .tcap:hover{background:color-mix(in srgb,var(--ac) 88%,#000)}
   #tabs .tcap .tp{width:auto;height:auto;border-radius:0;background:none;box-shadow:none;color:inherit}
   #tabs .tcap .tp svg.i{width:20px;height:20px}
   #tabs .tcap .tl{position:static;width:auto;height:auto;overflow:visible;clip:auto}
   #tabs .tcap kbd{background:color-mix(in srgb,var(--on-ac) 18%,transparent);border-color:transparent;color:var(--on-ac)}
+  #tabs .tbus{display:flex;order:0;margin-bottom:8px;color:var(--mut)}
   #tabs > button{order:1}
+  #tabs > button.tcap,#tabs > button.tbus{order:0}
+  /* Vistas anidadas bajo su sección */
+  #tabs .sub{display:flex;flex-direction:column;gap:2px;order:1;margin:0 0 4px 21px;padding-left:10px;border-left:1px solid var(--ln2)}
+  #tabs .sub button{display:flex;align-items:center;gap:10px;min-height:32px;padding:0 10px;border-radius:8px;font-size:14px;font-weight:500;color:var(--mut);transition:background .15s,color .15s}
+  #tabs .sub button svg.i{width:16px;height:16px}
+  #tabs .sub button:hover{background:var(--sf2);color:var(--ink)}
+  #tabs .sub button.on{background:var(--ac-s);color:var(--ac-t);font-weight:600}
+  #tabs .sub .cnt{font-style:normal;font-size:12px;font-weight:600;color:var(--mut2);font-variant-numeric:tabular-nums}
+  #tabs .sub button.on .cnt{color:inherit}
   /* El atajo de cada sección solo aparece al pasar el cursor: no compite con el contador de la Bandeja */
   #tabs > button:not(.tcap) > kbd{opacity:0;transition:opacity .15s}
   #tabs > button:not(.tcap):hover > kbd,#tabs > button:not(.tcap):focus-visible > kbd{opacity:1}
+  /* Proyectos en el panel */
+  #tabs .side-p{display:block;order:5;flex:1 1 auto;min-height:140px;overflow-y:auto;margin:12px -12px 0;padding:8px 12px 12px;border-top:1px solid var(--ln);scrollbar-width:thin}
   body.inmersivo #hdr{padding-left:max(32px,calc(50% - 360px));padding-right:max(24px,calc(50% - 368px))}
   .sh-top{padding-top:12px}
   .sh-top .grab{display:none}
   body.inmersivo{padding-left:0}
   body.inmersivo main{margin:0 auto;max-width:720px}
-  #tabs .side-f{display:flex;flex-direction:column;gap:8px;margin-top:auto;padding:12px 12px 0;border-top:1px solid var(--ln);font-size:var(--fs-s);color:var(--mut)}
-  .side-f summary{list-style:none;display:flex;align-items:center;gap:8px;min-height:32px;cursor:pointer;font-weight:600;color:var(--mut)}
+  #tabs .side-f{display:flex;flex-direction:column;order:9;margin:0 -12px;padding:8px 12px 0;border-top:1px solid var(--ln);font-size:var(--fs-s);color:var(--mut)}
+  .side-f > button,.side-f summary{list-style:none;display:flex;align-items:center;gap:10px;width:100%;min-height:32px;padding:0 12px;border-radius:8px;cursor:pointer;font-weight:500;color:var(--mut)}
   .side-f summary::-webkit-details-marker{display:none}
-  .side-f summary svg.i{width:16px;height:16px}
-  .side-f summary:hover{color:var(--ink)}
-  .side-f[open] summary{margin-bottom:4px}
-  .side-f > span{margin-top:6px}
+  .side-f > button svg.i,.side-f summary svg.i{width:16px;height:16px}
+  .side-f > button:hover,.side-f summary:hover{color:var(--ink);background:var(--sf2)}
+  .side-f details[open]{padding-bottom:8px}
+  .side-f details > span{display:flex;align-items:center;gap:4px;margin-top:6px;padding:0 12px}
+  .side-f span kbd:last-of-type{margin-right:6px}
   .chips.vf{flex-wrap:wrap;overflow:visible;margin-left:0;margin-right:0;padding-left:0;padding-right:0}
-  .side-f b{font-weight:600;color:var(--ink)}
-  .side-f span{display:flex;align-items:center;gap:4px}.side-f span kbd:last-of-type{margin-right:6px}
   #mini{left:var(--side)}
   #fab{bottom:calc(24px + var(--bot))}
   body.has-mini #fab{bottom:calc(var(--mini) + 24px)}
   #toast{left:calc(50% + var(--side) / 2)}
-  .subnav{display:inline-flex;min-width:360px}
-  .subnav button{flex:1 0 auto;padding:0 16px}
-  .subnav.hide{display:none}
+  /* Las vistas ya están en el panel izquierdo */
+  .subnav{display:none}
   /* Hojas: panel lateral a la derecha */
   #sheet,#sheet.on{left:auto;right:0;top:0;bottom:0;width:480px;max-height:none;border-radius:24px 0 0 24px}
   #sheet{transform:translateX(calc(100% + 40px))}
@@ -1071,7 +1093,7 @@ body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(-
 }
 /* Portátiles pequeños: barra lateral y panel de la semana más angostos para que el calendario respire */
 @media (min-width:1024px) and (max-width:1279px){
-  :root{--side:208px}
+  :root{--side:240px}
   main{padding-left:24px;padding-right:24px}
   #hdr{padding-left:24px}
   .semana{grid-template-columns:220px minmax(0,1fr);gap:16px}
@@ -1156,6 +1178,69 @@ div.mn-ia{animation:pulse 1.6s infinite}
   .mn-head,.mn-vacio{margin-top:8px}
   .mn-3{flex-direction:column}.mn-3>div{display:grid}
 }
+/* ===== Proyectos: menús desplegables con todas sus tareas ===== */
+.sp-sec > summary{list-style:none;display:flex;align-items:center;justify-content:space-between;min-height:28px;padding:0 12px;cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--mut2)}
+.sp-sec > summary::-webkit-details-marker,.sp-p > summary::-webkit-details-marker,.sp-h > summary::-webkit-details-marker{display:none}
+.sp-sec > summary:hover{color:var(--ink)}
+.sp-sec > summary .chev{width:14px;height:14px}
+.sp-sec[open] > summary .chev{transform:rotate(180deg)}
+.sp{display:flex;flex-direction:column;gap:2px;margin-top:4px}
+.sp-vacio{margin:4px 12px;font-size:var(--fs-s);line-height:1.45;color:var(--mut)}
+.sp-vacio b{font-weight:600;color:var(--ink)}
+.sp-p > summary{list-style:none;display:flex;align-items:center;gap:8px;min-height:36px;padding:0 10px 0 8px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;color:var(--ink);transition:background .15s}
+.sp-p > summary:hover{background:var(--sf2)}
+.sp-p[open] > summary{font-weight:600}
+.sp-p > summary .chev,.sp-h > summary .chev{width:14px;height:14px;color:var(--mut2)}
+.sp-p[open] > summary .chev,.sp-h[open] > summary .chev{transform:rotate(90deg)}
+.sp-n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sp-c{flex:none;min-width:20px;text-align:center;font-size:12px;font-weight:600;color:var(--mut);font-variant-numeric:tabular-nums}
+.sp-c.ok{color:var(--ok)}.sp-c svg.i{width:14px;height:14px;stroke-width:2.6;vertical-align:-2px}
+.sp-b{margin:0 0 8px 14px;padding-left:8px;border-left:1px solid var(--ln2)}
+.sp-av{display:flex;align-items:center;gap:8px;min-height:28px;padding:0 4px 0 6px;font-size:12px;color:var(--mut)}
+.sp-bar{flex:none;width:36px;height:4px;border-radius:2px;background:var(--sf3);overflow:hidden}
+.sp-bar i{display:block;height:100%;border-radius:2px;background:var(--ok-f)}
+.sp-av > span:nth-child(2){flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sp-av button{flex:none;min-height:24px;padding:0 6px;border-radius:6px;font-weight:600;color:var(--ac-t)}
+.sp-av button:hover{background:var(--ac-s)}
+.sp-t{display:flex;align-items:flex-start;gap:8px;padding:5px 4px 5px 6px;border-radius:8px;transition:opacity .3s,transform .3s var(--ease),background .15s}
+.sp-t:hover{background:var(--sf2)}
+.sp-t .ck{width:18px;height:18px;margin-top:1px;border-width:1.5px;border-color:color-mix(in srgb,var(--a) 70%,var(--ln2));background:none}
+.sp-t .ck svg.i{width:11px;height:11px}
+@media (hover:hover){.sp-t .ck:hover{border-color:var(--ok-f)}}
+.sp-t.done .ck,.sp-t.hecha .ck{background:var(--ok-f);border-color:var(--ok-f)}
+.sp-t.done .ck svg.i,.sp-t.hecha .ck svg.i{opacity:1;transform:none}
+.sp-t.hecha .ck{background:var(--mut2);border-color:var(--mut2)}
+.sp-t.out{opacity:0;transform:translateX(16px)}
+.sp-tb{flex:1;min-width:0;display:block;text-align:left}
+.sp-tt{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:var(--fs-s);font-weight:500;line-height:1.35;color:var(--ink);overflow-wrap:anywhere}
+.sp-tm{display:block;margin-top:1px;font-size:12px;color:var(--mut2)}
+.sp-tm.tarde{color:var(--warn)}
+.sp-t.done .sp-tt,.sp-t.hecha .sp-tt{text-decoration:line-through;color:var(--mut);font-weight:400}
+.sp-in{display:block;width:100%;min-height:30px;margin:2px 0;padding:0 6px;border:0;border-radius:8px;background:none;outline:0;font-size:var(--fs-s)}
+.sp-in::placeholder{color:var(--mut2)}
+.sp-in:hover{background:var(--sf2)}
+.sp-in:focus{background:var(--sf2);box-shadow:inset 0 0 0 1.5px var(--ac)}
+.sp-h > summary{list-style:none;display:flex;align-items:center;gap:6px;min-height:28px;padding:0 6px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--mut)}
+.sp-h > summary:hover{background:var(--sf2);color:var(--ink)}
+.sp-h > summary span{font-weight:500;color:var(--mut2)}
+.sp-mas{margin:4px 6px;font-size:12px;color:var(--mut2)}
+/* En la hoja (teléfono): mismas piezas con objetivos táctiles más grandes */
+.sp-sheet{gap:8px;margin-top:0}
+.sp-sheet .sp-p{background:var(--sf2);border-radius:12px}
+.sp-sheet .sp-p > summary{min-height:52px;padding:0 14px 0 12px;font-size:var(--fs-m);border-radius:12px}
+.sp-sheet .sp-p > summary:hover,.sp-sheet .sp-t:hover{background:none}
+.sp-sheet .sp-c{font-size:var(--fs-s)}
+.sp-sheet .sp-b{margin:0;padding:0 8px 8px;border-left:0}
+.sp-sheet .sp-av{font-size:var(--fs-s);min-height:36px}
+.sp-sheet .sp-av button{min-height:36px}
+.sp-sheet .sp-t{align-items:center;gap:12px;min-height:48px;padding:6px 4px 6px 6px}
+.sp-sheet .sp-t .ck{width:26px;height:26px;border-width:2px}
+.sp-sheet .sp-t .ck svg.i{width:14px;height:14px}
+.sp-sheet .sp-tt{font-size:var(--fs-m)}
+.sp-sheet .sp-tm{font-size:var(--fs-s)}
+.sp-sheet .sp-in{min-height:44px;font-size:var(--fs-m);background:var(--sf);padding:0 12px;margin:4px 0}
+.sp-sheet .sp-h > summary{min-height:40px;font-size:var(--fs-s)}
+.sp-sheet .sp-vacio{margin:0 4px;font-size:var(--fs-m)}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -2279,16 +2364,74 @@ const desk = () => mqDesk.matches;
 // Ratón o trackpad: los textos dicen «Haz clic en» en lugar de «Toca».
 const mqFino = matchMedia('(hover:hover) and (pointer:fine)');
 const TOCA = () => mqFino.matches ? 'Haz clic en' : 'Toca';
+// Proyectos: todas las tareas de cada proyecto (pendientes y hechas) en menús desplegables.
+// En escritorio viven en el panel izquierdo; en teléfono, en una hoja que se abre desde «Más opciones».
+const ordProy = (a, b) => (a.estado === 'proceso' ? 0 : 1) - (b.estado === 'proceso' ? 0 : 1) || (a.fecha || '9').localeCompare(b.fecha || '9') || (a.hora || '99').localeCompare(b.hora || '99') || byOrden(a, b);
+function listaProyectos() {
+  const m = new Map();
+  vivas().forEach(t => { if (!t.proyecto) return; let o = m.get(t.proyecto); if (!o) m.set(t.proyecto, o = { n:t.proyecto, pend:[], hechas:[] }); (t.estado === 'hecho' ? o.hechas : o.pend).push(t); });
+  return [...m.values()].sort((a, b) => (a.pend.length ? 0 : 1) - (b.pend.length ? 0 : 1) || a.n.localeCompare(b.n, 'es'));
+}
+function metaProy(t) {
+  if (t.estado === 'proceso') return 'En curso';
+  if (t.estado === 'bandeja') return 'Bandeja';
+  if (t.estado === 'espera') return 'En espera';
+  if (t.estado === 'algun') return 'Algún día';
+  if (!t.fecha) return 'Sin día';
+  return [t.fecha < hoy() ? 'Atrasada' : fechaCorta(t.fecha), t.hora].filter(Boolean).join(' · ');
+}
+function htmlProyectos() {
+  const ps = listaProyectos();
+  if (!ps.length) return `<p class="sp-vacio">Aún no tienes proyectos. Escribe uno en el campo <b>Proyecto</b> de cualquier tarea y aparecerá aquí con todas sus tareas.</p>`;
+  const fila = (t, hecha) => `<div class="sp-t ${hecha ? 'hecha' : ''}" style="--a:${colorA(t.area)}">
+    <button class="ck" data-a="${hecha ? 'spReabrir' : 'ck'}" data-id="${t.id}" aria-label="${hecha ? 'Volver a dejar pendiente' : 'Marcar como hecha'}: ${esc(t.titulo)}">${ic('check')}</button>
+    <button class="sp-tb" data-a="spAbrir" data-id="${t.id}" aria-label="${esc(t.titulo)}. Abrir detalle"><span class="sp-tt">${esc(t.titulo)}</span><span class="sp-tm ${!hecha && t.estado === 'prox' && t.fecha && t.fecha < hoy() ? 'tarde' : ''}">${hecha ? 'Hecha ' + haceCuanto(t.hecho).toLowerCase() : esc(metaProy(t))}</span></button></div>`;
+  return ps.map(p => {
+    const k = 'sp-' + p.n, tot = p.pend.length + p.hechas.length, pct = Math.round(p.hechas.length / tot * 100);
+    const hechas = p.hechas.slice().sort((a, b) => (b.hecho || '').localeCompare(a.hecho || ''));
+    return `<details class="sp-p" data-k="${esc(k)}" ${abierto(k) ? 'open' : ''}><summary>${ic('chevR', 'chev')}<span class="sp-n">${esc(p.n)}</span><span class="sp-c ${p.pend.length ? '' : 'ok'}" aria-label="${p.pend.length} pendientes de ${tot}">${p.pend.length || ic('check')}</span></summary>
+      <div class="sp-b">
+        <div class="sp-av"><span class="sp-bar"><i style="width:${pct}%"></i></span><span>${p.hechas.length} de ${tot} ${tot === 1 ? 'hecha' : 'hechas'}</span><button data-a="spVer" data-p="${esc(p.n)}">Ver en Lista</button></div>
+        ${p.pend.sort(ordProy).map(t => fila(t)).join('')}
+        <input class="sp-in" data-p="${esc(p.n)}" maxlength="${MAX_TITULO}" placeholder="+ Agregar tarea" enterkeyhint="done" autocomplete="off" aria-label="Agregar tarea a ${esc(p.n)}">
+        ${hechas.length ? `<details class="sp-h" data-k="${esc(k)}-h" ${abierto(k + '-h') ? 'open' : ''}><summary>${ic('chevR', 'chev')}Completadas<span>${hechas.length}</span></summary>${hechas.slice(0, 30).map(t => fila(t, true)).join('')}${hechas.length > 30 ? `<p class="sp-mas">Las ${hechas.length - 30} anteriores están en Progreso.</p>` : ''}</details>` : ''}
+      </div></details>`;
+  }).join('');
+}
+function htmlProyectosSheet() { return cab('<h2>Proyectos</h2>') + `<div class="sp sp-sheet">${htmlProyectos()}</div><div class="sh-end"></div>`; }
+function spRefrescar() { renderVista(); if (ui.sheet && ui.sheet.k === 'proyectos') refrescarSheet(); }
+let tabsHtml = '';
 function pintarTabs() {
-  const nb = tareasEn('bandeja').length, run = S.timer && S.timer.corriendo, g0 = grupoDe(ui.view);
+  const nb = tareasEn('bandeja').length, run = S.timer && S.timer.corriendo, g0 = grupoDe(ui.view), dk = desk();
   const olvN = pendientesSinPlan().filter(x => x.tipo !== 'algun' && x.olvidada).length;
-  $('#tabs').innerHTML = `<div class="brand"><img src="icon-180.png" alt="" width="28" height="28">Foco</div>` + GRUPOS.map((g, i) => { const on = g === g0, v = g.k === 'hoy' ? 'hoy' : ui.ult[g.k] || g.vs[0]; return `<button class="${on ? 'on' : ''}" data-a="tab" data-v="${v}" ${on ? 'aria-current="page"' : ''} aria-label="${g.n}${g.k === 'bandeja' && nb ? `, ${nb} por organizar` : ''}${g.k === 'planifica' && olvN ? `, ${olvN} pendientes olvidados` : ''}"><span class="tp">${ic(g.ic)}</span><span class="tl">${g.n}</span>${g.k === 'bandeja' && nb ? `<i class="bdg">${nb > 99 ? '99+' : nb}</i>` : ''}${g.k === 'hoy' && run && ui.view !== 'enfoque' ? '<i class="tdot"></i>' : ''}${g.k === 'planifica' && olvN ? '<i class="tdot warn"></i>' : ''}<kbd>${i + 1}</kbd></button>`; }).join('')
+  const nMente = mnAbiertos().length, nSinPlan = pendientesSinPlan().filter(x => x.tipo !== 'algun').length;
+  const cuenta = { mente:nMente, pendientes:nSinPlan };
+  const grupos = GRUPOS.map((g, i) => {
+    const sv = subVistas(g), propia = sv.find(k => VISTAS.find(x => x.k === k).n === g.n);
+    // En escritorio las vistas de cada sección se ven anidadas: la sección lleva a su vista principal y cada vista está a un clic.
+    const hijas = sv.length > 1 ? sv.filter(k => k !== propia) : [];
+    const v = g.k === 'hoy' ? 'hoy' : dk && propia ? propia : ui.ult[g.k] || g.vs[0];
+    const enG = g === g0, on = dk ? enG && (!hijas.includes(ui.view)) : enG;
+    return `<button class="${on ? 'on' : ''} ${enG ? 'eng' : ''}" data-a="tab" data-v="${v}" ${on ? 'aria-current="page"' : ''} aria-label="${g.n}${g.k === 'bandeja' && nb ? `, ${nb} por organizar` : ''}${g.k === 'planifica' && olvN ? `, ${olvN} pendientes olvidados` : ''}"><span class="tp">${ic(g.ic)}</span><span class="tl">${g.n}</span>${g.k === 'bandeja' && nb ? `<i class="bdg">${nb > 99 ? '99+' : nb}</i>` : ''}${g.k === 'hoy' && run && ui.view !== 'enfoque' ? '<i class="tdot"></i>' : ''}${g.k === 'planifica' && olvN ? '<i class="tdot warn"></i>' : ''}<kbd>${i + 1}</kbd></button>`
+      + (hijas.length ? `<div class="sub">${hijas.map(k => { const V = VISTAS.find(x => x.k === k), sel = ui.view === k; return `<button class="${sel ? 'on' : ''}" data-a="tab" data-v="${k}" ${sel ? 'aria-current="page"' : ''}>${ic(V.ic)}<span class="tl">${V.n}</span>${cuenta[k] ? `<i class="cnt">${cuenta[k] > 99 ? '99+' : cuenta[k]}</i>` : ''}</button>`; }).join('')}</div>` : '');
+  }).join('');
+  const html = `<div class="brand"><img src="icon-180.png" alt="" width="28" height="28">Foco</div>` + grupos
     + `<button class="tcap" data-a="capFab" aria-label="Capturar pendiente"><span class="tp">${ic('plus')}</span><span class="tl">Capturar</span><kbd>N</kbd></button>`
-    + `<details class="side-f"><summary>${ic('info')}Atajos de teclado</summary><span><kbd>N</kbd>Capturar</span><span><kbd>1</kbd>–<kbd>4</kbd>Cambiar de sección</span><span><kbd>M</kbd>Vaciar la mente</span><span><kbd>/</kbd>Buscar</span><span><kbd>F</kbd>Enfoque</span><span><kbd>Espacio</kbd>Pausar o seguir</span><span><kbd>Esc</kbd>Cerrar</span></details>`;
+    + `<button class="tbus" data-a="buscar" aria-label="Buscar tareas"><span class="tp">${ic('search')}</span><span class="tl">Buscar</span><kbd>/</kbd></button>`
+    + (dk ? `<div class="side-p"><details class="sp-sec" data-k="sp" ${pref.v('ab-sp') === 0 ? '' : 'open'}><summary>Proyectos${ic('chevD', 'chev')}</summary><div class="sp">${htmlProyectos()}</div></details></div>` : '')
+    + `<div class="side-f"><button data-a="ajustes">${ic('gear')}Ajustes</button><details><summary>${ic('info')}Atajos de teclado</summary><span><kbd>N</kbd>Capturar</span><span><kbd>1</kbd>–<kbd>4</kbd>Cambiar de sección</span><span><kbd>M</kbd>Vaciar la mente</span><span><kbd>/</kbd>Buscar</span><span><kbd>F</kbd>Enfoque</span><span><kbd>Espacio</kbd>Pausar o seguir</span><span><kbd>Esc</kbd>Cerrar</span></details></div>`;
+  // Solo se repinta si algo cambió: el panel conserva su desplazamiento y lo que se esté escribiendo.
+  if (html !== tabsHtml) {
+    const nav = $('#tabs'), sp0 = $('.side-p', nav), y = sp0 ? sp0.scrollTop : 0, a = document.activeElement;
+    const inP = a && a.classList && a.classList.contains('sp-in') && nav.contains(a) ? { p:a.dataset.p, v:a.value } : null;
+    nav.innerHTML = tabsHtml = html;
+    const sp1 = $('.side-p', nav); if (sp1) sp1.scrollTop = y;
+    if (inP) { const i = $$('.sp-in', nav).find(x => x.dataset.p === inP.p); if (i) { i.value = inP.v; i.focus({ preventScroll:true }); } }
+  }
   const sn = $('#subnav');
   const sv = subVistas(g0);
   sn.classList.toggle('hide', sv.length < 2);
-  sn.innerHTML = sv.map(k => { const V = VISTAS.find(x => x.k === k); return `<button class="${ui.view === k ? 'on' : ''}" data-a="tab" data-v="${k}" role="tab" aria-selected="${ui.view === k}">${ic(V.ic)}${V.n}</button>`; }).join('');
+  sn.innerHTML = sv.map(k => { const V = VISTAS.find(x => x.k === k); return `<button class="${ui.view === k ? 'on' : ''}" data-a="tab" data-v="${k}" role="tab" aria-selected="${ui.view === k}">${ic(V.ic)}<span>${V.n}</span></button>`; }).join('');
 }
 const RECUERDA_POS = ['lista', 'tablero', 'agenda', 'pendientes', 'progreso'];
 function ir(v) {
@@ -2307,7 +2450,7 @@ function ir(v) {
 }
 function encabezado() {
   const V = VISTAS.find(x => x.k === ui.view);
-  $('#hTitle').textContent = ui.view === 'enfoque' ? 'Enfoque' : ui.view === 'mente' ? 'Mente' : grupoDe(ui.view).n; $('#hSub').textContent = V.sub();
+  $('#hTitle').textContent = ui.view === 'enfoque' ? 'Enfoque' : ui.view === 'mente' || desk() ? V.n : grupoDe(ui.view).n; $('#hSub').textContent = V.sub();
   $('#backBtn').classList.toggle('hide', ui.view !== 'enfoque');
   $('#infoBtn').setAttribute('aria-label', `Cómo funciona ${V.n}`);
   const r = stats().racha, sb = $('#streakBtn');
@@ -4125,7 +4268,7 @@ function abrirSheet(ctx) {
   // Encima de «Organizar» cuando se abre desde ahí
   sh.classList.toggle('top', !!ctx.top); $('#sheetBg').classList.toggle('top', !!ctx.top);
   sh.style.setProperty('--dy', '0px');
-  sh.setAttribute('aria-label', { detalle:'Detalle de la tarea', plan:'Planear', ajustes:'Ajustes', captura:'Capturar', picker:'Elegir tarea', filtro:'Filtrar', buscar:'Buscar', menu:'Opciones', lote:'Asignar a varios', sync:'Sincronización', ayuda:'Ayuda', verbo:'Elegir verbo', areaSel:'Elegir área', dividir:'Dividir en pasos', widgets:'Widgets', programar:'Programar', revision:'Revisión de pendientes', mente:'Aclarar pensamiento', mnIA:'Inteligencia artificial' }[ctx.k] || '');
+  sh.setAttribute('aria-label', { detalle:'Detalle de la tarea', plan:'Planear', ajustes:'Ajustes', captura:'Capturar', picker:'Elegir tarea', filtro:'Filtrar', buscar:'Buscar', menu:'Opciones', proyectos:'Proyectos', lote:'Asignar a varios', sync:'Sincronización', ayuda:'Ayuda', verbo:'Elegir verbo', areaSel:'Elegir área', dividir:'Dividir en pasos', widgets:'Widgets', programar:'Programar', revision:'Revisión de pendientes', mente:'Aclarar pensamiento', mnIA:'Inteligencia artificial' }[ctx.k] || '');
   $('#sheetBg').classList.add('on'); sh.classList.add('on');
   document.documentElement.classList.add('lock');
   if (ctx.k === 'captura') setTimeout(() => $('#capSheetIn')?.focus(), 320);
@@ -4165,6 +4308,7 @@ function refrescarSheet(inicio) {
   else if (c.k === 'filtro') html = htmlFiltro();
   else if (c.k === 'buscar') html = htmlBuscar();
   else if (c.k === 'menu') html = htmlMenu();
+  else if (c.k === 'proyectos') html = htmlProyectosSheet();
   else if (c.k === 'agPend') html = htmlAgPend();
   else if (c.k === 'agOpc') html = htmlAgOpc();
   else if (c.k === 'lote') html = htmlLote();
@@ -4343,6 +4487,7 @@ function htmlMenu() {
   const fila = (a, icono, t, sub = '', kbd = '') => `<button class="tr opt" data-a="${a}"><span class="mi">${ic(icono)}</span><span class="tb"><span class="tt">${t}</span>${sub ? `<span class="mt"><span class="tag">${esc(sub)}</span></span>` : ''}</span>${kbd ? `<kbd class="mk">${kbd}</kbd>` : ''}</button>`;
   return cab('<h2>Opciones</h2>') + `<div class="group">
     ${fila('buscar', 'search', 'Buscar tareas', '', '/')}
+    ${desk() ? '' : fila('proyectos', 'folder', 'Proyectos', (n => n ? `${n} ${n === 1 ? 'proyecto' : 'proyectos'} con todas sus tareas` : 'Todas las tareas de cada proyecto')(listaProyectos().length))}
     ${fila('ayuda', 'info', `Cómo funciona ${esc(V ? V.n : 'esta pantalla')}`)}
     ${fila('sync', e.ic, 'Respaldo y sincronización', e.t)}
     ${fila('ajustes', 'gear', 'Ajustes')}</div><div class="sh-end"></div>`;
@@ -4691,11 +4836,11 @@ const ACT = {
   },
   ck:el => {
     const t = byId(el.dataset.id); if (!t || t.estado === 'hecho') return;
-    const card = el.closest('.tr,.hero,.kc');
+    const card = el.closest('.tr,.hero,.kc,.sp-t');
     if (card) { if (card.classList.contains('done')) return; card.classList.add('done'); }
     sonidoCheck();
     setTimeout(() => card && card.classList.add('out'), 380);
-    setTimeout(() => { completar(t, el); renderVista(); }, 620);
+    setTimeout(() => { completar(t, el); spRefrescar(); }, 620);
   },
   play:el => enfocar(el.dataset.id, true),
   enfVolver:() => ir(ui.volverDe && ui.volverDe !== 'enfoque' ? ui.volverDe : 'hoy'),
@@ -4704,6 +4849,18 @@ const ACT = {
   densidad:el => { pref.set('densidad', el.dataset.v); aplicarCalma(); refrescarSheet(); },
   buscar:() => abrirSheet({ k:'buscar' }),
   menu:() => abrirSheet({ k:'menu' }),
+  proyectos:() => abrirSheet({ k:'proyectos' }),
+  spAbrir:el => abrirSheet(ui.sheet && ui.sheet.k === 'proyectos' ? { k:'detalle', id:el.dataset.id, volver:{ k:'proyectos' } } : { k:'detalle', id:el.dataset.id }),
+  spReabrir:el => {
+    const t = byId(el.dataset.id); if (!t || t.estado !== 'hecho') return;
+    setEstado(t, 'prox'); spRefrescar();
+    toast('De vuelta en pendientes', 'Deshacer', () => { t.estado = 'hecho'; t.hecho = nowISO(); upsertT(t); spRefrescar(); });
+  },
+  spVer:el => {
+    ui.f = { area:'todas', proyecto:el.dataset.p, estado:'', prio:'' };
+    if (ui.sheet) cerrarSheet(true, true);
+    if (ui.view === 'lista') { renderVista(); window.scrollTo(0, 0); } else ir('lista');
+  },
   hoyTodas:() => { ui.hoyTodas = !ui.hoyTodas; renderVista(); },
   arranque:async () => {
     const { proceso, cola, otras } = trabajoDeHoy();
@@ -5179,6 +5336,18 @@ document.addEventListener('keydown', e => {
     const q = norm(el.value.trim()); if (!q) return;
     const ex = verbosTodos().find(v => norm(v) === q) || (verbosTodos().filter(v => norm(v).includes(q)).length === 1 && verbosTodos().find(v => norm(v).includes(q)));
     if (ex) ACT.verboSel({ dataset:{ v:ex } }); else ACT.verboNuevo();
+  }
+  else if (el.classList.contains('sp-in')) {
+    e.preventDefault();
+    const v = el.value.trim(), p = el.dataset.p; if (!v) { sacudir(el); return; }
+    // Hereda el área más usada del proyecto.
+    const cnt = {}; vivas().forEach(t => { if (t.proyecto === p && t.area) cnt[t.area] = (cnt[t.area] || 0) + 1; });
+    const ar = Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a])[0] || '';
+    const enHoja = !!el.closest('#sheet');
+    const { creadas, repetidas } = capturar(v, 'prox', { proyecto:p, area:ar });
+    if (repetidas.length && !creadas.length) { toast('Esa tarea ya existe'); return; }
+    el.value = ''; spRefrescar();
+    setTimeout(() => { const i = $$(enHoja ? '#sheet .sp-in' : '#tabs .sp-in').find(x => x.dataset.p === p); if (i) i.focus({ preventScroll:true }); }, 30);
   }
   else if (el.id === 'qaddIn') {
     e.preventDefault();
