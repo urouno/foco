@@ -1,6 +1,9 @@
 // Foco: funciona sin conexión. Cambia la versión cuando subas cambios para forzar la actualización.
 const PREFIJO = 'foco-';
-const CACHE = PREFIJO + 'v19';
+const CACHE = PREFIJO + 'v20';
+// Fuentes de Google en su propia caché: no se borra al cambiar de versión y permite verlas sin conexión.
+const CACHE_FUENTES = 'focofuentes-v1';
+const FUENTES = ['fonts.googleapis.com', 'fonts.gstatic.com'];
 const ARCHIVOS = ['./', './index.html', './manifest.json', './icon-180.png', './icon-512.png', './icon-maskable-512.png'];
 const ESPERA_RED = 3500; // con red lenta, después de esto se usa la copia guardada
 
@@ -26,6 +29,13 @@ self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
+  if (FUENTES.includes(url.hostname)) {
+    e.respondWith(caches.open(CACHE_FUENTES).then(c => c.match(req).then(copia => {
+      const red = fetch(req).then(r => { if (r && (r.ok || r.type === 'opaque')) c.put(req, r.clone()); return r; }).catch(() => copia);
+      return copia || red;
+    })));
+    return;
+  }
   if (url.origin !== self.location.origin) return; // Google Apps Script y demás: siempre a la red
 
   // Documento: primero la red para recibir actualizaciones, pero sin esperar indefinidamente.

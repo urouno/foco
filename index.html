@@ -7,28 +7,35 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Foco">
-<meta name="theme-color" content="#F0F0F3" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#111113" media="(prefers-color-scheme: dark)">
-<script>/* Aplica el tema elegido antes de pintar, sin parpadeo */try{var t=(JSON.parse(localStorage.getItem("foco.pref"))||{}).tema;if(t==="light"||t==="dark"){document.documentElement.dataset.theme=t;document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){m.content=t==="dark"?"#111113":"#F0F0F3"})}}catch(e){}</script>
+<meta name="theme-color" content="#FAF8F5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#151412" media="(prefers-color-scheme: dark)">
+<script>/* Aplica el tema elegido antes de pintar, sin parpadeo */try{var t=(JSON.parse(localStorage.getItem("foco.pref"))||{}).tema;if(t==="light"||t==="dark"){document.documentElement.dataset.theme=t;document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){m.content=t==="dark"?"#151412":"#FAF8F5"})}}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" href="icon-512.png">
 <title>Foco</title>
 <style>
-/* ===== Sistema visual: menos, pero mejor. Fuente del sistema, 4 tamaños, retícula de 8, base neutra y un acento ===== */
+/* ===== Sistema visual «Calma»: papel cálido, salvia para cerrar, lavanda para contexto, ámbar para la capacidad ===== */
 :root{
-  /* Base neutra, un solo acento (índigo). Sin blanco ni negro puros. */
-  --bg:#F0F0F3; --sf:#FBFBFD; --sf2:#EDEDF0; --sf3:#E3E3E8;
-  --ink:#1D1D1F; --mut:#626267; --mut2:#727277; --ln:rgba(60,60,67,.12); --ln2:#D2D2D7;
-  --ac:#5856D6; --ac-s:#EEEEFB; --ac-t:#4B49C7; --on-ac:#FBFBFD;
-  --ok:#1F7F37; --ok-f:#34C759; --ok-s:#E8F5EB;
-  --hot:#C8102E; --hot-f:#FF3B30; --hot-s:#FCEDEC;
-  --warn:#B04A00; --warn-f:#FF9500; --warn-s:#FFF3E5;
-  --vio:var(--mut); --vio-s:var(--sf2);
-  --glow:0 1px 2px rgba(0,0,0,.04),0 8px 24px -12px rgba(0,0,0,.14);
-  --float:0 8px 24px -8px rgba(0,0,0,.22);
+  /* Lienzo de papel cálido y tarjetas blancas con línea fina. Un acento salvia; nada grita. */
+  --bg:#FAF8F5; --sf:#FFFFFF; --sf2:#F3EFEA; --sf3:#E9E4DD;
+  --ink:#201F1E; --mut:#5C5955; --mut2:#7D7973; --ln:#ECE7DF; --ln2:#D6CFC5;
+  --ac:#3E5C52; --ac-s:#EAF1ED; --ac-t:#2F4C43; --on-ac:#FFFFFF;
+  --ok:#2F5D4C; --ok-f:#4E7F6C; --ok-s:#E8F1EC;
+  --hot:#A8332A; --hot-f:#C4493E; --hot-s:#FBEDEA;
+  --warn:#80531F; --warn-f:#C08A4E; --warn-s:#FAF3EA;
+  --vio:#4A5371; --vio-s:#EEF0F6;
+  --glow:0 2px 8px -2px rgba(60,52,42,.05),0 1px 3px 0 rgba(60,52,42,.03);
+  --float:0 8px 24px -4px rgba(60,52,42,.12),0 2px 6px -1px rgba(60,52,42,.05);
+  --bd:1px solid var(--ln);
+  /* Tipos: Plus Jakarta Sans para leer, Inter para etiquetas y datos pequeños */
+  --ff:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,system-ui,sans-serif;
+  --ff2:Inter,-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,system-ui,sans-serif;
   /* Escala tipográfica: solo 4 tamaños */
-  --fs-xl:32px; --fs-l:20px; --fs-m:16px; --fs-s:13px;
+  --fs-xl:30px; --fs-l:20px; --fs-m:16px; --fs-s:13px;
   /* Espaciado en múltiplos de 8 y radios */
   --r:16px; --top:max(env(safe-area-inset-top),8px); --bot:env(safe-area-inset-bottom);
   --tabs:64px; --mini:56px;
@@ -36,32 +43,32 @@
   color-scheme:light dark;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#111113; --sf:#1C1C1E; --sf2:#2C2C2E; --sf3:#3A3A3C;
-  --ink:#F5F5F7; --mut:#A1A1A6; --mut2:#8E8E93; --ln:rgba(255,255,255,.08); --ln2:rgba(255,255,255,.16);
-  --ac:#5E5CE6; --ac-s:rgba(94,92,230,.22); --ac-t:#A5A3FF; --on-ac:#F5F5F7;
-  --ok:#4BD97A; --ok-f:#30D158; --ok-s:rgba(48,209,88,.15);
-  --hot:#FF7A72; --hot-f:#FF453A; --hot-s:rgba(255,69,58,.16);
-  --warn:#FFB547; --warn-f:#FF9F0A; --warn-s:rgba(255,159,10,.16);
-  --vio:var(--mut); --vio-s:var(--sf2);
-  --glow:0 0 0 1px rgba(255,255,255,.06);
-  --float:0 8px 24px -8px rgba(0,0,0,.7);
+  --bg:#151412; --sf:#1E1D1B; --sf2:#292825; --sf3:#34322E;
+  --ink:#EEEAE4; --mut:#ABA59C; --mut2:#8D877F; --ln:rgba(255,244,230,.08); --ln2:rgba(255,244,230,.17);
+  --ac:#8DB5A5; --ac-s:rgba(141,181,165,.15); --ac-t:#A9CDBE; --on-ac:#10201A;
+  --ok:#9CCBB6; --ok-f:#6FA48F; --ok-s:rgba(111,164,143,.16);
+  --hot:#F2A29A; --hot-f:#D9665B; --hot-s:rgba(217,102,91,.16);
+  --warn:#E9B67C; --warn-f:#C98F4F; --warn-s:rgba(201,143,79,.15);
+  --vio:#BAC2E3; --vio-s:rgba(186,194,227,.12);
+  --glow:0 1px 2px rgba(0,0,0,.22);
+  --float:0 8px 24px -8px rgba(0,0,0,.65);
 }}
 :root[data-theme="dark"]{color-scheme:dark;
-  --bg:#111113; --sf:#1C1C1E; --sf2:#2C2C2E; --sf3:#3A3A3C;
-  --ink:#F5F5F7; --mut:#A1A1A6; --mut2:#8E8E93; --ln:rgba(255,255,255,.08); --ln2:rgba(255,255,255,.16);
-  --ac:#5E5CE6; --ac-s:rgba(94,92,230,.22); --ac-t:#A5A3FF; --on-ac:#F5F5F7;
-  --ok:#4BD97A; --ok-f:#30D158; --ok-s:rgba(48,209,88,.15);
-  --hot:#FF7A72; --hot-f:#FF453A; --hot-s:rgba(255,69,58,.16);
-  --warn:#FFB547; --warn-f:#FF9F0A; --warn-s:rgba(255,159,10,.16);
-  --vio:var(--mut); --vio-s:var(--sf2);
-  --glow:0 0 0 1px rgba(255,255,255,.06);
-  --float:0 8px 24px -8px rgba(0,0,0,.7);
+  --bg:#151412; --sf:#1E1D1B; --sf2:#292825; --sf3:#34322E;
+  --ink:#EEEAE4; --mut:#ABA59C; --mut2:#8D877F; --ln:rgba(255,244,230,.08); --ln2:rgba(255,244,230,.17);
+  --ac:#8DB5A5; --ac-s:rgba(141,181,165,.15); --ac-t:#A9CDBE; --on-ac:#10201A;
+  --ok:#9CCBB6; --ok-f:#6FA48F; --ok-s:rgba(111,164,143,.16);
+  --hot:#F2A29A; --hot-f:#D9665B; --hot-s:rgba(217,102,91,.16);
+  --warn:#E9B67C; --warn-f:#C98F4F; --warn-s:rgba(201,143,79,.15);
+  --vio:#BAC2E3; --vio-s:rgba(186,194,227,.12);
+  --glow:0 1px 2px rgba(0,0,0,.22);
+  --float:0 8px 24px -8px rgba(0,0,0,.65);
 }
 :root[data-theme="light"]{color-scheme:light}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--ink)}
 html.lock,html.lock body{overflow:hidden}
-body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,system-ui,sans-serif;font-size:var(--fs-m);line-height:1.4;overscroll-behavior-y:none;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+body{font-family:var(--ff);font-size:var(--fs-m);line-height:1.4;overscroll-behavior-y:none;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:inherit}
 button,a,input,textarea,select,label,summary,[data-a]{touch-action:manipulation}
 [data-a]{cursor:pointer}
@@ -1241,6 +1248,217 @@ div.mn-ia{animation:pulse 1.6s infinite}
 .sp-sheet .sp-in{min-height:44px;font-size:var(--fs-m);background:var(--sf);padding:0 12px;margin:4px 0}
 .sp-sheet .sp-h > summary{min-height:40px;font-size:var(--fs-s)}
 .sp-sheet .sp-vacio{margin:0 4px;font-size:var(--fs-m)}
+/* ===================================================================
+   Capa «Calma»: papel cálido, tarjetas con línea fina, etiquetas serenas
+   y anillos de cierre. Aplica el sistema visual sobre las piezas de arriba.
+   =================================================================== */
+body{letter-spacing:-.005em;text-rendering:optimizeLegibility}
+/* Etiquetas, contadores y datos pequeños: Inter, más legible bajo 13 px */
+.hero-l,.proc-q,.sub-t,.fase,.enf-l,.capf-l,.f-l,.f-sec > label,.pill,.pq,.est,kbd.mk,.wk-d span,.sm-h span,.ls-sum span,.chart .cd,.chart .cv,.tl-h span,.sm-axis span,.sp-sec > summary,.ld-h,.cap-l,.sp-c,.wk-n,.coltabs b,.bdg,.fcnt,.ev-l,.cbtn-l,.ctl-l,#tabs > button,.lbl{font-family:var(--ff2)}
+.tm,.kpi .kv,.ls-sum b,.wk-d b,.sm-h b,#mini .tmm,.kc-tm b,.lvl-badge{font-family:var(--ff);font-variant-numeric:tabular-nums}
+
+/* Títulos: peso 600 y tracking ajustado, sin gritar */
+#hTitle{font-weight:600;letter-spacing:-.03em}
+#hSub{font-size:var(--fs-s);color:var(--mut)}
+main .sec-t{font-size:17px;font-weight:600;letter-spacing:-.015em}
+.hero-t,.zero h3,.sh-row h2,.dlg-box h3,.onb-art h2,.mn-head h2,.mn-vacio h3,#lvlUp h2,.av-t b,.ag-dia b,.sum-t b,.ph-h h3,.proc-tt,.mn-lead>b{font-weight:600;letter-spacing:-.02em}
+.tt,.kc-t,.nx b,.cta b,.two b,.act b,.ptile .tb b,.acc > summary,.mn-ir b,.rec-row b,.help-i b,.st-big b{font-weight:500}
+main .tr .tt{font-weight:500}
+
+/* Eyebrow: mayúsculas pequeñas y espaciadas */
+.hero-l,.proc-q,.sub-t,.fase,.enf-l,.capf-l{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.hero-l{color:var(--ac-t)}
+.sub-t{color:var(--mut2);margin-top:16px}
+
+/* Superficies: papel blanco, línea fina cálida y sombra ambiental mínima */
+.panel,.group,.hero,.cta,.nx,.two,.act,.acc,.ptile,.ls-sum div,.prox,.ag-pend,.ld,.tl-wrap,.mn-c,.ag-chip,.kc,.capf,.cap,.proc-card,.sm-cal,.sm-nav,.wk-d,.note,.bit-i,.avance,.parq{border:var(--bd);box-shadow:var(--glow)}
+.group{border-radius:var(--r)}
+.hero{border-radius:20px;padding:22px 20px 18px}
+.capf,.cap{border-radius:20px}
+.proc-card{border-radius:24px}
+.dlg-box,#lvlUp .box{border:var(--bd)}
+#sheet .panel,#sheet .group{box-shadow:none}
+.tr{background:var(--sf)}
+.tr:active,.dr-h:active{background:var(--sf2)}
+
+/* Encabezado y barra inferior: translúcidos sobre el papel */
+#hdr{background:color-mix(in srgb,var(--bg) 86%,transparent)}
+@media (max-width:1023px){
+  #tabs{background:color-mix(in srgb,var(--sf) 92%,transparent);border-top:var(--bd)}
+  #tabs > button{font-size:11.5px;font-weight:600;letter-spacing:.01em;gap:3px}
+  #tabs .tp{width:56px;height:30px}
+  #tabs > button.on{color:var(--ink)}
+  #tabs > button.on .tp{background:var(--ac-s);color:var(--ac-t)}
+  #tabs .tcap .tp{width:50px;height:50px;background:var(--ac);color:var(--on-ac);box-shadow:0 6px 16px -4px color-mix(in srgb,var(--ac) 45%,transparent)}
+  #tabs .bdg{background:var(--ac);border:2px solid var(--sf);line-height:15px;min-width:20px;height:20px;font-size:11px}
+}
+
+/* Chips y píldoras: forma de cápsula; lo elegido se rellena en salvia */
+.chip{background:var(--sf2);border:1px solid transparent;font-weight:500}
+.chip.on,.chip.area.on{background:var(--ac);color:var(--on-ac);box-shadow:none;font-weight:600}
+.chip.on .n{color:var(--on-ac);opacity:.8}
+.chip.on .dot{box-shadow:0 0 0 2px color-mix(in srgb,var(--on-ac) 85%,transparent)}
+.ag-chip.sel,.sm-it.sel,.days button.on{background:var(--ac);color:var(--on-ac);box-shadow:none}
+.pill{height:24px;padding:0 10px;font-size:11.5px;letter-spacing:.02em;border:1px solid transparent}
+.pill.ac{border-color:color-mix(in srgb,var(--ac) 18%,transparent)}
+.pill.warn{border-color:color-mix(in srgb,var(--warn-f) 25%,transparent)}
+.pill.vio{border-color:color-mix(in srgb,var(--vio) 16%,transparent)}
+.pill.ok{border-color:color-mix(in srgb,var(--ok-f) 22%,transparent)}
+.pq{border-radius:999px;font-size:11.5px;height:22px;padding:0 9px}
+.pq.q1{background:var(--warn-s);color:var(--warn)}
+.est{border-radius:999px;font-size:11.5px;letter-spacing:.02em}
+.est.hoy,.est.proceso{background:var(--ac-s);color:var(--ac-t)}
+.tag{font-size:12.5px}
+.tag.f-ahora{color:var(--ok)}
+
+/* Controles segmentados en cápsula */
+.seg{background:var(--sf3);border-radius:999px;padding:4px}
+.seg button{border-radius:999px}
+.seg button.on{background:var(--sf);color:var(--ink);box-shadow:0 1px 3px rgba(60,52,42,.12)}
+.coltabs{border-radius:16px}
+
+/* Botones: acción principal en salvia profunda; secundarios en piedra */
+.btn{border-radius:14px;font-weight:600}
+.btn.pri{background:var(--ac);color:var(--on-ac);box-shadow:0 4px 12px -6px color-mix(in srgb,var(--ac) 60%,transparent)}
+.btn.pri:active{filter:brightness(.94)}
+.btn.okb{background:var(--ac-s);color:var(--ac-t)}
+.btn.ghost{background:transparent;border:1px solid var(--ln2)}
+.qk{border-radius:999px}
+.qk.pri{background:var(--ac-s);color:var(--ac-t)}
+.qk.ok{background:var(--ac-s);color:var(--ac-t)}
+.cap-send{background:var(--ac)}
+.in{background:var(--sf2);border-radius:12px}
+.in:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-s)}
+.lnk2,.lnk,.arr,.mas,.row-link > svg.i:first-child,.tips summary,.onb-top button{color:var(--ac-t)}
+
+/* Anillos de cierre: borde fino en reposo, salvia al completar */
+.ck{border:1.5px solid var(--ln2);background:transparent}
+.ck svg.i{color:var(--on-ac)}
+.done .ck,.ck.on{background:var(--ac);border-color:var(--ac)}
+.tr.done .tt,.tr.hecha .tt,.kc.hecha .kc-t{opacity:.55}
+@media (hover:hover){.tr .ck:hover{border-color:var(--ac)}}
+.sw.on{background:var(--ac)}
+.tr.pl.on .ck{background:var(--ac);border-color:var(--ac)}
+
+/* Barras de avance y capacidad: salvia; ámbar solo al exceder */
+.segbar i{height:6px;border-radius:999px}
+.segbar i.on,.okbar i{background:var(--ac)!important}
+.bar i,.cap-b i,.hero-bar i,.proc-prog div,.kc-bar i,.wk-l i{background:var(--ac)}
+.hero-bar.desc i{background:var(--ok-f)}
+.cap-b.over i,.wk-l.over i{background:var(--warn-f)}
+.sp-bar i{background:var(--ac)}
+.cyc i.on{background:var(--ac)}
+.cyc i.cur{background:linear-gradient(90deg,var(--ac) 50%,var(--sf3) 50%)}
+.live{background:var(--ac)}
+.is-run .live,.running .live{background:var(--ok-f);box-shadow:0 0 0 3px var(--ok-s)}
+
+/* ----- Hoy: la tarea de ahora con una franja salvia cuando está en curso ----- */
+.hero.is-run::before{content:"";position:absolute;left:0;top:20px;bottom:20px;width:4px;border-radius:0 4px 4px 0;background:var(--ac)}
+.hero-t{font-size:22px;line-height:1.25}
+.hero-b .btn.pri{min-height:50px}
+.hero-m{color:var(--mut)}
+.avance{margin-top:20px;padding:16px;border-radius:var(--r);background:var(--sf)}
+.av-t b{font-size:var(--fs-l)}
+.avance .segbar{margin-top:12px}
+.avance + .prox{margin-top:8px}
+.prox{border-radius:14px}
+.hoy-acc{margin-top:12px}
+.warn6{background:var(--warn-s);color:var(--warn);border:1px solid color-mix(in srgb,var(--warn-f) 22%,transparent)}
+.ordn{color:var(--mut2);font-family:var(--ff2);font-weight:600}
+
+/* ----- Bandeja y Mente: captura serena y aclarado guiado ----- */
+.capf{padding:18px 18px 14px}
+.capf-in{font-weight:400;letter-spacing:-.01em}
+.capf-in::placeholder,.cap textarea::placeholder,.mn-in::placeholder{color:var(--mut2)}
+.capf-bot .btn.pri{border-radius:999px;padding:0 18px}
+.vsel,.asel{border-radius:999px}
+.cta{background:var(--sf2);border-color:transparent;box-shadow:none;min-height:80px;padding:16px 18px}
+.cta .ico{width:46px;height:46px;border-radius:50%;background:var(--ac);color:var(--on-ac)}
+.cta b{font-size:17px;font-weight:600;letter-spacing:-.01em}
+.cta > svg.i{color:var(--mut)}
+.nx .ni,.conn .ci,.mi,.help-i .o,.in-b .o{background:var(--ac-s);color:var(--ac-t)}
+.mn-lead{background:var(--ac-s);border:1px solid color-mix(in srgb,var(--ac) 14%,transparent)}
+.mn-add{background:var(--ac-s);color:var(--ac-t);border-radius:999px}
+.mn-apoyo{border:1px solid color-mix(in srgb,var(--warn-f) 22%,transparent)}
+.clar{border:var(--bd)}
+
+/* ----- Organizar (pantalla de decisiones) ----- */
+.proc-prog div{border-radius:999px}
+.two .ico,.act .ico{background:var(--sf2);border-radius:50%}
+.mx-c{background:var(--sf2);border-radius:14px}
+.mx-c.on,.mx-c.on.q1{color:var(--ac);background:var(--ac-s)}
+
+/* ----- Planifica ----- */
+.ls-sum .pend b{color:var(--ac-t)}
+.ls-ag{border-radius:999px}
+.ls-ag.pend{background:var(--ac-s);color:var(--ac-t)}
+.wk-d{border-radius:16px}
+.wk-d.on{background:var(--ac);color:var(--on-ac);border-color:var(--ac)}
+.tl-b{border-radius:10px;background:color-mix(in srgb,var(--a,#888) 13%,var(--sf))}
+.tl-now{border-top-color:var(--hot-f)}.tl-now::before{background:var(--hot-f)}
+.col{background:var(--sf2);border:var(--bd)}
+.kc{border-radius:14px}
+.sol-i{border:1px solid color-mix(in srgb,var(--warn-f) 22%,transparent)}
+.fbtn{background:var(--sf2);border-radius:999px}
+.fbtn.on{background:var(--ac-s);color:var(--ac-t)}
+.filt{background:var(--sf2);border-radius:14px}
+
+/* ----- Enfoque: anillo fino con halo y estacionamiento mental ----- */
+.enf-task{border-radius:20px}
+.ring-wrap{isolation:isolate;width:min(64vw,256px);margin-top:24px}
+.ring-wrap::before{content:"";position:absolute;inset:-14%;z-index:-1;border-radius:50%;background:radial-gradient(closest-side,transparent 58%,color-mix(in srgb,var(--ac) 11%,transparent) 76%,transparent)}
+.enf.fase-corto .ring-wrap::before,.enf.fase-largo .ring-wrap::before{background:radial-gradient(closest-side,transparent 58%,color-mix(in srgb,var(--ok-f) 14%,transparent) 76%,transparent)}
+.fase{color:var(--mut);gap:6px}
+.tm{font-weight:600;letter-spacing:-.04em}
+.tm-sub{color:var(--mut)}
+.cbtn{background:var(--sf);border:var(--bd);box-shadow:var(--glow)}
+.cbtn.big{background:var(--ac);color:var(--on-ac);border:0;box-shadow:0 10px 24px -8px color-mix(in srgb,var(--ac) 65%,transparent)}
+.enf.fase-corto .cbtn.big,.enf.fase-largo .cbtn.big{background:var(--ok-f);color:#fff}
+.tom.on{color:var(--warn-f)}
+.tom.on svg.i{fill:color-mix(in srgb,var(--warn-f) 25%,transparent)}
+.parq{margin-top:24px;padding:16px;border-radius:20px;background:var(--sf2);border-color:transparent;box-shadow:none}
+.parq-h{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:600;letter-spacing:-.015em}
+.parq-h svg.i{width:20px;height:20px;color:var(--warn)}
+.parq p{margin:4px 0 12px;font-size:var(--fs-s);color:var(--mut);line-height:1.45}
+.parq .qcap{margin-top:0;background:var(--sf);border:var(--bd)}
+.parq .qcap .cap-send{background:var(--warn-s);color:var(--warn)}
+.parq .caps{margin-top:8px}
+.qcap{border:var(--bd)}
+
+/* ----- Progreso ----- */
+.chart .cbar{background:var(--ac);opacity:.32}
+.chart .cbar.hoy{opacity:1}
+.chart .ct{color:var(--ok)}
+.lvl-badge{background:var(--ac-s);color:var(--ac-t)}
+.kpi.on,.ptile.on{box-shadow:inset 0 0 0 2px var(--ac)}
+.acc > summary .ai,.rec-row .ri{background:var(--sf2);border-radius:50%}
+.pm-n b{font-weight:600;letter-spacing:-.03em;font-variant-numeric:normal}
+
+/* ----- Hojas, diálogos y avisos ----- */
+#sheetBg,#dlg{background:rgba(32,28,22,.36)}
+#sheet{box-shadow:0 -10px 40px rgba(60,52,42,.18)}
+.sh-row .x{background:var(--sf2)}
+.dr-i{color:var(--mut2)!important}
+#toast{background:var(--ink);color:var(--bg);border-radius:14px}
+#toast button{background:var(--ac);color:var(--on-ac)}
+:root[data-theme="dark"] #toast button{background:var(--sf3);color:var(--ink)}
+.onb-art .big{background:var(--ac-s);color:var(--ac-t);border-radius:50%}
+.onb-flow .fs.on i{background:var(--ac);color:var(--on-ac)}
+.onb-dots i.on{background:var(--ac)}
+.zero .orb{background:var(--ac-s);color:var(--ac-t)}
+#mini{border-top:var(--bd);background:color-mix(in srgb,var(--sf) 94%,transparent);-webkit-backdrop-filter:saturate(1.6) blur(18px);backdrop-filter:saturate(1.6) blur(18px)}
+#mini .mbar{background:var(--ac)}
+
+/* ----- Escritorio: barra lateral de papel ----- */
+@media (min-width:1024px){
+  #tabs{background:var(--sf);border-right:var(--bd)}
+  #tabs > button{font-family:var(--ff);font-weight:500}
+  #tabs > button.on{background:var(--ac-s);color:var(--ac-t)}
+  #tabs .tcap{background:var(--ac);color:var(--on-ac);border-radius:999px}
+  #tabs .tcap:hover{background:color-mix(in srgb,var(--ac) 90%,#000)}
+  #tabs .brand{font-weight:600;letter-spacing:-.02em}
+  .hoy-a .hero-t{font-size:28px}
+}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -1394,15 +1612,19 @@ const LS = 'foco.v1';
 const ESTADOS = { bandeja:'Bandeja', prox:'Próxima', hoy:'Hoy', proceso:'En curso', espera:'En espera', algun:'Algún día', hecho:'Hecha' };
 const EST_CLS = { bandeja:'', prox:'', hoy:'ac', proceso:'ac', espera:'', algun:'', hecho:'ok' };
 const DEST = { hecho:'Hecha en el momento', hoy:'Para hoy', prox:'A Próximas', espera:'En espera', algun:'A Algún día', borrado:'Eliminada' };
-const PALETA = ['#5856D6','#007AFF','#32ADE6','#30B0C7','#34C759','#A2845E','#FF9500','#FF6B22','#FF3B30','#FF2D55','#AF52DE','#8E8E93'];
+// Paleta serena: tonos apagados que conviven con el lienzo cálido. Los colores vivos anteriores se traducen a su par tranquilo.
+const PALETA = ['#545D7C','#5B7FA3','#5E9AA8','#4F8A80','#5E8C6A','#9A7B5B','#C08A4E','#C2724A','#B5544B','#B0607A','#8A6BA8','#7D7973'];
+const PALETA_VIVA = ['#5856D6','#007AFF','#32ADE6','#30B0C7','#34C759','#A2845E','#FF9500','#FF6B22','#FF3B30','#FF2D55','#AF52DE','#8E8E93'];
+const tono = c => { const i = PALETA_VIVA.indexOf(String(c || '').toUpperCase()); return i < 0 ? c : PALETA[i]; };
+const suavizarAreas = aj => { (aj.areas || []).forEach(a => { a.c = tono(a.c); }); return aj; };
 function defAjustes() {
   return {
     areas: [
-      { id:'personal', n:'Personal', c:'#AF52DE' },
-      { id:'omova', n:'Omova', c:'#007AFF' },
-      { id:'marelo', n:'Marelo', c:'#30B0C7' },
-      { id:'esphabit', n:'Esphabit', c:'#FF9500' },
-      { id:'apps', n:'Apps y proyectos', c:'#FF2D55' }
+      { id:'personal', n:'Personal', c:'#8A6BA8' },
+      { id:'omova', n:'Omova', c:'#5B7FA3' },
+      { id:'marelo', n:'Marelo', c:'#4F8A80' },
+      { id:'esphabit', n:'Esphabit', c:'#C08A4E' },
+      { id:'apps', n:'Apps y proyectos', c:'#B0607A' }
     ],
     pomo:25, corto:5, largo:15, cada:4, meta:6, sonido:true,
     jIni:'09:00', jFin:'18:00', pausa:60, margen:15,
@@ -1440,7 +1662,7 @@ function migrar() {
 S = Object.assign({ tareas:[], sesiones:[], ajustes:defAjustes(), cola:[], timer:null, conn:{ url:'', clave:'' }, ultSync:'', lvlVisto:0, insVistas:null, diaRoll:'', procRec:[], mente:[], menteBor:'' }, S);
 // La clave de IA vive solo aquí: no entra en la cola de sincronización ni en el archivo de respaldo.
 S.ia = Object.assign({ on:false, key:'', modelo:'', preo:false }, S.ia);
-S.ajustes = Object.assign(defAjustes(), S.ajustes);
+S.ajustes = suavizarAreas(Object.assign(defAjustes(), S.ajustes));
 migrar();
 let saveT;
 function save() { clearTimeout(saveT); saveT = setTimeout(guardarYa, 120); }
@@ -1618,7 +1840,7 @@ function pushTimer() {
    La app deja en la hoja (Ajustes › «widget») un resumen ya calculado: lo que va «Ahora», el reloj con sus
    fases previstas y los bloques con hora de hoy y mañana. El widget hace las cuentas con la hora actual,
    así sigue siendo correcto entre una actualización y otra aunque Foco esté cerrado. */
-const hexA = id => (area(id) || {}).c || '#8E8E93';
+const hexA = id => (area(id) || {}).c || '#7D7973';
 function fasesTimer() {
   const t = T(); if (!t || !t.corriendo) return [];
   const out = [{ f:t.fase, ini:t.fin - t.total * 1000, fin:t.fin }];
@@ -1639,7 +1861,7 @@ function datosWidget() {
   const t = T(), x = byId(t.tareaId);
   return { v:1, gen:nowISO(), dia:hoy(),
     hoy:{ hechas:hechasP, total, prio:prioIds ? 1 : 0 }, lista, bandeja:tareasEn('bandeja').length,
-    timer:{ fase:t.fase, modo:t.modo, corriendo:t.corriendo ? 1 : 0, fin:t.fin, restante:t.restante, total:t.total, tareaId:t.tareaId || '', tarea:x ? x.titulo.slice(0, 90) : '', c:x ? hexA(x.area) : '#5856D6', fases:fasesTimer() },
+    timer:{ fase:t.fase, modo:t.modo, corriendo:t.corriendo ? 1 : 0, fin:t.fin, restante:t.restante, total:t.total, tareaId:t.tareaId || '', tarea:x ? x.titulo.slice(0, 90) : '', c:x ? hexA(x.area) : '#3E5C52', fases:fasesTimer() },
     dias:{ [hoy()]:bloquesDe(hoy()), [manana()]:bloquesDe(manana()) },
     jornada:{ ini:S.ajustes.jIni, fin:S.ajustes.jFin }, sinPlan:datosSinPlan() };
 }
@@ -1794,7 +2016,7 @@ function fusionar(j) {
   const cfg = (j.ajustes || []).find(a => a.clave === 'config');
   const pendA = S.cola.some(o => o.hoja === 'Ajustes' && o.fila.clave === 'config');
   if (cfg && !pendA && cfg.actualizado > S.ajustes.actualizado) {
-    try { S.ajustes = Object.assign(defAjustes(), JSON.parse(cfg.valor), { actualizado:cfg.actualizado }); cambio = true; } catch (e) {}
+    try { S.ajustes = suavizarAreas(Object.assign(defAjustes(), JSON.parse(cfg.valor), { actualizado:cfg.actualizado })); cambio = true; } catch (e) {}
   }
   if (cambio) { rollover(); renderSeguro(); }
 }
@@ -2521,7 +2743,7 @@ function xpFlotante(xp, origen) {
 }
 function confeti(n = 60) {
   if (calma()) return;
-  const cols = ['#6E6BFF','#A97BFF','#34C759','#FF3B30','#FF9500','#32ADE6'];
+  const cols = ['#3E5C52','#8DB5A5','#545D7C','#BAC2E3','#C08A4E','#F6BB80'];
   for (let i = 0; i < n; i++) {
     const c = document.createElement('i'); c.className = 'cf';
     c.style.left = Math.random() * 100 + 'vw'; c.style.background = cols[i % cols.length];
@@ -3568,11 +3790,11 @@ function renderLista() {
    y convierte cada pendiente en una acción con día en uno o dos toques. */
 const OLVIDO_DIAS = 14, OLVIDO_ALGUN = 60;
 const PEND_G = {
-  atrasada:{ n:'Atrasadas', ic:'refresh', c:'var(--hot-f)', hex:'#FF3B30' },
-  espera:{ n:'En espera', ic:'hourglass', c:'var(--warn-f)', hex:'#FF9500' },
-  prox:{ n:'Sin día', ic:'list', c:'var(--ac)', hex:'#5856D6' },
-  bandeja:{ n:'Sin organizar', ic:'inbox', c:'color-mix(in srgb,var(--ac) 40%,var(--sf3))', hex:'#A09EEB' },
-  algun:{ n:'Algún día', ic:'bulb', c:'var(--mut2)', hex:'#8E8E93' }
+  atrasada:{ n:'Atrasadas', ic:'refresh', c:'var(--hot-f)', hex:'#C4493E' },
+  espera:{ n:'En espera', ic:'hourglass', c:'var(--warn-f)', hex:'#C08A4E' },
+  prox:{ n:'Sin día', ic:'list', c:'var(--ac)', hex:'#3E5C52' },
+  bandeja:{ n:'Sin organizar', ic:'inbox', c:'color-mix(in srgb,var(--ac) 40%,var(--sf3))', hex:'#9DB5AB' },
+  algun:{ n:'Algún día', ic:'bulb', c:'var(--mut2)', hex:'#7D7973' }
 };
 const diasEntre = (a, b) => Math.round((parseYmd(b) - parseYmd(a)) / 864e5);
 const diasDesde = iso => iso ? Math.max(0, diasEntre(diaDeISO(iso), hoy())) : 0;
@@ -4013,15 +4235,16 @@ function renderEnfoque() {
     </div>
     <div class="modes ${marcha ? 'hide' : ''}" role="radiogroup" aria-label="Modo">${[['pomo', 'tomato', `Pomodoro ${a.pomo} min`], ['bloque', 'clock', 'Bloque de tiempo']].map(([k, i, n]) => `<button class="chip ${t.modo === k ? 'on' : ''}" data-a="modo" data-v="${k}" role="radio" aria-checked="${t.modo === k}" ${marcha && t.modo !== k ? 'disabled' : ''}>${ic(i)}${n}</button>`).join('')}</div>
     <div class="ring-wrap" id="ringWrap"><svg viewBox="0 0 280 280" aria-hidden="true">
-      <circle cx="140" cy="140" r="${RING_R}" fill="none" stroke-width="12" style="stroke:var(--sf3)"/>
-      <circle id="ringPr" cx="140" cy="140" r="${RING_R}" fill="none" stroke-width="12" stroke-linecap="${frac > .985 || frac < .015 ? 'butt' : 'round'}" style="stroke:${t.fase === 'foco' ? 'var(--ac)' : 'var(--ok-f)'};transition:stroke-dashoffset .5s linear" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - frac)}"/></svg>
+      <circle cx="140" cy="140" r="${RING_R}" fill="none" stroke-width="8" style="stroke:var(--sf3)"/>
+      <circle id="ringPr" cx="140" cy="140" r="${RING_R}" fill="none" stroke-width="8" stroke-linecap="${frac > .985 || frac < .015 ? 'butt' : 'round'}" style="stroke:${t.fase === 'foco' ? 'var(--ac)' : 'var(--ok-f)'};transition:stroke-dashoffset .5s linear" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - frac)}"/></svg>
       <div class="ring-in"><div class="fase">${t.corriendo ? '<i class="live"></i>' : ''}${FASES[t.fase]}${t.modo === 'pomo' && t.fase === 'foco' ? ` ${hechosCiclo + 1}/${a.cada}` : ''}</div>
         <div class="tm" id="tmTime" role="timer">${t.fase === 'listo' ? '00:00' : fmt(r)}</div><div class="tm-sub" id="tmSub"></div><div class="tm-xp">${xpTxt}</div></div></div>
 
     ${durs}${controles}
     <div class="tomrow ${marcha ? 'hide' : ''}" aria-label="${ph} de ${meta} pomodoros hoy">${tom}<span>${ph}/${meta} hoy${fm ? ` · ${txtHM(fm)}` : ''}</span></div>
-    <div class="qcap" id="enfCapBox">${ic('bulb')}<input id="enfCap" maxlength="${MAX_TITULO}" placeholder="¿Se te ocurrió algo? Anótalo aquí" enterkeyhint="send" autocomplete="off" aria-label="Capturar idea sin perder el foco"><button class="cap-send" data-a="enfCapAdd" aria-label="Guardar en la bandeja">${ic('arrowUp')}</button></div>
-    <div class="caps" id="enfCaps">${pintarCaps()}</div>
+    <div class="parq"><div class="parq-h">${ic('bulb')}Estacionamiento mental</div><p>¿Apareció una idea o un pendiente? Sácalo de tu cabeza sin romper el flujo: va a la Bandeja.</p>
+    <div class="qcap" id="enfCapBox">${ic('inbox')}<input id="enfCap" maxlength="${MAX_TITULO}" placeholder="Ej. Llamar al banco al terminar" enterkeyhint="send" autocomplete="off" aria-label="Capturar idea sin perder el foco"><button class="cap-send" data-a="enfCapAdd" aria-label="Guardar en la bandeja">${ic('arrowUp')}</button></div>
+    <div class="caps" id="enfCaps">${pintarCaps()}</div></div>
   </div>`;
   if (capVal || capFoc) { const i = $('#enfCap'); i.value = capVal; if (capFoc) i.focus(); }
   actualizarReloj();
@@ -4659,7 +4882,7 @@ function aplicarTema(t) {
   if (t === 'light' || t === 'dark') r.dataset.theme = t; else { delete r.dataset.theme; t = 'auto'; }
   pref.set('tema', t);
   const oscuro = t === 'dark' || (t === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
-  $$('meta[name="theme-color"]').forEach((m, i) => { m.content = t === 'auto' ? (i ? '#111113' : '#F0F0F3') : (oscuro ? '#111113' : '#F0F0F3'); });
+  $$('meta[name="theme-color"]').forEach((m, i) => { m.content = t === 'auto' ? (i ? '#151412' : '#FAF8F5') : (oscuro ? '#151412' : '#FAF8F5'); });
 }
 
 /* ================= Acciones (toques) ================= */

@@ -37,11 +37,15 @@ const REUSAR_MS = 60 * 1000; // varios widgets a la vez comparten una sola consu
 /* ---------- Colores (claro / oscuro automático) ---------- */
 const dyn = (l, d) => Color.dynamic(new Color(l), new Color(d));
 const C = {
-  bg:dyn('#FBFBFD', '#1C1C1E'), card:dyn('#F0F0F3', '#2C2C2E'), track:dyn('#E3E3E8', '#3A3A3C'),
-  ink:dyn('#1D1D1F', '#F5F5F7'), mut:dyn('#626267', '#A1A1A6'), mut2:dyn('#8E8E93', '#8E8E93'),
-  ac:dyn('#5856D6', '#8E8CFF'), ok:dyn('#1F7F37', '#4BD97A'), okf:new Color('#34C759'), warn:dyn('#B04A00', '#FFB547')
+  bg:dyn('#FFFFFF', '#1E1D1B'), card:dyn('#F3EFEA', '#292825'), track:dyn('#E9E4DD', '#34322E'),
+  ink:dyn('#201F1E', '#EEEAE4'), mut:dyn('#5C5955', '#ABA59C'), mut2:dyn('#7D7973', '#8D877F'),
+  ac:dyn('#3E5C52', '#8DB5A5'), ok:dyn('#2F5D4C', '#9CCBB6'), okf:dyn('#4E7F6C', '#6FA48F'), warn:dyn('#80531F', '#E9B67C')
 };
-const hex = h => { try { return new Color(h || '#8E8E93'); } catch (e) { return new Color('#8E8E93'); } };
+// Misma paleta serena que la app: los colores vivos de áreas antiguas se muestran con su par tranquilo.
+const VIVA = ['#5856D6','#007AFF','#32ADE6','#30B0C7','#34C759','#A2845E','#FF9500','#FF6B22','#FF3B30','#FF2D55','#AF52DE','#8E8E93'];
+const CALMA = ['#545D7C','#5B7FA3','#5E9AA8','#4F8A80','#5E8C6A','#9A7B5B','#C08A4E','#C2724A','#B5544B','#B0607A','#8A6BA8','#7D7973'];
+const tono = h => { const i = VIVA.indexOf(String(h || '').toUpperCase()); return i < 0 ? h : CALMA[i]; };
+const hex = h => { try { return new Color(tono(h) || '#7D7973'); } catch (e) { return new Color('#7D7973'); } };
 
 /* ---------- Utilidades de fecha ---------- */
 const pad = n => String(n).padStart(2, '0');
@@ -120,7 +124,7 @@ function respaldo(j, aj) {
   const ts = (j.tareas || []).filter(t => t.id && !isTrue(t.borrado));
   const toMin = h => { const [a, b] = String(h).split(':').map(Number); return a * 60 + (b || 0); };
   const bloques = d => ts.filter(t => t.hora && (t.estado === 'hecho' ? diaISO(t.hecho) === d && t.fecha === d : t.fecha === d && !['bandeja', 'algun'].includes(t.estado)))
-    .map(t => { const s = toMin(t.hora); return { id:t.id, t:String(t.titulo).slice(0, 90), s, e:Math.min(s + Math.max(+t.dur || 30, 15), 1440), c:ar(t.area).c || '#8E8E93', a:ar(t.area).n || '', ok:t.estado === 'hecho' ? 1 : 0, run:t.estado === 'proceso' ? 1 : 0 }; })
+    .map(t => { const s = toMin(t.hora); return { id:t.id, t:String(t.titulo).slice(0, 90), s, e:Math.min(s + Math.max(+t.dur || 30, 15), 1440), c:ar(t.area).c || '#7D7973', a:ar(t.area).n || '', ok:t.estado === 'hecho' ? 1 : 0, run:t.estado === 'proceso' ? 1 : 0 }; })
     .sort((a, b) => a.s - b.s);
   const vivas = ts.filter(t => t.estado === 'proceso' || (t.estado === 'hoy' && (!t.fecha || t.fecha >= hoyS)))
     .sort((a, b) => (a.estado === 'proceso' ? -1 : 0) - (b.estado === 'proceso' ? -1 : 0) || (+a.orden || 0) - (+b.orden || 0));
@@ -129,8 +133,8 @@ function respaldo(j, aj) {
   const x = ts.find(t => t.id === tm.tareaId);
   return { v:0, respaldo:1, gen:new Date().toISOString(), dia:hoyS,
     hoy:{ hechas, total:hechas + vivas.length, prio:0 }, bandeja:ts.filter(t => t.estado === 'bandeja').length,
-    lista:vivas.slice(0, 8).map(t => ({ id:t.id, t:String(t.titulo).slice(0, 90), c:ar(t.area).c || '#8E8E93', a:ar(t.area).n || '', h:t.hora || '', d:+t.dur || 0, run:t.estado === 'proceso' ? 1 : 0 })),
-    timer:{ ...tm, c:x ? ar(x.area).c || '#5856D6' : '#5856D6', fases:tm.corriendo && tm.fin ? [{ f:tm.fase, ini:tm.fin - (tm.total || 0) * 1000, fin:tm.fin }] : [] },
+    lista:vivas.slice(0, 8).map(t => ({ id:t.id, t:String(t.titulo).slice(0, 90), c:ar(t.area).c || '#7D7973', a:ar(t.area).n || '', h:t.hora || '', d:+t.dur || 0, run:t.estado === 'proceso' ? 1 : 0 })),
+    timer:{ ...tm, c:x ? ar(x.area).c || '#3E5C52' : '#3E5C52', fases:tm.corriendo && tm.fin ? [{ f:tm.fase, ini:tm.fin - (tm.total || 0) * 1000, fin:tm.fin }] : [] },
     dias:{ [hoyS]:bloques(hoyS), [manS]:bloques(manS) }, sinPlan:sinPlanRespaldo(ts, ar, hoyS, cfg) };
 }
 // Misma regla que la vista Pendientes de Foco, simplificada.
@@ -147,7 +151,7 @@ function sinPlanRespaldo(ts, ar, hoyS, cfg) {
   const acc = xs.filter(x => x.k !== 'algun'), por = {};
   xs.forEach(x => { por[x.k] = (por[x.k] || 0) + 1; });
   return { total:acc.length, olvidadas:acc.filter(x => x.o).length, por, rev:cfg.ultRevision || '', umbral:14,
-    top:acc.slice(0, 6).map(x => ({ id:x.t.id, t:String(x.t.titulo).slice(0, 90), c:ar(x.t.area).c || '#8E8E93', m:x.m, k:x.k, o:x.o ? 1 : 0, u:x.u })) };
+    top:acc.slice(0, 6).map(x => ({ id:x.t.id, t:String(x.t.titulo).slice(0, 90), c:ar(x.t.area).c || '#7D7973', m:x.m, k:x.k, o:x.o ? 1 : 0, u:x.u })) };
 }
 
 /* ---------- Qué va ahora (calculado con la hora actual) ---------- */
@@ -360,7 +364,7 @@ function wLinea(w, d) {
 }
 
 /* ---------- Widget «Pendientes»: lo que no tiene plan ---------- */
-const TIPOS = { atrasada:['Atrasadas', '#FF3B30'], espera:['En espera', '#FF9500'], prox:['Sin día', '#5856D6'], bandeja:['Sin organizar', '#A09EEB'] };
+const TIPOS = { atrasada:['Atrasadas', '#C4493E'], espera:['En espera', '#C08A4E'], prox:['Sin día', '#3E5C52'], bandeja:['Sin organizar', '#9DB5AB'] };
 const diasRev = sp => sp && sp.rev ? Math.max(0, Math.round((inicioDia(new Date()) - inicioDia(new Date(sp.rev))) / 864e5)) : null;
 const txtRev = sp => { const d = diasRev(sp); return d == null ? 'Sin revisión todavía' : d === 0 ? 'Revisaste hoy' : `Revisión hace ${d} ${d === 1 ? 'día' : 'días'}`; };
 const revVencida = sp => { const d = diasRev(sp); return sp && sp.total > 0 && (d == null || d >= 7); };
