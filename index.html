@@ -284,6 +284,9 @@ body.dragging{cursor:grabbing}
 .vtop svg.i{width:16px;height:16px}
 .vtop svg.i:last-child{color:var(--mut);margin-left:auto}
 .areapick{display:flex;gap:8px;flex-wrap:wrap}
+.areasel{flex:1;min-width:0;min-height:36px;padding:0 10px;border-radius:999px;background:var(--sf2);border:0;font-size:var(--fs-s);color:var(--ink);font-family:inherit}
+.areasel.vacia{color:var(--mut)}
+.mas-b{margin-top:8px}
 .areapick .chip{min-height:36px}
 .capf-hint{margin:8px 4px 0;font-size:var(--fs-s);color:var(--mut);line-height:1.4}
 .capf-hint:empty{display:none}
@@ -339,7 +342,7 @@ html.calma .view.on,html.calma .in-anim,html.calma .tom.new,html.calma .proc-car
 .f-sec > label,.f-l{display:block;font-size:var(--fs-s);font-weight:600;color:var(--mut);margin:0 2px 8px}
 .proc-foot{display:flex;gap:12px;margin-top:auto;padding-top:12px}
 .proc-foot .btn{flex:1}
-.mx{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mx{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:8px}
 .mx-c{min-height:68px;padding:12px 12px;border-radius:12px;background:var(--sf2);text-align:left;border:2px solid transparent;transition:all .18s}
 .mx-c b{display:block;font-size:var(--fs-m);font-weight:600}
 .mx-c span{display:block;font-size:var(--fs-s);color:var(--mut);margin-top:2px;line-height:1.3}
@@ -470,7 +473,7 @@ details.sec-d[open] .chev{transform:rotate(180deg)}
 .capf .capf-in{padding-top:4px}
 .capf-bot{flex-wrap:wrap}
 .capf-bot .btn svg.i{width:16px;height:16px}
-.capf-bot .vsel,.capf-bot .asel{min-height:36px;font-size:var(--fs-s);border-radius:10px;padding:0 10px;max-width:40%}
+.capf-bot .vsel,.capf-bot .asel,.capf-bot .areasel{min-height:36px;font-size:var(--fs-s);border-radius:10px;padding:0 10px;max-width:40%}
 @media (max-width:400px){.capf-bot .lg{display:none}}
 .tr .chev-r{width:16px;height:16px;color:var(--mut2);flex:none}
 /* ===== Cabecera mínima y captura en la navegación ===== */
@@ -1626,14 +1629,17 @@ const suavizarAreas = aj => {
   aj.areas = aj.areas || []; aj.areas.forEach(a => { a.c = tono(a.c); });
   if (!aj.areas.some(a => a.id === 'trabajo')) aj.areas.unshift({ id:'trabajo', n:'Trabajo', c:'#5B7FA3' });
   if (!aj.areas.some(a => a.id === 'personal')) aj.areas.push({ id:'personal', n:'Personal', c:'#8A6BA8' });
+  // Hobbies se agrega una sola vez a datos anteriores; si luego la borras, no vuelve.
+  if (!aj.hobbies) { aj.hobbies = 1; if (!aj.areas.some(a => a.id === 'hobbies')) aj.areas.push({ id:'hobbies', n:'Hobbies', c:'#C08A4E' }); }
   return aj;
 };
 function defAjustes() {
   return {
     areas: [
+      { id:'personal', n:'Personal', c:'#8A6BA8' },
       { id:'trabajo', n:'Trabajo', c:'#5B7FA3' },
-      { id:'personal', n:'Personal', c:'#8A6BA8' }
-    ],
+      { id:'hobbies', n:'Hobbies', c:'#C08A4E' }
+    ], hobbies:1,
     pomo:25, corto:5, largo:15, cada:4, meta:6, sonido:true,
     jIni:'09:00', jFin:'18:00', pausa:60, margen:15,
     actualizado:'2000-01-01T00:00:00.000Z'
@@ -2329,7 +2335,7 @@ function analizar(texto) {
   if (amb) out.push({ k:'ambiguo', ic:'info', msg:`${amb[1]} es ambiguo. Escribe qué es exactamente.` });
   const partes = dividirAcciones(base);
   if (partes.length > 1) out.push({ k:'varias', ic:'layers', msg:`Parece tener ${partes.length} acciones. Si son pasos separados, divídela.` });
-  if (base.length > 90) out.push({ k:'largo', ic:'note', msg:'El título es largo. Deja la acción y pasa el detalle al resultado esperado o a notas.' });
+  if (base.length > 90) out.push({ k:'largo', ic:'note', msg:'El título es largo. Deja la acción y pasa el detalle a notas.' });
   return out;
 }
 function htmlClaridad(texto, dest) {
@@ -2848,7 +2854,7 @@ function filaHecha(t) {
 }
 // Matriz de Eisenhower 2x2: una sola decisión en lugar de dos interruptores.
 function matriz(u, i, accion) {
-  const celdas = [[1, 1, 'q1', 'Hacer ya', 'Urgente e importante'], [0, 1, 'q2', 'Planificar', 'Importante, sin prisa'], [1, 0, 'q3', 'Delegar o acotar', 'Urgente, poco importante'], [0, 0, 'q0', 'Sin prioridad', 'Ni urgente ni importante']];
+  const celdas = [[1, 1, 'q1', 'Hacer ya', 'Urgente e importante'], [0, 1, 'q2', 'Planificar', 'Importante, sin prisa'], [0, 0, 'q0', 'Sin prioridad', 'Ni urgente ni importante']];
   return `<div class="mx" role="radiogroup" aria-label="Prioridad">${celdas.map(([uu, ii, k, n, s]) => { const on = uu === (u ? 1 : 0) && ii === (i ? 1 : 0); return `<button class="mx-c ${k} ${on ? 'on' : ''}" data-a="${accion}" data-u="${uu}" data-i="${ii}" role="radio" aria-checked="${on}"><b>${n}</b><span>${s}</span></button>`; }).join('')}</div>`;
 }
 
@@ -2875,7 +2881,7 @@ function renderBandeja() {
   if (!$('#capIn', v)) {
     v.innerHTML = htmlCapForm('cap') + `<div id="bandejaZona"></div>
       <details class="tips"><summary>${ic('bulb')}Cómo escribir un buen pendiente${ic('chevD', 'chev')}</summary>
-        <div>Empieza con un <b>verbo</b> (Revisar, Enviar, Llamar…) y di <b>sobre qué</b>: «Enviar la cotización a Luis». Los detalles los completas al organizar.<br>El área (Trabajo o Personal) se sugiere sola mientras escribes; toca la otra si no es. Si pegas una lista, cada línea se vuelve un pendiente.</div></details>`;
+        <div>Empieza con un <b>verbo</b> (Revisar, Enviar, Llamar…) y di <b>sobre qué</b>: «Enviar la cotización a Luis». Los detalles los completas al organizar.<br>El área se sugiere sola mientras escribes; cámbiala en el selector junto a Guardar si no es. Si pegas una lista, cada línea se vuelve un pendiente.</div></details>`;
   }
   pintarCapForm('cap'); pintarBandejaLista();
 }
@@ -2884,7 +2890,7 @@ function htmlCapForm(pfx) {
   return `<div class="panel capf" id="${pfx}Box">
     <button class="vtop" id="${pfx}Verbo" data-a="verboAbrir" data-dest="${pfx}" aria-label="Elegir un verbo para empezar a redactar">${ic('bolt')}¿No sabes cómo empezar? Elige un verbo${ic('chevD')}</button>
     <textarea id="${pfx}In" class="capf-in" rows="1" maxlength="2000" placeholder="Anota un pendiente" enterkeyhint="send" autocomplete="off" autocapitalize="sentences" aria-label="Anota un pendiente"></textarea>
-    <div class="capf-bot"><div class="areapick" id="${pfx}Area" role="radiogroup" aria-label="Área (obligatoria)"></div><span class="sp"></span><button class="btn sm pri" data-a="${pfx === 'cap' ? 'capAdd' : 'capSheetAdd'}" aria-label="Guardar en Bandeja">${ic('inbox')}Guardar<span class="lg"> en Bandeja</span></button></div>
+    <div class="capf-bot"><button class="btn sm pri" data-a="${pfx === 'cap' ? 'capAdd' : 'capSheetAdd'}" aria-label="Guardar entrada en la Bandeja">${ic('inbox')}Guardar entrada</button><select class="areasel" id="${pfx}Area" aria-label="Área (obligatoria)"></select></div>
   </div><div class="capf-hint" id="${pfx}Hint" aria-live="polite"></div>`;
 }
 function pintarCapForm(pfx) {
@@ -2892,8 +2898,9 @@ function pintarCapForm(pfx) {
   const txt = ta.value, lns = lineasDe(txt);
   // Con una sola línea, el área se sugiere sola mientras escribes, salvo que ya hayas elegido una.
   if (!ui.capAreaManual) ui.capArea = lns.length === 1 ? predecirArea(limpiarTitulo(lns[0])) : '';
-  const sel = areaClase(ui.capArea);
-  $(`#${pfx}Area`).innerHTML = ['trabajo', 'personal'].map(k => { const a = area(k); return a ? `<button class="chip area ${sel === k ? 'on' : ''}" style="--a:${a.c}" data-a="capArea" data-v="${k}" role="radio" aria-checked="${sel === k}"><i class="dot"></i>${esc(a.n)}</button>` : ''; }).join('');
+  const sa = $(`#${pfx}Area`), sig = areas().map(a => a.id + a.n).join('|');
+  if (sa.dataset.sig !== sig) { sa.dataset.sig = sig; sa.innerHTML = `<option value="">Área…</option>` + areas().map(a => `<option value="${esc(a.id)}">${esc(a.n)}</option>`).join(''); }
+  sa.value = ui.capArea || ''; sa.classList.toggle('vacia', !ui.capArea);
   let h = '';
   if (lns.length === 1 && lns[0].length > 60 && mnSegmentar(lns[0]).length >= 3) h = `Parece que traes varias cosas juntas. <button data-a="mnDesdeCap" data-dest="${pfx}">Llevarlo a Mente</button>`;
   else if (lns.length > 1) h = `Se guardarán ${lns.length} pendientes, uno por línea.`;
@@ -2903,8 +2910,8 @@ function pintarCapForm(pfx) {
     else if (i && i.k === 'verbo') h = `Tip: empieza con un verbo. ${TOCA()} «Elige un verbo» si no sabes cómo empezar.`;
     else if (i && i.k === 'vago') h = `«${esc(i.msg.split('»')[0].slice(1))}» es poco específico. ¿Qué harás exactamente?`;
   }
-  if (lns.length === 1 && !ui.capAreaManual && ui.capArea) h = `Área sugerida: <b>${esc(area(ui.capArea)?.n || '')}</b>. Toca la otra si no es.` + (h ? '<br>' + h : '');
-  else if (lns.length && !ui.capAreaManual && !ui.capArea && lns.length === 1 && txt.trim().length > 2) h = 'Elige un área: Trabajo o Personal.' + (h ? '<br>' + h : '');
+  if (lns.length === 1 && !ui.capAreaManual && ui.capArea) h = `Área sugerida: <b>${esc(area(ui.capArea)?.n || '')}</b>. Cámbiala en el selector si no es.` + (h ? '<br>' + h : '');
+  else if (lns.length && !ui.capAreaManual && !ui.capArea && lns.length === 1 && txt.trim().length > 2) h = 'Elige un área en el selector.' + (h ? '<br>' + h : '');
   $(`#${pfx}Hint`).innerHTML = h;
 }
 // Un pendiente no se guarda sin área: la elegida o la que se predice para cada línea.
@@ -2913,7 +2920,7 @@ function capAreaOk(sel, pfx) {
   const ls = lineasDe(ta.value); if (!ls.length) return true;
   if (ui.capAreaManual && ui.capArea) return true;
   if (ls.every(l => predecirArea(limpiarTitulo(l)))) return true;
-  sacudir($(`#${pfx}Area`), 'Elige un área: Trabajo o Personal');
+  sacudir($(`#${pfx}Area`), 'Elige un área para guardar');
   return false;
 }
 function capAreaReset() { ui.capArea = ''; ui.capAreaManual = false; }
@@ -3285,7 +3292,7 @@ function cuerpoProc(t) {
   const P = proc;
   if (P.paso === 'que') return `
     <div id="procClar">${htmlClaridad(t.titulo, 'proc')}</div>
-    <div class="f-sec" style="margin-top:8px"><label>Área</label><div class="areapick" id="procQa" role="radiogroup" aria-label="Área (obligatoria)">${['trabajo', 'personal'].map(k => { const a = area(k); return a ? `<button class="chip area ${areaClase(P.qa) === k ? 'on' : ''}" style="--a:${a.c}" data-a="pQa" data-v="${k}" role="radio" aria-checked="${areaClase(P.qa) === k}"><i class="dot"></i>${esc(a.n)}</button>` : ''; }).join('')}</div></div>
+    <div class="f-sec" style="margin-top:8px"><label>Área</label><div class="areapick" id="procQa" role="radiogroup" aria-label="Área (obligatoria)">${areas().map(a => `<button class="chip area ${P.qa === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="pQa" data-v="${a.id}" role="radio" aria-checked="${P.qa === a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('')}</div></div>
     <p class="proc-h">¿Qué hago con esto?</p>
     <button class="two" data-a="pYa"><span class="ico">${ic('bolt')}</span><span><b>Lo hago ahora</b><small>Abre un temporizador de 5 minutos para hacerlo ya</small></span>${ic('play', 'fill')}</button>
     <div class="sec-t" style="margin-top:16px">Si toma más tiempo</div>
@@ -3303,20 +3310,25 @@ function cuerpoProc(t) {
     <div class="f-sec"><label>Área</label>${chipsArea}</div>
     <div class="f-sec"><label>¿Cuándo le doy seguimiento?</label><div class="chips">${[['', 'Sin fecha'], [manana(), 'Mañana'], [addDays(hoy(), 3), 'En 3 días'], [addDays(hoy(), 7), 'En una semana']].map(([v, n]) => `<button class="chip ${(d.fecha || '') === v ? 'on' : ''}" data-a="pSeg" data-v="${v}">${n}</button>`).join('')}</div></div>
     <div class="proc-foot"><button class="btn" data-a="pAtras">Atrás</button><button class="btn pri" data-a="pGuardarEsp">${ic('check')}Guardar</button></div>`;
+  const chipsAreas = `<div class="areapick" role="radiogroup" aria-label="Área">${areas().map(a => `<button class="chip area ${d.area === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="pArea" data-v="${a.id}" role="radio" aria-checked="${d.area === a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('')}</div>`;
   return `
+    <div class="sec-t">${ic('layers')}Organización</div>
+    <div class="f-sec"><label>Área</label>${chipsAreas}</div>
     <div class="f-sec"><label>Prioridad</label>${matriz(d.urgente, d.importante, 'pMx')}</div>
-    <div class="f-sec"><label>Área</label>${chipsArea}</div>
-    <div class="f-sec"><label>¿Cuándo la haces?</label><div class="chips">${[['hoy', 'Hoy'], ['manana', 'Mañana'], ['', 'Sin fecha'], ['fecha', 'Elegir fecha']].map(([v, n]) => `<button class="chip ${d.cuando === v ? 'on' : ''}" data-a="pCuando" data-v="${v}">${n}</button>`).join('')}</div>
+    <div class="sec-t">${ic('cal')}Planificación</div>
+    <div class="f-sec"><label>Día planeado</label><div class="chips">${[['hoy', 'Hoy'], ['manana', 'Mañana'], ['', 'Sin fecha'], ['fecha', 'Elegir fecha']].map(([v, n]) => `<button class="chip ${d.cuando === v ? 'on' : ''}" data-a="pCuando" data-v="${v}">${n}</button>`).join('')}</div>
       ${d.cuando === 'fecha' ? `<input type="date" class="in" style="margin-top:12px" id="pFecha" value="${d.fecha || manana()}" min="${hoy()}" aria-label="Fecha">` : ''}</div>
-    <div class="f-sec"><label>Duración estimada</label><div class="chips">${[5, 15, 25, 50, 90].map(m => `<button class="chip ${d.dur === m ? 'on' : ''}" data-a="pDur" data-v="${m}">${m} min</button>`).join('')}</div></div>
-    <div class="f-sec">${d.resultado || d.verRes ? `<label for="pResultado">Resultado esperado <span class="mut">(opcional)</span></label><input class="in" id="pResultado" maxlength="160" placeholder="¿Cómo sabrás que está terminada?" value="${esc(d.resultado || '')}">` : `<button class="lnk2" data-a="pVerRes">${ic('plus')}Agregar resultado esperado</button>`}</div>
-    <div class="f-sec"><label for="pProyecto">Proyecto (opcional)</label><input class="in" id="pProyecto" list="proyectos" maxlength="60" placeholder="Ej. App de finanzas" value="${esc(d.proyecto || '')}"></div>
+    ${d.cuando ? `<div class="f-sec"><label for="pHora">Hora <span class="mut">(opcional)</span></label><input type="time" class="in" id="pHora" step="900" value="${esc(d.hora || '')}"></div>` : ''}
+    <button class="dr-h mas-t" data-a="pMas" aria-expanded="${!!d.mas}"><span class="dr-l">Más detalles</span><span class="dr-v">Duración y proyecto</span>${ic('chevD', 'chev')}</button>
+    ${d.mas ? `<div class="mas-b">
+      <div class="f-sec"><label>Duración estimada</label><div class="chips">${[5, 15, 25, 50, 90].map(m => `<button class="chip ${d.dur === m ? 'on' : ''}" data-a="pDur" data-v="${m}">${m} min</button>`).join('')}</div></div>
+      <div class="f-sec"><label for="pProyecto">Proyecto (opcional)</label><input class="in" id="pProyecto" list="proyectos" maxlength="60" placeholder="Ej. App de finanzas" value="${esc(d.proyecto || '')}"></div></div>` : ''}
     <div class="proc-foot"><button class="btn" data-a="pAtras">Atrás</button><button class="btn pri" data-a="pGuardarProx">${ic('check')}Guardar</button></div>`;
 }
-// Todo pendiente organizado necesita área (Trabajo o Personal): se guarda la elegida o la sugerida.
+// Todo pendiente organizado necesita área: se guarda la elegida o la sugerida.
 function procArea() {
   const t = tActualProc(); if (!t) return false;
-  if (!proc.qa) { sacudir($('#procQa'), 'Elige un área: Trabajo o Personal'); return false; }
+  if (!proc.qa) { sacudir($('#procQa'), 'Elige un área primero'); return false; }
   if (t.area !== proc.qa) { t.area = proc.qa; upsertT(t); }
   return true;
 }
@@ -3461,7 +3473,6 @@ function renderHoy() {
     zA = `<div class="hero ${enCurso ? 'is-run' : ''}" data-id="${ahora.id}" data-a="abrir" ${cola.length > 1 ? 'data-list="hoytop"' : ''} role="button" tabindex="0" aria-label="${esc(ahora.titulo)}. Abrir detalle">
       <div class="hero-l"><i class="live"></i>${desc ? 'En descanso' : run ? 'Trabajando en' : 'Ahora'}${run || desc ? ` · <b id="heroTm">${fmt(restante())}</b>` : ''}</div>
       <div class="hero-t">${esc(ahora.titulo)}</div>
-      ${ahora.resultado ? `<div class="res-l">${ic('listo')}<span>Listo cuando: ${esc(ahora.resultado)}</span></div>` : ''}
       <div class="mt">${metaCorta(ahora, 2, { area:true })}</div>
       ${run || desc ? `<div class="hero-bar ${desc ? 'desc' : ''}" aria-hidden="true"><i id="heroBar" style="width:${100 * (1 - restante() / t.total)}%"></i></div>` : ''}
       <div class="hero-b">${run || desc
@@ -4279,7 +4290,7 @@ function renderEnfoque() {
   v.innerHTML = `<div class="enf fase-${t.fase} ${t.corriendo ? 'running' : ''}">
     <div class="panel enf-task" data-a="elegirTarea" role="button" tabindex="0" style="--a:${x ? colorA(x.area) : 'var(--mut2)'}" aria-label="${x ? 'Cambiar tarea: ' + esc(x.titulo) : 'Elegir tarea'}">
       <div class="tb"><div class="enf-l"><i class="dot"></i>${x ? (marcha && t.fase === 'foco' ? 'Trabajando en' : esc(area(x.area)?.n || 'Tarea elegida')) : `Sin tarea · ${mqFino.matches ? 'clic' : 'toca'} para elegir`}</div>
-        <div class="enf-tt">${x ? esc(x.titulo) : 'Elige en qué vas a trabajar'}</div>${x && x.resultado ? `<div class="res-l">${ic('listo')}<span>Listo cuando: ${esc(x.resultado)}</span></div>` : ''}${cyc}</div>
+        <div class="enf-tt">${x ? esc(x.titulo) : 'Elige en qué vas a trabajar'}</div>${cyc}</div>
       ${x && x.estado !== 'hecho' ? `<button class="btn sq okb" data-a="enfCompletar" aria-label="Marcar tarea como hecha">${ic('check')}</button>` : `<span class="ib-s">${ic('chevR')}</span>`}
     </div>
     <div class="modes ${marcha ? 'hide' : ''}" role="radiogroup" aria-label="Modo">${[['pomo', 'tomato', `Pomodoro ${a.pomo} min`], ['bloque', 'clock', 'Bloque de tiempo']].map(([k, i, n]) => `<button class="chip ${t.modo === k ? 'on' : ''}" data-a="modo" data-v="${k}" role="radio" aria-checked="${t.modo === k}" ${marcha && t.modo !== k ? 'disabled' : ''}>${ic(i)}${n}</button>`).join('')}</div>
@@ -4443,7 +4454,7 @@ function ayuda(k) {
   const a = S.ajustes;
   return ({
     bandeja:{ d:'Tu lugar para vaciar la cabeza. Solo el título es obligatorio. Anota cualquier pendiente en cuanto se te ocurra, sin pensar todavía dónde va.', p:[
-      ['plus', 'Captura en un paso', 'Escribe qué vas a hacer (si no sabes cómo empezar, elige un verbo arriba). El área, Trabajo o Personal, se sugiere sola y es obligatoria. Toca Guardar. Si pegas una lista, cada línea se vuelve un pendiente.'],
+      ['plus', 'Captura en un paso', 'Escribe qué vas a hacer (si no sabes cómo empezar, elige un verbo arriba). El área se sugiere sola y es obligatoria: cámbiala en el selector junto a Guardar. Toca Guardar. Si pegas una lista, cada línea se vuelve un pendiente.'],
       ['filter', 'Filtrar por verbo', 'Toca un verbo (Llamar, Enviar, Revisar…) para ver solo esos pendientes y organizarlos juntos.'],
       ['layers', 'Área (opcional)', 'Elígela en el selector o escríbela con # dentro del texto, por ejemplo #omova. Desde el selector también puedes crear una nueva.'],
       ['layers', 'Varios a la vez', 'Toca «Seleccionar varios» para asignar área, proyecto, día o destino a muchos pendientes. Se puede deshacer.'],
@@ -4531,7 +4542,7 @@ function abrirSheet(ctx) {
   if (!ui.sheet) { const a = document.activeElement; ui.focoOrigen = a && a !== document.body ? { el:a, sel:a.dataset && a.dataset.a ? `[data-a="${a.dataset.a}"]${a.dataset.id ? `[data-id="${a.dataset.id}"]` : ''}${a.dataset.v ? `[data-v="${a.dataset.v}"]` : ''}` : '' } : null; }
   flushDebs('dt:');
   if (ui.sheet && ui.sheet.k === 'detalle' && !(ctx.k === 'detalle' && ctx.id === ui.sheet.id)) guardarDetalleTexto();
-  if (ctx.k === 'detalle' && (!ui.sheet || ui.sheet.id !== ctx.id)) ui.dtOpen = ctx.open || '';
+  if (ctx.k === 'detalle' && (!ui.sheet || ui.sheet.id !== ctx.id)) { ui.dtOpen = ctx.open || ''; ui.dtMas = false; }
   if (ctx.k === 'ajustes' && (!ui.sheet || ui.sheet.k !== 'ajustes')) { ui.cfgMsg = null; ui.cfgDraft = null; ui.areaNueva = null; ui.areaColor = ''; }
   ui.sheet = ctx;
   if (ctx.k === 'areaSel') ui.areaNueva = null;
@@ -4743,7 +4754,7 @@ function htmlFiltro() {
     ${grupo('prio', 'Prioridad', [['', 'Todas'], ...Object.entries(PRIO_F)])}
     <div class="sh-foot"><button class="btn" data-a="limpiarFiltros">Limpiar filtros</button><button class="btn pri" data-a="cerrarSheet">Ver ${n} ${n === 1 ? 'tarea' : 'tareas'}</button></div>`;
 }
-/* Búsqueda global: título, proyecto, área, resultado y notas; incluye completadas sin ocultarlas. */
+/* Búsqueda global: título, proyecto, área y notas; incluye completadas sin ocultarlas. */
 // Asignar a varios pendientes a la vez: área, proyecto, día o destino. Se puede deshacer.
 function htmlLote() {
   const n = ui.bSel ? ui.bSel.size : 0, L = ui.lote || (ui.lote = {});
@@ -4772,7 +4783,7 @@ function htmlResultados() {
   const qt = ui.buscarQ.trim(), q = norm(qt);
   if (!q) return `<p class="hint">Busca entre todas tus tareas, también las terminadas, por título, proyecto, área o texto de sus notas.</p>`;
   const notas = t => (t.notas || []).map(n => n.x);
-  const ts = vivas().filter(t => norm([t.titulo, t.proyecto, area(t.area)?.n || '', t.resultado || '', t.espera || '', ...notas(t)].join(' ')).includes(q));
+  const ts = vivas().filter(t => norm([t.titulo, t.proyecto, area(t.area)?.n || '', t.espera || '', ...notas(t)].join(' ')).includes(q));
   if (!ts.length) return `<div class="empty" style="margin-top:16px">Sin coincidencias para «${esc(qt)}».</div>`;
   const act = ts.filter(t => t.estado !== 'hecho').sort(ordenPrioridad);
   const hechas = ts.filter(t => t.estado === 'hecho').sort((a, b) => (b.hecho || '').localeCompare(a.hecho || ''));
@@ -4795,48 +4806,54 @@ function htmlDetalle(t) {
   const estados = Object.entries(ESTADOS).filter(([k]) => k !== 'bandeja' || t.estado === 'bandeja');
   const fechaTxt = t.fecha ? `${fechaCorta(t.fecha)}${t.fecha === hoy() || t.fecha === manana() ? ' · ' + DIAS3[parseYmd(t.fecha).getDay()] : ''}` : 'Sin fecha';
   const horaVal = t.hora ? `${pad(Math.floor(hm2min(t.hora) / 60))}:${pad(hm2min(t.hora) % 60)}` : '';
-  const filas = [
-    fila('res', 'listo', '', 'Listo cuando', t.resultado ? esc(t.resultado) : '<span class="mut2">Sin definir</span>',
-      `<textarea class="in" data-in="dtResultado" rows="2" maxlength="160" placeholder="Resultado esperado: ¿cómo sabrás que está terminada?" aria-label="Resultado esperado">${esc(t.resultado || '')}</textarea><p class="hint">Ej. «Cotización enviada y recepción confirmada».</p>`),
-    fila('estado', 'circleDot', 'ind', 'Estado', `<span class="pill ${EST_CLS[t.estado]}">${ESTADOS[t.estado]}</span>`,
+  const F = {
+    estado: fila('estado', 'circleDot', 'ind', 'Estado', `<span class="pill ${EST_CLS[t.estado]}">${ESTADOS[t.estado]}</span>`,
       `<div class="chips">${estados.map(([k, n]) => `<button class="chip ${t.estado === k ? 'on' : ''}" data-a="dtEstado" data-v="${k}">${n}</button>`).join('')}</div>`),
-    fila('area', 'layers', 'teal', 'Área', A ? `<i class="dot" style="--a:${A.c}"></i>${esc(A.n)}` : 'Sin área',
-      `<div class="chips">${areas().map(a => `<button class="chip area ${t.area === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="dtArea" data-v="${a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('')}<button class="chip ${!A ? 'on' : ''}" data-a="dtArea" data-v="">Sin área</button><button class="chip" data-a="irAreas">${ic('plus')}Nueva área</button></div>`),
-    fila('prio', 'flag', 'warn', 'Prioridad', q ? pq(t) : 'Sin prioridad', matriz(t.urgente, t.importante, 'dtMx') + `<p class="hint">${TOCA()} el cuadro que mejor describa la tarea.</p>`),
-    fila('fecha', 'cal', 'hot', 'Día planeado', fechaTxt,
+    area: fila('area', 'layers', 'teal', 'Área', A ? `<i class="dot" style="--a:${A.c}"></i>${esc(A.n)}` : 'Sin área',
+      `<div class="chips">${areas().map(a => `<button class="chip area ${t.area === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="dtArea" data-v="${a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('')}<button class="chip" data-a="irAreas">${ic('plus')}Nueva área</button></div>`),
+    prio: fila('prio', 'flag', 'warn', 'Prioridad', q ? pq(t) : 'Sin prioridad', matriz(t.urgente, t.importante, 'dtMx') + `<p class="hint">${TOCA()} la opción que mejor describa la tarea.</p>`),
+    fecha: fila('fecha', 'cal', 'hot', 'Día planeado', fechaTxt,
       `<div class="chips">${[['hoy', 'Hoy'], ['manana', 'Mañana'], ['lunes', 'Próximo lunes'], ['semana', 'En una semana'], ['', 'Sin fecha']].map(([v, n]) => `<button class="chip ${(v === 'hoy' && t.fecha === hoy()) || (v === 'manana' && t.fecha === manana()) || (v === '' && !t.fecha) ? 'on' : ''}" data-a="dtCuando" data-v="${v}">${n}</button>`).join('')}</div>
        <label class="f-l" style="margin-top:12px" for="dtFechaIn">Otra fecha</label><input type="date" class="in" id="dtFechaIn" data-in="dtFecha" value="${t.fecha}" ${t.estado !== 'hecho' ? `min="${hoy()}"` : ''}>`),
-    fila('hora', 'clock', 'blue', 'Hora', t.hora || 'Sin hora',
+    hora: fila('hora', 'clock', 'blue', 'Hora', t.hora || '<span class="mut2">Opcional</span>',
       `<div class="row2"><input type="time" class="in" data-in="dtHora" value="${horaVal}" step="900" aria-label="Hora">${t.hora ? `<button class="btn" data-a="dtSinHora">${ic('x')}Quitar hora</button>` : '<span></span>'}</div><p class="hint">La tarea aparecerá en la Agenda de ese día.</p>`),
-    fila('dur', 'timer', 'vio', 'Duración', t.dur ? `${t.dur} min` : 'Sin estimar',
-      `<div class="chips">${[5, 15, 25, 50, 90].map(m => `<button class="chip ${t.dur === m ? 'on' : ''}" data-a="dtDur" data-v="${m}">${m} min</button>`).join('')}<button class="chip ${!t.dur ? 'on' : ''}" data-a="dtDur" data-v="0">Sin estimar</button></div>`),
-    fila('lim', 'flag', 'hot', 'Fecha límite', t.limite ? `${fechaCorta(t.limite)}${t.limite < hoy() && t.estado !== 'hecho' ? ' · vencida' : ''}` : '<span class="mut2">Opcional</span>',
+    proy: fila('proy', 'folder', 'gray', 'Proyecto', t.proyecto ? esc(t.proyecto) : '<span class="mut2">Ninguno</span>',
+      `<input class="in" data-in="dtProyecto" list="proyectos" maxlength="60" value="${esc(t.proyecto)}" placeholder="Ej. App de finanzas" aria-label="Proyecto">`),
+    lim: fila('lim', 'flag', 'hot', 'Fecha límite', t.limite ? `${fechaCorta(t.limite)}${t.limite < hoy() && t.estado !== 'hecho' ? ' · vencida' : ''}` : '<span class="mut2">Opcional</span>',
       `<input type="date" class="in" data-in="dtLimite" value="${t.limite || ''}" aria-label="Fecha límite">${t.limite ? `<button class="btn full" style="margin-top:8px" data-a="dtLimQuitar">${ic('x')}Quitar fecha límite</button>` : ''}<p class="hint">Cuándo vence, si lo necesitas. Es distinta del día en que planeas trabajarla.</p>`),
-    fila('rec', 'repeat', 'gray', 'Repetir', t.rec ? recTexto(t.rec) : 'No se repite',
+    notas: fila('notas', 'note', 'gray', 'Notas y bitácora', (t.notas || []).length ? `${t.notas.length} ${t.notas.length === 1 ? 'nota' : 'notas'}` : '<span class="mut2">Sin notas</span>',
+      `<div class="bit">${(t.notas || []).slice().reverse().map(n => `<div class="bit-i"><small>${fechaCorta(diaDeISO(n.t))} · ${horaDe(n.t)}</small>${esc(n.x)}</div>`).join('')}</div>
+       <div class="bit-add" id="bitBox"><textarea class="in" id="bitIn" rows="1" maxlength="1000" placeholder="Agrega un avance, decisión o cambio de idea" aria-label="Nueva nota"></textarea><button class="cap-send" data-a="bitAdd" aria-label="Agregar nota">${ic('arrowUp')}</button></div>`),
+    rec: fila('rec', 'repeat', 'gray', 'Repetición', t.rec ? recTexto(t.rec) : 'No se repite',
       `<div class="chips">${[['', 'No se repite'], ['diaria', 'Todos los días'], ['laboral', 'Lunes a viernes'], ['semanal', 'Ciertos días'], ['mensual', 'Cada mes']].map(([k, n]) => `<button class="chip ${(rk || '') === k ? 'on' : ''}" data-a="dtRec" data-v="${k}">${n}</button>`).join('')}</div>
        ${rk === 'semanal' ? `<div class="days" role="group" aria-label="Días">${DIAS1.map((d, i) => `<button class="${diasSem.includes(i) ? 'on' : ''}" data-a="dtDia" data-v="${i}" aria-label="${DIAS[i]}" aria-pressed="${diasSem.includes(i)}">${d}</button>`).join('')}</div>` : ''}
        ${t.rec ? `<p class="hint">Al marcarla como hecha se crea la siguiente automáticamente.</p>` : ''}`),
-    fila('proy', 'folder', 'gray', 'Proyecto', t.proyecto ? esc(t.proyecto) : 'Ninguno',
-      `<input class="in" data-in="dtProyecto" list="proyectos" maxlength="60" value="${esc(t.proyecto)}" placeholder="Ej. App de finanzas" aria-label="Proyecto">`)
-  ];
-  if (t.estado === 'espera') filas.splice(1, 0, fila('esp', 'hourglass', 'warn', 'Esperando a', t.espera ? esc(t.espera) : '<span style="color:var(--hot)">Sin indicar</span>',
+    dur: fila('dur', 'timer', 'vio', 'Duración', t.dur ? `${t.dur} min` : '<span class="mut2">Sin estimar</span>',
+      `<div class="chips">${[5, 15, 25, 50, 90].map(m => `<button class="chip ${t.dur === m ? 'on' : ''}" data-a="dtDur" data-v="${m}">${m} min</button>`).join('')}<button class="chip ${!t.dur ? 'on' : ''}" data-a="dtDur" data-v="0">Sin estimar</button></div>`)
+  };
+  const masFilas = [F.proy, F.lim, F.notas, F.rec, F.dur, F.estado];
+  if (t.estado === 'espera') masFilas.push(fila('esp', 'hourglass', 'warn', 'Esperando a', t.espera ? esc(t.espera) : '<span style="color:var(--hot)">Sin indicar</span>',
     `<input class="in" data-in="dtEspera" maxlength="120" value="${esc(t.espera)}" placeholder="¿De quién o de qué?" aria-label="Esperando a">`),
     fila('seg', 'refresh', 'warn', 'Próximo seguimiento', t.seg ? (t.seg === hoy() ? 'Hoy' : fechaCorta(t.seg)) : '<span class="mut2">Sin fecha</span>',
     `<div class="chips">${[['1', 'Mañana'], ['3', 'En 3 días'], ['7', 'En una semana'], ['', 'Sin seguimiento']].map(([v, n]) => `<button class="chip ${(v === '' && !t.seg) || (v && t.seg === addDays(hoy(), +v)) ? 'on' : ''}" data-a="dtSegCuando" data-v="${v}">${n}</button>`).join('')}</div>
      <input type="date" class="in" style="margin-top:12px" data-in="dtSeg" value="${t.seg || ''}" min="${hoy()}" aria-label="Fecha de seguimiento"><p class="hint">Ese día aparecerá en Hoy, sin dejar de estar en espera.</p>`));
+  const masAb = dtMasAbierto(t);
+  const llenos = [t.proyecto && 'Proyecto', t.limite && 'Fecha límite', (t.notas || []).length && 'Notas', t.rec && 'Repetición', t.dur && 'Duración'].filter(Boolean);
   return cab(`<h2>Tarea</h2>`, `<span class="saved ${Date.now() - ui.savedAt < 1300 ? 'on' : ''}" id="savedTag">${ic('check')}Guardado</span>`) + `
     <textarea class="dt-title" data-in="dtTitulo" rows="1" maxlength="${MAX_TITULO}" aria-label="Título de la tarea">${esc(t.titulo)}</textarea>
     <div id="dtClar">${t.estado === 'hecho' ? '' : htmlClaridad(t.titulo, 'dt')}</div>
-    ${(() => { const plan = ['fecha', 'hora', 'dur', 'lim', 'rec'], es = h => plan.some(k => h.includes(`data-v="${k}" aria-expanded`));
-      return `<div class="group">${filas.filter(h => !es(h)).join('')}</div><div class="sec-t">${ic('cal')}Planificación</div><div class="group">${filas.filter(es).join('')}</div>`; })()}
+    <div class="sec-t">${ic('layers')}Organización</div><div class="group">${F.area}${F.prio}</div>
+    <div class="sec-t">${ic('cal')}Planificación</div><div class="group">${F.fecha}${F.hora}</div>
     ${reprogramaciones(t) || (t.reprog && (t.reprog.o || t.reprog.d)) ? `<p class="hint dt-rep">${ic('repeat')}${reprogramaciones(t) ? `Reprogramada ${reprogramaciones(t)} ${reprogramaciones(t) === 1 ? 'vez' : 'veces'}` : 'Sin reprogramar'}${t.reprog.o ? ` · día original: ${fechaCorta(t.reprog.o).toLowerCase()}` : t.reprog.d ? ' · día original anterior a esta versión (desconocido)' : ''}</p>` : ''}
-    <div class="sec-t">${ic('note')}Notas y bitácora</div>
-    <div class="bit">${(t.notas || []).slice().reverse().map(n => `<div class="bit-i"><small>${fechaCorta(diaDeISO(n.t))} · ${horaDe(n.t)}</small>${esc(n.x)}</div>`).join('')}</div>
-    <div class="bit-add" id="bitBox"><textarea class="in" id="bitIn" rows="1" maxlength="1000" placeholder="Agrega un avance, decisión o cambio de idea" aria-label="Nueva nota"></textarea><button class="cap-send" data-a="bitAdd" aria-label="Agregar nota">${ic('arrowUp')}</button></div>
+    <div class="group" style="margin-top:16px"><div class="dr ${masAb ? 'open' : ''}"><button class="dr-h" data-a="dtMas" aria-expanded="${masAb}"><span class="dr-i gray">${ic('plus')}</span><span class="dr-l">Más detalles</span><span class="dr-v">${llenos.length ? esc(llenos.join(' · ')) : '<span class="mut2">Opcional</span>'}</span>${ic('chevD', 'chev')}</button></div></div>
+    ${masAb ? `<div class="group mas-b">${masFilas.join('')}</div>` : ''}
     <div class="dt-meta">Creada ${fechaCorta(diaDeISO(t.creado)).toLowerCase()} · ${t.pomos || 0} ${+t.pomos === 1 ? 'pomodoro' : 'pomodoros'}${t.hecho ? ' · hecha ' + fechaCorta(diaDeISO(t.hecho)).toLowerCase() + ' a las ' + horaDe(t.hecho) : ''} · los cambios se guardan solos</div>
     <div class="sh-foot"><button class="btn sq danger" data-a="dtBorrar" aria-label="Eliminar tarea">${ic('trash')}</button>
       ${t.estado !== 'hecho' ? `<button class="btn" data-a="play" data-id="${t.id}">${ic('play', 'fill')}Enfocar</button><button class="btn pri" data-a="dtCompletar">${ic('check')}Hecha</button>` : `<button class="btn pri" data-a="dtEstado" data-v="hoy">${ic('refresh')}Reabrir para hoy</button>`}</div>`;
 }
+// «Más detalles» se abre al tocarlo, o solo cuando se pide uno de sus campos (p. ej. «Anotar de quién esperas»).
+const DT_MAS = ['proy', 'lim', 'notas', 'rec', 'dur', 'estado', 'esp', 'seg'];
+const dtMasAbierto = t => !!ui.dtMas || DT_MAS.includes(ui.dtOpen) || (t.estado === 'espera' && !t.espera);
 function guardarDetalleTexto() {
   const c = ui.sheet; if (!c || c.k !== 'detalle') return;
   const t = byId(c.id); if (!t) return;
@@ -4938,8 +4955,8 @@ function aplicarTema(t) {
 const dtT = () => byId(ui.sheet && ui.sheet.id);
 function leerCamposProc() {
   if (!proc) return;
-  const e = $('#pEsperaIn'), f = $('#pFecha'), p = $('#pProyecto'), r = $('#pResultado');
-  if (e) proc.d.espera = e.value; if (f) proc.d.fecha = f.value; if (p) proc.d.proyecto = p.value; if (r) proc.d.resultado = r.value;
+  const e = $('#pEsperaIn'), f = $('#pFecha'), p = $('#pProyecto'), h = $('#pHora');
+  if (e) proc.d.espera = e.value; if (f) proc.d.fecha = f.value; if (p) proc.d.proyecto = p.value; if (h) proc.d.hora = h.value;
 }
 function hacerPrimera(id) {
   const t = byId(id); if (!t) return;
@@ -5080,7 +5097,6 @@ const ACT = {
     ui.mnIAprobando = false; guardarYa(); refrescarSheet(); if (ui.view === 'mente') { pintarMnPrev(); pintarMnZona(); }
   },
   mnIAborrar:() => { S.ia = { on:false, key:'', modelo:'', preo:false }; ui.mnIAmsg = { ok:true, t:'Clave borrada de este dispositivo.' }; guardarYa(); refrescarSheet(); if (ui.view === 'mente') { pintarMnPrev(); pintarMnZona(); } },
-  capArea:el => { ui.capArea = el.dataset.v; ui.capAreaManual = true; pintarCapAreas(); },
   capAdd:async () => {
     if (!capAreaOk('#capIn', 'cap')) return;
     const c = await capturarDe('#capIn', 'bandeja', ui.capAreaManual && ui.capArea ? { area:ui.capArea } : {});
@@ -5232,12 +5248,13 @@ const ACT = {
     tm.modo = 'bloque'; tm.tareaId = t.id; tm.fase = 'foco'; tm.total = tm.restante = 300; tm.inicio = '';
     save(); cerrarProc(); iniciar(); ir('enfoque'); toast('5 minutos. Solo empieza.');
   },
-  pProx:() => { guardarTituloProc(); if (!procArea()) return; const t = tActualProc(); proc.paso = 'prox'; proc.d = { area:t.area, urgente:t.urgente, importante:t.importante, dur:t.dur || 0, cuando:'', proyecto:t.proyecto, resultado:t.resultado || '' }; renderProc(); },
+  pProx:() => { guardarTituloProc(); if (!procArea()) return; const t = tActualProc(); proc.paso = 'prox'; proc.d = { area:t.area, urgente:t.urgente, importante:t.importante, dur:t.dur || 0, cuando:'', hora:'', mas:false, proyecto:t.proyecto }; renderProc(); },
   pEspera:() => { guardarTituloProc(); if (!procArea()) return; const t = tActualProc(); proc.paso = 'espera'; proc.d = { area:t.area, espera:'', fecha:'' }; renderProc(); setTimeout(() => $('#pEsperaIn')?.focus(), 350); },
   pAlgun:() => { guardarTituloProc(); if (!procArea()) return; const t = tActualProc(); regProc(t, 'algun'); setEstado(t, 'algun'); volarProc('right'); },
   pBorrar:() => { const t = tActualProc(); regProc(t, 'borrado'); t.borrado = true; upsertT(t); volarProc('left'); },
   pAtras:() => { proc.paso = 'que'; renderProc(); },
-  pArea:el => { leerCamposProc(); proc.d.area = proc.d.area === el.dataset.v ? '' : el.dataset.v; repintarCuerpoProc(); },
+  pArea:el => { leerCamposProc(); proc.d.area = el.dataset.v; repintarCuerpoProc(); },
+  pMas:() => { leerCamposProc(); proc.d.mas = !proc.d.mas; repintarCuerpoProc(); },
   pMx:el => { leerCamposProc(); proc.d.urgente = el.dataset.u === '1'; proc.d.importante = el.dataset.i === '1'; repintarCuerpoProc(); },
   pDur:el => { leerCamposProc(); const m = +el.dataset.v; proc.d.dur = proc.d.dur === m ? 0 : m; repintarCuerpoProc(); },
   pCuando:el => { leerCamposProc(); proc.d.cuando = el.dataset.v; repintarCuerpoProc(); },
@@ -5246,7 +5263,8 @@ const ACT = {
     guardarTituloProc(); leerCamposProc();
     const t = tActualProc(), d = proc.d;
     if (d.cuando === 'fecha' && !d.fecha) { sacudir($('#pFecha'), 'Elige una fecha'); return; }
-    Object.assign(t, { area:d.area || '', urgente:!!d.urgente, importante:!!d.importante, dur:d.dur || 0, proyecto:(d.proyecto || '').trim().slice(0, 60), resultado:(d.resultado || '').trim().slice(0, 160) });
+    Object.assign(t, { area:d.area || t.area, urgente:!!d.urgente, importante:!!d.importante, dur:d.dur || 0, proyecto:(d.proyecto || '').trim().slice(0, 60) });
+    if (d.cuando) t.hora = d.hora || '';
     if (d.cuando === 'hoy') { t.estado = 'hoy'; t.fecha = hoy(); t.orden = 50 + tareasEn('hoy').length; }
     else if (d.cuando === 'manana') { t.estado = 'prox'; t.fecha = manana(); }
     else if (d.cuando === 'fecha') { t.estado = 'prox'; t.fecha = d.fecha; if (t.fecha <= hoy()) { t.estado = 'hoy'; t.fecha = hoy(); } }
@@ -5303,7 +5321,9 @@ const ACT = {
   plReg:() => { plan.regresar = !plan.regresar; refrescarSheet(); },
   plGuardar:() => guardarPlan(),
   // Detalle de la tarea
+  dtMas:() => { const t = dtT(); if (!t) return; if (dtMasAbierto(t)) { ui.dtMas = false; if (DT_MAS.includes(ui.dtOpen)) ui.dtOpen = ''; } else ui.dtMas = true; refrescarSheet(); },
   dtFila:el => {
+    if (DT_MAS.includes(el.dataset.v)) ui.dtMas = true;
     ui.dtOpen = ui.dtOpen === el.dataset.v ? '' : el.dataset.v; refrescarSheet();
     const o = $('.dr.open'); if (o) { const b = $('#sheetBody'), r = o.getBoundingClientRect(), br = b.getBoundingClientRect(); if (r.bottom > br.bottom - 70) b.scrollBy({ top:r.bottom - br.bottom + 90, behavior:'smooth' }); }
   },
@@ -5454,7 +5474,6 @@ const ACT = {
   },
   clarVerbo:el => { const d = el.dataset.dest; ponerTexto(d, aplicarVerbo(textoDe(d), el.dataset.v)); },
   clarUsar:el => ponerTexto(el.dataset.dest, el.dataset.v),
-  pVerRes:() => { leerCamposProc(); proc.d.verRes = true; repintarCuerpoProc(); setTimeout(() => $('#pResultado')?.focus(), 50); },
   dividirAbrir:el => {
     const dest = el.dataset.dest; let t;
     if (dest === 'proc') { guardarTituloProc(); t = tActualProc(); } else { guardarDetalleTexto(); t = dtT(); }
@@ -5521,7 +5540,6 @@ const IN = {
   pgFecha:el => { if (!el.value || !ui.sheet) return; const t = byId(ui.sheet.id), d = el.value; cerrarSheet(true); programarEn(t, d); render(); },
   rvFecha:el => { if (!el.value || !ui.rev) return; const t = byId(ui.rev.ids[ui.rev.i]); programarEn(t, el.value, false); rvSiguiente('prog'); },
   dtTitulo:el => { autoAlto(el); const v = el.value; dtCampo('tt', el, (t, id) => { if (!v.trim()) return; t.titulo = limpiarTitulo(v); upsertT(t); renderVista(); const c = dtVisible(id) && $('#dtClar'); if (c) c.innerHTML = htmlClaridad(v, 'dt'); }); },
-  dtResultado:el => { autoAlto(el); const v = el.value; dtCampo('res', el, (t, id) => { t.resultado = v.trim().slice(0, 160); upsertT(t); const d = dtVisible(id) && $('.dr.open .dr-v'); if (d) d.innerHTML = t.resultado ? esc(t.resultado) : '<span class="mut2">Sin definir</span>'; }); },
   dtLimite:el => { const t = dtT(); if (!t) return; t.limite = el.value || ''; upsertT(t); renderVista(); const v = $('.dr.open .dr-v'); if (v) v.textContent = t.limite ? fechaCorta(t.limite) : 'Opcional'; },
   dtSeg:el => { const t = dtT(); if (!t || !el.value) return; if (el.value < hoy()) { el.value = t.seg; sacudir(el, 'Elige una fecha de hoy en adelante'); return; } t.seg = el.value; upsertT(t); ui.dtOpen = ''; dtRefrescar(); },
   dtProyecto:el => { const v = el.value; dtCampo('pr', el, t => { t.proyecto = v.trim().slice(0, 60); upsertT(t); renderVista(); }); },
@@ -5576,6 +5594,10 @@ document.addEventListener('input', e => {
   if (el.id === 'pEsperaIn' && proc && proc.d.errEsp && el.value.trim()) { proc.d.errEsp = false; el.classList.remove('bad'); const n = el.nextElementSibling; if (n && n.classList.contains('err')) n.remove(); }
   if (el.id === 'areaNuevaN' && ui.areaNueva) { ui.areaNueva.n = el.value; if (ui.areaNueva.err) { ui.areaNueva.err = ''; el.classList.remove('bad'); const n = el.nextElementSibling; if (n && n.classList.contains('err')) n.remove(); } }
   if (el.id === 'cfgUrl' || el.id === 'cfgClave') { ui.cfgDraft = { url:$('#cfgUrl').value, clave:$('#cfgClave').value }; el.classList.remove('bad'); }
+});
+document.addEventListener('change', e => {
+  const el = e.target;
+  if (el.matches && el.matches('select.areasel')) { ui.capArea = el.value; ui.capAreaManual = !!el.value; pintarCapAreas(); }
 });
 document.addEventListener('toggle', e => {
   const d = e.target; if (!d || d.tagName !== 'DETAILS') return;
