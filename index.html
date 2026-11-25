@@ -3473,7 +3473,7 @@ function renderHoy() {
         ? `<button class="btn pri grow" data-a="${t.corriendo ? 'pausar' : 'iniciar'}">${t.corriendo ? ic('pause') + 'Pausar' : ic('play', 'fill') + 'Reanudar'}</button>
           ${desc ? `<button class="btn sq" data-a="saltar" aria-label="Saltar descanso">${ic('skip')}</button>` : `<button class="btn sq" data-a="miniCerrar" aria-label="Terminar sesión">${ic('stop')}</button>`}
           <button class="btn sq" data-a="ir" data-v="enfoque" aria-label="Enfoque en pantalla completa">${ic('expand')}</button>`
-        : `<button class="btn pri grow" data-a="play" data-id="${ahora.id}">${ic('play', 'fill')}Empezar</button>`}
+        : `<button class="btn pri grow" data-a="play" data-id="${ahora.id}">${ic('play', 'fill')}Empezar</button><button class="btn sq" data-a="cambiarTarea" aria-label="Cambiar la tarea de Ahora" title="Cambiar la tarea de Ahora">${ic('refresh')}</button>`}
         <button class="btn sq okb" data-a="ck" data-id="${ahora.id}" aria-label="Marcar como hecha">${ic('check')}</button></div>
       <div class="hero-m">${ic('clock')}<span id="heroFin">${tiempo}</span>${run || desc ? '' : `<button class="lnk2" data-a="heroModo">Cambiar modo</button>`}<button class="lnk2" data-a="cambiarTarea">Cambiar tarea</button></div></div>`;
     if (!enMarcha()) zA += `<button class="arr" data-a="arranque">${ic('sparkle')}¿No sabes por dónde empezar?</button>`;
