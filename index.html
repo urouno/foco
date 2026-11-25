@@ -3292,37 +3292,23 @@ function cuerpoProc(t) {
   const P = proc;
   if (P.paso === 'que') return `
     <div id="procClar">${htmlClaridad(t.titulo, 'proc')}</div>
-    <div class="f-sec" style="margin-top:8px"><label>Área</label><div class="areapick" id="procQa" role="radiogroup" aria-label="Área (obligatoria)">${areas().map(a => `<button class="chip area ${P.qa === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="pQa" data-v="${a.id}" role="radio" aria-checked="${P.qa === a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('')}</div></div>
+    ${t.area ? '' : `<div class="f-sec" style="margin-top:8px"><label>Área</label><div class="areapick" id="procQa" role="radiogroup" aria-label="Área (obligatoria)">${areas().map(a => `<button class="chip area ${P.qa === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="pQa" data-v="${a.id}" role="radio" aria-checked="${P.qa === a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('')}</div></div>`}
     <p class="proc-h">¿Qué hago con esto?</p>
     <button class="two" data-a="pYa"><span class="ico">${ic('bolt')}</span><span><b>Lo hago ahora</b><small>Abre un temporizador de 5 minutos para hacerlo ya</small></span>${ic('play', 'fill')}</button>
     <div class="sec-t" style="margin-top:16px">Si toma más tiempo</div>
     <div class="acts">
-      <button class="act" style="--k:var(--ac-t);--k-s:var(--ac-s)" data-a="pProx"><span class="ico">${ic('arrowR')}</span><span><b>Próxima acción</b><span>La haré yo: le pongo área, prioridad y día</span></span></button>
+      <button class="act" style="--k:var(--ac-t);--k-s:var(--ac-s)" data-a="pProx"><span class="ico">${ic('arrowR')}</span><span><b>Próxima acción</b><span>La haré yo: solo elijo su prioridad</span></span></button>
       <button class="act" style="--k:var(--warn);--k-s:var(--warn-s)" data-a="pEspera"><span class="ico">${ic('hourglass')}</span><span><b>En espera</b><span>Depende de otra persona</span></span></button>
       <button class="act" style="--k:var(--vio);--k-s:var(--vio-s)" data-a="pAlgun"><span class="ico">${ic('bulb')}</span><span><b>Algún día</b><span>Idea para después, sin fecha</span></span></button>
       <button class="act del" data-a="pBorrar"><span class="ico">${ic('trash')}</span><span><b>Eliminar</b><span>Ya no hace falta</span></span></button>
     </div>`;
   const d = P.d;
-  const A = area(d.area);
-  const chipsArea = `<button class="asel full" data-a="areaAbrir" data-dest="proc">${A ? `<i class="dot" style="--a:${A.c}"></i>${esc(A.n)}` : '<span class="mut">Sin área</span>'}<span class="sp"></span>${ic('chevD')}</button>`;
   if (P.paso === 'espera') return `
     <div class="f-sec"><label for="pEsperaIn">¿Qué o a quién esperas?</label><input class="in ${d.errEsp ? 'bad' : ''}" id="pEsperaIn" maxlength="120" placeholder="Ej. respuesta de Omar" value="${esc(d.espera || '')}">${d.errEsp ? '<div class="err">Escribe de quién o de qué dependes para poder darle seguimiento.</div>' : ''}</div>
-    <div class="f-sec"><label>Área</label>${chipsArea}</div>
     <div class="f-sec"><label>¿Cuándo le doy seguimiento?</label><div class="chips">${[['', 'Sin fecha'], [manana(), 'Mañana'], [addDays(hoy(), 3), 'En 3 días'], [addDays(hoy(), 7), 'En una semana']].map(([v, n]) => `<button class="chip ${(d.fecha || '') === v ? 'on' : ''}" data-a="pSeg" data-v="${v}">${n}</button>`).join('')}</div></div>
     <div class="proc-foot"><button class="btn" data-a="pAtras">Atrás</button><button class="btn pri" data-a="pGuardarEsp">${ic('check')}Guardar</button></div>`;
-  const chipsAreas = `<div class="areapick" role="radiogroup" aria-label="Área">${areas().map(a => `<button class="chip area ${d.area === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="pArea" data-v="${a.id}" role="radio" aria-checked="${d.area === a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('')}</div>`;
   return `
-    <div class="sec-t">${ic('layers')}Organización</div>
-    <div class="f-sec"><label>Área</label>${chipsAreas}</div>
     <div class="f-sec"><label>Prioridad</label>${matriz(d.urgente, d.importante, 'pMx')}</div>
-    <div class="sec-t">${ic('cal')}Planificación</div>
-    <div class="f-sec"><label>Día planeado</label><div class="chips">${[['hoy', 'Hoy'], ['manana', 'Mañana'], ['', 'Sin fecha'], ['fecha', 'Elegir fecha']].map(([v, n]) => `<button class="chip ${d.cuando === v ? 'on' : ''}" data-a="pCuando" data-v="${v}">${n}</button>`).join('')}</div>
-      ${d.cuando === 'fecha' ? `<input type="date" class="in" style="margin-top:12px" id="pFecha" value="${d.fecha || manana()}" min="${hoy()}" aria-label="Fecha">` : ''}</div>
-    ${d.cuando ? `<div class="f-sec"><label for="pHora">Hora <span class="mut">(opcional)</span></label><input type="time" class="in" id="pHora" step="900" value="${esc(d.hora || '')}"></div>` : ''}
-    <button class="dr-h mas-t" data-a="pMas" aria-expanded="${!!d.mas}"><span class="dr-l">Más detalles</span><span class="dr-v">Duración y proyecto</span>${ic('chevD', 'chev')}</button>
-    ${d.mas ? `<div class="mas-b">
-      <div class="f-sec"><label>Duración estimada</label><div class="chips">${[5, 15, 25, 50, 90].map(m => `<button class="chip ${d.dur === m ? 'on' : ''}" data-a="pDur" data-v="${m}">${m} min</button>`).join('')}</div></div>
-      <div class="f-sec"><label for="pProyecto">Proyecto (opcional)</label><input class="in" id="pProyecto" list="proyectos" maxlength="60" placeholder="Ej. App de finanzas" value="${esc(d.proyecto || '')}"></div></div>` : ''}
     <div class="proc-foot"><button class="btn" data-a="pAtras">Atrás</button><button class="btn pri" data-a="pGuardarProx">${ic('check')}Guardar</button></div>`;
 }
 // Todo pendiente organizado necesita área: se guarda la elegida o la sugerida.
