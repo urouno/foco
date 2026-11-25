@@ -465,6 +465,31 @@ details.sec-d[open] .chev{transform:rotate(180deg)}
 .fbar .agr button{padding:0 12px}
 .ls-add{margin-top:10px}
 .ag-top{display:flex;align-items:center;gap:8px;margin-top:12px}
+.ag-seg{margin-bottom:4px}
+.wd-nav{flex:1;display:flex;align-items:center;justify-content:space-between;gap:4px}
+.wd-nav b{font-size:var(--fs-m);font-weight:700}
+.wd-sum{margin:8px 4px 4px;font-size:var(--fs-s);color:var(--mut)}.wd-sum b{color:var(--ink);font-size:var(--fs-m)}
+.wd{margin-top:12px;background:var(--sf);border-radius:var(--r);overflow:hidden}
+.wd.pas{opacity:.7}
+.wd.hoy{box-shadow:0 0 0 1.5px var(--ac)}
+.wd-head{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;padding:8px 14px;text-align:left}
+.wd-head > svg.i{width:16px;height:16px;color:var(--mut2);flex:none}
+.wd-d{display:flex;flex-direction:column;align-items:center;width:36px;flex:none}
+.wd-d span{font-size:11px;color:var(--mut);font-weight:600;text-transform:capitalize}.wd.hoy .wd-d span,.wd.hoy .wd-d b{color:var(--ac-t)}
+.wd-d b{font-size:var(--fs-l);font-weight:700;font-variant-numeric:tabular-nums;line-height:1.1}
+.wd-m{flex:1;min-width:0;display:flex;flex-direction:column}
+.wd-m b{font-size:var(--fs-m);font-weight:600}
+.wd-m small{font-size:var(--fs-s);color:var(--mut)}
+.wd-head .cap-b{width:44px;height:4px;flex:none}
+.wd-l{padding:0 8px 8px}
+.wd-t{display:flex;align-items:center;gap:10px;min-height:44px;padding:6px 8px 6px 10px;margin-top:4px;border-radius:10px;background:var(--sf2);border-left:3px solid var(--a,var(--mut2))}
+.wd-t.run{background:var(--ac-s)}
+.wd-t.hecha{opacity:.55}.wd-t.hecha .wd-n{text-decoration:line-through}
+.wd-h em{font-style:normal;font-weight:400;font-size:11px;color:var(--mut2)}
+.wd-h{flex:none;width:48px;font-size:var(--fs-s);font-weight:600;color:var(--mut);font-variant-numeric:tabular-nums}
+.wd-n{flex:1;min-width:0;font-size:var(--fs-m);line-height:1.3}
+.wd-t small{flex:none;font-size:var(--fs-s);color:var(--mut)}
+.wd-t svg.i{width:16px;height:16px;color:var(--ac-t);flex:none}
 .ag-dia{flex:1;min-width:0}
 .ag-dia > div{display:flex;align-items:baseline;gap:8px;white-space:nowrap;overflow:hidden}
 .ag-dia b{font-size:var(--fs-l);font-weight:700}
@@ -1067,8 +1092,6 @@ body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(-
   .hoy-a .hero{padding:32px 28px 28px}
   .hoy-a .hero-t{font-size:26px}
   #v-enfoque,#v-progreso{max-width:720px}
-  #v-pendientes{max-width:880px}
-  #v-lista{max-width:880px}
   /* Tablero: todas las columnas a la vista */
   .coltabs{display:none}
   .board{margin:12px 0 0;padding:0 0 8px;overflow-x:auto;scroll-snap-type:none;scrollbar-width:thin}
@@ -1091,6 +1114,14 @@ body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(-
   .sm-cal.picking{box-shadow:0 0 0 2px var(--ac)}
   .sm-heads,.sm-grid{display:grid;grid-template-columns:52px repeat(7,minmax(0,1fr))}
   .sm-heads{border-bottom:1px solid var(--ln)}
+  .sm-adrow{display:grid;grid-template-columns:52px repeat(7,minmax(0,1fr));border-bottom:1px solid var(--ln);background:var(--sf2)}
+  .sm-adl{font-size:11px;color:var(--mut);padding:8px 4px;text-align:right;font-weight:600}
+  .sm-ad{display:flex;flex-direction:column;gap:3px;padding:6px 4px;border-left:1px solid var(--ln);min-width:0}
+  .sm-ad.hoy{background:color-mix(in srgb,var(--ac) 6%,transparent)}
+  .sm-ad-t{display:flex;align-items:center;min-height:24px;padding:0 6px;border-radius:6px;background:var(--sf);border-left:3px solid var(--a,var(--mut2));font-size:12px;cursor:grab;min-width:0}
+  .sm-ad-t span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sm-ad-t:hover{background:var(--sf3)}
+  .sm-ad small{font-size:11px;color:var(--mut);padding-left:4px}
   .sm-h{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;border-left:1px solid var(--ln)}
   .sm-h span{font-size:var(--fs-s);font-weight:600;color:var(--mut);text-transform:capitalize}
   .sm-h b{font-size:var(--fs-l);font-weight:700;font-variant-numeric:tabular-nums}
@@ -1494,12 +1525,10 @@ main .tr .tt{font-weight:500}
   <div class="seg subnav" id="subnav" role="tablist"></div>
   <section class="view" id="v-bandeja"></section>
   <section class="view" id="v-mente"></section>
-  <section class="view" id="v-lista"></section>
   <section class="view" id="v-agenda"></section>
   <section class="view" id="v-hoy"></section>
   <section class="view" id="v-tablero"></section>
   <section class="view" id="v-enfoque"></section>
-  <section class="view" id="v-pendientes"></section>
   <section class="view" id="v-progreso"></section>
 </main>
 <nav id="tabs" aria-label="Secciones"></nav>
@@ -1714,7 +1743,7 @@ const pref = {
 };
 
 const D = { st:null, justDragged:false };
-const ui = { view:'hoy', scroll:{}, f:{ area:'todas', proyecto:'', estado:'', prio:'' }, buscarQ:'', volverDe:'hoy', ult:{}, dia:'', bVerbo:'', hoyVista:'lista', listaPor:pref.v('listaPor') || 'cuando', filtro:'todas', col:'prox', agSel:'', agY:null, histQ:'', histN:40, sheet:null,
+const ui = { view:'hoy', scroll:{}, f:{ area:'todas', proyecto:'', estado:'', prio:'' }, buscarQ:'', volverDe:'hoy', ult:{}, dia:'', bVerbo:'', hoyVista:'lista', filtro:'todas', col:'prox', agSel:'', agY:null, histQ:'', histN:40, sheet:null,
   capArea:'', enfCaps:[], dtOpen:'', savedAt:0, nuevoTomate:false, syncErr:'', cfgMsg:null, cfgDraft:null, areaNueva:null, areaColor:'', onb:0 };
 const abierto = k => !!pref.v('ab-' + k);
 
@@ -2599,10 +2628,8 @@ function mnReplanear(m) {
 /* ================= Interfaz general ================= */
 const VISTAS = [
   { k:'bandeja', n:'Bandeja', ic:'inbox', sub:() => { const n = tareasEn('bandeja').length; return n ? `${n} por organizar` : 'Anota todo aquí, organiza después'; } },
-  { k:'lista', n:'Lista', ic:'list', sub:() => { const n = activas().filter(t => !['bandeja', 'algun'].includes(t.estado)).length; return n ? `${n} ${n === 1 ? 'tarea organizada' : 'tareas organizadas'}` : 'Todo lo que tienes organizado'; } },
   { k:'agenda', n:'Agenda', ic:'cal', sub:() => 'Asigna día y hora a tus tareas' },
   { k:'tablero', n:'Tablero', ic:'kanban', sub:() => 'Todas tus tareas por estado' },
-  { k:'pendientes', n:'Pendientes', ic:'layers', sub:() => { const n = pendientesSinPlan().filter(x => x.tipo !== 'algun').length; return n ? `${n} sin planificar` : 'Todo tiene un siguiente paso'; } },
   { k:'hoy', n:'Hoy', ic:'sun', sub:() => { const d = new Date(); return `${DIAS[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]}`; } },
   { k:'enfoque', n:'Enfoque', ic:'timer', sub:() => 'Pomodoro y bloques de tiempo' },
   { k:'progreso', n:'Progreso', ic:'chart', sub:() => 'Tu avance y tus logros' },
@@ -2613,10 +2640,10 @@ const VISTAS = [
 const GRUPOS = [
   { k:'hoy', n:'Hoy', ic:'sun', vs:['hoy', 'enfoque'], ocultas:['enfoque'] },
   { k:'bandeja', n:'Bandeja', ic:'inbox', vs:['bandeja', 'mente'] },
-  { k:'planifica', n:'Planifica', ic:'cal', vs:['lista', 'tablero', 'agenda', 'pendientes'] },
+  { k:'planifica', n:'Planifica', ic:'cal', vs:['agenda', 'tablero'] },
   { k:'progreso', n:'Progreso', ic:'chart', vs:['progreso'] }
 ];
-// En teléfonos el Tablero no cabe; la Lista cubre esa función.
+// En teléfonos el Tablero no cabe: ahí Planifica solo muestra la Agenda.
 const mqMovil = matchMedia('(max-width:767px)');
 const subVistas = g => g.vs.filter(v => !(g.ocultas || []).includes(v) && !(v === 'tablero' && mqMovil.matches));
 const grupoDe = v => GRUPOS.find(g => g.vs.includes(v));
@@ -2665,16 +2692,15 @@ function spRefrescar() { renderVista(); if (ui.sheet && ui.sheet.k === 'proyecto
 let tabsHtml = '';
 function pintarTabs() {
   const nb = tareasEn('bandeja').length, run = S.timer && S.timer.corriendo, g0 = grupoDe(ui.view), dk = desk();
-  const olvN = pendientesSinPlan().filter(x => x.tipo !== 'algun' && x.olvidada).length;
-  const nMente = mnAbiertos().length, nSinPlan = pendientesSinPlan().filter(x => x.tipo !== 'algun').length;
-  const cuenta = { mente:nMente, pendientes:nSinPlan };
+  const nMente = mnAbiertos().length;
+  const cuenta = { mente:nMente };
   const grupos = GRUPOS.map((g, i) => {
     const sv = subVistas(g), propia = sv.find(k => VISTAS.find(x => x.k === k).n === g.n);
     // En escritorio las vistas de cada sección se ven anidadas: la sección lleva a su vista principal y cada vista está a un clic.
     const hijas = sv.length > 1 ? sv.filter(k => k !== propia) : [];
     const v = g.k === 'hoy' ? 'hoy' : dk && propia ? propia : ui.ult[g.k] || g.vs[0];
     const enG = g === g0, on = dk ? enG && (!hijas.includes(ui.view)) : enG;
-    return `<button class="${on ? 'on' : ''} ${enG ? 'eng' : ''}" data-a="tab" data-v="${v}" ${on ? 'aria-current="page"' : ''} aria-label="${g.n}${g.k === 'bandeja' && nb ? `, ${nb} por organizar` : ''}${g.k === 'planifica' && olvN ? `, ${olvN} pendientes olvidados` : ''}"><span class="tp">${ic(g.ic)}</span><span class="tl">${g.n}</span>${g.k === 'bandeja' && nb ? `<i class="bdg">${nb > 99 ? '99+' : nb}</i>` : ''}${g.k === 'hoy' && run && ui.view !== 'enfoque' ? '<i class="tdot"></i>' : ''}${g.k === 'planifica' && olvN ? '<i class="tdot warn"></i>' : ''}<kbd>${i + 1}</kbd></button>`
+    return `<button class="${on ? 'on' : ''} ${enG ? 'eng' : ''}" data-a="tab" data-v="${v}" ${on ? 'aria-current="page"' : ''} aria-label="${g.n}${g.k === 'bandeja' && nb ? `, ${nb} por organizar` : ''}"><span class="tp">${ic(g.ic)}</span><span class="tl">${g.n}</span>${g.k === 'bandeja' && nb ? `<i class="bdg">${nb > 99 ? '99+' : nb}</i>` : ''}${g.k === 'hoy' && run && ui.view !== 'enfoque' ? '<i class="tdot"></i>' : ''}<kbd>${i + 1}</kbd></button>`
       + (hijas.length ? `<div class="sub">${hijas.map(k => { const V = VISTAS.find(x => x.k === k), sel = ui.view === k; return `<button class="${sel ? 'on' : ''}" data-a="tab" data-v="${k}" ${sel ? 'aria-current="page"' : ''}>${ic(V.ic)}<span class="tl">${V.n}</span>${cuenta[k] ? `<i class="cnt">${cuenta[k] > 99 ? '99+' : cuenta[k]}</i>` : ''}</button>`; }).join('')}</div>` : '');
   }).join('');
   const html = `<div class="brand"><img src="icon-180.png" alt="" width="28" height="28">Foco</div>` + grupos
@@ -2695,10 +2721,10 @@ function pintarTabs() {
   sn.classList.toggle('hide', sv.length < 2);
   sn.innerHTML = sv.map(k => { const V = VISTAS.find(x => x.k === k); return `<button class="${ui.view === k ? 'on' : ''}" data-a="tab" data-v="${k}" role="tab" aria-selected="${ui.view === k}">${ic(V.ic)}<span>${V.n}</span></button>`; }).join('');
 }
-const RECUERDA_POS = ['lista', 'tablero', 'agenda', 'pendientes', 'progreso'];
+const RECUERDA_POS = ['tablero', 'agenda', 'progreso'];
 function ir(v) {
   if (!VISTAS.some(x => x.k === v)) return;
-  if (v === 'tablero' && mqMovil.matches) v = 'lista';
+  if (v === 'tablero' && mqMovil.matches) v = 'agenda';
   if (ui.view === v) { window.scrollTo({ top:0, behavior:'smooth' }); return; }
   ui.scroll[ui.view] = scrollY;
   if (v === 'enfoque') ui.volverDe = ui.view;
@@ -2730,7 +2756,7 @@ function render() {
   $('#proyectos').innerHTML = pr.map(p => `<option value="${esc(p)}">`).join('');
 }
 function renderVista() {
-  ({ bandeja:renderBandeja, lista:renderLista, agenda:renderAgenda, hoy:renderHoy, tablero:renderTablero, enfoque:renderEnfoque, progreso:renderProgreso, pendientes:renderPendientes, mente:renderMente })[ui.view]();
+  ({ bandeja:renderBandeja, agenda:renderAgenda, hoy:renderHoy, tablero:renderTablero, enfoque:renderEnfoque, progreso:renderProgreso, mente:renderMente })[ui.view]();
   pintarTabs(); encabezado(); pintarMini();
 }
 let renderPend = false;
@@ -3418,7 +3444,7 @@ async function guardarPlan() {
   const para = plan.para;
   cerrarSheet(true);
   toast(para === 'hoy' ? 'Plan de hoy listo' : 'Plan de mañana listo. Descansa.');
-  if (!['hoy', 'agenda', 'lista'].includes(ui.view)) ir('hoy'); else render();
+  if (!['hoy', 'agenda'].includes(ui.view)) ir('hoy'); else render();
 }
 
 /* ================= Vista: Hoy ================= */
@@ -3505,8 +3531,6 @@ function renderHoy() {
     <div class="group" data-list="atrasada">${ant.map(x => filaDec(x, `<button class="qk pri" data-a="pendHoy" data-id="${x.id}">Hoy</button><button class="qk" data-a="pendOtro" data-id="${x.id}">Otro día</button><button class="qk" data-a="pendProx" data-id="${x.id}">A próximas</button>`)).join('')}</div>`;
   if (zonas) zB += `<details class="sec-d" data-k="hechas" ${abierto('hechas') ? 'open' : ''}><summary class="sec-t">${ic('check')}Completadas <span class="n">${hechas.length}</span><span class="sp"></span>${ic('chevD', 'chev')}</summary><div class="group" data-list="hecho">${hechas.map(x => filaHecha(x, true)).join('')}${hechas.length ? '' : '<div class="empty">Arrastra aquí una tarea para completarla.</div>'}</div></details>`;
   const plMan = tareasEn('prox').filter(x => x.fecha === manana()).length;
-  const spH = pendientesSinPlan().filter(x => x.tipo !== 'algun'), olvH = spH.filter(x => x.olvidada).length, dRevH = diasRevision();
-  if (spH.length && (olvH || dRevH == null || dRevH >= 7)) zB += `<button class="panel row-link" data-a="tab" data-v="pendientes">${ic('layers')}<span><b>${spH.length} sin planificar</b>${olvH ? ` · ${olvH} ${olvH === 1 ? 'olvidado' : 'olvidados'}` : dRevH == null ? ' · haz tu primera revisión' : ` · revisión hace ${dRevH} días`}</span>${ic('chevR')}</button>`;
   if (plMan && tarde) zB += `<button class="panel row-link" data-a="plan" data-v="manana">${ic('moon')}<span><b>Mañana</b> · ${plMan} ${plMan === 1 ? 'tarea planeada' : 'tareas planeadas'}</span>${ic('chevR')}</button>`;
   v.innerHTML = `<div class="hoy-g"><div class="hoy-a">${zA}</div><div class="hoy-t">${zT}</div><div class="hoy-b">${zB}</div></div>`;
 }
@@ -3633,7 +3657,14 @@ function renderSemana() {
     }).join('');
     return `<div class="sm-col ${x === hoy() ? 'hoy' : ''}" data-dia="${x}" data-a="semTap">${bl}${x === hoy() && nm >= AG_INI * 60 && nm <= AG_FIN * 60 ? `<div class="tl-now" style="top:${nm - AG_INI * 60}px"></div>` : ''}</div>`;
   }).join('');
+  // Fila «Sin hora»: las tareas con día pero sin hora, visibles en su columna (arrástralas a una hora para agendarlas).
+  const adCeldas = dias.map(x => {
+    const ts = tareasDia(x).filter(t => t.estado !== 'hecho' && !t.hora && pasaFiltro(t)).sort(ordenPrioridad);
+    return `<div class="sm-ad ${x === hoy() ? 'hoy' : ''}" data-dia="${x}">${ts.slice(0, 4).map(t => `<div class="sm-ad-t" draggable="true" data-dnd="${t.id}" data-a="abrir" data-id="${t.id}" role="button" tabindex="0" style="--a:${colorA(t.area)}" title="${esc(t.titulo)}"><span>${esc(t.titulo)}</span></div>`).join('')}${ts.length > 4 ? `<small>+${ts.length - 4} más</small>` : ''}</div>`;
+  }).join('');
+  const hayAd = dias.some(x => tareasDia(x).some(t => t.estado !== 'hecho' && !t.hora && pasaFiltro(t)));
   v.innerHTML = `<div class="semana">${side}<div class="sm-cal ${sel ? 'picking' : ''}"><div class="sm-heads"><div></div>${heads}</div>
+    ${hayAd ? `<div class="sm-adrow"><div class="sm-adl">Sin hora</div>${adCeldas}</div>` : ''}
     <div class="sm-body" id="smBody"><div class="sm-grid" style="height:${(AG_FIN - AG_INI) * 60}px"><div class="sm-axis">${ejes}</div>${cols}</div></div></div></div>`;
   const b = $('#smBody');
   const altoGrid = (AG_FIN - AG_INI) * 60;
@@ -3660,8 +3691,47 @@ document.addEventListener('drop', e => {
   const { id, dy } = ui.dnd; ui.dnd = null;
   agendar(byId(id), c.dataset.dia, e.clientY - c.getBoundingClientRect().top - dy);
 });
+// Móvil: alternar entre el día con su línea de horas y la semana completa en una sola lista.
+const agVista = () => pref.v('agVista') || 'semana';
+const htmlAgSeg = () => `<div class="seg mini ag-seg" role="tablist" aria-label="Vista de la agenda">${[['semana', 'Semana'], ['dia', 'Día']].map(([k, n]) => `<button class="${agVista() === k ? 'on' : ''}" data-a="agVista" data-v="${k}" role="tab" aria-selected="${agVista() === k}">${n}</button>`).join('')}</div>`;
+function renderAgendaSemana() {
+  const v = $('#v-agenda');
+  if (!ui.semIni) ui.semIni = hoy();
+  const dias = Array.from({ length:7 }, (_, i) => addDays(ui.semIni, i));
+  const d0 = parseYmd(dias[0]), d6 = parseYmd(dias[6]);
+  const rango = d0.getMonth() === d6.getMonth() ? `${d0.getDate()} – ${d6.getDate()} de ${MESES[d6.getMonth()]}` : `${d0.getDate()} ${MESES[d0.getMonth()].slice(0, 3)} – ${d6.getDate()} ${MESES[d6.getMonth()].slice(0, 3)}`;
+  const nf = chipsFiltro().length;
+  const info = dias.map(x => {
+    const ts = tareasDia(x).filter(t => pasaFiltro(t, { sinEstado:t.estado === 'hecho' }));
+    const pend = ts.filter(t => t.estado !== 'hecho').sort((a, b) => (a.hora || '99').localeCompare(b.hora || '99') || byOrden(a, b));
+    const hechas = ts.filter(t => t.estado === 'hecho').sort((a, b) => (a.hora || '99').localeCompare(b.hora || '99'));
+    return { x, pend, hechas, c:cargaDia(x) };
+  });
+  const total = info.reduce((n, i) => n + i.pend.length, 0), hechasT = info.reduce((n, i) => n + i.hechas.length, 0);
+  const porDia = tareasEn('prox').filter(t => !t.fecha && pasaFiltro(t)).sort(ordenPrioridad);
+  const fila = t => `<div class="wd-t ${t.estado === 'hecho' ? 'hecha' : ''} ${t.estado === 'proceso' ? 'run' : ''}" style="--a:${colorA(t.area)}" data-a="abrir" data-id="${t.id}" role="button" tabindex="0">
+    <span class="wd-h">${t.hora || '<em>sin hora</em>'}</span><span class="wd-n">${esc(t.titulo)}</span>${t.dur ? `<small>${t.dur} min</small>` : ''}${t.estado === 'hecho' ? ic('check') : ''}</div>`;
+  let html = `${htmlAgSeg()}
+    <div class="ag-top"><div class="sm-nav wd-nav"><button class="ib" data-a="semMov" data-v="-7" aria-label="Semana anterior">${ic('chevL')}</button><b>${rango}</b><button class="ib" data-a="semMov" data-v="7" aria-label="Semana siguiente">${ic('chevR')}</button></div>
+      ${ui.semIni !== hoy() ? `<button class="btn sm ghost" data-a="semMov" data-v="0">Hoy</button>` : ''}
+      <button class="ib filt ${nf ? 'on' : ''}" data-a="filtrar" aria-label="Filtrar${nf ? `, ${nf} activos` : ''}">${ic('filter')}</button></div>
+    <p class="wd-sum"><b>${total}</b> ${total === 1 ? 'pendiente' : 'pendientes'} esta semana${hechasT ? ` · ${hechasT} ${hechasT === 1 ? 'hecho' : 'hechos'}` : ''}</p>`;
+  if (nf) html += htmlBarraFiltros(total, total);
+  html += info.map(({ x, pend, hechas, c }) => {
+    const dd = parseYmd(x), over = c.carga > c.cap, esHoy = x === hoy();
+    return `<section class="wd ${esHoy ? 'hoy' : ''} ${x < hoy() ? 'pas' : ''}">
+      <button class="wd-head" data-a="agVerDia" data-v="${x}" aria-label="Abrir ${fechaLarga(x)}">
+        <span class="wd-d"><span>${esHoy ? 'Hoy' : DIAS3[dd.getDay()]}</span><b>${dd.getDate()}</b></span>
+        <span class="wd-m"><b>${esHoy ? 'Hoy' : x === manana() ? 'Mañana' : cap1(fechaCorta(x))}</b><small>${pend.length ? `${pend.length} · ${hCorta(c.carga)} de ${hCorta(c.cap)}` : hechas.length ? 'Todo hecho' : 'Libre'}</small></span>
+        ${pend.length ? `<i class="cap-b ${over ? 'over' : ''}"><i style="width:${Math.min(100, c.carga / Math.max(1, c.cap) * 100)}%"></i></i>` : ''}${ic('chevR')}</button>
+      ${pend.length || hechas.length ? `<div class="wd-l">${pend.map(fila).join('')}${hechas.map(fila).join('')}</div>` : ''}</section>`;
+  }).join('');
+  if (porDia.length) html += `<button class="ag-pend" data-a="agPendSem">${ic('list')}<span>Sin día · <b>${porDia.length}</b> ${porDia.length === 1 ? 'tarea' : 'tareas'} por agendar</span>${ic('chevR')}</button>`;
+  v.innerHTML = html;
+}
 function renderAgenda() {
   if (desk()) { renderSemana(); return; }
+  if (agVista() === 'semana') { renderAgendaSemana(); return; }
   const v = $('#v-agenda');
   if (!ui.dia) ui.dia = hoy();
   const d = ui.dia, ts = tareasDia(d);
@@ -3669,7 +3739,7 @@ function renderAgenda() {
   // La tira de días empieza hoy, o en el día elegido si es anterior o lejano.
   const ini = d < hoy() || d > addDays(hoy(), 13) ? addDays(d, -3) : hoy();
   const dias = Array.from({ length:14 }, (_, i) => addDays(ini, i));
-  let html = `<div class="wk" id="wk">${dias.map(x => {
+  let html = htmlAgSeg() + `<div class="wk" id="wk">${dias.map(x => {
     const c = cargaDia(x), dd = parseYmd(x);
     return `<button class="wk-d ${x === d ? 'on' : ''} ${x === hoy() ? 'hoy' : ''} ${x < hoy() ? 'pas' : ''}" data-a="dia" data-v="${x}" aria-pressed="${x === d}" aria-label="${fechaLarga(x)}, ${c.pend.length} tareas">
       <span>${x === hoy() ? 'Hoy' : DIAS3[dd.getDay()]}</span><b>${dd.getDate()}</b><i class="wk-n">${c.pend.length || ''}</i><i class="wk-l ${c.carga > c.cap ? 'over' : ''}"><i style="width:${Math.min(100, c.carga / Math.max(1, c.cap) * 100)}%"></i></i></button>`;
@@ -3765,81 +3835,7 @@ function posAgenda(w) {
   ui.agY = w.scrollTop;
 }
 
-/* ================= Vista: Lista (Planifica) ================= */
-// Todo lo organizado en un solo lugar, agrupado por cuándo, por área o por proyecto.
-// Desde aquí cada tarea se manda a la Agenda para darle día y hora.
-const EST_TAG = { hoy:['sun', 'Hoy'], proceso:['timer', 'En curso'], espera:['hourglass', 'En espera'] };
-function filaLista(t, por) {
-  const e = EST_TAG[t.estado], pill = t.estado === 'proceso' ? `<span class="pq q2">${ic('timer')}En curso</span>` : (por !== 'cuando' && e ? `<span class="tag">${ic(e[0])}${e[1]}</span>` : '');
-  const fecha = por !== 'cuando' && t.fecha === hoy() && !t.hora && t.estado === 'prox' ? `<span class="tag">${ic('cal')}Hoy</span>` : '';
-  const sinFecha = !t.fecha && t.estado !== 'espera';
-  return `<div class="tr ls" style="--a:${colorA(t.area)}" data-id="${t.id}" data-a="abrir" role="button" tabindex="0" aria-label="${esc(t.titulo)}. Abrir detalle">
-    <button class="ck" data-a="ck" data-id="${t.id}" aria-label="Marcar como hecha: ${esc(t.titulo)}">${ic('check')}</button>
-    <div class="tb"><div class="tt">${esc(t.titulo)}</div><div class="mt">${pill}${fecha}${metaCorta(t, 2, { area:por !== 'area' })}${t.proyecto && por !== 'proyecto' ? `<span class="tag">${ic('folder')}${esc(t.proyecto)}</span>` : ''}</div></div>
-    ${t.estado === 'espera' ? '' : `<button class="ls-ag ${sinFecha ? 'pend' : ''}" data-a="listaAgendar" data-id="${t.id}" aria-label="${t.hora ? 'Cambiar horario' : 'Asignar día y hora'} en la Agenda">${ic(t.hora ? 'clock' : 'cal')}<span>${t.hora ? t.hora : sinFecha ? 'Agendar' : 'Hora'}</span></button>`}
-  </div>`;
-}
-function gruposLista(por, ts) {
-  const ordHoy = (a, b) => (a.estado === 'proceso' ? 0 : 1) - (b.estado === 'proceso' ? 0 : 1) || (a.hora || '99').localeCompare(b.hora || '99') || byOrden(a, b);
-  const ordFecha = (a, b) => (a.fecha || '9').localeCompare(b.fecha || '9') || (a.hora || '99').localeCompare(b.hora || '99') || ordenPrioridad(a, b);
-  if (por === 'area') {
-    const gs = areas().map(a => ({ k:a.id, n:a.n, c:a.c, ts:ts.filter(t => t.area === a.id) }));
-    gs.push({ k:'sin', n:'Sin área', c:'var(--mut2)', ts:ts.filter(t => !area(t.area)) });
-    return gs.map(g => ({ ...g, ts:g.ts.sort(ordFecha) }));
-  }
-  if (por === 'proyecto') {
-    const ps = [...new Set(ts.map(t => t.proyecto).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es'));
-    return [...ps.map(p => ({ k:'p-' + p, n:p, ic:'folder', ts:ts.filter(t => t.proyecto === p).sort(ordFecha) })),
-      { k:'p-', n:'Sin proyecto', ic:'folder', ts:ts.filter(t => !t.proyecto).sort(ordFecha) }];
-  }
-  const h = hoy(), m = manana(), sem = addDays(h, 7);
-  const prox = ts.filter(t => t.estado === 'prox');
-  return [
-    { k:'atr', n:'De días anteriores', ic:'refresh', ts:prox.filter(t => t.fecha && t.fecha < h).sort(ordFecha) },
-    { k:'hoy', n:'Hoy', ic:'sun', ts:[...ts.filter(t => ['proceso', 'hoy'].includes(t.estado)), ...prox.filter(t => t.fecha === h)].sort(ordHoy) },
-    { k:'man', n:'Mañana', ic:'moon', ts:prox.filter(t => t.fecha === m).sort(ordFecha) },
-    { k:'sem', n:'Esta semana', ic:'cal', ts:prox.filter(t => t.fecha > m && t.fecha <= sem).sort(ordFecha) },
-    { k:'mas', n:'Más adelante', ic:'cal', fold:true, ts:prox.filter(t => t.fecha > sem).sort(ordFecha) },
-    { k:'sinf', n:'Sin día', ic:'list', ts:prox.filter(t => !t.fecha).sort(ordenPrioridad) },
-    { k:'esp', n:'En espera', ic:'hourglass', ts:ts.filter(t => t.estado === 'espera').sort(ordFecha) }
-  ];
-}
-function renderLista() {
-  const v = $('#v-lista'), por = ui.listaPor;
-  const qPrev = $('#qaddIn', v), qVal = qPrev ? qPrev.value : '', qFoc = qPrev && document.activeElement === qPrev;
-  const todas = activas().filter(t => ['prox', 'hoy', 'proceso', 'espera'].includes(t.estado));
-  const ts = todas.filter(t => pasaFiltro(t));
-  const algun = ui.f.estado ? [] : tareasEn('algun').filter(t => pasaFiltro(t, { sinEstado:true })).sort((a, b) => b.creado.localeCompare(a.creado));
-  const filtrando = chipsFiltro().length > 0;
-  const sinF = ts.filter(t => t.estado === 'prox' && !t.fecha).length, conHora = ts.filter(t => t.hora).length;
-  // Una sola fila de controles: agrupar y filtrar. Los conteos viven en cada encabezado de grupo.
-  let html = htmlBarraFiltros(ts.length, todas.length, `<div class="seg mini agr" role="tablist" aria-label="Agrupar por">${[['cuando', 'Cuándo'], ['area', 'Área'], ['proyecto', 'Proyecto']].map(([k, n]) => `<button class="${por === k ? 'on' : ''}" data-a="listaPor" data-v="${k}" role="tab" aria-selected="${por === k}">${n}</button>`).join('')}</div>`);
-  html += `<div class="qadd ls-add"><input id="qaddIn" maxlength="${MAX_TITULO}" placeholder="${esc(phCaptura())}" enterkeyhint="done" autocomplete="off" aria-label="${esc(phCaptura().slice(2))}"></div>`;
-  if (sinF) html += tip('lista', 'cal', `<b>Agendar</b> le da día y hora.`);
-  if (filtrando && !ts.length && !algun.length) html += sinCoincidencias();
-  else if (!ts.length && !algun.length) {
-    html += `<div class="zero"><div class="orb ac">${ic('list')}</div><h3>Aún no hay nada organizado</h3><p>Anota tus pendientes en la Bandeja y organízalos. Aquí verás todo lo que decidiste hacer.</p><button class="btn pri" style="margin-top:16px" data-a="irBandeja">Ir a la Bandeja</button></div>`;
-  } else {
-    gruposLista(por, ts).filter(g => g.ts.length).forEach(g => {
-      const cab_ = `${g.c ? `<i class="dot" style="--a:${g.c}"></i>` : ic(g.ic)}${esc(g.n)} <span class="n">${g.ts.length}</span>`;
-      const cuerpo = `<div class="group">${g.ts.map(t => filaLista(t, por)).join('')}</div>`;
-      // Lo lejano empieza plegado: se ve que existe sin competir con lo de esta semana.
-      html += g.fold ? `<details class="sec-d" data-k="ls-${g.k}" ${abierto('ls-' + g.k) ? 'open' : ''}><summary class="sec-t">${cab_}<span class="sp"></span>${ic('chevD', 'chev')}</summary>${cuerpo}</details>`
-        : `<div class="sec-t">${cab_}${g.sub ? `<small>${g.sub}</small>` : ''}</div>${cuerpo}`;
-    });
-    const recs = activas().filter(t => t.rec || (t.fecha && t.fecha > addDays(hoy(), 7))).filter(t => pasaFiltro(t, { sinEstado:true })).sort((p, q) => (p.fecha || '9').localeCompare(q.fecha || '9'));
-    if (recs.length) html += `<details class="sec-d" data-k="ls-prog" ${abierto('ls-prog') ? 'open' : ''}><summary class="sec-t">${ic('repeat')}Programadas y repetitivas <span class="n">${recs.length}</span><span class="sp"></span>${ic('chevD', 'chev')}</summary>
-      <div class="group">${recs.map(t => `<button class="rec-row" data-a="abrir" data-id="${t.id}"><span class="ri">${ic(t.rec ? 'repeat' : 'cal')}</span><span style="flex:1;min-width:0"><b>${esc(t.titulo)}</b><span>${[recTexto(t.rec), t.fecha ? 'Próxima: ' + fechaCorta(t.fecha) : '', t.hora].filter(Boolean).join(' · ')}</span></span>${ic('chevR')}</button>`).join('')}</div></details>`;
-    if (!ui.f.estado) html += `<details class="sec-d" data-k="ls-algun" ${abierto('ls-algun') ? 'open' : ''}><summary class="sec-t">${ic('bulb')}Algún día <span class="n">${algun.length}</span><span class="sp"></span>${ic('chevD', 'chev')}</summary>${htmlBloc(true)}</details>`;
-  }
-  v.innerHTML = html;
-  if (qVal || qFoc) { const i = $('#qaddIn', v); i.value = qVal; if (qFoc) i.focus(); }
-}
-
-/* ================= Vista: Pendientes =================
-   Seguimiento de todo lo que no tiene un plan: sin organizar, próximas sin día, atrasadas,
-   en espera sin seguimiento y lo olvidado en Algún día. Ordena por lo que más atención pide
-   y convierte cada pendiente en una acción con día en uno o dos toques. */
+/* Lógica de «sin plan» (ya sin pantalla propia): la usa el resumen que se envía a los widgets del iPhone. */
 const OLVIDO_DIAS = 14, OLVIDO_ALGUN = 60;
 const PEND_G = {
   atrasada:{ n:'Atrasadas', ic:'refresh', c:'var(--hot-f)', hex:'#C4493E' },
@@ -3876,124 +3872,6 @@ function infoPend(t) {
 }
 const pendientesSinPlan = () => vivas().map(infoPend).filter(Boolean).sort((a, b) => b.score - a.score);
 const diasRevision = () => S.ajustes.ultRevision ? diasDesde(S.ajustes.ultRevision) : null;
-function filaPend(x) {
-  const t = x.t, G = PEND_G[x.tipo];
-  return `<div class="tr pd" style="--a:${colorA(t.area)}" data-a="abrir" data-id="${t.id}" role="button" tabindex="0" aria-label="${esc(t.titulo)}. Abrir detalle">
-    <div class="tb"><div class="tt">${esc(t.titulo)}</div>
-      <div class="mt">${x.motivo ? `<span class="tag ${x.mk}">${ic(x.olvidada && !x.mk.includes('tarde') ? 'hourglass' : G.ic)}${esc(x.motivo)}</span>` : ''}${x.tipo === 'espera' && t.espera ? `<span class="tag">${ic('hourglass')}${esc(t.espera)}</span>` : ''}${cuad(t) ? pq(t) : ''}${area(t.area) ? `<span class="tag"><i class="dot" style="--a:${colorA(t.area)}"></i>${esc(area(t.area).n)}</span>` : ''}${t.proyecto ? `<span class="tag">${ic('folder')}${esc(t.proyecto)}</span>` : ''}</div></div>
-    <button class="ls-ag pend" data-a="pdProg" data-id="${t.id}" aria-label="Programar: ${esc(t.titulo)}">${ic(x.tipo === 'espera' ? 'refresh' : 'cal')}<span>${x.tipo === 'espera' ? 'Seguir' : 'Programar'}</span></button>
-  </div>`;
-}
-function renderPendientes() {
-  const v = $('#v-pendientes');
-  const todos = pendientesSinPlan(), acc = todos.filter(x => x.tipo !== 'algun');
-  const olv = acc.filter(x => x.olvidada), algun = todos.filter(x => x.tipo === 'algun'), algOlv = algun.filter(x => x.olvidada);
-  const cuenta = k => todos.filter(x => x.tipo === k).length;
-  const fils = [['todos', 'Todos', acc.length], ['olv', 'Olvidados', olv.length], ...['atrasada', 'espera', 'prox', 'bandeja', 'algun'].map(k => [k, PEND_G[k].n, cuenta(k)])].filter(([k, , n]) => k === 'todos' || n);
-  if (!fils.some(([k]) => k === ui.pf)) ui.pf = 'todos';
-  const f = ui.pf, dRev = diasRevision(), porRevisar = acc.length + algOlv.length;
-  // Resumen: cuánto hay sin plan, de qué tipo y cuándo fue la última revisión.
-  let html = `<div class="panel pd-sum"><div class="pm-n"><b>${acc.length}</b><span>${acc.length === 1 ? 'pendiente sin planificar' : 'pendientes sin planificar'}</span></div>
-    <p class="sum-e">${olv.length ? `<b>${olv.length} ${olv.length === 1 ? 'olvidado' : 'olvidados'}</b> · ` : ''}${dRev == null ? 'Sin revisión todavía' : dRev === 0 ? 'Revisaste hoy' : `Revisaste hace ${dRev} ${dRev === 1 ? 'día' : 'días'}`}</p>
-    ${acc.length ? `<div class="pd-bar" role="img" aria-label="Reparto por tipo">${['atrasada', 'espera', 'prox', 'bandeja'].map(k => { const n = cuenta(k); return n ? `<i style="width:${n / acc.length * 100}%;background:${PEND_G[k].c}"></i>` : ''; }).join('')}</div>
-      <div class="pd-ley">${['atrasada', 'espera', 'prox', 'bandeja'].filter(cuenta).map(k => `<span><i style="background:${PEND_G[k].c}"></i>${PEND_G[k].n} ${cuenta(k)}</span>`).join('')}</div>` : ''}
-    ${porRevisar ? `<button class="btn pri full" data-a="revisar">${ic('sparkle')}Revisar uno por uno</button>` : ''}</div>`;
-  if (!todos.length) {
-    v.innerHTML = `<div class="zero"><div class="orb">${ic('check')}</div><h3>Todo tiene un plan</h3><p>Cada pendiente tiene día, está en espera con seguimiento o ya está hecho.</p></div>`;
-    return;
-  }
-  html += `<div class="chips vf" role="group" aria-label="Filtrar pendientes" style="margin-top:16px">${fils.map(([k, n, c]) => `<button class="chip ${f === k ? 'on' : ''}" data-a="pdFiltro" data-v="${k}" aria-pressed="${f === k}">${n} <span class="n">${c}</span></button>`).join('')}</div>`;
-  const grupo = (titulo, icono, xs, sub = '') => xs.length ? `<div class="sec-t">${ic(icono)}${titulo} <span class="n">${xs.length}</span>${sub ? `<small>${sub}</small>` : ''}</div><div class="group">${xs.map(filaPend).join('')}</div>` : '';
-  if (f === 'todos') {
-    const top = acc.slice(0, 5), resto = acc.slice(5);
-    html += grupo('Primero atiende', 'flag', top, 'Lo más urgente');
-    ['atrasada', 'espera', 'prox', 'bandeja'].forEach(k => { html += grupo(PEND_G[k].n, PEND_G[k].ic, resto.filter(x => x.tipo === k)); });
-    if (algun.length) html += `<details class="sec-d" data-k="pd-algun" ${abierto('pd-algun') ? 'open' : ''}><summary class="sec-t">${ic('bulb')}Algún día <span class="n">${algun.length}</span>${algOlv.length ? `<small>${algOlv.length} sin revisar en ${OLVIDO_ALGUN} días</small>` : ''}<span class="sp"></span>${ic('chevD', 'chev')}</summary><div class="group">${algun.map(filaPend).join('')}</div></details>`;
-  } else {
-    const xs = f === 'olv' ? olv : todos.filter(x => x.tipo === f);
-    html += grupo(f === 'olv' ? 'Olvidados' : PEND_G[f].n, f === 'olv' ? 'hourglass' : PEND_G[f].ic, xs);
-    if (f === 'bandeja') html += `<button class="row-add" data-a="procesar">${ic('sparkle')}Organizar la Bandeja</button>`;
-  }
-  html += tip('pendientes', 'layers', `<b>Programar</b> le da día (o la pasa a hoy). Lo que no se mueve en ${OLVIDO_DIAS} días se marca como olvidado.`);
-  v.innerHTML = html;
-}
-// Programar: elegir día (o decidir otra cosa) para un pendiente.
-function opcionesDia() {
-  const h = hoy(), lun = proxLunes(), out = [['hoy', 'sun', 'Hoy', h], ['man', 'moon', 'Mañana', manana()]];
-  const fin = (() => { const d = parseYmd(h); const n = (6 - d.getDay() + 7) % 7; return n >= 2 ? addDays(h, n) : null; })();
-  if (fin) out.push(['fin', 'cal', 'Este sábado', fin]);
-  out.push(['lun', 'cal', 'Próximo lunes', lun]);
-  if (addDays(h, 7) !== lun) out.push(['sem', 'cal', 'En una semana', addDays(h, 7)]);
-  return out;
-}
-function programarEn(t, d, aviso = true) {
-  if (!t) return;
-  const prev = { estado:t.estado, fecha:t.fecha, hora:t.hora, seg:t.seg };
-  if (d === hoy()) { if (t.estado !== 'proceso') { t.estado = 'hoy'; } t.fecha = d; upsertT(t); }
-  else { if (t.estado !== 'espera') t.estado = 'prox'; if (t.estado === 'espera') t.seg = d; else t.fecha = d; upsertT(t); }
-  if (aviso) toast(`«${t.titulo.length > 28 ? t.titulo.slice(0, 27) + '…' : t.titulo}» ${t.estado === 'espera' ? 'seguimiento' : ''} ${d === hoy() ? 'para hoy' : fechaCorta(d).toLowerCase()}`.replace(/\s+/g, ' '), 'Deshacer', () => { Object.assign(t, prev); upsertT(t); renderVista(); });
-}
-function decidirSinDia(t, dest) {
-  const prev = { estado:t.estado, fecha:t.fecha, hora:t.hora };
-  if (dest === 'hecho') { completar(t); return; }
-  if (dest === 'borrar') { t.borrado = true; upsertT(t); toast('Pendiente eliminado', 'Deshacer', () => { t.borrado = false; upsertT(t); renderVista(); }); return; }
-  if (dest === 'algun') { t.estado = 'algun'; t.fecha = ''; t.hora = ''; upsertT(t); toast('Guardado en Algún día', 'Deshacer', () => { Object.assign(t, prev); upsertT(t); renderVista(); }); return; }
-  // Mantener sin día: es una decisión consciente, así que reinicia el contador de olvido.
-  if (dest === 'mantener') { if (t.estado === 'bandeja' || (t.fecha && t.fecha < hoy())) { t.estado = 'prox'; t.fecha = ''; t.hora = ''; } upsertT(t); toast('Sigue sin día. Te lo vuelvo a mostrar si no se mueve en 14 días'); }
-}
-function htmlProgramar() {
-  const t = byId(ui.sheet.id); if (!t) return '';
-  const espera = t.estado === 'espera';
-  return cab(`<h2>${espera ? 'Dar seguimiento' : 'Programar'}</h2>`) + `<p class="help-d" style="font-weight:600">${esc(t.titulo)}</p>
-    <div class="group pg-l">${opcionesDia().map(([k, i, n, d]) => `<button class="tr opt" data-a="pgDia" data-v="${d}"><span class="mi">${ic(i)}</span><span class="tb"><span class="tt">${n}</span></span><small>${d === hoy() ? '' : (x => `${DIAS3[x.getDay()]} ${x.getDate()} ${MES3[x.getMonth()]}`)(parseYmd(d))}</small></button>`).join('')}</div>
-    <div class="f-sec" style="margin-top:16px"><label class="f-l" for="pgFecha">Otro día</label><input type="date" class="in" id="pgFecha" data-in="pgFecha" min="${hoy()}" value=""></div>
-    <div class="sec-t">Otras decisiones</div>
-    <div class="group">
-      <button class="tr opt" data-a="pgDec" data-v="mantener"><span class="mi">${ic('list')}</span><span class="tb"><span class="tt">${t.estado === 'bandeja' ? 'Próxima acción, sin día' : 'Mantener sin día'}</span><span class="mt"><span class="tag">Reinicia el aviso de olvido</span></span></span></button>
-      ${t.estado !== 'algun' ? `<button class="tr opt" data-a="pgDec" data-v="algun"><span class="mi">${ic('bulb')}</span><span class="tb"><span class="tt">Algún día</span></span></button>` : ''}
-      <button class="tr opt" data-a="pgDec" data-v="hecho"><span class="mi">${ic('check')}</span><span class="tb"><span class="tt">Ya está hecha</span></span></button>
-      <button class="tr opt" data-a="pgDec" data-v="borrar"><span class="mi" style="color:var(--hot)">${ic('trash')}</span><span class="tb"><span class="tt">Ya no hace falta</span></span></button>
-    </div><div class="sh-end"></div>`;
-}
-// Revisión: uno por uno, decidir el siguiente paso de cada pendiente sin plan.
-function abrirRevision() {
-  const xs = pendientesSinPlan().filter(x => x.tipo !== 'algun' || x.olvidada);
-  if (!xs.length) { toast('No hay pendientes por revisar'); return; }
-  ui.rev = { ids:xs.map(x => x.t.id), i:0, n:{ prog:0, hoy:0, sin:0, fuera:0 } };
-  abrirSheet({ k:'revision' });
-}
-function htmlRevision() {
-  const R = ui.rev; if (!R) return '';
-  while (R.i < R.ids.length && !infoPend(byId(R.ids[R.i]) || {})) R.i++;
-  if (R.i >= R.ids.length) { setTimeout(finRevision, 0); return cab('<h2>Revisión</h2>'); }
-  const x = infoPend(byId(R.ids[R.i])), t = x.t, G = PEND_G[x.tipo];
-  const act = (a, v, i, n, s, cls = '') => `<button class="act ${cls}" data-a="${a}" data-v="${v}"><span class="ico">${ic(i)}</span><span><b>${n}</b>${s ? `<span>${s}</span>` : ''}</span></button>`;
-  return cab('<h2>Revisión</h2>', `<span class="pl-cnt">${R.i + 1}/${R.ids.length}</span>`) + `
-    <div class="proc-prog"><div style="width:${R.i / R.ids.length * 100}%"></div></div>
-    <div class="panel rv-card"><div class="proc-q">${G.n}</div><div class="hero-t">${esc(t.titulo)}</div>
-      <div class="mt" style="margin-top:8px"><span class="tag ${x.mk}">${ic(G.ic)}${esc(x.motivo || G.n)}</span>${metaCorta(t, 2, { area:true })}</div>
-      ${t.notas && t.notas.length ? `<div class="bnota">${ic('note')}<span>${esc(String(t.notas[t.notas.length - 1].x).slice(0, 140))}</span></div>` : ''}</div>
-    <p class="proc-h" style="margin-top:12px">¿Cuál es el siguiente paso?</p>
-    <div class="rv-acts">
-      ${act('rvDia', hoy(), 'sun', 'Hoy', '', 'pri')}${act('rvDia', manana(), 'moon', 'Mañana', '', 'pri')}
-      ${act('rvDia', proxLunes(), 'cal', 'Próximo lunes', fechaCorta(proxLunes()))}
-      <label class="act"><span class="ico">${ic('cal')}</span><span><b>Otro día</b><span>Elegir fecha</span></span><input type="date" data-in="rvFecha" min="${hoy()}" aria-label="Elegir otro día"></label>
-      ${act('rvDec', 'mantener', 'list', 'Sin día por ahora', 'Sigue en próximas')}${x.tipo !== 'algun' ? act('rvDec', 'algun', 'bulb', 'Algún día', 'Sin compromiso') : act('rvDec', 'mantener', 'bulb', 'Sigue en Algún día', '')}
-      ${act('rvDec', 'hecho', 'check', 'Ya está hecha', '')}${act('rvDec', 'borrar', 'trash', 'Ya no hace falta', '', 'del')}
-    </div>
-    <div class="sh-foot"><button class="btn" data-a="rvSaltar">Saltar</button><button class="btn" data-a="rvEditar">${ic('note')}Detalle</button><button class="btn" data-a="rvFin">Terminar</button></div>`;
-}
-function rvSiguiente(k) { const R = ui.rev; if (!R) return; if (k) R.n[k]++; R.i++; refrescarSheet(); renderVista(); }
-function finRevision() {
-  const R = ui.rev; if (!R) return;
-  S.ajustes.ultRevision = nowISO(); guardarAjustes();
-  const n = R.n; ui.rev = null;
-  if (ui.sheet && ui.sheet.k === 'revision') cerrarSheet();
-  const pl = (k, uno, var_) => k === 1 ? uno : var_;
-  const partes = [n.hoy && `${n.hoy} para hoy`, n.prog && `${n.prog} ${pl(n.prog, 'programado', 'programados')}`, n.sin && `${n.sin} sin día`, n.fuera && `${n.fuera} ${pl(n.fuera, 'resuelto', 'resueltos')}`].filter(Boolean);
-  toast(`Revisión lista${partes.length ? ': ' + partes.join(', ') : ''}`, null, null, 'check');
-  render();
-}
 
 /* ================= Vista: Tablero ================= */
 const COLS = [
@@ -4004,7 +3882,7 @@ const COLS = [
   { k:'hecho', n:'Hecho', c:'var(--ok-f)', d:'Últimos 7 días' }
 ];
 const COLN = { prox:'Próximas', hoy:'Hoy', proceso:'En curso', espera:'En espera', hecho:'Hecho' };
-/* Filtros compartidos de Planifica: los mismos en Lista, Tablero y Agenda. Hoy y Bandeja no se filtran. */
+/* Filtros compartidos de Planifica: los mismos en Tablero y Agenda. Hoy y Bandeja no se filtran. */
 const PRIO_F = { q1:'Urgente e importante', imp:'Importante', urg:'Urgente', sin:'Sin prioridad' };
 const EST_F = { prox:'Próximas', hoy:'Hoy', proceso:'En curso', espera:'En espera' };
 const prioDe = t => t.urgente && t.importante ? 'q1' : t.importante ? 'imp' : t.urgente ? 'urg' : 'sin';
@@ -4034,7 +3912,7 @@ function htmlBarraFiltros(n, total, delante = '') {
 const sinCoincidencias = (txt = 'Ninguna tarea coincide con los filtros.') => `<div class="zero"><div class="orb ac">${ic('filter')}</div><h3>Sin coincidencias</h3><p>${txt}</p><button class="btn pri" style="margin-top:16px" data-a="limpiarFiltros">Limpiar filtros</button></div>`;
 // Una captura solo hereda área o proyecto si ese filtro se ve en pantalla.
 function ctxCaptura() {
-  if (!['lista', 'tablero'].includes(ui.view)) return {};
+  if (ui.view !== 'tablero') return {};
   const f = ui.f, o = {};
   if (f.area !== 'todas' && f.area !== 'sin' && area(f.area)) o.area = f.area;
   if (f.proyecto && f.proyecto !== '-') o.proyecto = f.proyecto;
@@ -4448,7 +4326,7 @@ function ayuda(k) {
     bandeja:{ d:'Tu lugar para vaciar la cabeza. Solo el título es obligatorio. Anota cualquier pendiente en cuanto se te ocurra, sin pensar todavía dónde va.', p:[
       ['plus', 'Captura en un paso', 'Escribe qué vas a hacer (si no sabes cómo empezar, elige un verbo arriba). El área se sugiere sola y es obligatoria: cámbiala en el selector a la izquierda de Guardar. Toca Guardar. Si pegas una lista, cada línea se vuelve un pendiente.'],
       ['filter', 'Filtrar por verbo', 'Toca un verbo (Llamar, Enviar, Revisar…) para ver solo esos pendientes y organizarlos juntos.'],
-      ['layers', 'Área (opcional)', 'Elígela en el selector o escríbela con # dentro del texto, por ejemplo #omova. Desde el selector también puedes crear una nueva.'],
+      ['layers', 'Área (obligatoria)', 'Elígela en el selector junto a Guardar; si lo dejas vacío, Foco sugiere una según lo que escribes. Puedes crear áreas nuevas en Ajustes.'],
       ['layers', 'Varios a la vez', 'Toca «Seleccionar varios» para asignar área, proyecto, día o destino a muchos pendientes. Se puede deshacer.'],
       ['sparkle', 'Organiza', 'Cuando tengas varios, toca «Organizar». Decides uno por uno: hacerlo ya, agendarlo, esperar a alguien, guardarlo para algún día o eliminarlo (método GTD). Si la redacción no es clara, Foco te sugiere cómo mejorarla o dividirla.']] },
     mente:{ d:'Tu espacio para sacar lo que te hace ruido, aunque todavía no sepas qué es. Primero escribes; el orden viene después.', p:[
@@ -4468,12 +4346,6 @@ function ayuda(k) {
       ['moon', 'Planear', 'Por la noche elige tus prioridades de mañana. Lo que no termines aparece en «Pendientes anteriores» para que decidas: mantenerlo hoy, elegir otro día o devolverlo a próximas.'],
       ['refresh', 'Seguimientos', 'Las tareas en espera con fecha de seguimiento aparecen aquí ese día, sin dejar de estar en espera.'],
       ['timer', 'Enfoque', 'El botón «Enfoque» (o la tecla F) abre el reloj en grande, con tarea o en enfoque libre. Sal con la flecha de arriba.']] },
-    lista:{ d:'Todo lo que ya organizaste en un solo lugar: lo de hoy, lo que tiene fecha, lo que aún no y lo que espera a alguien.', p:[
-      ['cal', 'Agrupar', 'Ordénalo por cuándo, por área o por proyecto para ver si algo se te está quedando atrás.'],
-      ['clock', 'Agendar', 'Toca «Agendar» en una tarea: te lleva a la Agenda con ella lista para colocarla en un día y hora.'],
-      ['check', 'Marcar como hecha', 'Toca el círculo. Toca la tarea para editar su área, prioridad o duración.'],
-      ['filter', 'Filtrar', 'Los filtros de área, proyecto, estado y prioridad se comparten entre Lista, Tablero y Agenda. Siempre se ven arriba, con «Limpiar filtros».'],
-      ['bulb', 'Algún día', 'Ideas sin fecha al final de la lista. Actívalas cuando les llegue su momento.']] },
     agenda:{ d:'Asigna horario: elige un día y acomoda tus tareas por hora (time blocking).', p:[
       ['cal', 'La semana', 'Cada día muestra cuántas tareas tiene y una barra con las horas planeadas. Toca un día para verlo.'],
       ['clock', 'Agendar', 'Toca una tarea de «Por agendar» o «Sin hora» y luego una hora en la agenda. Queda con fecha y hora.'],
@@ -4481,7 +4353,7 @@ function ayuda(k) {
       ['timer', 'Capacidad', 'Compara lo estimado con lo que cabe en tu horario (Ajustes: horario, pausas y margen). La ocupación no cuenta dos veces los bloques encimados.'],
       ['flag', 'Solapamientos', 'Si dos bloques se enciman, puedes mover uno al siguiente hueco libre o mantenerlos así a propósito.'],
       ['star', 'Prioridades', 'Para hoy y mañana, elige y ordena hasta 6 prioridades con el método Ivy Lee.']] },
-    tablero:{ d:'Tus tareas activas según su estado (método Kanban), con los mismos filtros que la Lista y la Agenda.', p:[
+    tablero:{ d:'Tus tareas activas según su estado (método Kanban), con los mismos filtros que la Agenda.', p:[
       ['list', 'Próximas', 'Ya decidiste hacerlas, pero aún no tienen día.'],
       ['sun', 'Hoy', 'Las que elegiste para hoy.'],
       ['timer', 'En curso', 'La que estás trabajando ahora. Solo una a la vez.'],
@@ -4493,11 +4365,6 @@ function ayuda(k) {
       ['clock', 'Bloque de tiempo', 'Tú eliges la duración. Útil para tareas largas o trabajo profundo.'],
       ['bulb', 'Captura sin salir', 'Si se te ocurre algo, anótalo abajo: se va a tu Bandeja y el reloj sigue.'],
       ['check', 'Terminar la tarea', 'Toca el botón verde junto a la tarea. Foco te propone la siguiente de tu lista.']] },
-    pendientes:{ d:'Todo lo que no tiene un plan, en un solo lugar, para que nada se quede olvidado. Cada pendiente se convierte en acción dándole un día.', p:[
-      ['layers', 'Qué aparece', 'Atrasadas (su día ya pasó), en espera sin seguimiento o con seguimiento vencido, próximas acciones sin día, lo que sigue en la Bandeja y, aparte, Algún día.'],
-      ['flag', 'Primero atiende', 'Arriba va lo que más atención pide: fecha límite cercana, atraso, seguimiento vencido, prioridad y tiempo sin moverse.'],
-      ['hourglass', 'Olvidados', `Un pendiente que no cambia en ${OLVIDO_DIAS} días se marca como olvidado (en Algún día, a los ${OLVIDO_ALGUN}). «Mantener sin día» cuenta como decisión y reinicia el contador.`],
-      ['sparkle', 'Revisión', 'Revisa uno por uno y elige el siguiente paso: hoy, otro día, sin día, Algún día, hecho o eliminar. Hazla una vez por semana; Hoy te la recuerda.']] },
     progreso:{ d:'Lo que terminaste en el periodo elegido. Toca enfoque o prioridades para ver el detalle.', p:[
       ['star', 'Prioridades', 'Se mide contra el primer plan del día. Las que agregas después y lo que terminas fuera del plan se muestran aparte. Si un día no tiene plan registrado, no se inventa un porcentaje.'],
       ['star', 'Puntos (XP)', 'Tarea hecha: +10, +10 más si era importante y +5 si además era urgente. Pomodoro: +25. Vaciar la bandeja: +15. Planear el día: +10.'],
@@ -4508,7 +4375,7 @@ function ayuda(k) {
 }
 const ONB = [
   { ic:'inbox', paso:'Bandeja', t:'Vacía tu cabeza', d:'Anota cada pendiente en cuanto se te ocurra, empezando con un verbo: «Enviar…», «Revisar…». Luego toca «Organizar» para decidir qué es cada cosa. Si traes de todo revuelto, escríbelo sin orden en Mente.' },
-  { ic:'cal', paso:'Planifica', t:'Mira todo y dale horario', d:'En Lista, Tablero y Agenda ves todo lo que organizaste, con los mismos filtros. Dale día y hora, y elige tus 6 más importantes de hoy o de mañana.' },
+  { ic:'cal', paso:'Planifica', t:'Mira todo y dale horario', d:'En Agenda y Tablero ves todo lo que organizaste, con los mismos filtros. Dale día y hora, y elige tus 6 más importantes de hoy o de mañana.' },
   { ic:'sun', paso:'Hoy', t:'Una a la vez', d:'Trabaja tus tareas en orden con un Pomodoro que corre en la misma tarjeta, o ábrelo en grande con Enfoque. En Progreso verás tu avance.' }
 ];
 function abrirOnb() { ui.onb = 0; $('#onb').classList.add('on'); document.documentElement.classList.add('lock'); pintarOnb(); }
@@ -4594,8 +4461,6 @@ function refrescarSheet(inicio) {
   else if (c.k === 'areaSel') html = htmlAreaSel();
   else if (c.k === 'dividir') html = htmlDividir();
   else if (c.k === 'widgets') html = htmlWidgets();
-  else if (c.k === 'programar') html = htmlProgramar();
-  else if (c.k === 'revision') html = htmlRevision();
   else if (c.k === 'mente') { const m = mnById(c.id); if (!m || m.borrado) return cerrarSheet(); html = htmlMente(m); }
   else if (c.k === 'mnIA') html = htmlMnIA();
   b.innerHTML = html; b.scrollTop = y;
@@ -4740,7 +4605,7 @@ function htmlFiltro() {
   const n = base.filter(t => pasaFiltro(t)).length;
   const grupo = (k, titulo, ops) => `<div class="f-sec"><span class="f-l">${titulo}</span><div class="chips" role="radiogroup" aria-label="${titulo}">${ops.map(([v, nm, c]) => `<button class="chip ${f[k] === v ? 'on' : ''}" data-a="filtroSet" data-k="${k}" data-v="${esc(v)}" role="radio" aria-checked="${f[k] === v}">${c ? `<i class="dot" style="--a:${c}"></i>` : ''}${esc(nm)}</button>`).join('')}</div></div>`;
   const proys = [...new Set(base.map(t => t.proyecto).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es'));
-  return cab('<h2>Filtrar</h2>') + `<p class="hint" style="margin:0 2px 8px">Se aplica a Lista, Tablero y Agenda. Hoy y Bandeja no cambian.</p>
+  return cab('<h2>Filtrar</h2>') + `<p class="hint" style="margin:0 2px 8px">Se aplica a Tablero y Agenda. Hoy y Bandeja no cambian.</p>
     ${grupo('area', 'Área', [['todas', 'Todas'], ...areas().map(a => [a.id, a.n, a.c]), ['sin', 'Sin área', 'var(--mut2)']])}
     ${grupo('proyecto', 'Proyecto', [['', 'Todos'], ...proys.map(p => [p, p]), ['-', 'Sin proyecto']])}
     ${grupo('estado', 'Estado', [['', 'Todos'], ...Object.entries(EST_F)])}
@@ -5113,17 +4978,6 @@ const ACT = {
   blocAdd:async () => { const c = await capturarDe('#blocIn', 'algun'); if (c.length) renderVista(); },
   procesar:() => abrirProc(),
   abrir:el => abrirSheet({ k:'detalle', id:el.dataset.id }),
-  pdFiltro:el => { ui.pf = el.dataset.v; renderVista(); },
-  pdHoy:el => { programarEn(byId(el.dataset.id), hoy()); renderVista(); },
-  pdProg:el => abrirSheet({ k:'programar', id:el.dataset.id }),
-  pgDia:el => { const t = byId(ui.sheet.id); cerrarSheet(true); programarEn(t, el.dataset.v); render(); },
-  pgDec:el => { const t = byId(ui.sheet.id); cerrarSheet(true); if (t) decidirSinDia(t, el.dataset.v); render(); },
-  revisar:() => abrirRevision(),
-  rvDia:el => { const R = ui.rev, t = byId(R.ids[R.i]); programarEn(t, el.dataset.v, false); rvSiguiente(el.dataset.v === hoy() ? 'hoy' : 'prog'); },
-  rvDec:el => { const R = ui.rev, t = byId(R.ids[R.i]), v = el.dataset.v; decidirSinDia(t, v); rvSiguiente(v === 'mantener' ? 'sin' : 'fuera'); },
-  rvSaltar:() => rvSiguiente(),
-  rvEditar:() => { const R = ui.rev; abrirSheet({ k:'detalle', id:R.ids[R.i], volver:{ k:'revision' } }); },
-  rvFin:() => finRevision(),
   quitar:el => {
     const t = byId(el.dataset.id), card = el.closest('.tr'); if (!t) return;
     if (card) card.classList.add('out');
@@ -5174,7 +5028,8 @@ const ACT = {
   spVer:el => {
     ui.f = { area:'todas', proyecto:el.dataset.p, estado:'', prio:'' };
     if (ui.sheet) cerrarSheet(true, true);
-    if (ui.view === 'lista') { renderVista(); window.scrollTo(0, 0); } else ir('lista');
+    const dest = desk() ? 'tablero' : 'agenda';
+    if (ui.view === dest) { renderVista(); window.scrollTo(0, 0); } else ir(dest);
   },
   hoyTodas:() => { ui.hoyTodas = !ui.hoyTodas; renderVista(); },
   arranque:async () => {
@@ -5197,8 +5052,6 @@ const ACT = {
   heroModo:() => { const t = T(); if (enMarcha()) return; t.modo = t.modo === 'pomo' ? 'bloque' : 'pomo'; t.fase = 'foco'; t.total = t.restante = segFase('foco'); save(); renderVista(); toast(t.modo === 'pomo' ? `Pomodoro de ${S.ajustes.pomo} min` : `Bloque de ${t.bloqueMin} min`); },
   plan:el => abrirPlan(el.dataset.v),
   hoySeg:el => { ui.hoyVista = el.dataset.v; ui.agSel = ''; ui.agY = null; renderVista(); },
-  listaPor:el => { ui.listaPor = el.dataset.v; pref.set('listaPor', ui.listaPor); renderVista(); },
-  listaAgendar:el => { const t = byId(el.dataset.id); if (!t) return; ir('agenda'); ui.agSel = t.id; if (t.fecha && t.fecha >= hoy()) { ui.dia = t.fecha; if (t.fecha >= addDays(hoy(), 7)) ui.semIni = t.fecha; } renderVista(); },
   filtrar:() => abrirSheet({ k:'filtro' }),
   filtroSet:el => { ui.f[el.dataset.k] = el.dataset.v; refrescarSheet(); renderVista(); },
   quitarFiltro:el => { const k = el.dataset.k; ui.f[k] = k === 'area' ? 'todas' : ''; renderVista(); },
@@ -5233,6 +5086,9 @@ const ACT = {
     toast(`Movida a ${COLN[dest]}`, 'Deshacer', () => { t.estado = prev; t.fecha = pf; upsertT(t); renderVista(); });
   },
   activar:el => { const t = byId(el.dataset.id); setEstado(t, 'prox'); renderVista(); toast('Movida a Próximas'); },
+  agVista:el => { pref.set('agVista', el.dataset.v); ui.agY = null; renderVista(); },
+  agVerDia:el => { ui.dia = el.dataset.v; ui.agY = null; pref.set('agVista', 'dia'); renderVista(); },
+  agPendSem:() => { const ids = tareasEn('prox').filter(t => !t.fecha && pasaFiltro(t)).sort(ordenPrioridad).map(t => t.id); ui.agPend = { sin:[], por:ids }; pref.set('agVista', 'dia'); renderVista(); abrirSheet({ k:'agPend' }); },
   dia:el => { ui.dia = el.dataset.v; ui.agY = null; if (ui.sheet && ui.sheet.k === 'agOpc') cerrarSheet(true); renderVista(); },
   semMov:el => { const n = +el.dataset.v; ui.semIni = n ? addDays(ui.semIni || hoy(), n) : hoy(); ui.smY = null; renderVista(); },
   agCompleto:() => { ui.diaCompleto = !ui.diaCompleto; ui.agY = null; ui.smY = null; renderVista(); if (ui.sheet && ui.sheet.k === 'agOpc') refrescarSheet(); },
@@ -5562,8 +5418,6 @@ function flushDebs(prefijo = '') { Object.keys(debs).filter(k => k.startsWith(pr
 const dtCampo = (k, el, aplicar) => { const id = ui.sheet && ui.sheet.id; if (!id) return; guardando(); deb('dt:' + k + ':' + id, () => { const t = byId(id); if (t) aplicar(t, id); }); };
 const dtVisible = id => ui.sheet && ui.sheet.k === 'detalle' && ui.sheet.id === id;
 const IN = {
-  pgFecha:el => { if (!el.value || !ui.sheet) return; const t = byId(ui.sheet.id), d = el.value; cerrarSheet(true); programarEn(t, d); render(); },
-  rvFecha:el => { if (!el.value || !ui.rev) return; const t = byId(ui.rev.ids[ui.rev.i]); programarEn(t, el.value, false); rvSiguiente('prog'); },
   dtTitulo:el => { autoAlto(el); const v = el.value; dtCampo('tt', el, (t, id) => { if (!v.trim()) return; t.titulo = limpiarTitulo(v); upsertT(t); renderVista(); const c = dtVisible(id) && $('#dtClar'); if (c) c.innerHTML = htmlClaridad(v, 'dt'); }); },
   dtLimite:el => { const t = dtT(); if (!t) return; t.limite = el.value || ''; upsertT(t); renderVista(); const v = $('.dr.open .dr-v'); if (v) v.textContent = t.limite ? fechaCorta(t.limite) : 'Opcional'; },
   dtSeg:el => { const t = dtT(); if (!t || !el.value) return; if (el.value < hoy()) { el.value = t.seg; sacudir(el, 'Elige una fecha de hoy en adelante'); return; } t.seg = el.value; upsertT(t); ui.dtOpen = ''; dtRefrescar(); },
@@ -5898,7 +5752,7 @@ function arrancar() {
   if (pref.v('inicio') === 'ultima' && ult && ult !== 'enfoque' && VISTAS.some(x => x.k === ult)) ui.view = ult;
   if (!vivas().length) ui.view = 'bandeja';
   if (q.get('v') && VISTAS.some(x => x.k === q.get('v'))) ui.view = q.get('v');
-  if (ui.view === 'tablero' && mqMovil.matches) ui.view = 'lista';
+  if (ui.view === 'tablero' && mqMovil.matches) ui.view = 'agenda';
   ui.ult[grupoDe(ui.view).k] = ui.view;
   $$('.view').forEach(s => s.classList.toggle('on', s.id === 'v-' + ui.view));
   estadoS = S.conn.url ? (S.cola.length ? 'pend' : 'ok') : 'sin';
@@ -5917,7 +5771,7 @@ function arrancar() {
   addEventListener('pagehide', alSalir);
   addEventListener('resize', () => { if (ui.view === 'tablero') ajustarBoard(); if (ui.view === 'agenda') { if (desk()) renderSemana(); else ajustarAgenda(); } });
   mqDesk.addEventListener('change', () => render());
-  mqMovil.addEventListener('change', () => { if (mqMovil.matches && ui.view === 'tablero') ir('lista'); else render(); });
+  mqMovil.addEventListener('change', () => { if (mqMovil.matches && ui.view === 'tablero') ir('agenda'); else render(); });
   document.addEventListener('touchend', audioListo, { once:true });
   sincronizar(false); programarAvisos();
   if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
