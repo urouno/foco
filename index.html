@@ -2643,9 +2643,8 @@ const GRUPOS = [
   { k:'planifica', n:'Planifica', ic:'cal', vs:['agenda', 'tablero'] },
   { k:'progreso', n:'Progreso', ic:'chart', vs:['progreso'] }
 ];
-// En teléfonos el Tablero no cabe: ahí Planifica solo muestra la Agenda.
 const mqMovil = matchMedia('(max-width:767px)');
-const subVistas = g => g.vs.filter(v => !(g.ocultas || []).includes(v) && !(v === 'tablero' && mqMovil.matches));
+const subVistas = g => g.vs.filter(v => !(g.ocultas || []).includes(v));
 const grupoDe = v => GRUPOS.find(g => g.vs.includes(v));
 // Escritorio: pantallas anchas usan barra lateral, paneles lado a lado y la semana en columnas.
 const mqDesk = matchMedia('(min-width:1024px)');
@@ -2724,7 +2723,6 @@ function pintarTabs() {
 const RECUERDA_POS = ['tablero', 'agenda', 'progreso'];
 function ir(v) {
   if (!VISTAS.some(x => x.k === v)) return;
-  if (v === 'tablero' && mqMovil.matches) v = 'agenda';
   if (ui.view === v) { window.scrollTo({ top:0, behavior:'smooth' }); return; }
   ui.scroll[ui.view] = scrollY;
   if (v === 'enfoque') ui.volverDe = ui.view;
@@ -5762,7 +5760,6 @@ function arrancar() {
   if (pref.v('inicio') === 'ultima' && ult && ult !== 'enfoque' && VISTAS.some(x => x.k === ult)) ui.view = ult;
   if (!vivas().length) ui.view = 'bandeja';
   if (q.get('v') && VISTAS.some(x => x.k === q.get('v'))) ui.view = q.get('v');
-  if (ui.view === 'tablero' && mqMovil.matches) ui.view = 'agenda';
   ui.ult[grupoDe(ui.view).k] = ui.view;
   $$('.view').forEach(s => s.classList.toggle('on', s.id === 'v-' + ui.view));
   estadoS = S.conn.url ? (S.cola.length ? 'pend' : 'ok') : 'sin';
@@ -5781,7 +5778,7 @@ function arrancar() {
   addEventListener('pagehide', alSalir);
   addEventListener('resize', () => { if (ui.view === 'tablero') ajustarBoard(); if (ui.view === 'agenda') { if (desk()) renderSemana(); else ajustarAgenda(); } });
   mqDesk.addEventListener('change', () => render());
-  mqMovil.addEventListener('change', () => { if (mqMovil.matches && ui.view === 'tablero') ir('agenda'); else render(); });
+  mqMovil.addEventListener('change', () => render());
   document.addEventListener('touchend', audioListo, { once:true });
   sincronizar(false); programarAvisos();
   if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
