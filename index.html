@@ -3875,22 +3875,28 @@ const diasRevision = () => S.ajustes.ultRevision ? diasDesde(S.ajustes.ultRevisi
 
 /* ================= Vista: Tablero ================= */
 const COLS = [
-  { k:'prox', n:'Próximas', c:'var(--mut2)', d:'Decididas, aún sin día' },
-  { k:'hoy', n:'Hoy', c:'var(--mut2)', d:'Elegidas para hoy' },
-  { k:'proceso', n:'En curso', c:'var(--ac)', d:'Solo una a la vez', lim:1 },
-  { k:'espera', n:'Espera', c:'var(--mut2)', d:'Dependen de alguien más' },
+  { k:'prox', n:'Próximas', c:'var(--mut2)', d:'Pendientes, atrasadas y sin planear' },
+  { k:'proceso', n:'En curso', c:'var(--ac)', d:'Lo que está en Hoy' },
   { k:'hecho', n:'Hecho', c:'var(--ok-f)', d:'Últimos 7 días' }
 ];
-const COLN = { prox:'Próximas', hoy:'Hoy', proceso:'En curso', espera:'En espera', hecho:'Hecho' };
+const COLN = { prox:'Próximas', hoy:'En curso', proceso:'En curso', espera:'Próximas', hecho:'Hecho' };
+// Tres estados: En curso = lo que está en Hoy; Hecho = completadas; Próximas = todo lo demás pendiente (atrasadas, en espera, sin día o con día futuro).
+const atrasadaHoy = t => t.estado === 'hoy' && t.fecha && t.fecha < hoy();
+function colDe(t) {
+  if (t.estado === 'hecho') return 'hecho';
+  if (t.estado === 'proceso' || (t.estado === 'hoy' && !atrasadaHoy(t))) return 'proceso';
+  if (['prox', 'espera', 'hoy'].includes(t.estado)) return 'prox';
+  return '';
+}
 /* Filtros compartidos de Planifica: los mismos en Tablero y Agenda. Hoy y Bandeja no se filtran. */
 const PRIO_F = { q1:'Urgente e importante', imp:'Importante', urg:'Urgente', sin:'Sin prioridad' };
-const EST_F = { prox:'Próximas', hoy:'Hoy', proceso:'En curso', espera:'En espera' };
+const EST_F = { prox:'Próximas', proceso:'En curso' };
 const prioDe = t => t.urgente && t.importante ? 'q1' : t.importante ? 'imp' : t.urgente ? 'urg' : 'sin';
 function pasaFiltro(t, op = {}) {
   const f = ui.f;
   if (f.area !== 'todas' && !(f.area === 'sin' ? !area(t.area) : t.area === f.area)) return false;
   if (f.proyecto && !(f.proyecto === '-' ? !t.proyecto : t.proyecto === f.proyecto)) return false;
-  if (f.estado && !op.sinEstado && t.estado !== f.estado) return false;
+  if (f.estado && !op.sinEstado && colDe(t) !== f.estado) return false;
   if (f.prio && prioDe(t) !== f.prio) return false;
   return true;
 }
@@ -3923,13 +3929,16 @@ function phCaptura() {
   return '+ Agregar próxima acción' + (d.length ? ' en ' + d.join(' · ') : '');
 }
 function tareasCol(k) {
-  const ts = tareasEn(k).filter(pasaFiltro);
-  if (k === 'hecho') { const s = addDays(hoy(), -7); return ts.filter(t => diaDeISO(t.hecho) >= s).sort((a, b) => b.hecho.localeCompare(a.hecho)).slice(0, 40); }
-  if (k === 'prox') return ts.sort((a, b) => (a.fecha ? 1 : 0) - (b.fecha ? 1 : 0) || ordenPrioridad(a, b));
-  return ts.sort(byOrden);
+  const ts = [...tareasEn('prox'), ...tareasEn('espera'), ...tareasEn('hoy'), ...tareasEn('proceso'), ...tareasEn('hecho')].filter(t => colDe(t) === k && pasaFiltro(t));
+  if (k === 'hecho') { const s0 = addDays(hoy(), -7); return ts.filter(t => diaDeISO(t.hecho) >= s0).sort((a, b) => b.hecho.localeCompare(a.hecho)).slice(0, 40); }
+  if (k === 'proceso') return ts.sort((a, b) => (b.estado === 'proceso' ? 1 : 0) - (a.estado === 'proceso' ? 1 : 0) || byOrden(a, b));
+  const rango = t => t.fecha && t.fecha < hoy() ? 0 : !t.fecha ? 1 : 2;
+  return ts.sort((a, b) => rango(a) - rango(b) || (a.fecha || '').localeCompare(b.fecha || '') || ordenPrioridad(a, b));
 }
-function cardK(t, k) {
+function cardK(t, col) {
   const out = [];
+  // La tarjeta se comporta según su estado real, aunque la columna agrupe varios.
+  const k = col === 'proceso' ? (t.estado === 'proceso' ? 'proceso' : 'hoy') : col === 'prox' ? (t.estado === 'espera' ? 'espera' : 'prox') : col;
   if (k === 'hecho') out.push(`<span class="tag">${ic('check')}${fechaCorta(diaDeISO(t.hecho))} ${horaDe(t.hecho)}</span>`);
   else {
     if (k === 'espera' && t.espera) out.push(`<span class="tag">${ic('hourglass')}${esc(t.espera)}</span>`);
@@ -3949,7 +3958,7 @@ function cardK(t, k) {
     proceso:`${suyo ? `<button class="qk pri" data-a="${run ? 'pausar' : 'iniciar'}" aria-label="${run ? 'Pausar' : 'Reanudar'} enfoque">${run ? ic('pause') : ic('play', 'fill')}</button>` : `<button class="qk pri" data-a="play" data-id="${t.id}" aria-label="Empezar enfoque">${ic('play', 'fill')}</button>`}<button class="qk ok" data-a="ck" data-id="${t.id}">${ic('check')}Hecha</button>`,
     espera:`<button class="qk" data-a="mover" data-id="${t.id}" data-v="hoy">Retomar</button>`
   }[k] || '';
-  return `<div class="kc ${k === 'hecho' ? 'hecha' : ''} ${run ? 'run' : ''}" style="--a:${colorA(t.area)}" data-id="${t.id}" data-a="abrir" data-drag role="button" tabindex="0">
+  return `<div class="kc ${k === 'hecho' ? 'hecha' : ''} ${run ? 'run' : ''}" style="--a:${colorA(t.area)}" data-id="${t.id}" data-a="abrir" ${k === 'espera' ? '' : 'data-drag'} role="button" tabindex="0">
     <div class="kc-t">${esc(t.titulo)}</div>${enf}<div class="kc-f ${k === 'proceso' ? 'pr' : ''}"><div class="mt">${out.slice(0, 2).join('')}</div>${qk}</div></div>`;
 }
 function renderTablero() {
@@ -3964,7 +3973,7 @@ function renderTablero() {
   html += `<div class="board" id="board">${datos.map(({ c, ts }) => `<section class="col" style="--c:${c.c}" data-col="${c.k}" aria-label="${c.n}">
       <div class="col-h"><div><i class="cd"></i>${c.n}<span class="cnt">${ts.length}</span></div><small>${c.d}</small></div>
       ${c.k === 'prox' ? `<div class="qadd"><input id="qaddIn" maxlength="${MAX_TITULO}" placeholder="${esc(phCaptura())}" enterkeyhint="done" autocomplete="off" aria-label="${esc(phCaptura().slice(2))}"></div>` : ''}
-      <div class="list" data-list="${c.k}">${ts.map(t => cardK(t, c.k)).join('')}<div class="empty">${{ prox:'Organiza tu Bandeja para llenar esta lista', hoy:'Usa «Planear» en Hoy', proceso:'Empieza una tarea desde Hoy', espera:'Nada pendiente de otros', hecho:'Aquí verás lo que termines' }[c.k]}</div></div>
+      <div class="list" data-list="${c.k}">${ts.map(t => cardK(t, c.k)).join('')}<div class="empty">${{ prox:'Organiza tu Bandeja para llenar esta lista', proceso:'Nada en Hoy. Pasa tareas desde Próximas', hecho:'Aquí verás lo que termines' }[c.k]}</div></div>
     </section>`).join('')}</div>`;
   v.innerHTML = html;
   const b = $('#board');
@@ -4353,13 +4362,11 @@ function ayuda(k) {
       ['timer', 'Capacidad', 'Compara lo estimado con lo que cabe en tu horario (Ajustes: horario, pausas y margen). La ocupación no cuenta dos veces los bloques encimados.'],
       ['flag', 'Solapamientos', 'Si dos bloques se enciman, puedes mover uno al siguiente hueco libre o mantenerlos así a propósito.'],
       ['star', 'Prioridades', 'Para hoy y mañana, elige y ordena hasta 6 prioridades con el método Ivy Lee.']] },
-    tablero:{ d:'Tus tareas activas según su estado (método Kanban), con los mismos filtros que la Agenda.', p:[
-      ['list', 'Próximas', 'Ya decidiste hacerlas, pero aún no tienen día.'],
-      ['sun', 'Hoy', 'Las que elegiste para hoy.'],
-      ['timer', 'En curso', 'La que estás trabajando ahora. Solo una a la vez.'],
-      ['hourglass', 'En espera', 'Dependen de otra persona. Anota de quién para darle seguimiento.'],
-      ['arrowR', 'Mover tareas', 'Usa el botón de cada tarjeta, o mantenla presionada y arrástrala a otra columna.'],
-      ['tomato', 'Enfoque en la tarjeta', 'Toca «Empezar» en Hoy: la tarea pasa a En curso con su reloj a la vista, y puedes pausarla sin salir del tablero.']] },
+    tablero:{ d:'Tus tareas en tres estados, con los mismos filtros que la Agenda.', p:[
+      ['list', 'Próximas', 'Lo que está pendiente y no está en Hoy: atrasadas, en espera, sin día o con un día futuro.'],
+      ['timer', 'En curso', 'Lo que está en Hoy. La que estás trabajando ahora aparece primero, con su reloj.'],
+      ['check', 'Hecho', 'Lo que completaste en los últimos 7 días.'],
+      ['arrowR', 'Mover tareas', 'Usa el botón de cada tarjeta, o mantenla presionada y arrástrala a otra columna.']] },
     enfoque:{ d:'El modo ampliado del reloj: una sola tarea, sin interrupciones. Cada sesión completa suma puntos y alimenta tu racha.', p:[
       ['tomato', 'Pomodoro', `${a.pomo} minutos de enfoque y ${a.corto} de descanso. Cada ${a.cada}, un descanso largo de ${a.largo}. Ajusta los tiempos en Ajustes.`],
       ['clock', 'Bloque de tiempo', 'Tú eliges la duración. Útil para tareas largas o trabajo profundo.'],
@@ -5671,6 +5678,9 @@ function dFin() {
 function soltar(id, destino, ids, el, list) {
   const t = byId(id); if (!t) return;
   if (destino === 'atrasada') { renderVista(); return; }
+  const enBoard = !!(el && el.closest && el.closest('.board'));
+  // Tablero: «En curso» es lo que está en Hoy; la que ya corre sigue corriendo.
+  if (enBoard && destino === 'proceso') destino = t.estado === 'proceso' ? 'proceso' : 'hoy';
   // Desde Atrasadas (con fecha pasada) o Completadas hacia Planeados: pasa a hoy con opción de deshacer.
   if (destino === 'hoy' && (t.estado === 'hecho' || (t.fecha && t.fecha < hoy()) || t.estado !== 'hoy')) {
     const prev = [t.estado, t.fecha, t.hora, t.hecho];
@@ -5678,7 +5688,7 @@ function soltar(id, destino, ids, el, list) {
     const base = +(list && list.dataset.base) || 0;
     ids.forEach((x, i) => { const o = byId(x); if (o && +o.orden !== base + i) { o.orden = base + i; upsertT(o); } });
     renderVista();
-    toast(`«${t.titulo}» pasó a Planeados`, 'Deshacer', () => { [t.estado, t.fecha, t.hora, t.hecho] = prev; upsertT(t); renderVista(); });
+    toast(`«${t.titulo}» pasó a ${enBoard ? 'En curso' : 'Planeados'}`, 'Deshacer', () => { [t.estado, t.fecha, t.hora, t.hecho] = prev; upsertT(t); renderVista(); });
     return;
   }
   if (destino !== t.estado) {
