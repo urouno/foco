@@ -2881,7 +2881,7 @@ function renderBandeja() {
   if (!$('#capIn', v)) {
     v.innerHTML = htmlCapForm('cap') + `<div id="bandejaZona"></div>
       <details class="tips"><summary>${ic('bulb')}Cómo escribir un buen pendiente${ic('chevD', 'chev')}</summary>
-        <div>Empieza con un <b>verbo</b> (Revisar, Enviar, Llamar…) y di <b>sobre qué</b>: «Enviar la cotización a Luis». Los detalles los completas al organizar.<br>El área se sugiere sola mientras escribes; cámbiala en el selector junto a Guardar si no es. Si pegas una lista, cada línea se vuelve un pendiente.</div></details>`;
+        <div>Empieza con un <b>verbo</b> (Revisar, Enviar, Llamar…) y di <b>sobre qué</b>: «Enviar la cotización a Luis». Los detalles los completas al organizar.<br>El área se sugiere sola mientras escribes; cámbiala en el selector a la izquierda de Guardar si no es. Si pegas una lista, cada línea se vuelve un pendiente.</div></details>`;
   }
   pintarCapForm('cap'); pintarBandejaLista();
 }
@@ -2890,7 +2890,7 @@ function htmlCapForm(pfx) {
   return `<div class="panel capf" id="${pfx}Box">
     <button class="vtop" id="${pfx}Verbo" data-a="verboAbrir" data-dest="${pfx}" aria-label="Elegir un verbo para empezar a redactar">${ic('bolt')}¿No sabes cómo empezar? Elige un verbo${ic('chevD')}</button>
     <textarea id="${pfx}In" class="capf-in" rows="1" maxlength="2000" placeholder="Anota un pendiente" enterkeyhint="send" autocomplete="off" autocapitalize="sentences" aria-label="Anota un pendiente"></textarea>
-    <div class="capf-bot"><button class="btn sm pri" data-a="${pfx === 'cap' ? 'capAdd' : 'capSheetAdd'}" aria-label="Guardar entrada en la Bandeja">${ic('inbox')}Guardar entrada</button><select class="areasel" id="${pfx}Area" aria-label="Área (obligatoria)"></select></div>
+    <div class="capf-bot"><select class="areasel" id="${pfx}Area" aria-label="Área (obligatoria)"></select><button class="btn sm pri" data-a="${pfx === 'cap' ? 'capAdd' : 'capSheetAdd'}" aria-label="Guardar entrada en la Bandeja">${ic('inbox')}Guardar entrada</button></div>
   </div><div class="capf-hint" id="${pfx}Hint" aria-live="polite"></div>`;
 }
 function pintarCapForm(pfx) {
@@ -4454,7 +4454,7 @@ function ayuda(k) {
   const a = S.ajustes;
   return ({
     bandeja:{ d:'Tu lugar para vaciar la cabeza. Solo el título es obligatorio. Anota cualquier pendiente en cuanto se te ocurra, sin pensar todavía dónde va.', p:[
-      ['plus', 'Captura en un paso', 'Escribe qué vas a hacer (si no sabes cómo empezar, elige un verbo arriba). El área se sugiere sola y es obligatoria: cámbiala en el selector junto a Guardar. Toca Guardar. Si pegas una lista, cada línea se vuelve un pendiente.'],
+      ['plus', 'Captura en un paso', 'Escribe qué vas a hacer (si no sabes cómo empezar, elige un verbo arriba). El área se sugiere sola y es obligatoria: cámbiala en el selector a la izquierda de Guardar. Toca Guardar. Si pegas una lista, cada línea se vuelve un pendiente.'],
       ['filter', 'Filtrar por verbo', 'Toca un verbo (Llamar, Enviar, Revisar…) para ver solo esos pendientes y organizarlos juntos.'],
       ['layers', 'Área (opcional)', 'Elígela en el selector o escríbela con # dentro del texto, por ejemplo #omova. Desde el selector también puedes crear una nueva.'],
       ['layers', 'Varios a la vez', 'Toca «Seleccionar varios» para asignar área, proyecto, día o destino a muchos pendientes. Se puede deshacer.'],
