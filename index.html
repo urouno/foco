@@ -287,6 +287,7 @@ body.dragging{cursor:grabbing}
 .areasel{flex:1;min-width:0;min-height:36px;padding:0 10px;border-radius:999px;background:var(--sf2);border:0;font-size:var(--fs-s);color:var(--ink);font-family:inherit}
 .areasel.vacia{color:var(--mut)}
 .mas-b{margin-top:8px}
+.tr.sin-abrir{cursor:default;pointer-events:none}
 .areapick .chip{min-height:36px}
 .capf-hint{margin:8px 4px 0;font-size:var(--fs-s);color:var(--mut);line-height:1.4}
 .capf-hint:empty{display:none}
@@ -2951,9 +2952,8 @@ function pintarBandejaLista(nuevos = []) {
       ${ui.bSel ? `<div class="lote-bar"><button class="chip" data-a="bSelTodos">${items.every(t => ui.bSel.has(t.id)) ? 'Ninguno' : 'Todos'}</button><b>${ui.bSel.size} ${ui.bSel.size === 1 ? 'seleccionado' : 'seleccionados'}</b><button class="btn sm pri" data-a="loteAbrir" ${ui.bSel.size ? '' : 'disabled'}>${ic('layers')}Asignar</button></div>` : ''}
       <div class="group">${items.map(t => ui.bSel ? `<button class="tr pl ${ui.bSel.has(t.id) ? 'on' : ''}" style="--a:${t.area ? colorA(t.area) : 'transparent'}" data-a="bSelTog" data-id="${t.id}" aria-pressed="${ui.bSel.has(t.id)}"><span class="ck">${ui.bSel.has(t.id) ? ic('check') : ''}</span>
         <span class="tb"><span class="tt">${esc(t.titulo)}</span><span class="mt">${metaCorta(t, 2, { area:true })}</span></span></button>`
-        : `<div class="tr nock ${nuevos.includes(t.id) ? 'in-anim' : ''}" style="--a:${t.area ? colorA(t.area) : 'transparent'}" data-a="abrir" data-id="${t.id}" role="button" tabindex="0">
-        <div class="tb"><div class="tt">${esc(t.titulo)}</div><div class="mt"><span class="tag">${haceCuanto(t.creado)}</span>${metaCorta(t, 2, { area:true })}</div></div>
-        ${ic('chevR', 'chev-r')}</div>`).join('')}</div>`;
+        : `<div class="tr nock sin-abrir ${nuevos.includes(t.id) ? 'in-anim' : ''}" style="--a:${t.area ? colorA(t.area) : 'transparent'}" >
+        <div class="tb"><div class="tt">${esc(t.titulo)}</div><div class="mt"><span class="tag">${haceCuanto(t.creado)}</span>${metaCorta(t, 2, { area:true })}</div></div></div>`).join('')}</div>`;
   } else {
     html += `<div class="zero"><div class="orb">${ic('check')}</div><h3>Bandeja vacía</h3><p>Cuando algo te ronde la cabeza, anótalo arriba. Después lo organizas con calma.</p></div>`;
   }
