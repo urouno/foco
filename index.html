@@ -288,6 +288,7 @@ body.dragging{cursor:grabbing}
 .areasel.vacia{color:var(--mut)}
 .mas-b{margin-top:8px}
 .tr.sin-abrir{cursor:default;pointer-events:none}
+.dz.over{outline:2px dashed var(--ac);outline-offset:3px;border-radius:16px;background:var(--ac-s)}
 .org{margin:32px 4px 0;padding-top:16px;border-top:1px dashed var(--ln)}
 .org-t{display:flex;align-items:center;gap:6px;font-size:var(--fs-s);font-weight:600;color:var(--mut);letter-spacing:.02em}
 .org-t svg.i{width:14px;height:14px}
@@ -2856,8 +2857,8 @@ function filaHoy(t, n, op = {}) {
     ${n ? `<span class="grip" data-grip aria-hidden="true">${ic('grip', 'fill')}</span>` : `<button class="ib-s" data-a="play" data-id="${t.id}" aria-label="Empezar enfoque: ${esc(t.titulo)}">${ic('play', 'fill')}</button>`}
   </div>`;
 }
-function filaHecha(t) {
-  return `<div class="tr hecha" style="--a:${colorA(t.area)}" data-a="abrir" data-id="${t.id}" role="button" tabindex="0"><span class="ck on">${ic('check')}</span>
+function filaHecha(t, drag) {
+  return `<div class="tr hecha" style="--a:${colorA(t.area)}" data-a="abrir" data-id="${t.id}" ${drag ? 'data-drag' : ''} role="button" tabindex="0"><span class="ck on">${ic('check')}</span>
     <div class="tb"><div class="tt">${esc(t.titulo)}</div><div class="mt"><span class="tag">${ic('check')}${horaDe(t.hecho)}</span>${t.pomos ? `<span class="tag">${ic('tomato')}${t.pomos}</span>` : ''}</div></div></div>`;
 }
 // Matriz de Eisenhower 2x2: una sola decisión en lugar de dos interruptores.
@@ -3474,17 +3475,21 @@ function renderHoy() {
           <button class="btn sq" data-a="ir" data-v="enfoque" aria-label="Enfoque en pantalla completa">${ic('expand')}</button>`
         : `<button class="btn pri grow" data-a="play" data-id="${ahora.id}">${ic('play', 'fill')}Empezar</button>`}
         <button class="btn sq okb" data-a="ck" data-id="${ahora.id}" aria-label="Marcar como hecha">${ic('check')}</button></div>
-      <div class="hero-m">${ic('clock')}<span id="heroFin">${tiempo}</span>${run || desc ? '' : `<button class="lnk2" data-a="heroModo">Cambiar</button>`}</div></div>`;
+      <div class="hero-m">${ic('clock')}<span id="heroFin">${tiempo}</span>${run || desc ? '' : `<button class="lnk2" data-a="heroModo">Cambiar modo</button>`}<button class="lnk2" data-a="cambiarTarea">Cambiar tarea</button></div></div>`;
     if (!enMarcha()) zA += `<button class="arr" data-a="arranque">${ic('sparkle')}¿No sabes por dónde empezar?</button>`;
-    // ----- Planeados: todo lo de hoy (de la Bandeja, «Lo hago ahora» o ya programado) -----
-    const resto = cola.filter(x => x !== ahora), extra = proceso.slice(1), otrasR = otras.filter(x => x !== ahora);
-    const nPlan = extra.length + resto.length + otrasR.length;
-    if (nPlan) zB += `<div class="sec-t">${ic('sun')}Planeados <span class="n">${nPlan}</span></div>
-      ${extra.length ? `<div class="group">${extra.map(x => filaHoy(x, 0, { curso:true })).join('')}</div>` : ''}
-      ${resto.length ? `<div class="group" data-list="hoy" data-base="${deCola ? 1 : 0}" data-hero="${deCola ? ahora.id : ''}" id="hoyList">${resto.map((x, i) => filaHoy(x, i + (deCola ? 2 : 1))).join('')}</div>
-      ${tip('hoy-orden', 'grip', `${TOCA()} el círculo para completar. Arrastra los puntos para reordenar.`)}` : ''}
-      ${otrasR.length ? `<div class="group">${otrasR.map(x => filaHoy(x, 0, { otra:true })).join('')}</div><p class="hint">${ic('star')} la vuelve prioridad.</p>` : ''}`;
   }
+
+  // ----- Planeados: todo lo de hoy (de la Bandeja, «Lo hago ahora» o ya programado) -----
+  const dc = !!ahora && !proceso.length && ahora === cola[0];
+  const resto = cola.filter(x => x !== ahora), extra = proceso.slice(1), otrasR = otras.filter(x => x !== ahora);
+  const nPlan = extra.length + resto.length + otrasR.length;
+  const ant = pendientesAnteriores();
+  const zonas = !!(ahora || nPlan || ant.length || hechas.length);
+  if (zonas) zB += `<div class="sec-t">${ic('sun')}Planeados <span class="n">${nPlan}</span></div>
+    ${extra.length ? `<div class="group">${extra.map(x => filaHoy(x, 0, { curso:true })).join('')}</div>` : ''}
+    <div class="group" data-list="hoy" data-base="${dc ? 1 : 0}" data-hero="${dc ? ahora.id : ''}" id="hoyList">${resto.map((x, i) => filaHoy(x, i + (dc ? 2 : 1))).join('')}${resto.length || extra.length || otrasR.length ? '' : '<div class="empty">Nada más planeado. Arrastra aquí una tarea para planearla hoy.</div>'}</div>
+    ${resto.length ? tip('hoy-orden', 'grip', `${TOCA()} el círculo para completar. Arrastra los puntos para reordenar o moverla a otra sección.`) : ''}
+    ${otrasR.length ? `<div class="group">${otrasR.map(x => filaHoy(x, 0, { otra:true })).join('')}</div><p class="hint">${ic('star')} la vuelve prioridad.</p>` : ''}`;
 
   // ----- Avance en una línea y próximo compromiso -----
   if (total) zT += `<div class="avance"><div class="av-t"><b>${hechasP} de ${total}</b><span>${prioIds ? 'prioridades' : 'tareas'}</span>${pendP.length ? `<small>${est ? `≈ ${txtHM(est)}` : ''}${sinEst ? `${est ? ' · ' : ''}${sinEst} sin estimar` : ''}</small>` : ''}</div>
@@ -3495,14 +3500,10 @@ function renderHoy() {
   zT += `<div class="hoy-acc"><button class="lnk2" data-a="plan" data-v="${tarde ? 'manana' : 'hoy'}">${ic(tarde ? 'moon' : 'star')}${tarde ? 'Preparar mañana' : rec ? 'Cambiar prioridades' : 'Elegir prioridades'}</button><button class="lnk2" data-a="irEnfoque">${ic('timer')}Enfoque libre</button></div>`;
 
   // ----- Atrasadas (días anteriores sin terminar) y Completadas (solo las de hoy) -----
-  const segs = seguimientosHoy(), ant = pendientesAnteriores();
-  const filaDec = (x, botones) => `<div class="tr dec" style="--a:${colorA(x.area)}" data-a="abrir" data-id="${x.id}" role="button" tabindex="0"><div class="tb"><div class="tt">${esc(x.titulo)}</div><div class="mt">${metaCorta(x, 2, { area:true })}</div><div class="dec-b">${botones}</div></div></div>`;
-  if (ant.length) zB += `<div class="sec-t">${ic('refresh')}Atrasadas <span class="n">${ant.length}</span></div>
-    <div class="group">${ant.map(x => filaDec(x, `<button class="qk pri" data-a="pendHoy" data-id="${x.id}">Hoy</button><button class="qk" data-a="pendOtro" data-id="${x.id}">Otro día</button><button class="qk" data-a="pendProx" data-id="${x.id}">A próximas</button>`)).join('')}</div>
-    ${ant.length > 1 ? `<button class="mas" data-a="pendTodasHoy">${ic('sun')}Pasar todas a hoy</button>` : ''}`;
-  if (hechas.length) zB += `<details class="sec-d" data-k="hechas" ${abierto('hechas') ? 'open' : ''}><summary class="sec-t">${ic('check')}Completadas <span class="n">${hechas.length}</span><span class="sp"></span>${ic('chevD', 'chev')}</summary><div class="group">${hechas.map(filaHecha).join('')}</div></details>`;
-  if (segs.length) zB += `<details class="sec-d" data-k="decidir" ${abierto('decidir') ? 'open' : ''}><summary class="sec-t">${ic('hourglass')}Seguimientos de hoy <span class="n">${segs.length}</span><span class="sp"></span>${ic('chevD', 'chev')}</summary>
-    <div class="group">${segs.map(x => filaDec(x, `<button class="qk pri" data-a="segRetomar" data-id="${x.id}">Retomar hoy</button><button class="qk" data-a="segOtro" data-id="${x.id}">Otro día</button>`)).join('')}</div></details>`;
+  const filaDec = (x, botones) => `<div class="tr dec" style="--a:${colorA(x.area)}" data-a="abrir" data-id="${x.id}" data-drag role="button" tabindex="0"><div class="tb"><div class="tt">${esc(x.titulo)}</div><div class="mt">${metaCorta(x, 2, { area:true })}</div><div class="dec-b">${botones}</div></div></div>`;
+  if (ant.length) zB += `<div class="sec-t">${ic('refresh')}Atrasadas <span class="n">${ant.length}</span><span class="sp"></span><button class="lnk2" data-a="pendTodasHoy">${ic('sun')}Mover todas a hoy</button></div>
+    <div class="group" data-list="atrasada">${ant.map(x => filaDec(x, `<button class="qk pri" data-a="pendHoy" data-id="${x.id}">Hoy</button><button class="qk" data-a="pendOtro" data-id="${x.id}">Otro día</button><button class="qk" data-a="pendProx" data-id="${x.id}">A próximas</button>`)).join('')}</div>`;
+  if (zonas) zB += `<details class="sec-d" data-k="hechas" ${abierto('hechas') ? 'open' : ''}><summary class="sec-t">${ic('check')}Completadas <span class="n">${hechas.length}</span><span class="sp"></span>${ic('chevD', 'chev')}</summary><div class="group" data-list="hecho">${hechas.map(x => filaHecha(x, true)).join('')}${hechas.length ? '' : '<div class="empty">Arrastra aquí una tarea para completarla.</div>'}</div></details>`;
   const plMan = tareasEn('prox').filter(x => x.fecha === manana()).length;
   const spH = pendientesSinPlan().filter(x => x.tipo !== 'algun'), olvH = spH.filter(x => x.olvidada).length, dRevH = diasRevision();
   if (spH.length && (olvH || dRevH == null || dRevH >= 7)) zB += `<button class="panel row-link" data-a="tab" data-v="pendientes">${ic('layers')}<span><b>${spH.length} sin planificar</b>${olvH ? ` · ${olvH} ${olvH === 1 ? 'olvidado' : 'olvidados'}` : dRevH == null ? ' · haz tu primera revisión' : ` · revisión hace ${dRevH} días`}</span>${ic('chevR')}</button>`;
@@ -4582,6 +4583,7 @@ function refrescarSheet(inicio) {
   else if (c.k === 'filtro') html = htmlFiltro();
   else if (c.k === 'buscar') html = htmlBuscar();
   else if (c.k === 'menu') html = htmlMenu();
+  else if (c.k === 'cambiar') html = htmlCambiar();
   else if (c.k === 'proyectos') html = htmlProyectosSheet();
   else if (c.k === 'agPend') html = htmlAgPend();
   else if (c.k === 'agOpc') html = htmlAgOpc();
@@ -4755,6 +4757,18 @@ function htmlLote() {
     <div class="f-sec"><span class="f-l">Destino</span><div class="chips">${[['', 'Sin cambios'], ['prox', 'Próximas acciones'], ['hoy', 'Hoy'], ['manana', 'Mañana'], ['algun', 'Algún día']].map(([v, nm]) => `<button class="chip ${(L.dest || '') === v ? 'on' : ''}" data-a="loteSet" data-k="dest" data-v="${v}">${nm}</button>`).join('')}</div>
       <label class="f-l" style="margin-top:12px" for="loteFecha">O un día planeado</label><input type="date" class="in" id="loteFecha" data-in="loteFecha" value="${L.fecha || ''}" min="${hoy()}"></div>
     <div class="sh-foot"><button class="btn" data-a="cerrarSheet">Cancelar</button><button class="btn pri" data-a="loteAplicar">${ic('check')}Aplicar a ${n}</button></div>`;
+}
+// Elegir otra tarea para trabajar ahora: las planeadas de hoy y las atrasadas.
+function htmlCambiar() {
+  const { proceso, cola, otras } = trabajoDeHoy();
+  const actual = T().tareaId && byId(T().tareaId) ? T().tareaId : (proceso[0] || cola[0] || otras[0] || {}).id;
+  const plan = [...new Set([...proceso, ...cola, ...otras])].filter(x => x.id !== actual);
+  const ant = pendientesAnteriores().filter(x => x.id !== actual && !plan.includes(x));
+  const fila = x => `<button class="tr opt" data-a="cambiarA" data-id="${x.id}" style="--a:${colorA(x.area)}"><i class="dot"></i><span class="tb"><span class="tt">${esc(x.titulo)}</span><span class="mt">${metaCorta(x, 2, { area:true })}</span></span>${ic('play', 'fill')}</button>`;
+  return cab('<h2>Cambiar de tarea</h2>') + `<p class="hint" style="margin:0 4px 16px">Elige en qué vas a trabajar ahora.</p>`
+    + (plan.length ? `<div class="sec-t">Planeados <span class="n">${plan.length}</span></div><div class="group">${plan.map(fila).join('')}</div>` : '')
+    + (ant.length ? `<div class="sec-t">Atrasadas <span class="n">${ant.length}</span></div><div class="group">${ant.map(fila).join('')}</div>` : '')
+    + (!plan.length && !ant.length ? '<div class="empty">No hay otras tareas para hoy.</div>' : '') + '<div class="sh-end"></div>';
 }
 function htmlMenu() {
   const V = VISTAS.find(x => x.k === ui.view), e = estadoSyncInfo();
@@ -5130,6 +5144,26 @@ const ACT = {
   densidad:el => { pref.set('densidad', el.dataset.v); aplicarCalma(); refrescarSheet(); },
   buscar:() => abrirSheet({ k:'buscar' }),
   menu:() => abrirSheet({ k:'menu' }),
+  cambiarTarea:() => abrirSheet({ k:'cambiar' }),
+  cambiarA:async el => {
+    const id = el.dataset.id, x = byId(id); if (!x) return; const t = T();
+    const corr = t.corriendo, enCurso = enMarcha() && t.fase === 'foco' && t.tareaId && t.tareaId !== id;
+    if (enCurso) {
+      const prev = byId(t.tareaId);
+      const r = await dialogo({ titulo:'Cambiar de tarea', texto:`Estás trabajando en «${prev ? prev.titulo : 'otra tarea'}». Si cambias, se guarda el tiempo que llevas.`, ok:'Cambiar de tarea', cancelar:'Seguir con la actual' });
+      if (r !== 1) return;
+      const min = cerrarTramo();
+      if (min) toast(`${min} min guardados en «${prev ? prev.titulo : 'Enfoque libre'}»`);
+    }
+    cerrarSheet(true);
+    // La tarea elegida pasa a ser «Ahora»; si venía de Atrasadas, se planea para hoy.
+    if (!['hoy', 'proceso'].includes(x.estado) || (x.fecha && x.fecha < hoy())) { x.estado = 'hoy'; x.fecha = hoy(); upsertT(x); }
+    tareasEn('proceso').forEach(o => { if (o.id !== id) { o.estado = 'hoy'; upsertT(o); } });
+    [x, ...tareasEn('hoy').sort(byOrden).filter(o => o.id !== id)].forEach((o, i) => { if (+o.orden !== i) { o.orden = i; upsertT(o); } });
+    t.tareaId = id; save(); pushTimer();
+    if (corr && enCurso) await iniciar(); else renderVista();
+    toast(`Ahora: «${x.titulo}»`);
+  },
   proyectos:() => abrirSheet({ k:'proyectos' }),
   spAbrir:el => abrirSheet(ui.sheet && ui.sheet.k === 'proyectos' ? { k:'detalle', id:el.dataset.id, volver:{ k:'proyectos' } } : { k:'detalle', id:el.dataset.id }),
   spReabrir:el => {
@@ -5294,7 +5328,7 @@ const ACT = {
   pendOtro:el => abrirSheet({ k:'detalle', id:el.dataset.id, open:'fecha' }),
   pendTodasHoy:() => { const ids = pendientesAnteriores().map(t => t.id); const prev = ids.map(id => { const t = byId(id); return [t, t.estado, t.fecha]; });
     ids.forEach(id => { const t = byId(id); t.estado = 'hoy'; t.fecha = hoy(); upsertT(t); }); renderVista();
-    toast(`${ids.length} tareas se quedan hoy`, 'Deshacer', () => { prev.forEach(([t, e, f]) => { t.estado = e; t.fecha = f; upsertT(t); }); renderVista(); }); },
+    toast(`${ids.length} ${ids.length === 1 ? 'tarea se queda' : 'tareas se quedan'} hoy`, 'Deshacer', () => { prev.forEach(([t, e, f]) => { t.estado = e; t.fecha = f; upsertT(t); }); renderVista(); }); },
   segRetomar:el => { const t = byId(el.dataset.id); if (!t) return; const prev = [t.estado, t.fecha, t.seg]; t.seg = ''; setEstado(t, 'hoy'); renderVista();
     toast(`«${t.titulo}» pasó a Hoy`, 'Deshacer', () => { [t.estado, t.fecha, t.seg] = prev; upsertT(t); renderVista(); }); },
   segOtro:el => abrirSheet({ k:'detalle', id:el.dataset.id, open:'seg' }),
@@ -5673,6 +5707,7 @@ function levantar(st) {
   const it = st.item, r = it.getBoundingClientRect();
   st.lifted = true; st.free = it.hasAttribute('data-free');
   st.origen = it.parentElement.dataset.list; st.enBoard = !!it.closest('.board');
+  if (['hoy', 'atrasada', 'hecho'].includes(st.origen)) { const dh = $('details[data-k="hechas"]'); if (dh) dh.open = true; }
   document.body.classList.add('dragging');
   if (navigator.vibrate) navigator.vibrate(12);
   if (st.free) { st.wrap = it.closest('.tl-wrap'); st.top0 = it.offsetTop; st.yL = st.y; st.sy0 = st.wrap ? st.wrap.scrollTop : scrollY; it.classList.add('lift'); }
@@ -5713,11 +5748,17 @@ function mover(st) {
 }
 function colocar(st) {
   const el = document.elementFromPoint(st.x, st.y); if (!el) return;
-  const list = el.closest('[data-list]');
+  // Soltar sobre el título de «Completadas» (aunque esté plegada) cuenta como soltar en su lista.
+  const list = el.closest('[data-list]') || (el.closest('details[data-k="hechas"]') && $('details[data-k="hechas"] [data-list="hecho"]'));
   $$('.hero.over').forEach(h => h.classList.remove('over')); st.top = false;
   if (!list) return;
   if (list.dataset.list === 'hoytop') { if (!st.enBoard && st.origen === 'hoy') { st.top = true; list.classList.add('over'); } return; }
-  if (!st.enBoard && list.dataset.list !== st.origen) return;
+  if (!st.enBoard && list.dataset.list !== st.origen) {
+    // En Hoy se puede pasar de una sección a otra (menos hacia Atrasadas).
+    const H = ['hoy', 'atrasada', 'hecho'];
+    if (!(H.includes(st.origen) && H.includes(list.dataset.list) && list.dataset.list !== 'atrasada')) return;
+  }
+  $$('.dz.over').forEach(c => c.classList.remove('over')); if (list.dataset.list !== st.origen) list.classList.add('dz', 'over');
   $$('.col.over').forEach(c => c.classList.remove('over'));
   const col = list.closest('.col'); if (col) col.classList.add('over');
   const items = $$(':scope > [data-drag]', list).filter(n => n !== st.item);
@@ -5757,7 +5798,7 @@ function dFin() {
   cancelAnimationFrame(st.raf);
   D.justDragged = true; setTimeout(() => D.justDragged = false, 400);
   document.body.classList.remove('dragging');
-  $$('.col.over,.hero.over').forEach(c => c.classList.remove('over'));
+  $$('.col.over,.hero.over,.dz.over').forEach(c => c.classList.remove('over'));
   if (st.free) {
     st.item.classList.remove('lift'); D.st = null;
     if (st.nt != null) { const t = byId(st.item.dataset.id), ph = t.hora; t.hora = min2hm(AG_INI * 60 + st.nt); upsertT(t); renderVista(); toast(`Movida a las ${t.hora}`, 'Deshacer', () => { t.hora = ph; upsertT(t); renderVista(); }); }
@@ -5775,6 +5816,17 @@ function dFin() {
 }
 function soltar(id, destino, ids, el, list) {
   const t = byId(id); if (!t) return;
+  if (destino === 'atrasada') { renderVista(); return; }
+  // Desde Atrasadas (con fecha pasada) o Completadas hacia Planeados: pasa a hoy con opción de deshacer.
+  if (destino === 'hoy' && (t.estado === 'hecho' || (t.fecha && t.fecha < hoy()) || t.estado !== 'hoy')) {
+    const prev = [t.estado, t.fecha, t.hora, t.hecho];
+    t.estado = 'hoy'; t.fecha = hoy(); t.hecho = ''; upsertT(t);
+    const base = +(list && list.dataset.base) || 0;
+    ids.forEach((x, i) => { const o = byId(x); if (o && +o.orden !== base + i) { o.orden = base + i; upsertT(o); } });
+    renderVista();
+    toast(`«${t.titulo}» pasó a Planeados`, 'Deshacer', () => { [t.estado, t.fecha, t.hora, t.hecho] = prev; upsertT(t); renderVista(); });
+    return;
+  }
   if (destino !== t.estado) {
     if (destino === 'hecho') completar(t, el);
     else {
