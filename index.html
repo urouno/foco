@@ -280,6 +280,11 @@ body.dragging{cursor:grabbing}
 .capf-bot{display:flex;align-items:center;gap:8px;padding-top:12px;border-top:1px solid var(--ln)}
 .asel{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 12px;border-radius:12px;background:var(--sf2);font-size:var(--fs-m);color:var(--ink);max-width:60%}
 .asel.full{width:100%;max-width:none;min-height:48px}
+.vtop{display:flex;align-items:center;gap:6px;width:100%;min-height:36px;padding:0 4px 8px;font-size:var(--fs-s);color:var(--ac-t);font-weight:600;text-align:left}
+.vtop svg.i{width:16px;height:16px}
+.vtop svg.i:last-child{color:var(--mut);margin-left:auto}
+.areapick{display:flex;gap:8px;flex-wrap:wrap}
+.areapick .chip{min-height:36px}
 .capf-hint{margin:8px 4px 0;font-size:var(--fs-s);color:var(--mut);line-height:1.4}
 .capf-hint:empty{display:none}
 .capf-hint button{color:var(--ac-t);font-weight:600;text-align:left}
@@ -1611,20 +1616,23 @@ const ic = (n, cls = '') => `<svg class="i ${cls}" viewBox="0 0 24 24" aria-hidd
 const LS = 'foco.v1';
 const ESTADOS = { bandeja:'Bandeja', prox:'Próxima', hoy:'Hoy', proceso:'En curso', espera:'En espera', algun:'Algún día', hecho:'Hecha' };
 const EST_CLS = { bandeja:'', prox:'', hoy:'ac', proceso:'ac', espera:'', algun:'', hecho:'ok' };
-const DEST = { hecho:'Hecha en el momento', hoy:'Para hoy', prox:'A Próximas', espera:'En espera', algun:'A Algún día', borrado:'Eliminada' };
+const DEST = { hecho:'Hecha en el momento', ya:'En marcha (5 min)', hoy:'Para hoy', prox:'A Próximas', espera:'En espera', algun:'A Algún día', borrado:'Eliminada' };
 // Paleta serena: tonos apagados que conviven con el lienzo cálido. Los colores vivos anteriores se traducen a su par tranquilo.
 const PALETA = ['#545D7C','#5B7FA3','#5E9AA8','#4F8A80','#5E8C6A','#9A7B5B','#C08A4E','#C2724A','#B5544B','#B0607A','#8A6BA8','#7D7973'];
 const PALETA_VIVA = ['#5856D6','#007AFF','#32ADE6','#30B0C7','#34C759','#A2845E','#FF9500','#FF6B22','#FF3B30','#FF2D55','#AF52DE','#8E8E93'];
 const tono = c => { const i = PALETA_VIVA.indexOf(String(c || '').toUpperCase()); return i < 0 ? c : PALETA[i]; };
-const suavizarAreas = aj => { (aj.areas || []).forEach(a => { a.c = tono(a.c); }); return aj; };
+// Las áreas base son Trabajo y Personal: si faltan (datos antiguos), se agregan sin tocar las demás.
+const suavizarAreas = aj => {
+  aj.areas = aj.areas || []; aj.areas.forEach(a => { a.c = tono(a.c); });
+  if (!aj.areas.some(a => a.id === 'trabajo')) aj.areas.unshift({ id:'trabajo', n:'Trabajo', c:'#5B7FA3' });
+  if (!aj.areas.some(a => a.id === 'personal')) aj.areas.push({ id:'personal', n:'Personal', c:'#8A6BA8' });
+  return aj;
+};
 function defAjustes() {
   return {
     areas: [
-      { id:'personal', n:'Personal', c:'#8A6BA8' },
-      { id:'omova', n:'Omova', c:'#5B7FA3' },
-      { id:'marelo', n:'Marelo', c:'#4F8A80' },
-      { id:'esphabit', n:'Esphabit', c:'#C08A4E' },
-      { id:'apps', n:'Apps y proyectos', c:'#B0607A' }
+      { id:'trabajo', n:'Trabajo', c:'#5B7FA3' },
+      { id:'personal', n:'Personal', c:'#8A6BA8' }
     ],
     pomo:25, corto:5, largo:15, cada:4, meta:6, sonido:true,
     jIni:'09:00', jFin:'18:00', pausa:60, margen:15,
@@ -2111,15 +2119,32 @@ function nuevaTarea(titulo, extra = {}) {
   return t;
 }
 function parsearCaptura(txt) {
-  let titulo = ' ' + txt + ' ', ar = '', urg = false, imp = false;
-  titulo = titulo.replace(/\s#([\p{L}\d_-]+)/gu, (m, tag) => { const a = buscarArea(tag); if (a && !ar) { ar = a.id; return ' '; } return m; });
-  titulo = titulo.replace(/\s!!(?=\s)/g, () => { urg = true; imp = true; return ' '; });
-  titulo = titulo.replace(/\s!(?=\s)/g, () => { urg = true; return ' '; });
-  return { titulo:limpiarTitulo(titulo), area:ar, urgente:urg, importante:imp };
+  return { titulo:limpiarTitulo(txt), area:'', urgente:false, importante:false };
 }
-function buscarArea(tag) {
-  const n = norm(tag); if (!n) return null;
-  return areas().find(a => norm(a.id).startsWith(n) || norm(a.n).replace(/\s+/g, '').startsWith(n));
+/* ---- Predicción de área (Trabajo o Personal) ----
+   Combina palabras clave con lo que ya has capturado: cada pendiente con área enseña qué palabras suelen ir con cuál. */
+const AREA_PERSONAL = /\b(?:casa|hogar|mama|papa|abuel[oa]s?|famil\w*|hij[oa]s?|espos[oa]|espos|novi[oa]|pareja|herman[oa]s?|tio|tia|primo|amig[oa]s?|cumple\w*|regalo|fiesta|medic[oa]|doctor\w*|dentista|cita medica|analisis|farmacia|medicina\w*|salud|terapia|gym|gimnasio|ejercicio|correr|yoga|super|mercado|despensa|comprar|cocin\w+|comida|cena|desayuno|limpiar|lavar|ropa|planchar|barrer|mascota|perro|gato|veterinari\w*|viaje|vacaciones|vuelo|hotel|boletos?|renta|recibo|luz|agua|gas|predial|escuela|colegio|tarea de|inscripci\w*|peluquer\w*|corte de pelo|cine|pelicula|serie|libro|leer|jardin|plantas?|auto|coche|carro|gasolina|verificacion|tenencia|seguro de|pasaporte|licencia|tramite personal|banco personal|ahorro|meditar|dormir|descansar)\b/;
+const AREA_TRABAJO = /\b(?:reunion|junta|cliente\w*|proveedor\w*|cotizacion\w*|factura\w*|presupuesto|contrato\w*|propuesta|informe|reporte|presentacion|deck|equipo|jefe|jefa|colega|compan?ero|oficina|empresa|negocio|venta\w*|lead\w*|campan\w+|marketing|anuncio\w*|nomina|empleado\w*|contrat\w+|entrevista|vacante|proyecto|sprint|deploy|codigo|bug|app|apps|sitio web|pagina web|landing|servidor|repositorio|pull request|pr|correo de trabajo|mail|email|correo|agenda con|entregable|entrega|kpi|metricas?|dashboard|sat|impuestos?|contador|contabilidad|omova|marelo|esphabit|slack|zoom|llamada con|llamar a (?:el |la )?cliente|seguimiento|cobrar|cobranza|inventario|pedido\w*|orden de compra|proceso|documentar|capacitacion|curso de trabajo)\b/;
+const AREA_STOP = new Set(['para', 'como', 'esto', 'esta', 'este', 'esos', 'esas', 'pero', 'porque', 'sobre', 'entre', 'hacer', 'tengo', 'tener', 'cada', 'desde', 'hasta', 'cuando', 'donde', 'todo', 'toda', 'todos', 'todas', 'algo', 'mas', 'muy', 'con', 'sin', 'una', 'unos', 'unas', 'del', 'los', 'las']);
+const areaClase = id => id === 'personal' ? 'personal' : id ? 'trabajo' : '';
+function tokensArea(txt) { return [...new Set(norm(txt).split(/[^a-z0-9ñ]+/).filter(w => w.length >= 4 && !AREA_STOP.has(w)))]; }
+function predecirArea(txt) {
+  const n = norm(txt || '').trim(); if (n.length < 3) return '';
+  const sc = { personal:0, trabajo:0 };
+  if (AREA_PERSONAL.test(n)) sc.personal += 3;
+  if (AREA_TRABAJO.test(n)) sc.trabajo += 3;
+  // Aprende de tus propios pendientes: palabras que ya has usado con cada área.
+  const toks = tokensArea(n);
+  if (toks.length) {
+    const cnt = {}; 
+    S.tareas.forEach(t => {
+      if (t.borrado || !t.area) return;
+      const k = areaClase(t.area); tokensArea(t.titulo).forEach(w => { (cnt[w] = cnt[w] || { personal:0, trabajo:0 })[k]++; });
+    });
+    toks.forEach(w => { const c = cnt[w]; if (!c) return; const tot = c.personal + c.trabajo; sc.personal += 2 * c.personal / tot * Math.min(tot, 3) / 3 + (c.personal ? 0.5 : 0); sc.trabajo += 2 * c.trabajo / tot * Math.min(tot, 3) / 3 + (c.trabajo ? 0.5 : 0); });
+  }
+  const [a, b] = sc.trabajo >= sc.personal ? ['trabajo', 'personal'] : ['personal', 'trabajo'];
+  return sc[a] >= 2 && sc[a] - sc[b] >= 1 ? a : '';
 }
 function duplicada(titulo) { const n = norm(titulo).trim(); return n ? activas().find(t => norm(t.titulo).trim() === n) : null; }
 // Una línea por pendiente; quita viñetas ("- ", "• ", "1. ") pero respeta cantidades ("3 llamadas").
@@ -2132,7 +2157,7 @@ function capturar(texto, estado = 'bandeja', extra = {}, forzar = false) {
     if (!p.titulo) return;
     const dup = !forzar && (duplicada(p.titulo) || creadas.find(c => norm(c.titulo) === norm(p.titulo)));
     if (dup) { repetidas.push(dup); return; }
-    creadas.push(nuevaTarea(p.titulo, { ...extra, estado, area:p.area || extra.area || '', urgente:p.urgente, importante:p.importante }));
+    creadas.push(nuevaTarea(p.titulo, { ...extra, estado, area:extra.area || predecirArea(p.titulo), urgente:p.urgente, importante:p.importante }));
   });
   return { creadas, repetidas };
 }
@@ -2850,33 +2875,48 @@ function renderBandeja() {
   if (!$('#capIn', v)) {
     v.innerHTML = htmlCapForm('cap') + `<div id="bandejaZona"></div>
       <details class="tips"><summary>${ic('bulb')}Cómo escribir un buen pendiente${ic('chevD', 'chev')}</summary>
-        <div>Empieza con un <b>verbo</b> (Revisar, Enviar, Llamar…) y di <b>sobre qué</b>: «Enviar la cotización a Luis». Los detalles los completas al organizar.<br>Atajos: <b>#omova</b> pone el área, <b>!</b> marca urgente y <b>!!</b> urgente e importante. Si pegas una lista, cada línea se vuelve un pendiente.</div></details>`;
+        <div>Empieza con un <b>verbo</b> (Revisar, Enviar, Llamar…) y di <b>sobre qué</b>: «Enviar la cotización a Luis». Los detalles los completas al organizar.<br>El área (Trabajo o Personal) se sugiere sola mientras escribes; toca la otra si no es. Si pegas una lista, cada línea se vuelve un pendiente.</div></details>`;
   }
   pintarCapForm('cap'); pintarBandejaLista();
 }
 // Captura en un paso: verbo (sugerido), qué vas a hacer y área. Nada más es obligatorio.
 function htmlCapForm(pfx) {
   return `<div class="panel capf" id="${pfx}Box">
+    <button class="vtop" id="${pfx}Verbo" data-a="verboAbrir" data-dest="${pfx}" aria-label="Elegir un verbo para empezar a redactar">${ic('bolt')}¿No sabes cómo empezar? Elige un verbo${ic('chevD')}</button>
     <textarea id="${pfx}In" class="capf-in" rows="1" maxlength="2000" placeholder="Anota un pendiente" enterkeyhint="send" autocomplete="off" autocapitalize="sentences" aria-label="Anota un pendiente"></textarea>
-    <div class="capf-bot"><button class="vsel" id="${pfx}Verbo" data-a="verboAbrir" data-dest="${pfx}" aria-label="Elegir verbo (opcional)"></button><button class="asel" id="${pfx}Area" data-a="areaAbrir" data-dest="${pfx}" aria-label="Elegir área (opcional)"></button><span class="sp"></span><button class="btn sm pri" data-a="${pfx === 'cap' ? 'capAdd' : 'capSheetAdd'}" aria-label="Guardar en Bandeja">${ic('inbox')}Guardar<span class="lg"> en Bandeja</span></button></div>
+    <div class="capf-bot"><div class="areapick" id="${pfx}Area" role="radiogroup" aria-label="Área (obligatoria)"></div><span class="sp"></span><button class="btn sm pri" data-a="${pfx === 'cap' ? 'capAdd' : 'capSheetAdd'}" aria-label="Guardar en Bandeja">${ic('inbox')}Guardar<span class="lg"> en Bandeja</span></button></div>
   </div><div class="capf-hint" id="${pfx}Hint" aria-live="polite"></div>`;
 }
 function pintarCapForm(pfx) {
   const ta = $(`#${pfx}In`); if (!ta) return;
-  const txt = ta.value, lns = lineasDe(txt), vi = lns.length === 1 ? verboInicial(lns[0]) : null, a = area(ui.capArea);
-  $(`#${pfx}Verbo`).innerHTML = vi ? `<b>${esc(vi.verbo)}</b>${ic('chevD')}` : `<span class="mut">Verbo</span>${ic('chevD')}`;
-  $(`#${pfx}Area`).innerHTML = a ? `<i class="dot" style="--a:${a.c}"></i>${esc(a.n)}${ic('chevD')}` : `<span class="mut">Área</span>${ic('chevD')}`;
+  const txt = ta.value, lns = lineasDe(txt);
+  // Con una sola línea, el área se sugiere sola mientras escribes, salvo que ya hayas elegido una.
+  if (!ui.capAreaManual) ui.capArea = lns.length === 1 ? predecirArea(limpiarTitulo(lns[0])) : '';
+  const sel = areaClase(ui.capArea);
+  $(`#${pfx}Area`).innerHTML = ['trabajo', 'personal'].map(k => { const a = area(k); return a ? `<button class="chip area ${sel === k ? 'on' : ''}" style="--a:${a.c}" data-a="capArea" data-v="${k}" role="radio" aria-checked="${sel === k}"><i class="dot"></i>${esc(a.n)}</button>` : ''; }).join('');
   let h = '';
   if (lns.length === 1 && lns[0].length > 60 && mnSegmentar(lns[0]).length >= 3) h = `Parece que traes varias cosas juntas. <button data-a="mnDesdeCap" data-dest="${pfx}">Llevarlo a Mente</button>`;
   else if (lns.length > 1) h = `Se guardarán ${lns.length} pendientes, uno por línea.`;
   else if (lns.length === 1 && txt.trim().length > 2) {
     const i = analizar(lns[0]).find(x => ['relleno', 'verbo', 'vago'].includes(x.k));
     if (i && i.propuesta) h = `${i.k === 'relleno' ? 'Más corto:' : 'Con verbo:'} <button data-a="clarUsar" data-dest="${pfx}" data-v="${esc(i.propuesta)}">«${esc(i.propuesta)}»</button>`;
-    else if (i && i.k === 'verbo') h = `Tip: empieza con un verbo. ${TOCA()} «Verbo» para ver opciones.`;
+    else if (i && i.k === 'verbo') h = `Tip: empieza con un verbo. ${TOCA()} «Elige un verbo» si no sabes cómo empezar.`;
     else if (i && i.k === 'vago') h = `«${esc(i.msg.split('»')[0].slice(1))}» es poco específico. ¿Qué harás exactamente?`;
   }
+  if (lns.length === 1 && !ui.capAreaManual && ui.capArea) h = `Área sugerida: <b>${esc(area(ui.capArea)?.n || '')}</b>. Toca la otra si no es.` + (h ? '<br>' + h : '');
+  else if (lns.length && !ui.capAreaManual && !ui.capArea && lns.length === 1 && txt.trim().length > 2) h = 'Elige un área: Trabajo o Personal.' + (h ? '<br>' + h : '');
   $(`#${pfx}Hint`).innerHTML = h;
 }
+// Un pendiente no se guarda sin área: la elegida o la que se predice para cada línea.
+function capAreaOk(sel, pfx) {
+  const ta = $(sel); if (!ta) return true;
+  const ls = lineasDe(ta.value); if (!ls.length) return true;
+  if (ui.capAreaManual && ui.capArea) return true;
+  if (ls.every(l => predecirArea(limpiarTitulo(l)))) return true;
+  sacudir($(`#${pfx}Area`), 'Elige un área: Trabajo o Personal');
+  return false;
+}
+function capAreaReset() { ui.capArea = ''; ui.capAreaManual = false; }
 function pintarCapAreas() { pintarCapForm('cap'); pintarCapForm('capSheet'); }
 function pintarCapAreasViejo() {
   const z = $('#capAreas'); if (!z) return;
@@ -2896,7 +2936,7 @@ function pintarBandejaLista(nuevos = []) {
     ${verbos.map(v => `<button class="chip ${ui.bVerbo === v ? 'on' : ''}" data-a="bVerbo" data-v="${esc(v)}" aria-pressed="${ui.bVerbo === v}">${esc(v)} <span class="n">${cuenta[v]}</span></button>`).join('')}
     ${cuenta[''] ? `<button class="chip ${ui.bVerbo === '-' ? 'on' : ''}" data-a="bVerbo" data-v="-">Sin verbo <span class="n">${cuenta['']}</span></button>` : ''}</div>` : '';
   ui.bIds = items.map(t => t.id);
-  const rec = (S.procRec || []).filter(r => diaDeISO(r.t) === hoy() && byId(r.id)).slice(0, 8);
+  const rec = (S.procRec || []).filter(r => { const t = diaDeISO(r.t) === hoy() && byId(r.id); return t && t.estado !== 'bandeja'; }).slice(0, 8);
   let html = '';
   if (items.length) {
     html += `<button class="cta" data-a="procesar"><span class="ico">${ic('sparkle')}</span><span><b>Organizar ${items.length} ${items.length === 1 ? 'pendiente' : 'pendientes'}${ui.bVerbo ? ` de «${esc(ui.bVerbo === '-' ? 'Sin verbo' : ui.bVerbo)}»` : ''}</b><small>Decide qué hacer con cada uno</small></span>${ic('arrowR')}</button>
@@ -3230,6 +3270,7 @@ function renderProc() {
   while (P.i < P.ids.length) { const t = byId(P.ids[P.i]); if (t && t.estado === 'bandeja' && !t.borrado) break; P.i++; }
   if (P.i >= P.ids.length) return finProc();
   const t = tActualProc(), n = P.ids.length;
+  if (P.qaId !== t.id) { P.qaId = t.id; P.qa = t.area || predecirArea(t.titulo); }
   const q = { que:`Pendiente ${P.i + 1} de ${n}`, prox:'Próxima acción', espera:'En espera' }[P.paso];
   o.innerHTML = `
     <div class="proc-top"><button class="ib" data-a="cerrarProc" aria-label="Cerrar">${ic('x')}</button><div class="proc-prog" role="progressbar" aria-valuenow="${P.i}" aria-valuemax="${n}"><div style="width:${P.i / n * 100}%"></div></div><span class="proc-n">${P.i + 1}/${n}</span></div>
@@ -3244,8 +3285,9 @@ function cuerpoProc(t) {
   const P = proc;
   if (P.paso === 'que') return `
     <div id="procClar">${htmlClaridad(t.titulo, 'proc')}</div>
+    <div class="f-sec" style="margin-top:8px"><label>Área</label><div class="areapick" id="procQa" role="radiogroup" aria-label="Área (obligatoria)">${['trabajo', 'personal'].map(k => { const a = area(k); return a ? `<button class="chip area ${areaClase(P.qa) === k ? 'on' : ''}" style="--a:${a.c}" data-a="pQa" data-v="${k}" role="radio" aria-checked="${areaClase(P.qa) === k}"><i class="dot"></i>${esc(a.n)}</button>` : ''; }).join('')}</div></div>
     <p class="proc-h">¿Qué hago con esto?</p>
-    <button class="two" data-a="pYa"><span class="ico">${ic('bolt')}</span><span><b>Lo hago ahora</b><small>Si toma menos de 2 minutos, hazlo y márcalo</small></span>${ic('check')}</button>
+    <button class="two" data-a="pYa"><span class="ico">${ic('bolt')}</span><span><b>Lo hago ahora</b><small>Abre un temporizador de 5 minutos para hacerlo ya</small></span>${ic('play', 'fill')}</button>
     <div class="sec-t" style="margin-top:16px">Si toma más tiempo</div>
     <div class="acts">
       <button class="act" style="--k:var(--ac-t);--k-s:var(--ac-s)" data-a="pProx"><span class="ico">${ic('arrowR')}</span><span><b>Próxima acción</b><span>La haré yo: le pongo área, prioridad y día</span></span></button>
@@ -3270,6 +3312,13 @@ function cuerpoProc(t) {
     <div class="f-sec">${d.resultado || d.verRes ? `<label for="pResultado">Resultado esperado <span class="mut">(opcional)</span></label><input class="in" id="pResultado" maxlength="160" placeholder="¿Cómo sabrás que está terminada?" value="${esc(d.resultado || '')}">` : `<button class="lnk2" data-a="pVerRes">${ic('plus')}Agregar resultado esperado</button>`}</div>
     <div class="f-sec"><label for="pProyecto">Proyecto (opcional)</label><input class="in" id="pProyecto" list="proyectos" maxlength="60" placeholder="Ej. App de finanzas" value="${esc(d.proyecto || '')}"></div>
     <div class="proc-foot"><button class="btn" data-a="pAtras">Atrás</button><button class="btn pri" data-a="pGuardarProx">${ic('check')}Guardar</button></div>`;
+}
+// Todo pendiente organizado necesita área (Trabajo o Personal): se guarda la elegida o la sugerida.
+function procArea() {
+  const t = tActualProc(); if (!t) return false;
+  if (!proc.qa) { sacudir($('#procQa'), 'Elige un área: Trabajo o Personal'); return false; }
+  if (t.area !== proc.qa) { t.area = proc.qa; upsertT(t); }
+  return true;
 }
 function repintarCuerpoProc() { const t = tActualProc(); if (t) $('#procBody').innerHTML = cuerpoProc(t); }
 function volarProc(dir) {
@@ -4394,7 +4443,7 @@ function ayuda(k) {
   const a = S.ajustes;
   return ({
     bandeja:{ d:'Tu lugar para vaciar la cabeza. Solo el título es obligatorio. Anota cualquier pendiente en cuanto se te ocurra, sin pensar todavía dónde va.', p:[
-      ['plus', 'Captura en un paso', 'Elige un verbo (Revisar, Enviar…), escribe qué vas a hacer y, si quieres, el área. Toca Guardar. Si pegas una lista, cada línea se vuelve un pendiente.'],
+      ['plus', 'Captura en un paso', 'Escribe qué vas a hacer (si no sabes cómo empezar, elige un verbo arriba). El área, Trabajo o Personal, se sugiere sola y es obligatoria. Toca Guardar. Si pegas una lista, cada línea se vuelve un pendiente.'],
       ['filter', 'Filtrar por verbo', 'Toca un verbo (Llamar, Enviar, Revisar…) para ver solo esos pendientes y organizarlos juntos.'],
       ['layers', 'Área (opcional)', 'Elígela en el selector o escríbela con # dentro del texto, por ejemplo #omova. Desde el selector también puedes crear una nueva.'],
       ['layers', 'Varios a la vez', 'Toca «Seleccionar varios» para asignar área, proyecto, día o destino a muchos pendientes. Se puede deshacer.'],
@@ -5031,13 +5080,15 @@ const ACT = {
     ui.mnIAprobando = false; guardarYa(); refrescarSheet(); if (ui.view === 'mente') { pintarMnPrev(); pintarMnZona(); }
   },
   mnIAborrar:() => { S.ia = { on:false, key:'', modelo:'', preo:false }; ui.mnIAmsg = { ok:true, t:'Clave borrada de este dispositivo.' }; guardarYa(); refrescarSheet(); if (ui.view === 'mente') { pintarMnPrev(); pintarMnZona(); } },
-  capArea:el => { ui.capArea = ui.capArea === el.dataset.v ? '' : el.dataset.v; pintarCapAreas(); },
+  capArea:el => { ui.capArea = el.dataset.v; ui.capAreaManual = true; pintarCapAreas(); },
   capAdd:async () => {
-    const c = await capturarDe('#capIn', 'bandeja', ui.capArea ? { area:ui.capArea } : {});
+    if (!capAreaOk('#capIn', 'cap')) return;
+    const c = await capturarDe('#capIn', 'bandeja', ui.capAreaManual && ui.capArea ? { area:ui.capArea } : {});
+    if (c.length) capAreaReset();
     pintarCapForm('cap');
     if (c.length) { pintarBandejaLista(c.map(t => t.id)); encabezado(); pintarTabs(); toast(c.length > 1 ? `${c.length} pendientes guardados en la Bandeja` : `Guardado: «${c[0].titulo}»`, null, null, 'check'); }
   },
-  capSheetAdd:async () => { const c = await capturarDe('#capSheetIn', 'bandeja', ui.capArea ? { area:ui.capArea } : {}); if (c.length) { cerrarSheet(false, true); toast(c.length > 1 ? `${c.length} pendientes guardados en la Bandeja` : `Guardado: «${c[0].titulo}»`, null, null, 'check'); } },
+  capSheetAdd:async () => { if (!capAreaOk('#capSheetIn', 'capSheet')) return; const c = await capturarDe('#capSheetIn', 'bandeja', ui.capAreaManual && ui.capArea ? { area:ui.capArea } : {}); if (c.length) { capAreaReset(); cerrarSheet(false, true); toast(c.length > 1 ? `${c.length} pendientes guardados en la Bandeja` : `Guardado: «${c[0].titulo}»`, null, null, 'check'); } },
   blocAdd:async () => { const c = await capturarDe('#blocIn', 'algun'); if (c.length) renderVista(); },
   procesar:() => abrirProc(),
   abrir:el => abrirSheet({ k:'detalle', id:el.dataset.id }),
@@ -5170,10 +5221,20 @@ const ACT = {
   // Organizar bandeja
   cerrarProc:() => cerrarProc(),
   procPlan:() => { cerrarProc(); abrirPlan(); },
-  pYa:el => { guardarTituloProc(); const t = tActualProc(); regProc(t, 'hecho'); completar(t, el); volarProc('up'); },
-  pProx:() => { guardarTituloProc(); const t = tActualProc(); proc.paso = 'prox'; proc.d = { area:t.area, urgente:t.urgente, importante:t.importante, dur:t.dur || 0, cuando:'', proyecto:t.proyecto, resultado:t.resultado || '' }; renderProc(); },
-  pEspera:() => { guardarTituloProc(); const t = tActualProc(); proc.paso = 'espera'; proc.d = { area:t.area, espera:'', fecha:'' }; renderProc(); setTimeout(() => $('#pEsperaIn')?.focus(), 350); },
-  pAlgun:() => { guardarTituloProc(); const t = tActualProc(); regProc(t, 'algun'); setEstado(t, 'algun'); volarProc('right'); },
+  pQa:el => { proc.qa = el.dataset.v; document.querySelectorAll('#procQa .chip').forEach(b => { const on = b.dataset.v === proc.qa; b.classList.toggle('on', on); b.setAttribute('aria-checked', on); }); },
+  // «Lo hago ahora»: abre un temporizador de 5 minutos sobre este pendiente.
+  pYa:() => {
+    guardarTituloProc(); if (!procArea()) return;
+    const t = tActualProc(), tm = T();
+    regProc(t, 'ya');
+    if (enMarcha()) cerrarTramo();
+    if (!tm.modoPrev) tm.modoPrev = tm.modo;
+    tm.modo = 'bloque'; tm.tareaId = t.id; tm.fase = 'foco'; tm.total = tm.restante = 300; tm.inicio = '';
+    save(); cerrarProc(); iniciar(); ir('enfoque'); toast('5 minutos. Solo empieza.');
+  },
+  pProx:() => { guardarTituloProc(); if (!procArea()) return; const t = tActualProc(); proc.paso = 'prox'; proc.d = { area:t.area, urgente:t.urgente, importante:t.importante, dur:t.dur || 0, cuando:'', proyecto:t.proyecto, resultado:t.resultado || '' }; renderProc(); },
+  pEspera:() => { guardarTituloProc(); if (!procArea()) return; const t = tActualProc(); proc.paso = 'espera'; proc.d = { area:t.area, espera:'', fecha:'' }; renderProc(); setTimeout(() => $('#pEsperaIn')?.focus(), 350); },
+  pAlgun:() => { guardarTituloProc(); if (!procArea()) return; const t = tActualProc(); regProc(t, 'algun'); setEstado(t, 'algun'); volarProc('right'); },
   pBorrar:() => { const t = tActualProc(); regProc(t, 'borrado'); t.borrado = true; upsertT(t); volarProc('left'); },
   pAtras:() => { proc.paso = 'que'; renderProc(); },
   pArea:el => { leerCamposProc(); proc.d.area = proc.d.area === el.dataset.v ? '' : el.dataset.v; repintarCuerpoProc(); },
@@ -5389,7 +5450,7 @@ const ACT = {
   areaElegir:el => {
     const id = el.dataset.v, c = ui.sheet;
     if (c.dest === 'proc') { proc.d.area = id; cerrarSheet(true, true); repintarCuerpoProc(); }
-    else { ui.capArea = id; if (c.dest === 'capSheet') abrirSheet({ k:'captura', draft:c.draft }); else { cerrarSheet(true, true); pintarCapForm('cap'); } }
+    else { ui.capArea = id; ui.capAreaManual = !!id; if (c.dest === 'capSheet') abrirSheet({ k:'captura', draft:c.draft }); else { cerrarSheet(true, true); pintarCapForm('cap'); } }
   },
   clarVerbo:el => { const d = el.dataset.dest; ponerTexto(d, aplicarVerbo(textoDe(d), el.dataset.v)); },
   clarUsar:el => ponerTexto(el.dataset.dest, el.dataset.v),
@@ -5427,8 +5488,7 @@ const ACT = {
     ui.areaNueva = null;
     if (ui.sheet && ui.sheet.k === 'areaSel') { ACT.areaElegir({ dataset:{ v:id } }); toast(`Área «${n}» creada`, null, null, 'check'); return; }
     refrescarSheet(); render(); refrescarSheet();
-    const atajo = norm(n).split(' ')[0].replace(/[^a-z0-9_-]/g, '');
-    toast(`Área «${n}» lista. Al capturar puedes escribir #${atajo || id}`);
+    toast(`Área «${n}» lista`);
   },
   areaColor:el => { ui.areaColor = ui.areaColor === el.dataset.id ? '' : el.dataset.id; refrescarSheet(); },
   areaColorSel:el => { const a = area(el.dataset.id); if (!a) return; a.c = el.dataset.v; ui.areaColor = ''; guardarAjustes(); refrescarSheet(); render(); refrescarSheet(); },
