@@ -1195,7 +1195,7 @@ div.mn-ia{animation:pulse 1.6s infinite}
 .sp-sec > summary:hover{color:var(--ink)}
 .sp-sec > summary .chev{width:14px;height:14px}
 .sp-sec[open] > summary .chev{transform:rotate(180deg)}
-.sp{display:flex;flex-direction:column;gap:2px;margin-top:4px}
+.sp-l{display:flex;flex-direction:column;gap:2px;margin-top:4px}
 .sp-vacio{margin:4px 12px;font-size:var(--fs-s);line-height:1.45;color:var(--mut)}
 .sp-vacio b{font-weight:600;color:var(--ink)}
 .sp-p > summary{list-style:none;display:flex;align-items:center;gap:8px;min-height:36px;padding:0 10px 0 8px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;color:var(--ink);transition:background .15s}
@@ -2644,7 +2644,7 @@ function htmlProyectos() {
       </div></details>`;
   }).join('');
 }
-function htmlProyectosSheet() { return cab('<h2>Proyectos</h2>') + `<div class="sp sp-sheet">${htmlProyectos()}</div><div class="sh-end"></div>`; }
+function htmlProyectosSheet() { return cab('<h2>Proyectos</h2>') + `<div class="sp-l sp-sheet">${htmlProyectos()}</div><div class="sh-end"></div>`; }
 function spRefrescar() { renderVista(); if (ui.sheet && ui.sheet.k === 'proyectos') refrescarSheet(); }
 let tabsHtml = '';
 function pintarTabs() {
@@ -2664,7 +2664,7 @@ function pintarTabs() {
   const html = `<div class="brand"><img src="icon-180.png" alt="" width="28" height="28">Foco</div>` + grupos
     + `<button class="tcap" data-a="capFab" aria-label="Capturar pendiente"><span class="tp">${ic('plus')}</span><span class="tl">Capturar</span><kbd>N</kbd></button>`
     + `<button class="tbus" data-a="buscar" aria-label="Buscar tareas"><span class="tp">${ic('search')}</span><span class="tl">Buscar</span><kbd>/</kbd></button>`
-    + (dk ? `<div class="side-p"><details class="sp-sec" data-k="sp" ${pref.v('ab-sp') === 0 ? '' : 'open'}><summary>Proyectos${ic('chevD', 'chev')}</summary><div class="sp">${htmlProyectos()}</div></details></div>` : '')
+    + (dk ? `<div class="side-p"><details class="sp-sec" data-k="sp" ${pref.v('ab-sp') === 0 ? '' : 'open'}><summary>Proyectos${ic('chevD', 'chev')}</summary><div class="sp-l">${htmlProyectos()}</div></details></div>` : '')
     + `<div class="side-f"><button data-a="ajustes">${ic('gear')}Ajustes</button><details><summary>${ic('info')}Atajos de teclado</summary><span><kbd>N</kbd>Capturar</span><span><kbd>1</kbd>–<kbd>4</kbd>Cambiar de sección</span><span><kbd>M</kbd>Vaciar la mente</span><span><kbd>/</kbd>Buscar</span><span><kbd>F</kbd>Enfoque</span><span><kbd>Espacio</kbd>Pausar o seguir</span><span><kbd>Esc</kbd>Cerrar</span></details></div>`;
   // Solo se repinta si algo cambió: el panel conserva su desplazamiento y lo que se esté escribiendo.
   if (html !== tabsHtml) {
