@@ -333,7 +333,7 @@ html.calma .view.on,html.calma .in-anim,html.calma .tom.new,html.calma .proc-car
 .hero-l b{font-variant-numeric:tabular-nums;letter-spacing:.02em}
 .live{width:8px;height:8px;border-radius:50%;flex:none;display:inline-block;background:var(--ac)}
 .is-run .live,.running .live{background:var(--ok-f);box-shadow:0 0 0 3px var(--ok-s)}
-.hero-t{font-weight:700;letter-spacing:-.01em;margin-top:8px;overflow-wrap:anywhere;font-size:22px;line-height:1.25}
+.hero-t{font-weight:700;letter-spacing:-.01em;margin-top:8px;overflow-wrap:anywhere;font-size:24px;line-height:1.25}
 .hero .mt{margin-top:8px}
 .hero-b{display:flex;gap:12px;margin-top:16px}
 /* Enfoque dentro de la tarjeta: barra de avance y modo elegido */
@@ -1247,9 +1247,15 @@ body{letter-spacing:-.005em;text-rendering:optimizeLegibility}
 
 /* ----- Planifica ----- */
 /* Código de área: franja lateral en filas y tarjetas que tienen área (el nombre sigue en texto) */
-.tr.ca::before,.kc.ca::before,.mn-c::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;background:var(--a);pointer-events:none}
+.tr.ca::before,.kc.ca::before,.mn-c::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:4px;border-radius:0 3px 3px 0;background:var(--a);pointer-events:none}
 .mn-c::before{background:var(--c,transparent)}
 .tr.hecha.ca::before,.kc.hecha.ca::before{opacity:.45}
+/* El anillo de completar toma el color del área (al completarse vuelve al salvia) */
+.tr.ca:not(.done) .ck:not(.on){border:2px solid var(--ln2);border-color:color-mix(in srgb,var(--a) 70%,var(--ln2));background:color-mix(in srgb,var(--a) 8%,transparent)}
+/* «Ahora» teñida con el color del área de la tarea */
+.hero.ca{background:linear-gradient(180deg,color-mix(in srgb,var(--ha) 11%,var(--sf)) 0,var(--sf) 70%);border-color:color-mix(in srgb,var(--ha) 25%,var(--ln))}
+.hero.ca .hero-l{color:color-mix(in srgb,var(--ha) 75%,var(--ink))}
+.hero.ca:not(.is-run) .live{background:var(--ha)}
 .pq.q2{background:var(--vio-s);color:var(--vio)}
 .pq.cur{background:var(--ac-s);color:var(--ac-t)}
 .tl-off{position:absolute;left:52px;right:0;background:var(--sf2);background:color-mix(in srgb,var(--sf2) 55%,transparent);pointer-events:none}
@@ -3239,7 +3245,7 @@ function renderHoy() {
     const tiempo = run || desc ? (t.corriendo ? `Termina a las ${horaFin(restante())}` : 'En pausa')
       : `${t.modo === 'pomo' ? `Pomodoro de ${durPlan} min` : `Bloque de ${durPlan} min`} · terminarías a las ${horaFin(durPlan * 60)}`;
     const deCola = !proceso.length && ahora === cola[0];
-    zA = `<div class="hero ${enCurso ? 'is-run' : ''}" data-id="${ahora.id}" data-a="abrir" ${cola.length > 1 ? 'data-list="hoytop"' : ''} role="button" tabindex="0" aria-label="${esc(ahora.titulo)}. Abrir detalle">
+    zA = `<div class="hero ${enCurso ? 'is-run' : ''} ${area(ahora.area) ? 'ca' : ''}" style="--ha:${colorA(ahora.area)}" data-id="${ahora.id}" data-a="abrir" ${cola.length > 1 ? 'data-list="hoytop"' : ''} role="button" tabindex="0" aria-label="${esc(ahora.titulo)}. Abrir detalle">
       <div class="hero-l"><i class="live"></i>${desc ? 'En descanso' : run ? 'Trabajando en' : 'Ahora'}${run || desc ? ` · <b id="heroTm">${fmt(restante())}</b>` : ''}</div>
       <div class="hero-t">${esc(ahora.titulo)}</div>
       <div class="mt">${metaCorta(ahora, 2, { area:true })}</div>
