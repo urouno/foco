@@ -393,7 +393,7 @@ details.sec-d[open] .chev{transform:rotate(180deg)}
 .tl-h:first-child{border-top:0}
 .tl-h span{position:absolute;left:12px;top:5px;font-size:var(--fs-s);font-weight:600;color:var(--mut);font-variant-numeric:tabular-nums}
 .tl-h::after{content:"";position:absolute;left:58px;right:0;top:30px;border-top:1px dashed var(--ln)}
-.tl-b{position:absolute;border-radius:8px;padding:4px 8px;background:color-mix(in srgb,var(--a,#888) 18%,var(--sf));border-left:3px solid var(--a,#888);overflow:hidden;font-size:var(--fs-s);line-height:1.25;transition:box-shadow .2s,transform .2s}
+.tl-b{position:absolute;border-radius:8px;padding:4px 8px;background:var(--sf2);background:color-mix(in srgb,var(--a,#888) 18%,var(--sf));border-left:3px solid var(--a,#888);overflow:hidden;font-size:var(--fs-s);line-height:1.25;transition:box-shadow .2s,transform .2s}
 .tl-b b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tl-b .tl-t{font-size:var(--fs-s);color:var(--mut);font-variant-numeric:tabular-nums}
 .tl-b.hecha{opacity:.45}.tl-b.hecha b{text-decoration:line-through}
@@ -419,7 +419,7 @@ details.sec-d[open] .chev{transform:rotate(180deg)}
 /* Línea del día */
 .ld{display:block;width:100%;margin-top:16px;padding:12px;border-radius:var(--r);background:var(--sf);text-align:left}
 .ld-r{position:relative;height:20px;border-radius:6px;background:var(--sf3)}
-.ld-r i{position:absolute;top:0;bottom:0;border-radius:4px;background:color-mix(in srgb,var(--a,#888) 55%,var(--sf3));min-width:4px}
+.ld-r i{position:absolute;top:0;bottom:0;border-radius:4px;background:var(--a,#888);background:color-mix(in srgb,var(--a,#888) 55%,var(--sf3));min-width:4px}
 .ld-r i.ok{background:var(--ok-f)}.ld-r i.ahora{box-shadow:0 0 0 2px var(--ok-f)}.ld-r i.tarde{background:var(--warn-f);opacity:.7}
 .ld-r u{position:absolute;top:-4px;bottom:-4px;width:2px;margin-left:-1px;background:var(--ac);border-radius:1px}
 .ld-h{display:flex;justify-content:space-between;margin-top:8px;font-size:var(--fs-s);color:var(--mut);font-variant-numeric:tabular-nums;font-weight:600}
@@ -1115,7 +1115,7 @@ html.lock #toast.on{transform:translate(-50%,0)}
   .sm-col{position:relative;border-left:1px solid var(--ln);cursor:default}
   .sm-cal.picking .sm-col{cursor:copy}
   .sm-col.hoy{background:color-mix(in srgb,var(--ac) 4%,transparent)}
-  .sm-col.over{background:color-mix(in srgb,var(--ac) 12%,transparent)}
+  .sm-col.over{background:var(--ac-s);background:color-mix(in srgb,var(--ac) 12%,transparent)}
   .sm-col .tl-b{cursor:grab;padding:3px 6px}
   .sm-col .tl-b.corta{padding-top:1px;padding-bottom:1px}
   .sm-col .tl-b.corta .tl-t{display:none}
@@ -1421,7 +1421,8 @@ main .tr .tt{font-weight:500}
 .ls-ag.pend{background:var(--ac-s);color:var(--ac-t)}
 .wk-d{border-radius:16px}
 .wk-d.on{background:var(--ac);color:var(--on-ac);border-color:var(--ac)}
-.tl-b{border-radius:10px;background:color-mix(in srgb,var(--a,#888) 13%,var(--sf))}
+/* Fallback sin color-mix: tarjeta neutra; el borde izquierdo conserva el color del área */
+.tl-b{border-radius:10px;background:var(--sf2);background:color-mix(in srgb,var(--a,#888) 13%,var(--sf))}
 .tl-now{border-top-color:var(--hot-f)}.tl-now::before{background:var(--hot-f)}
 .col{background:var(--sf2);border:var(--bd)}
 .kc{border-radius:14px}
