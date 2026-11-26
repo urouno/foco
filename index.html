@@ -20,17 +20,18 @@
 <style>
 /* ===== Sistema visual «Calma»: papel cálido, salvia para cerrar, lavanda para contexto, ámbar para la capacidad ===== */
 :root{
-  /* Lienzo de papel cálido y tarjetas blancas con línea fina. Un acento salvia; nada grita. */
+  /* Lienzo de papel cálido y tarjetas blancas con capa tonal suave. Salvia para calma/cierre; terracota solo para foco activo y racha. */
   --bg:#FAF8F5; --sf:#FFFFFF; --sf2:#F3EFEA; --sf3:#E9E4DD;
   --ink:#201F1E; --mut:#5C5955; --mut2:#7D7973; --ln:#ECE7DF; --ln2:#D6CFC5;
   --ac:#3E5C52; --ac-s:#EAF1ED; --ac-t:#2F4C43; --on-ac:#FFFFFF;
+  --foco:#B85D38; --foco-s:#FBF0EB; --foco-t:#9A4A29; --on-foco:#FFFFFF;
   --ok:#2F5D4C; --ok-f:#4E7F6C; --ok-s:#E8F1EC; --on-ok:#FFFFFF;
   --hot:#A8332A; --hot-f:#C4493E; --hot-s:#FBEDEA; --on-hot:#FFFFFF;
   --warn:#80531F; --warn-f:#C08A4E; --warn-s:#FAF3EA;
   --vio:#4A5371; --vio-s:#EEF0F6;
-  --glow:0 1px 3px 0 rgba(60,52,42,.04);
-  --lift:0 8px 24px -8px rgba(60,52,42,.12),0 2px 6px -2px rgba(60,52,42,.05);
-  --float:0 8px 24px -4px rgba(60,52,42,.12),0 2px 6px -1px rgba(60,52,42,.05);
+  --glow:0 4px 20px -2px rgba(32,31,30,.045);
+  --lift:0 10px 28px -6px rgba(32,31,30,.09),0 2px 8px -2px rgba(32,31,30,.04);
+  --float:0 12px 32px -4px rgba(32,31,30,.12),0 2px 6px -1px rgba(32,31,30,.05);
   --bd:1px solid var(--ln);
   /* Tipos: Plus Jakarta Sans para leer, Inter para etiquetas y datos pequeños */
   --ff:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,system-ui,sans-serif;
@@ -47,6 +48,7 @@
   --bg:#151412; --sf:#1E1D1B; --sf2:#292825; --sf3:#34322E;
   --ink:#EEEAE4; --mut:#ABA59C; --mut2:#8D877F; --ln:rgba(255,244,230,.08); --ln2:rgba(255,244,230,.17);
   --ac:#8DB5A5; --ac-s:rgba(141,181,165,.15); --ac-t:#A9CDBE; --on-ac:#10201A;
+  --foco:#E08A67; --foco-s:rgba(224,138,103,.16); --foco-t:#F0A98C; --on-foco:#2A1208;
   --ok:#9CCBB6; --ok-f:#6FA48F; --ok-s:rgba(111,164,143,.16); --on-ok:#10201A;
   --hot:#F2A29A; --hot-f:#D9665B; --hot-s:rgba(217,102,91,.16); --on-hot:#2A0E0B;
   --warn:#E9B67C; --warn-f:#C98F4F; --warn-s:rgba(201,143,79,.15);
@@ -59,6 +61,7 @@
   --bg:#151412; --sf:#1E1D1B; --sf2:#292825; --sf3:#34322E;
   --ink:#EEEAE4; --mut:#ABA59C; --mut2:#8D877F; --ln:rgba(255,244,230,.08); --ln2:rgba(255,244,230,.17);
   --ac:#8DB5A5; --ac-s:rgba(141,181,165,.15); --ac-t:#A9CDBE; --on-ac:#10201A;
+  --foco:#E08A67; --foco-s:rgba(224,138,103,.16); --foco-t:#F0A98C; --on-foco:#2A1208;
   --ok:#9CCBB6; --ok-f:#6FA48F; --ok-s:rgba(111,164,143,.16); --on-ok:#10201A;
   --hot:#F2A29A; --hot-f:#D9665B; --hot-s:rgba(217,102,91,.16); --on-hot:#2A0E0B;
   --warn:#E9B67C; --warn-f:#C98F4F; --warn-s:rgba(201,143,79,.15);
@@ -588,7 +591,7 @@ body.inmersivo #tabs,body.inmersivo #menuBtn,body.inmersivo #hSub,body.inmersivo
 .kc-f.pr .qk.ok{flex:1;justify-content:center}
 .filt{width:44px;height:42px;background:var(--sf2);border-radius:14px}
 .filt.on{background:var(--ac-s);color:var(--ac-t)}
-.coltabs{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:12px;background:var(--sf3);padding:4px;border-radius:16px}
+.coltabs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:12px;background:var(--sf3);padding:4px;border-radius:16px}
 .coltabs button{min-width:0;min-height:50px;padding:4px 2px;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;font-weight:600;color:var(--mut);transition:all .2s var(--ease);text-align:center;overflow:hidden}
 .coltabs b{font-size:var(--fs-s);min-width:22px;padding:0 8px;border-radius:8px;background:var(--sf);color:var(--ink);line-height:19px;font-weight:600}
 .coltabs b.full{background:var(--ac-s);color:var(--ac-t)}
@@ -698,7 +701,8 @@ body.dragging .board{scroll-snap-type:none}
 .chart-tip.vacio{background:transparent;padding:4px 2px;min-height:24px;color:var(--mut2)}
 .chart{position:relative;display:flex;align-items:flex-end;gap:8px;height:130px;margin-top:10px}
 .chart-avg{position:absolute;left:0;right:0;border-top:1px dashed var(--ln2);pointer-events:none;z-index:1}
-.chart-avg span{position:absolute;right:0;top:-16px;font-size:11px;font-weight:600;color:var(--mut2);background:var(--sf);padding:0 4px;border-radius:4px}
+.chart-avg{z-index:4}
+.chart-avg span{position:absolute;left:0;top:-17px;font-size:11px;font-weight:600;color:var(--mut2);background:var(--sf);padding:0 5px;border-radius:4px;box-shadow:0 0 0 1px var(--ln)}
 .chart .cb{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;min-width:0;border-radius:8px;padding:2px 0;transition:background .15s}
 .chart .cv{font-size:var(--fs-s);font-weight:600;color:var(--mut);min-height:15px}
 .chart .cbar{width:100%;max-width:30px;border-radius:7px 7px 3px 3px;min-height:4px;transition:height .6s var(--ease),opacity .18s,transform .18s;background:var(--ac);opacity:.32}
@@ -1348,6 +1352,123 @@ body{letter-spacing:-.005em;text-rendering:optimizeLegibility}
   #tabs .tcap:hover{background:color-mix(in srgb,var(--ac) 90%,#000)}
   #tabs .brand{font-weight:600;letter-spacing:-.02em}
 }
+/* ===== Mejoras visuales: foco terracota, reloj en Hoy, Progreso directo y capas suaves ===== */
+/* 1. Superficies más orgánicas (menos peso en bordes de tarjetas blancas) */
+.panel,.group,.two,.act,.tl-wrap,.mn-c,.ag-chip,.kc,.sm-cal,.sm-nav,.wk-d,.bit-i{border-color:color-mix(in srgb,var(--ln) 72%,transparent)}
+.avance,.prox{background:var(--sf);border:1px solid color-mix(in srgb,var(--ln) 72%,transparent);box-shadow:var(--glow)}
+.avance{margin-top:16px;padding:12px 14px}
+
+/* 2. Acento semántico terracota solo para foco activo y racha */
+.btn.foco{background:var(--foco);color:var(--on-foco);box-shadow:0 4px 12px -6px color-mix(in srgb,var(--foco) 65%,transparent)}
+.btn.foco:active{filter:brightness(.94)}
+.hero.is-run:not(.is-desc)::before{background:var(--foco)}
+.hero.is-run:not(.is-desc) .hero-l{color:var(--foco-t)}
+.hero.is-run:not(.is-desc) .live{background:var(--foco);box-shadow:0 0 0 3px var(--foco-s)}
+.hero-bar:not(.desc) i{background:var(--foco)}
+.enf.fase-foco .ring-wrap::before{background:radial-gradient(closest-side,transparent 58%,color-mix(in srgb,var(--foco) 13%,transparent) 76%,transparent)}
+.enf.fase-foco .cbtn.big{background:var(--foco);color:var(--on-foco)}
+.enf.fase-foco .live{background:var(--foco);box-shadow:0 0 0 3px var(--foco-s)}
+.enf.fase-foco .cyc i.cur{background:linear-gradient(90deg,var(--foco) 50%,var(--sf3) 50%)}
+#mini:not(.desc) .mbar{background:var(--foco)}
+#mini:not(.desc) .live.on{background:var(--foco)}
+.kc-enf{background:var(--foco-s);color:var(--foco-t)}
+.kc-bar{background:color-mix(in srgb,var(--foco) 20%,transparent)}
+.kc-bar i{background:var(--foco)}
+
+/* 3. Hoy: bloque de temporizador activo dentro de Hero */
+.hero-tmbox{display:flex;align-items:center;gap:16px;margin-top:14px;padding:14px 16px;border-radius:14px;background:var(--sf2)}
+.hero-ring{position:relative;width:54px;height:54px;flex:none;display:grid;place-items:center}
+.hero-ring svg.hr-svg{width:54px;height:54px;transform:rotate(-90deg)}
+.hero-ring .hr-bg{fill:none;stroke:var(--sf3);stroke-width:4.5}
+.hero-ring .hr-fg{fill:none;stroke:var(--foco);stroke-width:4.5;stroke-linecap:round;transition:stroke-dashoffset .5s linear}
+.hero-tmbox.desc .hr-fg{stroke:var(--ok-f)}
+.hero-ring svg.i{position:absolute;width:18px;height:18px;color:var(--foco-t)}
+.hero-tmbox.desc .hero-ring svg.i{color:var(--ok)}
+.hero-tmcol{flex:1;min-width:0}
+.hero-tm{font-family:var(--ff);font-size:36px;font-weight:700;line-height:1.05;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:var(--ink)}
+.hero-tmsub{margin-top:3px;font-size:var(--fs-s);color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* 4. Hoy: número de prioridad integrado en el círculo + botón Play discreto */
+.ck.num{font-family:var(--ff2);font-size:12.5px;font-weight:700;color:var(--mut)}
+.ck.num span{transition:opacity .18s}
+.ib-play{width:34px;height:34px;border-radius:50%;background:var(--sf2);color:var(--ac-t);flex:none;display:grid;place-items:center;transition:background .15s,color .15s,transform .12s}
+.ib-play svg.i{width:13px;height:13px;margin-left:2px}
+.ib-play:active{transform:scale(.9)}
+.tr .grip{width:34px}
+
+/* 5. Progreso: KPI cards verticales, tira de racha semanal, barra apilada y progreso en insignias */
+.ptiles{gap:10px;margin-top:12px}
+.ptile{flex-direction:column;align-items:flex-start;gap:6px;padding:14px 16px;background:var(--sf);border:1px solid color-mix(in srgb,var(--ln) 72%,transparent);box-shadow:var(--glow);min-height:102px}
+.ptile-top{display:flex;align-items:center;justify-content:space-between;width:100%}
+.ptile-v{font-family:var(--ff);font-size:24px;font-weight:700;letter-spacing:-.025em;line-height:1.1;font-variant-numeric:tabular-nums;color:var(--ink);margin-top:4px}
+.ptile-l{font-size:var(--fs-s);color:var(--mut);line-height:1.25}
+.pstreak{margin-top:12px;padding:14px 16px;border-radius:var(--r);background:var(--sf);border:1px solid color-mix(in srgb,var(--ln) 72%,transparent);box-shadow:var(--glow)}
+.pstreak-h{display:flex;align-items:center;gap:10px}
+.pstreak-ico{width:36px;height:36px;border-radius:12px;background:var(--foco-s);color:var(--foco-t);display:grid;place-items:center;flex:none}
+.pstreak-ico svg.i{width:19px;height:19px}
+.pstreak-t{flex:1;min-width:0}
+.pstreak-t b{display:block;font-size:var(--fs-m);font-weight:700;letter-spacing:-.01em}
+.pstreak-t small{display:block;font-size:var(--fs-s);color:var(--mut)}
+.pstreak-days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:12px;text-align:center}
+.psd{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:var(--mut);font-family:var(--ff2)}
+.psd i{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--sf2);color:transparent}
+.psd i svg.i{width:15px;height:15px;stroke-width:2.6}
+.psd.on i{background:var(--ok-s);color:var(--ok)}
+.psd.hoy{color:var(--foco-t)}
+.psd.hoy i{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--foco) 45%,transparent)}
+.psd.hoy.on i{background:var(--foco);color:var(--on-foco);box-shadow:none}
+.pdist{margin-top:12px;padding:16px;border-radius:var(--r);background:var(--sf);border:1px solid color-mix(in srgb,var(--ln) 72%,transparent);box-shadow:var(--glow)}
+.pdist-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+.pdist-h b{font-size:var(--fs-m);font-weight:600;letter-spacing:-.01em}
+.pstack{display:flex;height:10px;border-radius:999px;overflow:hidden;gap:2px;background:var(--sf2)}
+.pstack i{display:block;height:100%;min-width:4px;border-radius:2px;background:var(--a)}
+.pleg{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;margin-top:12px}
+.pleg-i{display:flex;align-items:center;gap:7px;font-size:var(--fs-s);min-width:0}
+.pleg-i .pn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink);font-weight:500}
+.pleg-i .pv{flex:none;color:var(--mut);font-variant-numeric:tabular-nums;font-size:12px}
+.in-b .in-p{margin-top:8px;padding:0 6px}
+.in-b .in-bar{height:4px;border-radius:999px;background:var(--sf3);overflow:hidden}
+.in-b .in-bar i{display:block;height:100%;border-radius:999px;background:var(--foco)}
+.in-b .in-pt{display:block;font-size:11px;color:var(--mut2);margin-top:3px;font-variant-numeric:tabular-nums;font-family:var(--ff2)}
+
+/* 6. Planifica: cabecera compacta en Agenda + legibilidad de Hecho en Tablero */
+.ag-tog{display:inline-flex;gap:2px;padding:3px;border-radius:999px;background:var(--sf3);flex:none}
+.ag-tog button{min-height:34px;padding:0 11px;border-radius:999px;font-size:12.5px;font-weight:600;color:var(--mut);transition:all .18s var(--ease)}
+.ag-tog button.on{background:var(--sf);color:var(--ink);box-shadow:0 1px 3px rgba(32,31,30,.12)}
+.wd-nav .ib{width:34px;height:34px}
+.wd-nav b{font-size:14px;white-space:nowrap}
+.wd-t{background:color-mix(in srgb,var(--a,var(--mut2)) 8%,var(--sf2))}
+.kc.hecha .kc-t{opacity:.72}
+.col .qadd{margin:6px 8px 8px}
+
+/* 7. Bandeja: acciones rápidas sutiles y aviso de respaldo discreto */
+.tr.b-item{pointer-events:auto;cursor:default;background:transparent;min-height:54px;padding:10px 10px 10px 14px}
+.tr.b-item .tt{font-weight:400}
+.b-acts{display:flex;align-items:center;gap:6px;flex:none}
+.b-act{min-height:32px;padding:0 10px;border-radius:999px;background:var(--sf);border:1px solid var(--ln);font-size:12px;font-weight:600;color:var(--ac-t);display:inline-flex;align-items:center;gap:4px;transition:background .15s,transform .12s}
+.b-act:active{transform:scale(.94)}
+.b-act.sq{width:32px;padding:0;justify-content:center;color:var(--ok)}
+.b-act svg.i{width:14px;height:14px}
+.conn.slim{padding:10px 10px 10px 12px;margin-top:16px;background:var(--sf2);box-shadow:none;gap:10px}
+.conn.slim .ci{width:34px;height:34px;border-radius:10px}
+.conn.slim b{font-size:var(--fs-s)}
+.conn.slim .ib{width:32px;height:32px}
+@media (hover:hover){
+  .btn.foco:not(:disabled):hover{background:color-mix(in srgb,var(--foco) 88%,#000)}
+  .enf.fase-foco .cbtn.big:not(:disabled):hover{background:color-mix(in srgb,var(--foco) 88%,#000)}
+  .tr:not(.done) .ck.num:hover span{opacity:0}
+  .tr:not(.done) .ck.num:hover svg.i{opacity:.75;transform:none;color:var(--ac-t)}
+  .ib-play:hover{background:var(--foco-s);color:var(--foco-t)}
+  .ptile:hover{background:var(--sf);border-color:var(--ln2)}
+  .b-act:hover{background:var(--ac-s);border-color:transparent}
+  .b-act.sq:hover{background:var(--ok-s);border-color:transparent}
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .pstack i{background:color-mix(in srgb,var(--a,var(--mut2)) 76%,#fff)}
+  :root:not([data-theme="light"]) .hero.ca.is-run:not(.is-desc) .hero-l{color:var(--foco-t)}
+}
+:root[data-theme="dark"] .pstack i{background:color-mix(in srgb,var(--a,var(--mut2)) 76%,#fff)}
+:root[data-theme="dark"] .hero.ca.is-run:not(.is-desc) .hero-l{color:var(--foco-t)}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -1963,22 +2084,22 @@ function stats() {
   while (activos.has(d)) { racha++; d = addDays(d, -1); }
   const dias = [...activos].sort(); let rachaMax = 0, cur = 0, prev = '';
   dias.forEach(x => { cur = prev && addDays(prev, 1) === x ? cur + 1 : 1; rachaMax = Math.max(rachaMax, cur); prev = x; });
-  return { xp, pomos, focoMin, tareas:hechas.length, racha, rachaMax, bandeja0, madrugador, pomosDia, tareasDia,
+  return { xp, pomos, focoMin, tareas:hechas.length, racha, rachaMax, bandeja0, madrugador, pomosDia, tareasDia, activos,
     maxTareasDia:Math.max(0, ...Object.values(tareasDia)), maxPomosDia:Math.max(0, ...Object.values(pomosDia)) };
 }
 const INSIGNIAS = [
-  { id:'primer', n:'Primer tomate', d:'1 pomodoro', ic:'tomato', ok:s => s.pomos >= 1 },
-  { id:'bandeja0', n:'Bandeja cero', d:'Vacía la bandeja', ic:'inbox', ok:s => s.bandeja0 >= 1 },
-  { id:'seis', n:'Seis de seis', d:'6 tareas en un día', ic:'list', ok:s => s.maxTareasDia >= 6 },
-  { id:'ciclo', n:'Ciclo completo', d:'4 pomodoros en un día', ic:'refresh', ok:s => s.maxPomosDia >= 4 },
+  { id:'primer', n:'Primer tomate', d:'1 pomodoro', ic:'tomato', ok:s => s.pomos >= 1, p:s => [s.pomos, 1] },
+  { id:'bandeja0', n:'Bandeja cero', d:'Vacía la bandeja', ic:'inbox', ok:s => s.bandeja0 >= 1, p:s => [s.bandeja0, 1] },
+  { id:'seis', n:'Seis de seis', d:'6 tareas en un día', ic:'list', ok:s => s.maxTareasDia >= 6, p:s => [s.maxTareasDia, 6] },
+  { id:'ciclo', n:'Ciclo completo', d:'4 pomodoros en un día', ic:'refresh', ok:s => s.maxPomosDia >= 4, p:s => [s.maxPomosDia, 4] },
   { id:'madruga', n:'Arranque temprano', d:'Pomodoro antes de las 9', ic:'sunrise', ok:s => s.madrugador },
-  { id:'racha3', n:'En marcha', d:'Racha de 3 días', ic:'flame', ok:s => s.rachaMax >= 3 },
-  { id:'racha7', n:'Semana firme', d:'Racha de 7 días', ic:'flame', ok:s => s.rachaMax >= 7 },
-  { id:'racha30', n:'Hábito sólido', d:'Racha de 30 días', ic:'flame', ok:s => s.rachaMax >= 30 },
-  { id:'p25', n:'Huerto', d:'25 pomodoros', ic:'tomato', ok:s => s.pomos >= 25 },
-  { id:'p100', n:'Cosecha', d:'100 pomodoros', ic:'tomato', ok:s => s.pomos >= 100 },
-  { id:'t50', n:'Cincuenta', d:'50 tareas hechas', ic:'check', ok:s => s.tareas >= 50 },
-  { id:'t250', n:'Imparable', d:'250 tareas hechas', ic:'bolt', ok:s => s.tareas >= 250 }
+  { id:'racha3', n:'En marcha', d:'Racha de 3 días', ic:'flame', ok:s => s.rachaMax >= 3, p:s => [s.rachaMax, 3] },
+  { id:'racha7', n:'Semana firme', d:'Racha de 7 días', ic:'flame', ok:s => s.rachaMax >= 7, p:s => [s.rachaMax, 7] },
+  { id:'racha30', n:'Hábito sólido', d:'Racha de 30 días', ic:'flame', ok:s => s.rachaMax >= 30, p:s => [s.rachaMax, 30] },
+  { id:'p25', n:'Huerto', d:'25 pomodoros', ic:'tomato', ok:s => s.pomos >= 25, p:s => [s.pomos, 25] },
+  { id:'p100', n:'Cosecha', d:'100 pomodoros', ic:'tomato', ok:s => s.pomos >= 100, p:s => [s.pomos, 100] },
+  { id:'t50', n:'Cincuenta', d:'50 tareas hechas', ic:'check', ok:s => s.tareas >= 50, p:s => [s.tareas, 50] },
+  { id:'t250', n:'Imparable', d:'250 tareas hechas', ic:'bolt', ok:s => s.tareas >= 250, p:s => [s.tareas, 250] }
 ];
 function revisarLogros() {
   const st = stats(), l = nivelDe(st.xp);
@@ -2717,10 +2838,11 @@ function metaCorta(t, max = 2, op = {}) {
 }
 function filaHoy(t, n, op = {}) {
   return `<div class="tr ${area(t.area) ? 'ca' : ''}" style="--a:${colorA(t.area)}" data-id="${t.id}" data-a="abrir" ${n ? 'data-drag="grip"' : ''} role="button" tabindex="0" aria-label="${esc(t.titulo)}. Abrir detalle">
-    ${n ? `<span class="ordn" title="Prioridad ${n}">${n}</span>` : ''}<button class="ck" data-a="ck" data-id="${t.id}" aria-label="Marcar como hecha: ${esc(t.titulo)}">${ic('check')}</button>
+    <button class="ck ${n ? 'num' : ''}" data-a="ck" data-id="${t.id}" aria-label="${n ? `Prioridad ${n}. ` : ''}Marcar como hecha: ${esc(t.titulo)}">${n ? `<span>${n}</span>` : ''}${ic('check')}</button>
     <div class="tb"><div class="tt">${esc(t.titulo)}</div><div class="mt">${op.curso ? `<span class="pq cur">${ic('timer')}En curso</span>` : ''}${metaCorta(t, 2, { area:true })}</div></div>
     ${op.otra ? `<button class="ib-s" data-a="hacerPrio" data-id="${t.id}" aria-label="Hacer prioridad: ${esc(t.titulo)}">${ic('star')}</button>` : ''}
-    ${n ? `<span class="grip" data-grip aria-hidden="true">${ic('grip', 'fill')}</span>` : `<button class="ib-s" data-a="play" data-id="${t.id}" aria-label="Empezar enfoque: ${esc(t.titulo)}">${ic('play', 'fill')}</button>`}
+    <button class="ib-play" data-a="play" data-id="${t.id}" aria-label="Empezar enfoque: ${esc(t.titulo)}">${ic('play', 'fill')}</button>
+    ${n ? `<span class="grip" data-grip aria-hidden="true">${ic('grip', 'fill')}</span>` : ''}
   </div>`;
 }
 function filaHecha(t, drag) {
@@ -2805,14 +2927,15 @@ function pintarBandejaLista(nuevos = []) {
       ${ui.bSel ? `<div class="lote-bar"><button class="chip" data-a="bSelTodos">${items.every(t => ui.bSel.has(t.id)) ? 'Ninguno' : 'Todos'}</button><b>${ui.bSel.size} ${ui.bSel.size === 1 ? 'seleccionado' : 'seleccionados'}</b><button class="btn sm pri" data-a="loteAbrir" ${ui.bSel.size ? '' : 'disabled'}>${ic('layers')}Asignar</button></div>` : ''}
       <div class="group ${ui.bSel ? '' : 'bandeja-lista'}">${items.map(t => ui.bSel ? `<button class="tr pl ${ui.bSel.has(t.id) ? 'on' : ''}" style="--a:${t.area ? colorA(t.area) : 'transparent'}" data-a="bSelTog" data-id="${t.id}" aria-pressed="${ui.bSel.has(t.id)}"><span class="ck">${ui.bSel.has(t.id) ? ic('check') : ''}</span>
         <span class="tb"><span class="tt">${esc(t.titulo)}</span><span class="mt">${metaCorta(t, 2, { area:true })}</span></span></button>`
-        : `<div class="tr nock sin-abrir ${nuevos.includes(t.id) ? 'in-anim' : ''}" style="--a:${t.area ? colorA(t.area) : 'transparent'}" >
-        <div class="tb"><div class="tt">${esc(t.titulo)}</div><div class="mt"><span class="tag ${Date.now() - new Date(t.creado) > 3 * 864e5 ? 'f-olv' : ''}">${haceCuanto(t.creado)}</span>${metaCorta(t, 2, { area:true })}</div></div></div>`).join('')}</div>`;
+        : `<div class="tr nock b-item ${nuevos.includes(t.id) ? 'in-anim' : ''}" style="--a:${t.area ? colorA(t.area) : 'transparent'}">
+        <div class="tb"><div class="tt">${esc(t.titulo)}</div><div class="mt"><span class="tag ${Date.now() - new Date(t.creado) > 3 * 864e5 ? 'f-olv' : ''}">${haceCuanto(t.creado)}</span>${metaCorta(t, 2, { area:true })}</div></div>
+        <div class="b-acts"><button class="b-act" data-a="bHoy" data-id="${t.id}" aria-label="Pasar a Hoy: ${esc(t.titulo)}">Hoy</button><button class="b-act sq" data-a="bHecho" data-id="${t.id}" title="Hecho ya (<2 min)" aria-label="Marcar como hecha ahora: ${esc(t.titulo)}">${ic('check')}</button></div></div>`).join('')}</div>`;
   } else {
     html += `<div class="zero"><div class="orb">${ic('check')}</div><h3>Bandeja vacía</h3><p>Cuando algo te ronde la cabeza, anótalo arriba. Después lo organizas con calma.</p></div>`;
   }
   if (rec.length) html += `<div class="org"><div class="org-t">${ic('check')}Organizados hoy <span class="n">${rec.length}</span></div>
     <ul class="org-l">${rec.map(r => { const t = byId(r.id); return `<li><span class="ot">${esc(t.titulo)}</span><span class="od">${DEST[r.d] || ''} · ${horaDe(r.t)}</span></li>`; }).join('')}</ul></div>`;
-  if (!S.conn.url) html += `<div class="panel conn"><span class="ci">${ic('cloudOff')}</span><div class="tb"><b>Respalda en Google Sheets</b><div class="mut sm">Por ahora todo vive solo en este dispositivo.</div></div><button class="btn sm" style="color:var(--ac-t)" data-a="ajustes">Conectar</button></div>`;
+  if (!S.conn.url && !pref.v('connOff')) html += `<div class="panel conn slim"><span class="ci">${ic('cloudOff')}</span><div class="tb"><b>Respaldo en Google Sheets</b><div class="mut sm">Guardado solo en este dispositivo</div></div><button class="btn sm" style="color:var(--ac-t)" data-a="ajustes">Conectar</button><button class="ib" data-a="connCerrar" aria-label="Ocultar aviso">${ic('x')}</button></div>`;
   z.innerHTML = html;
 }
 // Valida y captura desde un campo. Pregunta antes de duplicar una tarea existente.
@@ -3306,21 +3429,26 @@ function renderHoy() {
     const run = t.tareaId === ahora.id && t.fase === 'foco' && (t.corriendo || t.restante < t.total);
     const desc = t.tareaId === ahora.id && (t.fase === 'corto' || t.fase === 'largo');
     const durPlan = t.modo === 'pomo' ? S.ajustes.pomo : (ahora.dur >= 10 ? ahora.dur : t.bloqueMin);
-    const tiempo = run || desc ? (t.corriendo ? `Termina a las ${horaFin(restante())}` : 'En pausa')
+    const r = restante(), hC = 2 * Math.PI * 22, hFrac = t.total ? r / t.total : 1;
+    const tiempo = run || desc ? (t.corriendo ? `Termina a las ${horaFin(r)}` : 'En pausa')
       : `${t.modo === 'pomo' ? `Pomodoro de ${durPlan} min` : `Bloque de ${durPlan} min`} · terminarías a las ${horaFin(durPlan * 60)}`;
+    const bloqueInfo = t.modo === 'pomo' && !desc ? ` · Bloque ${(t.ciclo % S.ajustes.cada) + 1} de ${S.ajustes.cada}` : '';
     const deCola = !proceso.length && ahora === cola[0];
-    zA = `<div class="hero ${enCurso ? 'is-run' : ''} ${area(ahora.area) ? 'ca' : ''}" style="--ha:${colorA(ahora.area)}" data-id="${ahora.id}" data-a="abrir" ${cola.length > 1 ? 'data-list="hoytop"' : ''} role="button" tabindex="0" aria-label="${esc(ahora.titulo)}. Abrir detalle">
-      <div class="hero-l"><i class="live"></i>${desc ? 'En descanso' : run ? 'Trabajando en' : 'Ahora'}${run || desc ? ` · <b id="heroTm">${fmt(restante())}</b>` : ''}</div>
+    zA = `<div class="hero ${enCurso || run ? 'is-run' : ''} ${desc ? 'is-desc' : ''} ${area(ahora.area) ? 'ca' : ''}" style="--ha:${colorA(ahora.area)}" data-id="${ahora.id}" data-a="abrir" ${cola.length > 1 ? 'data-list="hoytop"' : ''} role="button" tabindex="0" aria-label="${esc(ahora.titulo)}. Abrir detalle">
+      <div class="hero-l"><i class="live"></i>${desc ? 'En descanso' : run ? 'Enfocando ahora' : 'Ahora'}</div>
       <div class="hero-t">${esc(ahora.titulo)}</div>
       <div class="mt">${metaCorta(ahora, 2, { area:true })}</div>
-      ${run || desc ? `<div class="hero-bar ${desc ? 'desc' : ''}" aria-hidden="true"><i id="heroBar" style="width:${100 * (1 - restante() / t.total)}%"></i></div>` : ''}
+      ${run || desc ? `<div class="hero-tmbox ${desc ? 'desc' : ''}">
+        <div class="hero-ring"><svg class="hr-svg" viewBox="0 0 54 54" aria-hidden="true"><circle class="hr-bg" cx="27" cy="27" r="22"/><circle class="hr-fg" id="heroRing" cx="27" cy="27" r="22" stroke-dasharray="${hC.toFixed(2)}" stroke-dashoffset="${(hC * (1 - hFrac)).toFixed(2)}"/></svg>${ic('timer')}</div>
+        <div class="hero-tmcol"><div class="hero-tm" id="heroTm">${fmt(r)}</div><div class="hero-tmsub"><span id="heroFin">${tiempo}</span>${bloqueInfo}</div></div>
+      </div>` : ''}
       <div class="hero-b">${run || desc
-        ? `<button class="btn pri grow" data-a="${t.corriendo ? 'pausar' : 'iniciar'}">${t.corriendo ? ic('pause') + 'Pausar' : ic('play', 'fill') + 'Reanudar'}</button>
+        ? `<button class="btn ${desc ? 'pri' : 'foco'} grow" data-a="${t.corriendo ? 'pausar' : 'iniciar'}">${t.corriendo ? ic('pause') + 'Pausar' : ic('play', 'fill') + 'Reanudar'}</button>
           ${desc ? `<button class="btn sq" data-a="saltar" aria-label="Saltar descanso">${ic('skip')}</button>` : `<button class="btn sq" data-a="miniCerrar" aria-label="Terminar sesión">${ic('stop')}</button>`}
           <button class="btn sq" data-a="ir" data-v="enfoque" aria-label="Enfoque en pantalla completa">${ic('expand')}</button>`
         : `<button class="btn pri grow" data-a="play" data-id="${ahora.id}">${ic('play', 'fill')}Empezar</button><button class="btn sq" data-a="cambiarTarea" aria-label="Cambiar la tarea de Ahora" title="Cambiar la tarea de Ahora">${ic('refresh')}</button>`}
         <button class="btn sq okb" data-a="ck" data-id="${ahora.id}" aria-label="Marcar como hecha">${ic('check')}</button></div>
-      <div class="hero-m">${ic('clock')}<span id="heroFin">${tiempo}</span>${run || desc ? `<button class="lnk2" data-a="cambiarTarea">Cambiar tarea</button>` : `<button class="lnk2" data-a="heroModo">Cambiar modo</button>`}</div></div>`;
+      <div class="hero-m">${run || desc ? `<span class="mut sm">${t.modo === 'pomo' ? `Sesión de ${S.ajustes.pomo} min` : `Bloque de ${t.bloqueMin} min`}</span><button class="lnk2" data-a="cambiarTarea">Cambiar tarea</button>` : `${ic('clock')}<span id="heroFin">${tiempo}</span><button class="lnk2" data-a="heroModo">Cambiar modo</button>`}</div></div>`;
     if (!enMarcha()) zA += `<button class="arr" data-a="arranque">${ic('sparkle')}¿No sabes por dónde empezar?</button>`;
   }
 
@@ -3521,13 +3649,13 @@ document.addEventListener('drop', e => {
 });
 // Móvil: alternar entre el día con su línea de horas y la semana completa en una sola lista.
 const agVista = () => pref.v('agVista') || 'semana';
-const htmlAgSeg = () => `<div class="seg mini ag-seg" role="tablist" aria-label="Vista de la agenda">${[['semana', 'Semana'], ['dia', 'Día']].map(([k, n]) => `<button class="${agVista() === k ? 'on' : ''}" data-a="agVista" data-v="${k}" role="tab" aria-selected="${agVista() === k}">${n}</button>`).join('')}</div>`;
+const htmlAgTog = () => `<div class="ag-tog" role="tablist" aria-label="Vista de la agenda">${[['semana', 'Sem'], ['dia', 'Día']].map(([k, n]) => `<button class="${agVista() === k ? 'on' : ''}" data-a="agVista" data-v="${k}" role="tab" aria-selected="${agVista() === k}">${n}</button>`).join('')}</div>`;
 function renderAgendaSemana() {
   const v = $('#v-agenda');
   if (!ui.semIni) ui.semIni = hoy();
   const dias = Array.from({ length:7 }, (_, i) => addDays(ui.semIni, i));
   const d0 = parseYmd(dias[0]), d6 = parseYmd(dias[6]);
-  const rango = d0.getMonth() === d6.getMonth() ? `${d0.getDate()} – ${d6.getDate()} de ${MESES[d6.getMonth()]}` : `${d0.getDate()} ${MESES[d0.getMonth()].slice(0, 3)} – ${d6.getDate()} ${MESES[d6.getMonth()].slice(0, 3)}`;
+  const rango = d0.getMonth() === d6.getMonth() ? `${d0.getDate()} – ${d6.getDate()} ${MES3[d6.getMonth()]}` : `${d0.getDate()} ${MES3[d0.getMonth()]} – ${d6.getDate()} ${MES3[d6.getMonth()]}`;
   const nf = chipsFiltro().length;
   const info = dias.map(x => {
     const ts = tareasDia(x).filter(t => pasaFiltro(t, { sinEstado:t.estado === 'hecho' }));
@@ -3539,11 +3667,10 @@ function renderAgendaSemana() {
   const porDia = tareasEn('prox').filter(t => !t.fecha && pasaFiltro(t)).sort(ordenPrioridad);
   const fila = t => `<div class="wd-t ${t.estado === 'hecho' ? 'hecha' : ''} ${t.estado === 'proceso' ? 'run' : ''}" style="--a:${colorA(t.area)}" data-a="abrir" data-id="${t.id}" role="button" tabindex="0">
     <span class="wd-h">${t.hora || '<em>sin hora</em>'}</span><span class="wd-n">${esc(t.titulo)}</span>${t.dur ? `<small>${t.dur} min</small>` : ''}${t.estado === 'hecho' ? ic('check') : ''}</div>`;
-  let html = `${htmlAgSeg()}
-    <div class="ag-top"><div class="sm-nav wd-nav"><button class="ib" data-a="semMov" data-v="-7" aria-label="Semana anterior">${ic('chevL')}</button><b>${rango}</b><button class="ib" data-a="semMov" data-v="7" aria-label="Semana siguiente">${ic('chevR')}</button></div>
-      ${ui.semIni !== hoy() ? `<button class="btn sm ghost" data-a="semMov" data-v="0">Hoy</button>` : ''}
+  let html = `<div class="ag-top" style="margin-top:0"><div class="sm-nav wd-nav"><button class="ib" data-a="semMov" data-v="-7" aria-label="Semana anterior">${ic('chevL')}</button><b>${rango}</b><button class="ib" data-a="semMov" data-v="7" aria-label="Semana siguiente">${ic('chevR')}</button></div>
+      ${htmlAgTog()}
       <button class="ib filt ${nf ? 'on' : ''}" data-a="filtrar" aria-label="Filtrar${nf ? `, ${nf} activos` : ''}">${ic('filter')}</button></div>
-    <p class="wd-sum"><b>${total}</b> ${total === 1 ? 'pendiente' : 'pendientes'} esta semana${hechasT ? ` · ${hechasT} ${hechasT === 1 ? 'hecho' : 'hechos'}` : ''}</p>`;
+    <p class="wd-sum"><b>${total}</b> ${total === 1 ? 'pendiente' : 'pendientes'} esta semana${hechasT ? ` · ${hechasT} ${hechasT === 1 ? 'hecho' : 'hechos'}` : ''}${ui.semIni !== hoy() ? ` · <button class="lnk2" data-a="semMov" data-v="0">Volver a hoy</button>` : ''}</p>`;
   if (nf) html += htmlBarraFiltros(total, total);
   html += info.map(({ x, pend, hechas, c }) => {
     const dd = parseYmd(x), over = c.carga > c.cap, esHoy = x === hoy();
@@ -3567,15 +3694,16 @@ function renderAgenda() {
   // La tira de días empieza hoy, o en el día elegido si es anterior o lejano.
   const ini = d < hoy() || d > addDays(hoy(), 13) ? addDays(d, -3) : hoy();
   const dias = Array.from({ length:14 }, (_, i) => addDays(ini, i));
-  let html = htmlAgSeg() + `<div class="wk" id="wk">${dias.map(x => {
+  let html = `<div class="wk" id="wk">${dias.map(x => {
     const c = cargaDia(x), dd = parseYmd(x);
     return `<button class="wk-d ${x === d ? 'on' : ''} ${x === hoy() ? 'hoy' : ''} ${x < hoy() ? 'pas' : ''}" data-a="dia" data-v="${x}" aria-pressed="${x === d}" aria-label="${fechaLarga(x)}, ${c.pend.length} tareas">
       <span>${x === hoy() ? 'Hoy' : DIAS3[dd.getDay()]}</span><b>${dd.getDate()}</b><i class="wk-n">${c.pend.length || ''}</i><i class="wk-l ${c.carga > c.cap ? 'over' : ''}"><i style="width:${Math.min(100, c.carga / Math.max(1, c.cap) * 100)}%"></i></i></button>`;
   }).join('')}</div>`;
-  // Un solo renglón con el día y su carga; fecha, día completo y prioridades viven en «Opciones».
+  // Un solo renglón con el día, selector compacto Sem/Día y filtros.
   const c = cargaDia(d), nf = chipsFiltro().length;
   html += `<div class="ag-top"><div class="ag-dia"><div><b>${d === hoy() ? 'Hoy' : d === manana() ? 'Mañana' : cap1(fechaCorta(d))}</b><span>${pend.length ? `${pend.length} · ${hCorta(c.carga)} de ${hCorta(c.cap)}` : 'Libre'}</span></div>
       ${pend.length ? `<i class="cap-b ${c.carga > c.cap ? 'over' : ''}" title="${cargaTxt(c)} · ocupado ${txtHM(c.ocup) || '0 min'}"><i style="width:${Math.min(100, c.carga / Math.max(1, c.cap) * 100)}%"></i></i>` : ''}</div>
+    ${htmlAgTog()}
     <button class="ib filt ${nf ? 'on' : ''}" data-a="filtrar" aria-label="Filtrar${nf ? `, ${nf} activos` : ''}">${ic('filter')}</button>
     <button class="ib filt" data-a="agOpc" aria-label="Opciones de la agenda">${ic('more')}</button></div>`;
   if (nf) html += htmlBarraFiltros(pend.filter(t => pasaFiltro(t)).length, pend.length);
@@ -3785,8 +3913,8 @@ function renderTablero() {
   html += tip('tablero', 'arrowR', 'Avanza cada tarjeta con su botón o arrastrándola.');
   html += `<div class="board" id="board">${datos.map(({ c, ts }) => `<section class="col" style="--c:${c.c}" data-col="${c.k}" aria-label="${c.n}">
       <div class="col-h"><div><i class="cd"></i>${c.n}<span class="cnt">${ts.length}</span></div><small>${c.d}</small></div>
-      ${c.k === 'prox' ? `<div class="qadd"><input id="qaddIn" maxlength="${MAX_TITULO}" placeholder="${esc(phCaptura())}" enterkeyhint="done" autocomplete="off" aria-label="${esc(phCaptura().slice(2))}"></div>` : ''}
       <div class="list" data-list="${c.k}">${ts.map(t => cardK(t, c.k)).join('')}<div class="empty">${{ prox:'Organiza tu Bandeja para llenar esta lista', proceso:'Nada en Hoy. Pasa tareas desde Próximas', hecho:'Aquí verás lo que termines' }[c.k]}</div></div>
+      ${c.k === 'prox' ? `<div class="qadd"><input id="qaddIn" maxlength="${MAX_TITULO}" placeholder="${esc(phCaptura())}" enterkeyhint="done" autocomplete="off" aria-label="${esc(phCaptura().slice(2))}"></div>` : ''}
     </section>`).join('')}</div>`;
   v.innerHTML = html;
   const b = $('#board');
@@ -3942,6 +4070,7 @@ function actualizarReloj() {
   }
   const ht = $('#heroTm'); if (ht) ht.textContent = fmt(r);
   const hf = $('#heroFin'); if (hf && t.corriendo) hf.textContent = `Termina a las ${horaFin(r)}`;
+  const hr = $('#heroRing'); if (hr) { const hC = 2 * Math.PI * 22, hFrac = t.total ? r / t.total : 1; hr.style.strokeDashoffset = hC * (1 - hFrac); }
   const kt = $('#kcTm'); if (kt) kt.textContent = fmt(r);
   const frac = t.total ? 100 * (1 - r / t.total) : 0;
   ['#heroBar', '#kcBar'].forEach(q => { const b = $(q); if (b) b.style.width = frac + '%'; });
@@ -3983,7 +4112,7 @@ function renderEnfoque() {
     <div class="modes ${marcha ? 'hide' : ''}" role="radiogroup" aria-label="Modo">${[['pomo', 'tomato', `Pomodoro ${a.pomo} min`], ['bloque', 'clock', 'Bloque de tiempo']].map(([k, i, n]) => `<button class="chip ${t.modo === k ? 'on' : ''}" data-a="modo" data-v="${k}" role="radio" aria-checked="${t.modo === k}" ${marcha && t.modo !== k ? 'disabled' : ''}>${ic(i)}${n}</button>`).join('')}</div>
     <div class="ring-wrap" id="ringWrap"><svg viewBox="0 0 280 280" aria-hidden="true">
       <circle cx="140" cy="140" r="${RING_R}" fill="none" stroke-width="8" style="stroke:var(--sf3)"/>
-      <circle id="ringPr" cx="140" cy="140" r="${RING_R}" fill="none" stroke-width="8" stroke-linecap="${frac > .985 || frac < .015 ? 'butt' : 'round'}" style="stroke:${t.fase === 'foco' ? 'var(--ac)' : 'var(--ok-f)'};transition:stroke-dashoffset .5s linear" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - frac)}"/></svg>
+      <circle id="ringPr" cx="140" cy="140" r="${RING_R}" fill="none" stroke-width="8" stroke-linecap="${frac > .985 || frac < .015 ? 'butt' : 'round'}" style="stroke:${t.fase === 'foco' ? 'var(--foco)' : 'var(--ok-f)'};transition:stroke-dashoffset .5s linear" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - frac)}"/></svg>
       <div class="ring-in"><div class="fase">${t.corriendo ? '<i class="live"></i>' : ''}${FASES[t.fase]}${t.modo === 'pomo' && t.fase === 'foco' ? ` ${hechosCiclo + 1}/${a.cada}` : ''}</div>
         <div class="tm" id="tmTime" role="timer">${t.fase === 'listo' ? '00:00' : fmt(r)}</div><div class="tm-sub" id="tmSub"></div><div class="tm-xp">${xpTxt}</div></div></div>
 
@@ -4102,9 +4231,26 @@ function renderProgreso() {
   const principal = hechas.length
     ? `<div class="panel pmain"><div class="pm-n"><b>${hechas.length}</b><span>${hechas.length === 1 ? 'tarea terminada' : 'tareas terminadas'}</span>${per !== 'hoy' ? `<button class="lnk2" data-a="pDet" data-v="hechas" aria-expanded="${det === 'hechas'}">${det === 'hechas' ? 'Ocultar' : 'Ver cuáles'}</button>` : ''}</div>${grafica}${per === 'hoy' ? `<div style="margin-top:12px">${listaHechas(8)}</div>` : ''}</div>`
     : `<div class="panel pmain vacio"><div class="pm-n"><b>0</b><span>tareas terminadas</span></div>${grafica}<p>Aún nada en este periodo. Empezar con algo pequeño cuenta.</p><button class="btn pri" data-a="tab" data-v="hoy">${ic('sun')}Ir a Hoy</button></div>`;
-  const tile = (k, icono, val, label) => `<button class="ptile ${det === k ? 'on' : ''}" data-a="pDet" data-v="${k}" aria-expanded="${det === k}"><span class="mi">${ic(icono)}</span><span class="tb"><b>${val}</b><small>${label}</small></span>${ic('chevD', det === k ? 'chev up' : 'chev')}</button>`;
+  const tile = (k, icono, val, label) => `<button class="ptile ${det === k ? 'on' : ''}" data-a="pDet" data-v="${k}" aria-expanded="${det === k}"><div class="ptile-top"><span class="mi">${ic(icono)}</span>${ic('chevD', det === k ? 'chev up' : 'chev')}</div><div class="ptile-v">${val}</div><div class="ptile-l">${label}</div></button>`;
   const prioVal = C.ini ? `${C.ok} de ${C.ini}` : 'Sin elegir';
-  const prioLbl = C.ini ? 'prioridades' : 'prioridades del día';
+  const prioLbl = C.ini ? 'prioridades cumplidas' : 'prioridades del día';
+  // Tira semanal de constancia (lunes a domingo de la semana en curso)
+  const hD = parseYmd(hoy()), offsetLun = (hD.getDay() + 6) % 7, lun = addDays(hoy(), -offsetLun);
+  const diasSem = Array.from({ length:7 }, (_, i) => addDays(lun, i));
+  const lblSem = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+  const rachaCard = `<div class="pstreak"><div class="pstreak-h"><span class="pstreak-ico">${ic('flame')}</span><div class="pstreak-t"><b>${st.racha ? `${st.racha} ${st.racha === 1 ? 'día' : 'días'} de racha` : 'Constancia semanal'}</b><small>${st.rachaMax ? `Mejor racha: ${st.rachaMax} ${st.rachaMax === 1 ? 'día' : 'días'}` : 'Completa una tarea o 5 min de enfoque'}</small></div></div>
+    <div class="pstreak-days" role="img" aria-label="Días activos esta semana">${diasSem.map((d, i) => { const on = st.activos && st.activos.has(d); return `<div class="psd ${on ? 'on' : ''} ${d === hoy() ? 'hoy' : ''}"><span>${lblSem[i]}</span><i>${on ? ic('check') : ''}</i></div>`; }).join('')}</div></div>`;
+  // Distribución visible con barra apilada horizontal y leyenda compacta
+  const totalDist = filasA.reduce((acc, [, x]) => acc + (usaMin ? x.m : x.t), 0) || 1;
+  const distCard = filasA.length ? `<div class="pdist"><div class="pdist-h"><b>En qué se fue el tiempo</b><div class="seg mini" role="tablist">${[['area', 'Área'], ['proyecto', 'Proyecto']].map(([k, n]) => `<button class="${dist === k ? 'on' : ''}" data-a="pDist" data-v="${k}" role="tab">${n}</button>`).join('')}</div></div>
+    <div class="pstack" role="img" aria-label="Distribución por ${dist === 'area' ? 'área' : 'proyecto'}">${filasA.map(([k, x]) => { const pct = ((usaMin ? x.m : x.t) / totalDist * 100); return pct > 0 ? `<i style="flex:${pct.toFixed(2)};--a:${colorG(k)}" title="${esc(nombreG(k))}: ${Math.round(pct)}%"></i>` : ''; }).join('')}</div>
+    <div class="pleg">${filasA.slice(0, 6).map(([k, x]) => { const pct = Math.round((usaMin ? x.m : x.t) / totalDist * 100); return `<div class="pleg-i" style="--a:${colorG(k)}"><i class="dot"></i><span class="pn">${esc(nombreG(k))}</span><span class="pv">${x.m ? hCorta(x.m) : `${x.t}`} · ${pct}%</span></div>`; }).join('')}</div></div>` : '';
+  const insHtml = INSIGNIAS.map(i => {
+    const ok = i.ok(st);
+    const pr = !ok && i.p ? i.p(st) : null;
+    const pct = pr ? Math.min(100, Math.round(pr[0] / Math.max(1, pr[1]) * 100)) : 0;
+    return `<div class="in-b ${ok ? '' : 'off'}"><div class="o">${ic(i.ic)}</div><b>${i.n}</b><span>${i.d}</span>${pr ? `<div class="in-p"><div class="in-bar"><i style="width:${pct}%"></i></div><span class="in-pt">${Math.min(pr[0], pr[1])}/${pr[1]}</span></div>` : ''}</div>`;
+  }).join('');
   let detalle = '';
   if (det === 'hechas') detalle = listaHechas();
   if (det === 'enfoque') detalle = ses.length ? `<div class="group">${ses.slice(0, 60).map(x => `<div class="hr" style="--a:${area(x.area) ? colorA(x.area) : 'var(--mut2)'}"><i class="dot"></i><span class="tb"><span class="ht" style="display:block">${esc(x.tareaTitulo || 'Enfoque libre')}</span><span class="hn">${x.tipo === 'pomodoro' ? 'Pomodoro' : 'Bloque'}${isTrue(x.completa) ? '' : ' parcial'}</span></span><span class="hm">${x.min} min · ${fechaCorta(diaDeISO(x.fin))}</span></div>`).join('')}</div>` : '<div class="empty">Sin sesiones de enfoque en este periodo.</div>';
@@ -4115,14 +4261,12 @@ function renderProgreso() {
     ${principal}
     <div class="ptiles">${tile('enfoque', 'timer', hCorta(minT), 'de enfoque')}${tile('prio', 'star', prioVal, prioLbl)}</div>
     ${det ? `<div class="kdet">${detalle}</div>` : ''}
+    ${rachaCard}
   </div><div class="prog-der">
-    ${filasA.length ? `<details class="acc" data-k="dist" ${abierto('dist') ? 'open' : ''}><summary><span class="ai">${ic('layers')}</span>En qué se fue el tiempo<span class="v">${dist === 'area' ? 'Por área' : 'Por proyecto'}</span>${ic('chevD', 'chev')}</summary><div class="acc-b">
-      <div class="seg mini" role="tablist" style="margin-bottom:12px">${[['area', 'Área'], ['proyecto', 'Proyecto']].map(([k, n]) => `<button class="${dist === k ? 'on' : ''}" data-a="pDist" data-v="${k}" role="tab">${n}</button>`).join('')}</div>
-      ${filasA.map(([k, x]) => `<div class="abar" style="--a:${colorG(k)}"><div class="nm"><i class="dot"></i>${esc(nombreG(k))}<span class="v">${x.m ? txtHM(x.m) + ' · ' : ''}${x.t} ${x.t === 1 ? 'tarea' : 'tareas'}</span></div><div class="tk2"><i style="width:${(usaMin ? x.m : x.t) / maxA * 100}%"></i></div></div>`).join('')}</div></details>` : ''}
-    <details class="acc" data-k="logros" ${abierto('logros') ? 'open' : ''}><summary><span class="ai">${ic('award')}</span>Nivel, racha e insignias<span class="v">Nivel ${l}</span>${ic('chevD', 'chev')}</summary><div class="acc-b">
+    ${distCard}
+    <details class="acc" data-k="logros" ${abierto('logros') ? 'open' : ''}><summary><span class="ai">${ic('award')}</span>Nivel e insignias<span class="v">Nivel ${l} · ${INSIGNIAS.filter(i => i.ok(st)).length}/${INSIGNIAS.length}</span>${ic('chevD', 'chev')}</summary><div class="acc-b">
       <div class="panel lvl"><div class="lvl-badge">${l}</div><div style="flex:1;min-width:0"><div class="ln">Nivel ${l} · ${nombreNivel(l)}</div><div class="bar" role="progressbar" aria-valuenow="${st.xp - a}" aria-valuemax="${b - a}"><i style="width:${(st.xp - a) / (b - a) * 100}%"></i></div><div class="mut sm" style="margin-top:8px">${st.xp} XP · ${b - st.xp} para el nivel ${l + 1}</div></div></div>
-      <p class="hint">${st.racha ? `Racha de ${st.racha} ${st.racha === 1 ? 'día' : 'días'} · mejor: ${st.rachaMax}` : `Tu mejor racha: ${st.rachaMax} ${st.rachaMax === 1 ? 'día' : 'días'}. Cualquier día es bueno para empezar otra.`}</p>
-      <div class="ins">${INSIGNIAS.map(i => `<div class="in-b ${i.ok(st) ? '' : 'off'}"><div class="o">${ic(i.ic)}</div><b>${i.n}</b><span>${i.d}</span></div>`).join('')}</div></div></details>
+      <div class="ins">${insHtml}</div></div></details>
     <div class="sec-t">${ic('list')}Historial</div>
     <input class="in" data-in="histQ" type="search" placeholder="Buscar en lo terminado" value="${esc(ui.histQ)}" aria-label="Buscar en el historial"><div id="histList"></div>
   </div></div>`;
@@ -5006,6 +5150,19 @@ const ACT = {
     toast(`«${t.titulo}» es prioridad ${antes.length + 1}`, 'Deshacer', () => { guardarPlanDia(hoy(), antes); renderVista(); });
   },
   pendHoy:el => decidirPendiente(el.dataset.id, 'hoy'),
+  bHoy:el => {
+    const t = byId(el.dataset.id); if (!t) return;
+    const prev = [t.estado, t.fecha];
+    setEstado(t, 'hoy'); regProc(t, 'hoy'); renderVista(); pintarTabs();
+    toast(`«${t.titulo}» pasó a Hoy`, 'Deshacer', () => { [t.estado, t.fecha] = prev; upsertT(t); renderVista(); pintarTabs(); });
+  },
+  bHecho:el => {
+    const t = byId(el.dataset.id); if (!t) return;
+    const prev = [t.estado, t.hecho];
+    completar(t); regProc(t, 'hecho'); renderVista(); pintarTabs();
+    toast(`«${t.titulo}» hecha`, 'Deshacer', () => { [t.estado, t.hecho] = prev; upsertT(t); renderVista(); pintarTabs(); });
+  },
+  connCerrar:() => { pref.set('connOff', 1); pintarBandejaLista(); },
   pendProx:el => decidirPendiente(el.dataset.id, 'prox'),
   pendOtro:el => abrirSheet({ k:'detalle', id:el.dataset.id, open:'fecha' }),
   pendTodasHoy:() => { const ids = pendientesAnteriores().map(t => t.id); const prev = ids.map(id => { const t = byId(id); return [t, t.estado, t.fecha]; });
