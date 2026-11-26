@@ -117,10 +117,6 @@ body.has-mini main{padding-bottom:calc(var(--tabs) + var(--mini) + 112px + var(-
 #tabs .tdot{position:absolute;top:6px;left:calc(50% + 13px);width:9px;height:9px;border-radius:50%;background:var(--ok-f);border:2px solid var(--sf);}
 
 /* ===== Botón de captura ===== */
-#fab{position:fixed;right:16px;bottom:calc(var(--tabs) + 16px + var(--bot));z-index:44;height:48px;padding:0 20px 0 16px;border-radius:999px;background:var(--sf);color:var(--ac-t);border:1px solid var(--ln);display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:var(--fs-m);box-shadow:var(--float);transition:transform .2s var(--ease),bottom .3s var(--ease)}
-#fab:active{transform:scale(.95)}
-#fab svg.i{width:22px;height:22px;stroke-width:2.3}
-body.has-mini #fab{bottom:calc(var(--tabs) + var(--mini) + 16px + var(--bot))}
 
 /* ===== Piezas base ===== */
 .panel{background:var(--sf);border-radius:var(--r);padding:16px}
@@ -509,7 +505,6 @@ details.sec-d[open] .chev{transform:rotate(180deg)}
 .tr .chev-r{width:16px;height:16px;color:var(--mut2);flex:none}
 /* ===== Cabecera mínima y captura en la navegación ===== */
 #infoBtn,#streakBtn,#searchBtn,#gearBtn{display:none!important}
-#fab{display:none!important}
 .mi{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--sf2);color:var(--ac-t);flex:none}
 .mi svg.i{width:18px;height:18px}
 kbd.mk{font:600 12px/1 inherit;color:var(--mut);padding:4px 7px;border-radius:6px;background:var(--sf2);border:1px solid var(--ln)}
@@ -976,17 +971,15 @@ body.dragging .board{scroll-snap-type:none}
 .dlg-b.col{grid-template-columns:1fr}
 
 /* ===== Avisos y celebraciones ===== */
-#toast{position:fixed;left:50%;bottom:calc(var(--tabs) + 76px + var(--bot));z-index:400;transform:translate(-50%,30px);opacity:0;pointer-events:none;background:var(--ink);color:var(--bg);border-radius:12px;padding:12px 12px 12px 16px;font-size:var(--fs-m);font-weight:500;display:flex;align-items:center;gap:12px;width:max-content;max-width:calc(100% - 32px);box-shadow:var(--float);transition:all .3s var(--ease)}
+#toast{position:fixed;left:50%;bottom:calc(var(--tabs) + 16px + var(--bot));z-index:400;transform:translate(-50%,30px);opacity:0;pointer-events:none;background:var(--ink);color:var(--bg);border-radius:12px;padding:12px 12px 12px 16px;font-size:var(--fs-m);font-weight:500;display:flex;align-items:center;gap:12px;width:max-content;max-width:calc(100% - 32px);box-shadow:var(--float);transition:all .3s var(--ease)}
 #toast.on{transform:translate(-50%,0);opacity:1}
 #toast.on button{pointer-events:auto}
 #toast > span{padding:2px 4px 2px 0}
 #toast button{background:var(--ac);color:var(--on-ac);font-weight:600;font-size:var(--fs-s);padding:8px 12px;border-radius:8px;flex:none}
 #toast svg.i{width:18px;height:18px;color:var(--warn-f)}
-body.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 76px + var(--bot))}
-body.no-fab #toast{bottom:calc(var(--tabs) + 16px + var(--bot))}
+body.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(--bot))}
 html.lock #toast{bottom:auto!important;top:calc(var(--top) + 8px);transform:translate(-50%,-24px)}
 html.lock #toast.on{transform:translate(-50%,0)}
-body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(--bot))}
 .xpf{position:fixed;z-index:450;pointer-events:none;font-weight:700;font-size:var(--fs-l);color:var(--ac-t);animation:xpup 1.3s var(--ease) forwards}
 @keyframes xpup{0%{opacity:0;transform:translate(-50%,10px) scale(.6)}20%{opacity:1;transform:translate(-50%,-6px) scale(1.12)}100%{opacity:0;transform:translate(-50%,-64px) scale(1)}}
 .cf{position:fixed;top:-12px;z-index:500;width:9px;height:14px;border-radius:2px;pointer-events:none;animation:cfall var(--d) cubic-bezier(.3,.6,.4,1) forwards}
@@ -1064,8 +1057,6 @@ body.no-fab.has-mini #toast{bottom:calc(var(--tabs) + var(--mini) + 16px + var(-
   .side-f span kbd:last-of-type{margin-right:6px}
   .chips.vf{flex-wrap:wrap;overflow:visible;margin-left:0;margin-right:0;padding-left:0;padding-right:0}
   #mini{left:var(--side)}
-  #fab{bottom:calc(24px + var(--bot))}
-  body.has-mini #fab{bottom:calc(var(--mini) + 24px)}
   #toast{left:calc(50% + var(--side) / 2)}
   /* Las vistas ya están en el panel izquierdo */
   .subnav{display:none}
@@ -1528,7 +1519,6 @@ main .tr .tt{font-weight:500}
   <section class="view" id="v-progreso"></section>
 </main>
 <nav id="tabs" aria-label="Secciones"></nav>
-<button id="fab" data-a="capFab" aria-label="Capturar pendiente en la bandeja"></button>
 <div id="mini" role="region" aria-label="Enfoque en curso"></div>
 <div id="proc" role="dialog" aria-modal="true" aria-label="Organizar bandeja"></div>
 <div id="sheetBg" data-a="cerrarSheet"></div>
@@ -2742,8 +2732,6 @@ function encabezado() {
 }
 function render() {
   encabezado(); pintarTabs(); pintarSync();
-  // Capturar vive en la barra de navegación: ya no flota sobre el contenido.
-  $('#fab').classList.add('hide'); document.body.classList.add('no-fab');
   document.body.classList.toggle('inmersivo', ui.view === 'enfoque');
   pintarMini(); renderVista();
   const pr = [...new Set(vivas().map(t => t.proyecto).filter(Boolean))];
@@ -5761,7 +5749,6 @@ function arrancar() {
   estadoS = S.conn.url ? (S.cola.length ? 'pend' : 'ok') : 'sin';
   $('#gearBtn').innerHTML = ic('gear'); $('#searchBtn').innerHTML = ic('search'); $('#menuBtn').innerHTML = ic('more'); $('#backBtn').innerHTML = ic('chevL');
   $('#infoBtn').innerHTML = ic('info');
-  $('#fab').innerHTML = ic('plus') + 'Capturar';
   aplicarCalma();
   render();
   if (datosDanados) setTimeout(() => dialogo({ titulo:'Tus datos guardados estaban dañados', texto:`No se borraron: quedaron apartados en este dispositivo (${datosDanados}). Si tienes tu hoja de Google conectada, vuelve a conectarla para recuperarlos.`, ok:'Entendido' }), 600);
