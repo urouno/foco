@@ -1469,6 +1469,14 @@ body{letter-spacing:-.005em;text-rendering:optimizeLegibility}
 }
 :root[data-theme="dark"] .pstack i{background:color-mix(in srgb,var(--a,var(--mut2)) 76%,#fff)}
 :root[data-theme="dark"] .hero.ca.is-run:not(.is-desc) .hero-l{color:var(--foco-t)}
+/* 8. Rutinas: proyecciones virtuales en Agenda y selector mensual */
+.wd-t.virt,.tl-b.virt,.sm-ad-t.virt{opacity:.72;border-style:dashed;cursor:pointer}
+.wd-t.virt{border-left-style:dashed;background:transparent;border:1px dashed var(--ln2);border-left:3px dashed var(--a,var(--mut2))}
+.tl-b.virt{background:color-mix(in srgb,var(--a,#888) 7%,var(--sf));border:1px dashed color-mix(in srgb,var(--a,#888) 38%,var(--ln2));border-left:3px dashed var(--a,#888)}
+.sm-ad-t.virt{background:transparent;border:1px dashed var(--ln2);border-left:3px dashed var(--a,var(--mut2))}
+.rec-mes{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+.rec-mes .in{width:78px;min-height:38px;padding:6px 10px;text-align:center}
+.rec-act{display:flex;gap:8px;margin-top:10px}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -1700,7 +1708,7 @@ const pref = {
 };
 
 const D = { st:null, justDragged:false };
-const ui = { view:'hoy', scroll:{}, f:{ area:'todas', proyecto:'', estado:'', prio:'' }, buscarQ:'', volverDe:'hoy', ult:{}, dia:'', bVerbo:'', hoyVista:'lista', filtro:'todas', col:'prox', agSel:'', agY:null, histQ:'', histN:40, sheet:null,
+const ui = { view:'hoy', scroll:{}, f:{ area:'todas', proyecto:'', estado:'', prio:'', rec:'' }, buscarQ:'', volverDe:'hoy', ult:{}, dia:'', bVerbo:'', hoyVista:'lista', filtro:'todas', col:'prox', agSel:'', agY:null, histQ:'', histN:40, sheet:null,
   capArea:'', enfCaps:[], dtOpen:'', savedAt:0, nuevoTomate:false, syncErr:'', cfgMsg:null, cfgDraft:null, areaNueva:null, areaColor:'', onb:0 };
 const abierto = k => !!pref.v('ab-' + k);
 
@@ -1728,27 +1736,89 @@ function recTexto(rec) {
   if (k === 'diaria') return 'Todos los días';
   if (k === 'laboral') return 'Lunes a viernes';
   if (k === 'semanal') { const d = (v || '').split(',').filter(Boolean).map(n => DIAS3[+n]); return d.length ? 'Cada ' + d.join(', ') : 'Semanal'; }
-  if (k === 'mensual') return `Cada mes, día ${v}`;
+  if (k === 'mensual') return +v >= 31 ? 'Cada mes, último día' : `Cada mes, día ${+v || 1}`;
   return '';
 }
-function siguienteFecha(rec, base) {
+function recCorto(rec) {
+  if (!rec) return '';
   const [k, v] = rec.split(':');
-  if (k === 'diaria') return addDays(base, 1);
-  if (k === 'laboral') { let d = addDays(base, 1); while ([0, 6].includes(parseYmd(d).getDay())) d = addDays(d, 1); return d; }
+  if (k === 'diaria') return 'Diaria';
+  if (k === 'laboral') return 'L–V';
+  if (k === 'semanal') { const d = (v || '').split(',').filter(Boolean).map(n => DIAS3[+n]); return !d.length ? 'Semanal' : d.length <= 3 ? d.join(', ') : `${d.length} d/sem`; }
+  if (k === 'mensual') return +v >= 31 ? 'Últ. día' : `Día ${+v || 1}`;
+  return '';
+}
+function coincideRec(rec, d) {
+  if (!rec || !d) return false;
+  const [k, v] = rec.split(':'), dt = parseYmd(d), dow = dt.getDay();
+  if (k === 'diaria') return true;
+  if (k === 'laboral') return dow >= 1 && dow <= 5;
   if (k === 'semanal') {
     const set = (v || '').split(',').filter(Boolean).map(Number);
-    if (!set.length) return addDays(base, 7);
-    let d = addDays(base, 1);
-    for (let i = 0; i < 8; i++) { if (set.includes(parseYmd(d).getDay())) return d; d = addDays(d, 1); }
-    return addDays(base, 7);
+    return set.length ? set.includes(dow) : true;
   }
   if (k === 'mensual') {
-    const dia = +v || 1; const b = parseYmd(base);
-    const y = b.getFullYear(), m = b.getMonth() + 1;
-    const ult = new Date(y, m + 1, 0).getDate();
-    return ymd(new Date(y, m, Math.min(dia, ult)));
+    const dia = clamp(+v || 1, 1, 31), ult = new Date(dt.getFullYear(), dt.getMonth() + 1, 0).getDate();
+    return dt.getDate() === Math.min(dia, ult);
   }
-  return addDays(base, 1);
+  return false;
+}
+// Primera fecha >= desde que coincide con la regla de repetición.
+function primeraFechaRec(rec, desde = hoy()) {
+  if (!rec) return desde;
+  const [k, v] = rec.split(':');
+  if (k === 'diaria') return desde;
+  if (k === 'laboral') { let d = desde; while ([0, 6].includes(parseYmd(d).getDay())) d = addDays(d, 1); return d; }
+  if (k === 'semanal') {
+    const set = (v || '').split(',').filter(Boolean).map(Number);
+    if (!set.length) return desde;
+    let d = desde;
+    for (let i = 0; i < 8; i++) { if (set.includes(parseYmd(d).getDay())) return d; d = addDays(d, 1); }
+    return desde;
+  }
+  if (k === 'mensual') {
+    const dia = clamp(+v || 1, 1, 31), b = parseYmd(desde);
+    let y = b.getFullYear(), m = b.getMonth();
+    let ult = new Date(y, m + 1, 0).getDate();
+    let cand = ymd(new Date(y, m, Math.min(dia, ult)));
+    if (cand < desde) {
+      m += 1; ult = new Date(y, m + 1, 0).getDate();
+      cand = ymd(new Date(y, m, Math.min(dia, ult)));
+    }
+    return cand;
+  }
+  return desde;
+}
+function siguienteFecha(rec, base) { return primeraFechaRec(rec, addDays(base, 1)); }
+// Proyecciones virtuales para la Agenda semanal (sin crear copias físicas en S.tareas).
+function proyeccionesDia(d) {
+  if (d < hoy()) return [];
+  return activas().filter(t => t.rec && !['bandeja', 'algun'].includes(t.estado) && t.fecha !== d && (!t.fecha || d > t.fecha) && coincideRec(t.rec, d));
+}
+// Garantiza como máximo 1 instancia activa por serie recurrente (limpia duplicados locales o de sincronización).
+function dedupSeries() {
+  const porSerie = {};
+  activas().forEach(t => {
+    if (!t.rec) return;
+    if (!t.serie) { t.serie = t.id; upsertT(t); }
+    (porSerie[t.serie] = porSerie[t.serie] || []).push(t);
+  });
+  Object.values(porSerie).forEach(lista => {
+    if (lista.length < 2) return;
+    lista.sort((a, b) => (b.fecha || '').localeCompare(a.fecha || '') || (b.actualizado || '').localeCompare(a.actualizado || ''));
+    lista.slice(1).forEach(dup => { dup.borrado = true; upsertT(dup); });
+  });
+}
+function saltarRec(t) {
+  if (!t || !t.rec) return;
+  const prev = { fecha:t.fecha, estado:t.estado };
+  const base = t.fecha && t.fecha > hoy() ? t.fecha : hoy();
+  t.fecha = siguienteFecha(t.rec, base);
+  t.estado = t.fecha === hoy() ? 'hoy' : 'prox';
+  porAuto = true; upsertT(t); porAuto = false;
+  toast(`Omitida · próxima: ${fechaCorta(t.fecha).toLowerCase()}`, 'Deshacer', () => {
+    t.fecha = prev.fecha; t.estado = prev.estado; porAuto = true; upsertT(t); porAuto = false; render();
+  });
 }
 
 /* ================= Sincronización con Google Sheets ================= */
@@ -2165,7 +2235,14 @@ function capturar(texto, estado = 'bandeja', extra = {}, forzar = false) {
 function setEstado(t, est) {
   if (!t || t.estado === est) return;
   if (est === 'hecho') { completar(t); return; }
-  if (t.estado === 'hecho') t.hecho = '';
+  if (t.estado === 'hecho') {
+    t.hecho = '';
+    // Si se reabre una tarea completada cuya serie ya tiene una ocurrencia activa, se reabre como copia única sin duplicar la serie.
+    if (t.rec && activas().some(x => x.id !== t.id && x.serie && x.serie === (t.serie || t.id))) {
+      t.rec = '';
+      toast('Reabierta como copia única (la rutina ya sigue activa)');
+    }
+  }
   if (est === 'hoy' || est === 'proceso') t.fecha = hoy();
   if (est === 'prox' && t.fecha && t.fecha <= hoy()) t.fecha = '';
   if (est === 'proceso') tareasEn('proceso').forEach(o => { if (o.id !== t.id) { o.estado = 'hoy'; upsertT(o); } });
@@ -2174,12 +2251,19 @@ function setEstado(t, est) {
 function completar(t, origen) {
   if (!t || t.estado === 'hecho') return;
   const prev = t.estado;
+  if (t.rec && !t.serie) t.serie = t.id;
   t.estado = 'hecho'; t.hecho = nowISO(); upsertT(t);
   let clon = null;
   if (t.rec) {
-    const base = t.fecha && t.fecha > hoy() ? t.fecha : hoy();
-    clon = nuevaTarea(t.titulo, { estado:'prox', area:t.area, proyecto:t.proyecto, urgente:t.urgente, importante:t.importante, dur:t.dur,
-      hora:t.hora, rec:t.rec, serie:t.serie || t.id, fecha:siguienteFecha(t.rec, base), orden:t.orden });
+    const serie = t.serie || t.id;
+    const yaActiva = activas().some(x => x.id !== t.id && x.serie === serie);
+    if (!yaActiva) {
+      const base = t.fecha && t.fecha > hoy() ? t.fecha : hoy();
+      const sig = siguienteFecha(t.rec, base);
+      const detId = `r_${serie}_${sig}`;
+      clon = nuevaTarea(t.titulo, { id:byId(detId) ? uid() : detId, estado:sig === hoy() ? 'hoy' : 'prox', area:t.area, proyecto:t.proyecto,
+        urgente:t.urgente, importante:t.importante, dur:t.dur, hora:t.hora, rec:t.rec, serie, fecha:sig, orden:t.orden });
+    }
   }
   // Completar la tarea del reloj cierra su tramo (una sola vez) y libera el reloj; otra tarea no lo interrumpe.
   const tm = S.timer, eraDelReloj = tm && tm.tareaId === t.id;
@@ -2207,13 +2291,21 @@ function registrarEvento(tipo) {
   revisarLogros();
 }
 function regProc(t, d) { S.procRec = [{ id:t.id, d, t:nowISO() }, ...(S.procRec || [])].slice(0, 20); save(); }
-// Cambio de día: lo programado para hoy entra a Hoy; lo que quedó pendiente pasa al final de la lista.
-// Cambio de día: lo planeado para hoy pasa a Hoy; lo de días anteriores conserva su fecha
-// y aparece en «Pendientes anteriores» para que decidas (mantener hoy, otro día o devolver a próximas).
+// Cambio de día: limpia duplicados por serie, avanza rutinas vencidas automáticamente a su próxima fecha,
+// promueve a Hoy lo programado para hoy, y deja las tareas únicas atrasadas en «Atrasadas».
 function rollover() {
   const h = hoy(), reloj = S.timer && S.timer.tareaId;
   porAuto = true;
+  dedupSeries();
   vivas().forEach(t => {
+    if (t.rec && t.estado !== 'hecho' && !['bandeja', 'algun'].includes(t.estado) && t.id !== reloj) {
+      if (!t.fecha || t.fecha < h) {
+        t.fecha = primeraFechaRec(t.rec, h);
+        t.estado = t.fecha === h ? 'hoy' : 'prox';
+        upsertT(t);
+        return;
+      }
+    }
     if (t.estado === 'prox' && t.fecha === h) { t.estado = 'hoy'; upsertT(t); }
     else if (['hoy', 'proceso'].includes(t.estado)) {
       if (!t.fecha) { t.fecha = h; upsertT(t); }
@@ -2832,6 +2924,7 @@ function metaCorta(t, max = 2, op = {}) {
   if (t.fecha && t.fecha !== hoy() && t.estado !== 'hecho') add(`<span class="tag ${t.fecha < hoy() ? 'f-tarde' : ''}">${ic('cal')}${fechaCorta(t.fecha)}</span>`, t.fecha < hoy());
   if (t.limite && t.estado !== 'hecho') add(`<span class="tag ${t.limite <= hoy() ? 'f-tarde' : ''}">${ic('flag')}Vence ${t.limite === hoy() ? 'hoy' : fechaCorta(t.limite).toLowerCase()}</span>`, t.limite <= addDays(hoy(), 2));
   if (t.dur) add(`<span class="tag">${ic('timer')}${t.dur} min</span>`, true);
+  if (t.rec && t.estado !== 'hecho') add(`<span class="tag" title="${esc(recTexto(t.rec))}">${ic('repeat')}${esc(recCorto(t.rec))}</span>`, true);
   if (op.pomos && t.pomos) add(`<span class="tag">${ic('tomato')}${t.pomos}</span>`);
   const must = it.filter(x => x.must), resto = it.filter(x => !x.must).slice(0, Math.max(0, max - must.length));
   return [...must, ...resto].sort((a, b) => a.i - b.i).map(x => x.html).join('');
@@ -3604,18 +3697,22 @@ function renderSemana() {
   }).join('');
   const fuera = htmlFueraJornada();
   const cols = dias.map(x => {
-    const bl = carriles(tareasDia(x).filter(t => t.hora && pasaFiltro(t, { sinEstado:t.estado === 'hecho' }))).map(ev => {
-      const hecha = ev.t.estado === 'hecho', run = ev.t.estado === 'proceso', f = franja(ev.t), h = Math.max(ev.e - ev.s, 24);
-      return `<div class="tl-b ${h < 44 ? 'corta' : ''} ${hecha ? 'hecha' : ''} ${run ? 'run' : ''} ${f ? 'f-' + f.k : ''} ${!hecha && enSolape(x, ev.t.id) ? 'solapa' : ''}" style="--a:${colorA(ev.t.area)};top:${ev.s - AG_INI * 60}px;height:${h - 2}px;left:calc(2px + (100% - 4px) * ${ev.c / ev.n});width:calc((100% - 4px) / ${ev.n} - 2px)" data-id="${ev.t.id}" data-a="abrir" role="button" tabindex="0" ${hecha ? '' : `draggable="true" data-dnd="${ev.t.id}"`} title="${esc(ev.t.titulo)} · ${min2hm(ev.s)} – ${min2hm(ev.e)}"><b>${hecha ? ic('check') : ''}${esc(ev.t.titulo)}</b><span class="tl-t">${min2hm(ev.s)}${f ? ' · ' + f.txt : ''}</span></div>`;
+    const reales = tareasDia(x).filter(t => t.hora && pasaFiltro(t, { sinEstado:t.estado === 'hecho' }));
+    const virts = proyeccionesDia(x).filter(t => t.hora && pasaFiltro(t)).map(t => ({ ...t, _virt:true }));
+    const bl = carriles([...reales, ...virts]).map(ev => {
+      const virt = !!ev.t._virt, hecha = !virt && ev.t.estado === 'hecho', run = !virt && ev.t.estado === 'proceso', f = virt ? null : franja(ev.t), h = Math.max(ev.e - ev.s, 24);
+      return `<div class="tl-b ${virt ? 'virt' : ''} ${h < 44 ? 'corta' : ''} ${hecha ? 'hecha' : ''} ${run ? 'run' : ''} ${f ? 'f-' + f.k : ''} ${!hecha && !virt && enSolape(x, ev.t.id) ? 'solapa' : ''}" style="--a:${colorA(ev.t.area)};top:${ev.s - AG_INI * 60}px;height:${h - 2}px;left:calc(2px + (100% - 4px) * ${ev.c / ev.n});width:calc((100% - 4px) / ${ev.n} - 2px)" data-id="${ev.t.id}" data-a="abrir" role="button" tabindex="0" ${hecha || virt ? '' : `draggable="true" data-dnd="${ev.t.id}"`} title="${esc(ev.t.titulo)}${virt ? ' (rutina proyectada)' : ''} · ${min2hm(ev.s)} – ${min2hm(ev.e)}"><b>${virt ? ic('repeat') : hecha ? ic('check') : ''}${esc(ev.t.titulo)}</b><span class="tl-t">${min2hm(ev.s)}${f ? ' · ' + f.txt : ''}</span></div>`;
     }).join('');
     return `<div class="sm-col ${x === hoy() ? 'hoy' : ''}" data-dia="${x}" data-a="semTap">${fuera}${bl}${x === hoy() && nm >= AG_INI * 60 && nm <= AG_FIN * 60 ? `<div class="tl-now" style="top:${nm - AG_INI * 60}px"></div>` : ''}</div>`;
   }).join('');
-  // Fila «Sin hora»: las tareas con día pero sin hora, visibles en su columna (arrástralas a una hora para agendarlas).
+  // Fila «Sin hora»: las tareas con día pero sin hora (y proyecciones virtuales de rutinas sin hora).
   const adCeldas = dias.map(x => {
     const ts = tareasDia(x).filter(t => t.estado !== 'hecho' && !t.hora && pasaFiltro(t)).sort(ordenPrioridad);
-    return `<div class="sm-ad ${x === hoy() ? 'hoy' : ''}" data-dia="${x}">${ts.slice(0, 4).map(t => `<div class="sm-ad-t" draggable="true" data-dnd="${t.id}" data-a="abrir" data-id="${t.id}" role="button" tabindex="0" style="--a:${colorA(t.area)}" title="${esc(t.titulo)}"><span>${esc(t.titulo)}</span></div>`).join('')}${ts.length > 4 ? `<small>+${ts.length - 4} más</small>` : ''}</div>`;
+    const vs = proyeccionesDia(x).filter(t => !t.hora && pasaFiltro(t)).sort(ordenPrioridad);
+    const all = [...ts.map(t => ({ t, v:false })), ...vs.map(t => ({ t, v:true }))];
+    return `<div class="sm-ad ${x === hoy() ? 'hoy' : ''}" data-dia="${x}">${all.slice(0, 4).map(({ t, v }) => `<div class="sm-ad-t ${v ? 'virt' : ''}" ${v ? '' : `draggable="true" data-dnd="${t.id}"`} data-a="abrir" data-id="${t.id}" role="button" tabindex="0" style="--a:${colorA(t.area)}" title="${esc(t.titulo)}${v ? ' (rutina proyectada)' : ''}"><span>${v ? '↻ ' : ''}${esc(t.titulo)}</span></div>`).join('')}${all.length > 4 ? `<small>+${all.length - 4} más</small>` : ''}</div>`;
   }).join('');
-  const hayAd = dias.some(x => tareasDia(x).some(t => t.estado !== 'hecho' && !t.hora && pasaFiltro(t)));
+  const hayAd = dias.some(x => tareasDia(x).some(t => t.estado !== 'hecho' && !t.hora && pasaFiltro(t)) || proyeccionesDia(x).some(t => !t.hora && pasaFiltro(t)));
   v.innerHTML = `<div class="semana">${side}<div class="sm-cal ${sel ? 'picking' : ''}"><div class="sm-heads"><div></div>${heads}</div>
     ${hayAd ? `<div class="sm-adrow"><div class="sm-adl">Sin hora</div>${adCeldas}</div>` : ''}
     <div class="sm-body" id="smBody"><div class="sm-grid" style="height:${(AG_FIN - AG_INI) * 60}px"><div class="sm-axis">${ejes}</div>${cols}</div></div></div></div>`;
@@ -3660,26 +3757,30 @@ function renderAgendaSemana() {
   const info = dias.map(x => {
     const ts = tareasDia(x).filter(t => pasaFiltro(t, { sinEstado:t.estado === 'hecho' }));
     const pend = ts.filter(t => t.estado !== 'hecho').sort((a, b) => (a.hora || '99').localeCompare(b.hora || '99') || byOrden(a, b));
+    const virt = proyeccionesDia(x).filter(t => pasaFiltro(t)).sort((a, b) => (a.hora || '99').localeCompare(b.hora || '99') || byOrden(a, b));
     const hechas = ts.filter(t => t.estado === 'hecho').sort((a, b) => (a.hora || '99').localeCompare(b.hora || '99'));
-    return { x, pend, hechas, c:cargaDia(x) };
+    return { x, pend, virt, hechas, c:cargaDia(x) };
   });
   const total = info.reduce((n, i) => n + i.pend.length, 0), hechasT = info.reduce((n, i) => n + i.hechas.length, 0);
   const porDia = tareasEn('prox').filter(t => !t.fecha && pasaFiltro(t)).sort(ordenPrioridad);
-  const fila = t => `<div class="wd-t ${t.estado === 'hecho' ? 'hecha' : ''} ${t.estado === 'proceso' ? 'run' : ''}" style="--a:${colorA(t.area)}" data-a="abrir" data-id="${t.id}" role="button" tabindex="0">
-    <span class="wd-h">${t.hora || '<em>sin hora</em>'}</span><span class="wd-n">${esc(t.titulo)}</span>${t.dur ? `<small>${t.dur} min</small>` : ''}${t.estado === 'hecho' ? ic('check') : ''}</div>`;
+  const fila = (t, virt = false) => `<div class="wd-t ${virt ? 'virt' : ''} ${!virt && t.estado === 'hecho' ? 'hecha' : ''} ${!virt && t.estado === 'proceso' ? 'run' : ''}" style="--a:${colorA(t.area)}" data-a="abrir" data-id="${t.id}" role="button" tabindex="0">
+    <span class="wd-h">${t.hora || '<em>sin hora</em>'}</span><span class="wd-n">${esc(t.titulo)}</span>${t.dur ? `<small>${t.dur} min</small>` : ''}${virt ? ic('repeat') : t.estado === 'hecho' ? ic('check') : ''}</div>`;
   let html = `<div class="ag-top" style="margin-top:0"><div class="sm-nav wd-nav"><button class="ib" data-a="semMov" data-v="-7" aria-label="Semana anterior">${ic('chevL')}</button><b>${rango}</b><button class="ib" data-a="semMov" data-v="7" aria-label="Semana siguiente">${ic('chevR')}</button></div>
       ${htmlAgTog()}
       <button class="ib filt ${nf ? 'on' : ''}" data-a="filtrar" aria-label="Filtrar${nf ? `, ${nf} activos` : ''}">${ic('filter')}</button></div>
     <p class="wd-sum"><b>${total}</b> ${total === 1 ? 'pendiente' : 'pendientes'} esta semana${hechasT ? ` · ${hechasT} ${hechasT === 1 ? 'hecho' : 'hechos'}` : ''}${ui.semIni !== hoy() ? ` · <button class="lnk2" data-a="semMov" data-v="0">Volver a hoy</button>` : ''}</p>`;
   if (nf) html += htmlBarraFiltros(total, total);
-  html += info.map(({ x, pend, hechas, c }) => {
+  html += info.map(({ x, pend, virt, hechas, c }) => {
     const dd = parseYmd(x), over = c.carga > c.cap, esHoy = x === hoy();
+    const sub = pend.length ? `${pend.length} · ${hCorta(c.carga)} de ${hCorta(c.cap)}${virt.length ? ` · +${virt.length} ↻` : ''}`
+      : virt.length ? `${virt.length} ${virt.length === 1 ? 'rutina' : 'rutinas'} ↻`
+      : hechas.length ? 'Todo hecho' : 'Libre';
     return `<section class="wd ${esHoy ? 'hoy' : ''} ${x < hoy() ? 'pas' : ''}">
       <button class="wd-head" data-a="agVerDia" data-v="${x}" aria-label="Abrir ${fechaLarga(x)}">
         <span class="wd-d"><span>${esHoy ? 'Hoy' : DIAS3[dd.getDay()]}</span><b>${dd.getDate()}</b></span>
-        <span class="wd-m"><b>${esHoy ? 'Hoy' : x === manana() ? 'Mañana' : cap1(fechaCorta(x))}</b><small>${pend.length ? `${pend.length} · ${hCorta(c.carga)} de ${hCorta(c.cap)}` : hechas.length ? 'Todo hecho' : 'Libre'}</small></span>
+        <span class="wd-m"><b>${esHoy ? 'Hoy' : x === manana() ? 'Mañana' : cap1(fechaCorta(x))}</b><small>${sub}</small></span>
         ${pend.length ? `<i class="cap-b ${over ? 'over' : ''}"><i style="width:${Math.min(100, c.carga / Math.max(1, c.cap) * 100)}%"></i></i>` : ''}${ic('chevR')}</button>
-      ${pend.length || hechas.length ? `<div class="wd-l">${pend.map(fila).join('')}${hechas.map(fila).join('')}</div>` : ''}</section>`;
+      ${pend.length || virt.length || hechas.length ? `<div class="wd-l">${pend.map(t => fila(t)).join('')}${virt.map(t => fila(t, true)).join('')}${hechas.map(t => fila(t)).join('')}</div>` : ''}</section>`;
   }).join('');
   if (porDia.length) html += `<button class="ag-pend" data-a="agPendSem">${ic('list')}<span>Sin día · <b>${porDia.length}</b> ${porDia.length === 1 ? 'tarea' : 'tareas'} por agendar</span>${ic('chevR')}</button>`;
   v.innerHTML = html;
@@ -3833,6 +3934,7 @@ function colDe(t) {
 /* Filtros compartidos de Planifica: los mismos en Tablero y Agenda. Hoy y Bandeja no se filtran. */
 const PRIO_F = { q1:'Urgente e importante', imp:'Importante', urg:'Urgente', sin:'Sin prioridad' };
 const EST_F = { prox:'Próximas', proceso:'En curso' };
+const REC_F = { si:'Solo rutinas', no:'Tareas únicas' };
 const prioDe = t => t.urgente && t.importante ? 'q1' : t.importante ? 'imp' : t.urgente ? 'urg' : 'sin';
 function pasaFiltro(t, op = {}) {
   const f = ui.f;
@@ -3840,6 +3942,8 @@ function pasaFiltro(t, op = {}) {
   if (f.proyecto && !(f.proyecto === '-' ? !t.proyecto : t.proyecto === f.proyecto)) return false;
   if (f.estado && !op.sinEstado && colDe(t) !== f.estado) return false;
   if (f.prio && prioDe(t) !== f.prio) return false;
+  if (f.rec === 'si' && !t.rec) return false;
+  if (f.rec === 'no' && t.rec) return false;
   return true;
 }
 function chipsFiltro() {
@@ -3848,6 +3952,7 @@ function chipsFiltro() {
   if (f.proyecto) out.push(['proyecto', f.proyecto === '-' ? 'Sin proyecto' : f.proyecto]);
   if (f.estado) out.push(['estado', EST_F[f.estado]]);
   if (f.prio) out.push(['prio', PRIO_F[f.prio]]);
+  if (f.rec) out.push(['rec', REC_F[f.rec]]);
   return out;
 }
 // Barra visible con los filtros activos, el conteo y «Limpiar filtros».
@@ -4578,6 +4683,7 @@ function htmlFiltro() {
     ${grupo('proyecto', 'Proyecto', [['', 'Todos'], ...proys.map(p => [p, p]), ['-', 'Sin proyecto']])}
     ${grupo('estado', 'Estado', [['', 'Todos'], ...Object.entries(EST_F)])}
     ${grupo('prio', 'Prioridad', [['', 'Todas'], ...Object.entries(PRIO_F)])}
+    ${grupo('rec', 'Rutinas', [['', 'Todas'], ...Object.entries(REC_F)])}
     <div class="sh-foot"><button class="btn" data-a="limpiarFiltros">Limpiar filtros</button><button class="btn pri" data-a="cerrarSheet">Ver ${n} ${n === 1 ? 'tarea' : 'tareas'}</button></div>`;
 }
 /* Búsqueda global: título, proyecto, área y notas; incluye completadas sin ocultarlas. */
@@ -4665,7 +4771,9 @@ function htmlDetalle(t) {
     rec: fila('rec', 'repeat', 'gray', 'Repetición', t.rec ? recTexto(t.rec) : 'No se repite',
       `<div class="chips">${[['', 'No se repite'], ['diaria', 'Todos los días'], ['laboral', 'Lunes a viernes'], ['semanal', 'Ciertos días'], ['mensual', 'Cada mes']].map(([k, n]) => `<button class="chip ${(rk || '') === k ? 'on' : ''}" data-a="dtRec" data-v="${k}">${n}</button>`).join('')}</div>
        ${rk === 'semanal' ? `<div class="days" role="group" aria-label="Días">${DIAS1.map((d, i) => `<button class="${diasSem.includes(i) ? 'on' : ''}" data-a="dtDia" data-v="${i}" aria-label="${DIAS[i]}" aria-pressed="${diasSem.includes(i)}">${d}</button>`).join('')}</div>` : ''}
-       ${t.rec ? `<p class="hint">Al marcarla como hecha se crea la siguiente automáticamente.</p>` : ''}`),
+       ${rk === 'mensual' ? `<div class="rec-mes"><button class="chip ${+rv === 1 ? 'on' : ''}" data-a="dtDiaMes" data-v="1">Día 1</button><button class="chip ${+rv === 15 ? 'on' : ''}" data-a="dtDiaMes" data-v="15">Día 15</button><button class="chip ${+rv >= 31 ? 'on' : ''}" data-a="dtDiaMes" data-v="31">Último día</button><input type="number" class="in" min="1" max="31" value="${clamp(+rv || 1, 1, 31)}" data-in="dtDiaMesIn" aria-label="Día del mes"></div>` : ''}
+       ${t.rec && t.estado !== 'hecho' ? `<div class="rec-act"><button class="btn sm ghost" data-a="dtSaltar">${ic('skip')}Saltar esta vez</button></div>` : ''}
+       ${t.rec ? `<p class="hint">Al completarla se programa la siguiente. Si un día no la marcas, avanza automáticamente a su próxima fecha.</p>` : ''}`),
     dur: fila('dur', 'timer', 'vio', 'Duración', t.dur ? `${t.dur} min` : '<span class="mut2">Sin estimar</span>',
       `<div class="chips">${[5, 15, 25, 50, 90].map(m => `<button class="chip ${t.dur === m ? 'on' : ''}" data-a="dtDur" data-v="${m}">${m} min</button>`).join('')}<button class="chip ${!t.dur ? 'on' : ''}" data-a="dtDur" data-v="0">Sin estimar</button></div>`)
   };
@@ -5022,7 +5130,7 @@ const ACT = {
   filtrar:() => abrirSheet({ k:'filtro' }),
   filtroSet:el => { ui.f[el.dataset.k] = el.dataset.v; refrescarSheet(); renderVista(); },
   quitarFiltro:el => { const k = el.dataset.k; ui.f[k] = k === 'area' ? 'todas' : ''; renderVista(); },
-  limpiarFiltros:() => { ui.f = { area:'todas', proyecto:'', estado:'', prio:'' }; if (ui.sheet && ui.sheet.k === 'filtro') refrescarSheet(); renderVista(); },
+  limpiarFiltros:() => { ui.f = { area:'todas', proyecto:'', estado:'', prio:'', rec:'' }; if (ui.sheet && ui.sheet.k === 'filtro') refrescarSheet(); renderVista(); },
   bSelModo:() => { ui.bSel = ui.bSel ? null : new Set(); pintarBandejaLista(); },
   bSelTog:el => { const id = el.dataset.id; ui.bSel.has(id) ? ui.bSel.delete(id) : ui.bSel.add(id); pintarBandejaLista(); },
   bSelTodos:() => { const ids = ui.bIds || []; const todos = ids.every(id => ui.bSel.has(id)); ids.forEach(id => todos ? ui.bSel.delete(id) : ui.bSel.add(id)); pintarBandejaLista(); },
@@ -5158,9 +5266,7 @@ const ACT = {
   },
   bHecho:el => {
     const t = byId(el.dataset.id); if (!t) return;
-    const prev = [t.estado, t.hecho];
-    completar(t); regProc(t, 'hecho'); renderVista(); pintarTabs();
-    toast(`«${t.titulo}» hecha`, 'Deshacer', () => { [t.estado, t.hecho] = prev; upsertT(t); renderVista(); pintarTabs(); });
+    completar(t, el); regProc(t, 'hecho'); renderVista(); pintarTabs();
   },
   connCerrar:() => { pref.set('connOff', 1); pintarBandejaLista(); },
   pendProx:el => decidirPendiente(el.dataset.id, 'prox'),
@@ -5215,19 +5321,46 @@ const ACT = {
     else if (v === 'semanal') t.rec = 'semanal:' + parseYmd(t.fecha || hoy()).getDay();
     else if (v === 'mensual') t.rec = 'mensual:' + parseYmd(t.fecha || hoy()).getDate();
     else t.rec = v;
-    if (t.rec && t.estado === 'bandeja') t.estado = 'prox';
-    upsertT(t); if (v !== 'semanal') ui.dtOpen = ''; dtRefrescar();
+    if (t.rec) {
+      if (!t.serie) t.serie = t.id;
+      if (!t.fecha || !coincideRec(t.rec, t.fecha)) t.fecha = primeraFechaRec(t.rec, t.fecha && t.fecha >= hoy() ? t.fecha : hoy());
+      if (['bandeja', 'algun', 'hoy', 'prox'].includes(t.estado)) t.estado = t.fecha === hoy() ? 'hoy' : 'prox';
+    }
+    upsertT(t); if (v !== 'semanal' && v !== 'mensual') ui.dtOpen = ''; dtRefrescar();
   },
   dtDia:el => {
     const t = dtT(), i = +el.dataset.v;
     const set = (t.rec.split(':')[1] || '').split(',').filter(Boolean).map(Number);
     const n = set.includes(i) ? set.filter(x => x !== i) : [...set, i].sort();
     if (!n.length) { sacudir(el, 'Elige al menos un día'); return; }
-    t.rec = 'semanal:' + n.join(','); upsertT(t); refrescarSheet();
+    t.rec = 'semanal:' + n.join(',');
+    if (!t.fecha || !coincideRec(t.rec, t.fecha)) {
+      t.fecha = primeraFechaRec(t.rec, hoy());
+      if (['bandeja', 'algun', 'hoy', 'prox'].includes(t.estado)) t.estado = t.fecha === hoy() ? 'hoy' : 'prox';
+    }
+    upsertT(t); dtRefrescar();
+  },
+  dtDiaMes:el => {
+    const t = dtT(), d = clamp(+el.dataset.v || 1, 1, 31);
+    t.rec = 'mensual:' + d;
+    if (!t.fecha || !coincideRec(t.rec, t.fecha)) {
+      t.fecha = primeraFechaRec(t.rec, hoy());
+      if (['bandeja', 'algun', 'hoy', 'prox'].includes(t.estado)) t.estado = t.fecha === hoy() ? 'hoy' : 'prox';
+    }
+    upsertT(t); dtRefrescar();
+  },
+  dtSaltar:() => {
+    const t = dtT(); if (!t || !t.rec) return;
+    saltarRec(t); dtRefrescar();
   },
   bitAdd:() => { const t = dtT(), bi = $('#bitIn'); if (!bi || !bi.value.trim()) { sacudir($('#bitBox'), 'Escribe la nota primero'); bi && bi.focus(); return; } agregarNota(t, bi.value); dtRefrescar(); setTimeout(() => $('#bitIn')?.focus(), 50); },
-  dtBorrar:() => {
+  dtBorrar:async () => {
     const t = dtT(); if (!t) return;
+    if (t.rec && t.estado !== 'hecho') {
+      const r = await dialogo({ titulo:'Esta es una rutina', texto:'¿Quieres omitir solo esta vez o eliminar la rutina por completo?', ok:'Solo omitir esta vez', alt:'Eliminar rutina', cancelar:'Cancelar' });
+      if (r === 0) return;
+      if (r === 1) { saltarRec(t); cerrarSheet(); render(); return; }
+    }
     // Eliminar la tarea del reloj conserva el tiempo trabajado y deja el reloj libre.
     if (T().tareaId === t.id) { cerrarTramo(); T().tareaId = ''; save(); pushTimer(); }
     t.borrado = true; upsertT(t); cerrarSheet(); toast('Tarea eliminada', 'Deshacer', () => { t.borrado = false; upsertT(t); render(); }); },
@@ -5404,6 +5537,7 @@ const dtVisible = id => ui.sheet && ui.sheet.k === 'detalle' && ui.sheet.id === 
 const IN = {
   dtTitulo:el => { autoAlto(el); const v = el.value; dtCampo('tt', el, (t, id) => { if (!v.trim()) return; t.titulo = limpiarTitulo(v); upsertT(t); renderVista(); const c = dtVisible(id) && $('#dtClar'); if (c) c.innerHTML = htmlClaridad(v, 'dt'); }); },
   dtLimite:el => { const t = dtT(); if (!t) return; t.limite = el.value || ''; upsertT(t); renderVista(); const v = $('.dr.open .dr-v'); if (v) v.textContent = t.limite ? fechaCorta(t.limite) : 'Opcional'; },
+  dtDiaMesIn:el => { const t = dtT(); if (!t) return; const d = clamp(+el.value || 1, 1, 31); t.rec = 'mensual:' + d; if (!t.fecha || !coincideRec(t.rec, t.fecha)) { t.fecha = primeraFechaRec(t.rec, hoy()); if (['bandeja', 'algun', 'hoy', 'prox'].includes(t.estado)) t.estado = t.fecha === hoy() ? 'hoy' : 'prox'; } upsertT(t); renderVista(); const v = $('.dr.open .dr-v'); if (v) v.textContent = recTexto(t.rec); },
   dtSeg:el => { const t = dtT(); if (!t || !el.value) return; if (el.value < hoy()) { el.value = t.seg; sacudir(el, 'Elige una fecha de hoy en adelante'); return; } t.seg = el.value; upsertT(t); ui.dtOpen = ''; dtRefrescar(); },
   dtProyecto:el => { const v = el.value; dtCampo('pr', el, t => { t.proyecto = v.trim().slice(0, 60); upsertT(t); renderVista(); }); },
   dtEspera:el => { const v = el.value; dtCampo('es', el, t => { t.espera = v.trim().slice(0, 120); upsertT(t); renderVista(); }); },
