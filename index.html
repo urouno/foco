@@ -507,8 +507,8 @@ kbd.mk{font:600 12px/1 inherit;color:var(--mut);padding:4px 7px;border-radius:6p
 #tabs .tcap .tp{width:48px;height:48px;border-radius:50%;background:var(--ac);color:var(--on-ac);box-shadow:0 4px 14px color-mix(in srgb,var(--ac) 35%,transparent)}
 #tabs .tcap .tp svg.i{width:24px;height:24px;stroke-width:2.4}
 #tabs .tcap .tl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-@media (max-width:1023px){#tabs > button:nth-of-type(1),#tabs > button:nth-of-type(2){order:1}
-#tabs > button:nth-of-type(3),#tabs > button:nth-of-type(4){order:4}}
+/* Móvil: la mitad de las secciones a cada lado del botón de captura */
+@media (max-width:1023px){#tabs > .tnav-i{order:1}#tabs > .tnav-d{order:4}}
 #tabs .brand{order:0}#tabs .side-f{order:9}
 /* Enfoque inmersivo: solo el tiempo, un control y la salida */
 body.inmersivo{--tabs:0px}
@@ -2671,13 +2671,14 @@ function pintarTabs() {
   const nb = tareasEn('bandeja').length, run = S.timer && S.timer.corriendo, g0 = grupoDe(ui.view), dk = desk();
   const nMente = mnAbiertos().length;
   const cuenta = { mente:nMente };
+  const mitad = Math.ceil(GRUPOS.length / 2);
   const grupos = GRUPOS.map((g, i) => {
     const sv = subVistas(g), propia = sv.find(k => VISTAS.find(x => x.k === k).n === g.n);
     // En escritorio las vistas de cada sección se ven anidadas: la sección lleva a su vista principal y cada vista está a un clic.
     const hijas = sv.length > 1 ? sv.filter(k => k !== propia) : [];
     const v = g.k === 'hoy' ? 'hoy' : dk && propia ? propia : ui.ult[g.k] || g.vs[0];
     const enG = g === g0, on = dk ? enG && (!hijas.includes(ui.view)) : enG;
-    return `<button class="${on ? 'on' : ''} ${enG ? 'eng' : ''}" data-a="tab" data-v="${v}" ${on ? 'aria-current="page"' : ''} aria-label="${g.n}${g.k === 'bandeja' && nb ? `, ${nb} por organizar` : ''}"><span class="tp">${ic(g.ic)}</span><span class="tl">${g.n}</span>${g.k === 'bandeja' && nb ? `<i class="bdg">${nb > 99 ? '99+' : nb}</i>` : ''}${g.k === 'hoy' && run && ui.view !== 'enfoque' ? '<i class="tdot"></i>' : ''}<kbd>${i + 1}</kbd></button>`
+    return `<button class="tnav ${i < mitad ? 'tnav-i' : 'tnav-d'} ${on ? 'on' : ''} ${enG ? 'eng' : ''}" data-a="tab" data-v="${v}" ${on ? 'aria-current="page"' : ''} aria-label="${g.n}${g.k === 'bandeja' && nb ? `, ${nb} por organizar` : ''}"><span class="tp">${ic(g.ic)}</span><span class="tl">${g.n}</span>${g.k === 'bandeja' && nb ? `<i class="bdg">${nb > 99 ? '99+' : nb}</i>` : ''}${g.k === 'hoy' && run && ui.view !== 'enfoque' ? '<i class="tdot"></i>' : ''}<kbd>${i + 1}</kbd></button>`
       + (hijas.length ? `<div class="sub">${hijas.map(k => { const V = VISTAS.find(x => x.k === k), sel = ui.view === k; return `<button class="${sel ? 'on' : ''}" data-a="tab" data-v="${k}" ${sel ? 'aria-current="page"' : ''}>${ic(V.ic)}<span class="tl">${V.n}</span>${cuenta[k] ? `<i class="cnt">${cuenta[k] > 99 ? '99+' : cuenta[k]}</i>` : ''}</button>`; }).join('')}</div>` : '');
   }).join('');
   const html = `<div class="brand"><img src="icon-180.png" alt="" width="28" height="28">Foco</div>` + grupos
