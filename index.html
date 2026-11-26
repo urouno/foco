@@ -92,13 +92,9 @@ svg.i.fill{fill:currentColor;stroke:none}
 .hd-r{display:flex;align-items:center;gap:8px}
 #hTitle{margin:0;font-size:var(--fs-xl);line-height:1.1;font-weight:700;letter-spacing:-.02em}
 #hSub{margin:4px 0 0;font-size:var(--fs-s);color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.info{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;color:var(--ac-t);margin-top:4px}
-.info svg.i{width:21px;height:21px}
 .ib{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;color:var(--mut);position:relative;flex:none;transition:background .15s}
 .ib:active{background:var(--sf2)}
 .ib.st-ok{color:var(--ok)} .ib.st-pend{color:var(--warn)} .ib.st-err{color:var(--hot)} .ib.st-run{color:var(--ac-t)}
-.streak{height:32px;margin-right:4px;padding:0 12px 0 8px;border-radius:999px;background:var(--sf2);color:var(--ink);font-weight:700;font-size:var(--fs-m);display:inline-flex;align-items:center;gap:4px;flex:none}
-.streak svg.i{color:var(--warn-f);width:17px;height:17px;stroke-width:2.2}
 
 main{padding:8px 16px calc(var(--tabs) + 112px + var(--bot))}
 body.has-mini main{padding-bottom:calc(var(--tabs) + var(--mini) + 112px + var(--bot))}
@@ -504,7 +500,6 @@ details.sec-d[open] .chev{transform:rotate(180deg)}
 @media (max-width:400px){.capf-bot .lg{display:none}}
 .tr .chev-r{width:16px;height:16px;color:var(--mut2);flex:none}
 /* ===== Cabecera mínima y captura en la navegación ===== */
-#infoBtn,#streakBtn,#searchBtn,#gearBtn{display:none!important}
 .mi{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--sf2);color:var(--ac-t);flex:none}
 .mi svg.i{width:18px;height:18px}
 kbd.mk{font:600 12px/1 inherit;color:var(--mut);padding:4px 7px;border-radius:6px;background:var(--sf2);border:1px solid var(--ln)}
@@ -1501,12 +1496,9 @@ main .tr .tt{font-weight:500}
 <noscript><p style="padding:40px 24px;text-align:center;font-family:sans-serif">Foco necesita JavaScript activado.</p></noscript>
 <header id="hdr">
   <button class="ib hide" data-a="enfVolver" id="backBtn" aria-label="Salir del enfoque"></button>
-  <div class="hd-t"><div class="hd-r"><h1 id="hTitle">Foco</h1><button class="info" data-a="ayuda" id="infoBtn" aria-label="¿Cómo funciona esta pantalla?"></button></div><p id="hSub"></p></div>
-  <button class="streak hide" id="streakBtn" data-a="ir" data-v="progreso"></button>
-  <button class="ib" data-a="buscar" id="searchBtn" aria-label="Buscar tareas"></button>
+  <div class="hd-t"><div class="hd-r"><h1 id="hTitle">Foco</h1></div><p id="hSub"></p></div>
   <button class="ib" data-a="sync" id="syncBtn" aria-label="Sincronización"></button>
   <button class="ib" data-a="menu" id="menuBtn" aria-label="Más opciones" aria-haspopup="dialog"></button>
-  <button class="ib" data-a="ajustes" aria-label="Ajustes" id="gearBtn"></button>
 </header>
 <main>
   <div class="seg subnav" id="subnav" role="tablist"></div>
@@ -2724,11 +2716,6 @@ function encabezado() {
   const V = VISTAS.find(x => x.k === ui.view);
   $('#hTitle').textContent = ui.view === 'enfoque' ? 'Enfoque' : ui.view === 'mente' || desk() ? V.n : grupoDe(ui.view).n; $('#hSub').textContent = V.sub();
   $('#backBtn').classList.toggle('hide', ui.view !== 'enfoque');
-  $('#infoBtn').setAttribute('aria-label', `Cómo funciona ${V.n}`);
-  const r = stats().racha, sb = $('#streakBtn');
-  sb.classList.toggle('hide', !r);
-  sb.innerHTML = ic('flame') + r;
-  sb.setAttribute('aria-label', `Racha de ${r} ${r === 1 ? 'día' : 'días'}. Ver progreso`);
 }
 function render() {
   encabezado(); pintarTabs(); pintarSync();
@@ -5747,8 +5734,7 @@ function arrancar() {
   ui.ult[grupoDe(ui.view).k] = ui.view;
   $$('.view').forEach(s => s.classList.toggle('on', s.id === 'v-' + ui.view));
   estadoS = S.conn.url ? (S.cola.length ? 'pend' : 'ok') : 'sin';
-  $('#gearBtn').innerHTML = ic('gear'); $('#searchBtn').innerHTML = ic('search'); $('#menuBtn').innerHTML = ic('more'); $('#backBtn').innerHTML = ic('chevL');
-  $('#infoBtn').innerHTML = ic('info');
+  $('#menuBtn').innerHTML = ic('more'); $('#backBtn').innerHTML = ic('chevL');
   aplicarCalma();
   render();
   if (datosDanados) setTimeout(() => dialogo({ titulo:'Tus datos guardados estaban dañados', texto:`No se borraron: quedaron apartados en este dispositivo (${datosDanados}). Si tienes tu hoja de Google conectada, vuelve a conectarla para recuperarlos.`, ok:'Entendido' }), 600);
