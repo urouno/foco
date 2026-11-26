@@ -1928,20 +1928,25 @@ function fasesTimer() {
   return out;
 }
 function bloquesDe(d) {
-  return tareasDia(d).filter(t => t.hora).map(t => { const s = hm2min(t.hora); return { id:t.id, t:t.titulo.slice(0, 90), s, e:Math.min(s + Math.max(+t.dur || 30, 15), 1440), c:hexA(t.area), a:(area(t.area) || {}).n || '', ok:t.estado === 'hecho' ? 1 : 0, run:t.estado === 'proceso' ? 1 : 0 }; }).sort((a, b) => a.s - b.s);
+  return tareasDia(d).filter(t => t.hora).map(t => { const s = hm2min(t.hora); return { id:t.id, t:t.titulo.slice(0, 90), s, e:Math.min(s + Math.max(+t.dur || 30, 15), 1440), c:hexA(t.area), a:(area(t.area) || {}).n || '', ok:t.estado === 'hecho' ? 1 : 0, run:t.estado === 'proceso' ? 1 : 0, rec:t.rec ? 1 : 0 }; }).sort((a, b) => a.s - b.s);
 }
 function datosWidget() {
   const { prioIds, proceso, cola, otras } = trabajoDeHoy();
-  const hechas = hechasEl(hoy());
+  const hoyS = hoy(), hechas = hechasEl(hoyS);
   const total = prioIds ? prioIds.length : proceso.length + cola.length + hechas.length;
   const hechasP = prioIds ? prioIds.filter(id => byId(id)?.estado === 'hecho').length : hechas.length;
-  const fila = t => ({ id:t.id, t:t.titulo.slice(0, 90), c:hexA(t.area), a:(area(t.area) || {}).n || '', h:t.hora || '', d:+t.dur || 0, run:t.estado === 'proceso' ? 1 : 0 });
+  const fila = t => ({ id:t.id, t:t.titulo.slice(0, 90), c:hexA(t.area), a:(area(t.area) || {}).n || '', h:t.hora || '', d:+t.dur || 0, run:t.estado === 'proceso' ? 1 : 0, rec:t.rec ? 1 : 0 });
   const lista = [...new Set([...proceso, ...cola, ...otras])].slice(0, 8).map(fila);
+  const bandejaList = tareasEn('bandeja').sort((a, b) => (b.creado || '').localeCompare(a.creado || ''));
+  const recientes = bandejaList.slice(0, 4).map(t => ({ id:t.id, t:t.titulo.slice(0, 90), c:hexA(t.area) }));
+  const focoHoy = S.sesiones.filter(s => esFoco(s) && diaDeISO(s.fin) === hoyS).reduce((a, s) => a + (+s.min || 0), 0);
+  const st = stats();
   const t = T(), x = byId(t.tareaId);
-  return { v:1, gen:nowISO(), dia:hoy(),
-    hoy:{ hechas:hechasP, total, prio:prioIds ? 1 : 0 }, lista, bandeja:tareasEn('bandeja').length,
-    timer:{ fase:t.fase, modo:t.modo, corriendo:t.corriendo ? 1 : 0, fin:t.fin, restante:t.restante, total:t.total, tareaId:t.tareaId || '', tarea:x ? x.titulo.slice(0, 90) : '', c:x ? hexA(x.area) : '#3E5C52', fases:fasesTimer() },
-    dias:{ [hoy()]:bloquesDe(hoy()), [manana()]:bloquesDe(manana()) },
+  return { v:2, gen:nowISO(), dia:hoyS,
+    hoy:{ hechas:hechasP, total, prio:prioIds ? 1 : 0, racha:st.racha, focoMin:focoHoy }, lista, bandeja:bandejaList.length, recientes, mente:mnAbiertos().length,
+    areas:(S.ajustes.areas || []).map(a => ({ id:a.id, n:a.n, c:a.c })),
+    timer:{ fase:t.fase, modo:t.modo, corriendo:t.corriendo ? 1 : 0, fin:t.fin, restante:t.restante, total:t.total, tareaId:t.tareaId || '', tarea:x ? x.titulo.slice(0, 90) : '', c:x ? hexA(x.area) : '#B85D38', fases:fasesTimer() },
+    dias:{ [hoyS]:bloquesDe(hoyS), [manana()]:bloquesDe(manana()) },
     jornada:{ ini:S.ajustes.jIni, fin:S.ajustes.jFin }, sinPlan:datosSinPlan() };
 }
 // Pendientes sin plan para el widget «pendientes»: totales por tipo y los que más atención piden.
@@ -4880,13 +4885,14 @@ function htmlAvisosCfg() {
 }
 function htmlWidgets() {
   const paso = (n, t, d) => `<div class="help-i"><span class="o">${n}</span><div><b>${t}</b><span>${d}</span></div></div>`;
-  return cab('<h2>Widgets</h2>') + `<p class="help-d">Muestran lo que va ahora, cuánto le queda y lo que sigue. La cuenta regresiva la avanza el propio iPhone, así que no depende de que el widget se actualice.</p>
+  return cab('<h2>Widgets</h2>') + `<p class="help-d">Muestran lo que va ahora, cuánto le queda, lo que sigue y te permiten registrar tareas o ideas en segundos. La cuenta regresiva la avanza el propio iPhone, así que no depende de que el widget se actualice.</p>
     <div class="panel">${paso(1, 'Instala Scriptable', 'Es gratis, en la App Store.')}
       ${paso(2, 'Copia el script', 'Con el botón de abajo. En Scriptable toca +, pega y nómbralo exactamente «Foco».')}
       ${paso(3, 'Ejecútalo una vez', 'Te pedirá la URL y la clave de tu hoja (las mismas de Ajustes) y permiso para avisos.')}
-      ${paso(4, 'Agrega los widgets', 'Mantén presionada la pantalla de inicio o la de bloqueo › + › Scriptable › elige «Foco». En «Parameter» escribe ahora, hoy, agenda o pendientes (o déjalo vacío para que se adapte al tamaño). «pendientes» muestra lo que no tiene plan y también sirve en la pantalla de bloqueo.')}</div>
+      ${paso(4, 'Agrega los widgets', 'Mantén presionada la pantalla de inicio o la de bloqueo › + › Scriptable › elige «Foco». En «Parameter» escribe ahora, hoy, agenda, pendientes o captura (registro rápido). Déjalo vacío para que se adapte al tamaño.')}
+      ${paso(5, 'Registro rápido y acciones', 'El widget «captura» tiene botones directos para Bandeja, Hoy, Con hora y Mente (también funciona en la pantalla de bloqueo). En los demás widgets puedes tocar «+» para capturar o tocar una tarea para marcarla como hecha.')}</div>
     <button class="btn pri full" style="margin-top:16px" data-a="widgetsCopiar">${ic('note')}Copiar el script</button>
-    <p class="hint">Para que el widget vea un cambio, Foco lo envía a tu hoja al instante y también al salir de la app. El iPhone decide cuándo redibuja el widget (normalmente cada 5–15 min); el script le pide hacerlo justo cuando termina un enfoque o empieza la siguiente tarea.</p>
+    <p class="hint">Lo que capturas desde Scriptable se guarda al instante en tu hoja de Google (y si no hay señal, se queda en cola y se envía solo al volver la conexión). El iPhone decide cuándo redibuja el widget (cada 5–15 min); el script pide hacerlo al terminar un enfoque o empezar la siguiente tarea.</p>
     <div class="sh-end"></div>`;
 }
 function aplicarTema(t) {
