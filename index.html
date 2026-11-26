@@ -185,14 +185,6 @@ textarea.in{resize:none}
 .tip .ib{width:32px;height:32px;margin:-4px 0;color:var(--mut)}
 .tip .ib svg.i{width:16px;height:16px}
 
-/* ===== Siguiente paso sugerido ===== */
-.nx{display:flex;align-items:center;gap:12px;padding:12px 12px 12px 16px;margin-bottom:16px;border-radius:var(--r);background:var(--sf)}
-.nx .ni{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--ac-s);color:var(--ac-t);flex:none}
-.nx .lnk{color:var(--ac-t);font-weight:600;font-size:var(--fs-m);display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 4px;flex:none}
-.nx .lnk svg.i{width:16px;height:16px}
-.nx .nxt{flex:1;min-width:0}
-.nx b{display:block;font-size:var(--fs-m);font-weight:600}
-.nx small{display:block;font-size:var(--fs-s);color:var(--mut);margin-top:1px}
 
 /* ===== Filas de tarea ===== */
 .tr{position:relative;display:flex;align-items:center;gap:12px;width:100%;min-height:64px;padding:12px 8px 12px 16px;background:var(--sf);transition:opacity .3s,transform .3s var(--ease),background .15s;color:var(--ink)}
@@ -416,14 +408,6 @@ details.sec-d[open] .chev{transform:rotate(180deg)}
 .wk-n{position:absolute;top:4px;right:6px;font-style:normal;font-size:11px;font-weight:700;color:var(--ac-t)}.wk-d.on .wk-n{color:var(--on-ac)}
 .wk-l{display:block;width:32px;height:4px;border-radius:2px;background:var(--sf3);overflow:hidden;margin-top:4px}
 .wk-l i{display:block;height:100%;background:var(--ac)}.wk-d.on .wk-l{background:rgba(255,255,255,.3)}.wk-d.on .wk-l i{background:var(--on-ac)}
-/* Línea del día */
-.ld{display:block;width:100%;margin-top:16px;padding:12px;border-radius:var(--r);background:var(--sf);text-align:left}
-.ld-r{position:relative;height:20px;border-radius:6px;background:var(--sf3)}
-.ld-r i{position:absolute;top:0;bottom:0;border-radius:4px;background:var(--a,#888);background:color-mix(in srgb,var(--a,#888) 55%,var(--sf3));min-width:4px}
-.ld-r i.ok{background:var(--ok-f)}.ld-r i.ahora{box-shadow:0 0 0 2px var(--ok-f)}.ld-r i.tarde{background:var(--warn-f);opacity:.7}
-.ld-r u{position:absolute;top:-4px;bottom:-4px;width:2px;margin-left:-1px;background:var(--ac);border-radius:1px}
-.ld-h{display:flex;justify-content:space-between;margin-top:8px;font-size:var(--fs-s);color:var(--mut);font-variant-numeric:tabular-nums;font-weight:600}
-.nx.toca{margin:16px 0 0;box-shadow:inset 0 0 0 1.5px var(--ok-f)}.nx.toca .ni{background:var(--ok-s);color:var(--ok)}
 /* Subpestañas y filtro por verbo */
 .subnav{margin-bottom:16px}
 .subnav button{font-size:15px;gap:6px}
@@ -649,7 +633,6 @@ body.inmersivo #tabs,body.inmersivo #menuBtn,body.inmersivo #hSub,body.inmersivo
 .ls-ag svg.i{width:15px;height:15px}
 .ls-ag.pend{background:var(--ac-s);color:var(--ac-t)}
 .ls-ag:active{transform:scale(.95)}
-details.sec-d .bloc,details.sec-d #blocBox{margin-top:8px}
 
 /* ===== Tablero ===== */
 .tb-top{display:flex;gap:8px;align-items:center}
@@ -701,12 +684,6 @@ body.dragging .board{scroll-snap-type:none}
 .qadd{padding:0 8px 8px}
 .qadd input{width:100%;min-height:44px;border-radius:12px;border:1.5px dashed var(--ln2);background:transparent;padding:0 12px;outline:none}
 .qadd input:focus{border-style:solid;border-color:var(--ac);background:var(--sf)}
-.bloc{columns:2;column-gap:12px;margin-top:12px}
-.note{break-inside:avoid;margin-bottom:12px;border-radius:16px;padding:12px;background:color-mix(in srgb,var(--a,#888) 12%,var(--sf));display:block;color:var(--ink)}
-.note .nt{font-weight:600;font-size:var(--fs-m);line-height:1.3;overflow-wrap:anywhere}
-.note .nn{font-size:var(--fs-s);color:var(--mut);margin-top:8px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.note .nm{display:flex;align-items:center;justify-content:space-between;gap:8px 8px;margin-top:12px;flex-wrap:wrap}
-.note .qk{min-height:34px;font-size:var(--fs-s);background:var(--sf)}
 
 /* ===== Enfoque ===== */
 .enf{--k:var(--ac-t)}
@@ -989,7 +966,6 @@ html.lock #toast.on{transform:translate(-50%,0)}
   #hdr{padding-left:max(16px,calc(50% - 368px));padding-right:max(8px,calc(50% - 376px))}
   #sheet{left:50%;right:auto;width:560px;transform:translate(-50%,calc(100% + 40px))}
   #sheet.on{transform:translate(-50%,var(--dy))}
-  .bloc{columns:3}
 }
 /* ===== Escritorio: barra lateral, paneles lado a lado y semana en columnas ===== */
 #tabs .brand,#tabs .side-f,#tabs kbd,#tabs .sub,#tabs .tbus,#tabs .side-p{display:none}
@@ -1282,7 +1258,7 @@ div.mn-ia{animation:pulse 1.6s infinite}
    =================================================================== */
 body{letter-spacing:-.005em;text-rendering:optimizeLegibility}
 /* Etiquetas, contadores y datos pequeños: Inter, más legible bajo 13 px */
-.hero-l,.proc-q,.sub-t,.fase,.enf-l,.capf-l,.f-l,.f-sec > label,.pill,.pq,.est,kbd.mk,.wk-d span,.sm-h span,.ls-sum span,.chart .cd,.chart .cv,.tl-h span,.sm-axis span,.sp-sec > summary,.ld-h,.cap-l,.sp-c,.wk-n,.coltabs b,.bdg,.fcnt,.ev-l,.cbtn-l,.ctl-l,#tabs > button,.lbl{font-family:var(--ff2)}
+.hero-l,.proc-q,.sub-t,.fase,.enf-l,.capf-l,.f-l,.f-sec > label,.pill,.pq,.est,kbd.mk,.wk-d span,.sm-h span,.ls-sum span,.chart .cd,.chart .cv,.tl-h span,.sm-axis span,.sp-sec > summary,.cap-l,.sp-c,.wk-n,.coltabs b,.bdg,.fcnt,.ev-l,.cbtn-l,.ctl-l,#tabs > button,.lbl{font-family:var(--ff2)}
 .tm,.kpi .kv,.ls-sum b,.wk-d b,.sm-h b,#mini .tmm,.kc-tm b,.lvl-badge{font-family:var(--ff);font-variant-numeric:tabular-nums}
 
 /* Títulos: peso 600 y tracking ajustado, sin gritar */
@@ -1290,7 +1266,7 @@ body{letter-spacing:-.005em;text-rendering:optimizeLegibility}
 #hSub{font-size:var(--fs-s);color:var(--mut)}
 main .sec-t{font-size:17px;font-weight:600;letter-spacing:-.015em}
 .hero-t,.zero h3,.sh-row h2,.dlg-box h3,.onb-art h2,.mn-head h2,.mn-vacio h3,#lvlUp h2,.av-t b,.ag-dia b,.sum-t b,.ph-h h3,.proc-tt,.mn-lead>b{font-weight:600;letter-spacing:-.02em}
-.tt,.kc-t,.nx b,.cta b,.two b,.act b,.ptile .tb b,.acc > summary,.mn-ir b,.rec-row b,.help-i b,.st-big b{font-weight:500}
+.tt,.kc-t,.cta b,.two b,.act b,.ptile .tb b,.acc > summary,.mn-ir b,.rec-row b,.help-i b,.st-big b{font-weight:500}
 main .tr .tt{font-weight:500}
 
 /* Eyebrow: mayúsculas pequeñas y espaciadas */
@@ -1299,7 +1275,7 @@ main .tr .tt{font-weight:500}
 .sub-t{color:var(--mut2);margin-top:16px}
 
 /* Superficies: papel blanco, línea fina cálida y sombra ambiental mínima */
-.panel,.group,.hero,.cta,.nx,.two,.act,.acc,.ptile,.ls-sum div,.prox,.ag-pend,.ld,.tl-wrap,.mn-c,.ag-chip,.kc,.capf,.cap,.proc-card,.sm-cal,.sm-nav,.wk-d,.note,.bit-i,.avance,.parq{border:var(--bd);box-shadow:var(--glow)}
+.panel,.group,.hero,.cta,.two,.act,.acc,.ptile,.ls-sum div,.prox,.ag-pend,.tl-wrap,.mn-c,.ag-chip,.kc,.capf,.cap,.proc-card,.sm-cal,.sm-nav,.wk-d,.bit-i,.avance,.parq{border:var(--bd);box-shadow:var(--glow)}
 .group{border-radius:var(--r)}
 .hero{border-radius:20px;padding:22px 20px 18px}
 .capf,.cap{border-radius:20px}
@@ -1403,7 +1379,7 @@ main .tr .tt{font-weight:500}
 .cta .ico{width:46px;height:46px;border-radius:50%;background:var(--ac);color:var(--on-ac)}
 .cta b{font-size:17px;font-weight:600;letter-spacing:-.01em}
 .cta > svg.i{color:var(--mut)}
-.nx .ni,.conn .ci,.mi,.help-i .o,.in-b .o{background:var(--ac-s);color:var(--ac-t)}
+.conn .ci,.mi,.help-i .o,.in-b .o{background:var(--ac-s);color:var(--ac-t)}
 .mn-lead{background:var(--ac-s);border:1px solid color-mix(in srgb,var(--ac) 14%,transparent)}
 .mn-add{background:var(--ac-s);color:var(--ac-t);border-radius:999px}
 .mn-apoyo{border:1px solid color-mix(in srgb,var(--warn-f) 22%,transparent)}
@@ -1573,7 +1549,6 @@ function haceCuanto(iso) {
   return d === 1 ? 'Ayer' : `Hace ${d} días`;
 }
 function horaDe(iso) { const d = new Date(iso); return `${d.getHours()}:${pad(d.getMinutes())}`; }
-function fmtHM(min) { const h = Math.floor(min / 60), m = Math.round(min % 60); return `${h ? `${h}<small>h</small>` : ''}${m}<small>m</small>`; }
 function txtHM(min) { const h = Math.floor(min / 60), m = Math.round(min % 60); return h ? `${h} h ${m} min` : `${m} min`; }
 
 /* Íconos (trazo, sin emojis) */
@@ -2252,7 +2227,6 @@ function rollover() {
   S.diaRoll = h; save();
 }
 const pendientesAnteriores = () => vivas().filter(t => ['prox', 'hoy', 'proceso'].includes(t.estado) && t.fecha && t.fecha < hoy()).sort((a, b) => a.fecha.localeCompare(b.fecha) || ordenPrioridad(a, b));
-const seguimientosHoy = () => tareasEn('espera').filter(t => t.seg && t.seg <= hoy()).sort((a, b) => a.seg.localeCompare(b.seg));
 
 
 /* ================= Redacción de pendientes =================
@@ -2869,23 +2843,6 @@ function matriz(u, i, accion) {
   return `<div class="mx" role="radiogroup" aria-label="Prioridad">${celdas.map(([uu, ii, k, n, s]) => { const on = uu === (u ? 1 : 0) && ii === (i ? 1 : 0); return `<button class="mx-c ${k} ${on ? 'on' : ''}" data-a="${accion}" data-u="${uu}" data-i="${ii}" role="radio" aria-checked="${on}"><b>${n}</b><span>${s}</span></button>`; }).join('')}</div>`;
 }
 
-/* ================= Siguiente paso sugerido ================= */
-function siguientePaso() {
-  const nb = tareasEn('bandeja').length, h = new Date().getHours();
-  const enHoy = tareasEn('hoy').length + tareasEn('proceso').length, nProx = tareasEn('prox').length;
-  // Con enfoque activo, organizar la Bandeja no interrumpe. Sin plan, primero elegir prioridades.
-  if (enMarcha()) return null;
-  if (!planDe(hoy()) && enHoy + nProx && h < 17) return { k:'var(--warn)', ks:'var(--warn-s)', ic:'star', t:'Elige tus prioridades de hoy', s:'Hasta 6, en orden de importancia', b:'Elegir', a:'plan', v:'hoy' };
-  if (nb) return { k:'var(--ac-t)', ks:'var(--ac-s)', ic:'sparkle', t:`Tienes ${nb} en la Bandeja`, s:'Organízalos para que nada se pierda', b:'Organizar', a:'procesar' };
-  if (!enHoy && nProx && h < 17) return { k:'var(--warn)', ks:'var(--warn-s)', ic:'sun', t:'Elige tus tareas de hoy', s:`Tienes ${nProx} ${nProx === 1 ? 'próxima acción' : 'próximas acciones'}`, b:'Planear', a:'plan', v:'hoy' };
-  if (h >= 17 && (nProx || enHoy) && !tareasEn('prox').some(t => t.fecha === manana())) return { k:'var(--vio)', ks:'var(--vio-s)', ic:'moon', t:'Elige tus prioridades de mañana', s:'Dos minutos hoy y mañana arrancas directo', b:'Planear', a:'plan', v:'manana' };
-  return null;
-}
-function htmlPaso() {
-  const p = siguientePaso(); if (!p) return '';
-  return `<div class="nx"><span class="ni">${ic(p.ic)}</span><div class="nxt"><b>${p.t}</b><small>${p.s}</small></div><button class="lnk" data-a="${p.a}" ${p.v ? `data-v="${p.v}"` : ''}>${p.b}${ic('chevR')}</button></div>`;
-}
-
 /* ================= Vista: Bandeja ================= */
 function renderBandeja() {
   const v = $('#v-bandeja');
@@ -2936,10 +2893,6 @@ function capAreaOk(sel, pfx) {
 }
 function capAreaReset() { ui.capArea = ''; ui.capAreaManual = false; }
 function pintarCapAreas() { pintarCapForm('cap'); pintarCapForm('capSheet'); }
-function pintarCapAreasViejo() {
-  const z = $('#capAreas'); if (!z) return;
-  z.innerHTML = areas().map(a => `<button class="chip area ${ui.capArea === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="capArea" data-v="${a.id}" role="radio" aria-checked="${ui.capArea === a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('') + `<button class="chip" data-a="irAreas" aria-label="Nueva área">${ic('plus')}Nueva</button>`;
-}
 function pintarBandejaLista(nuevos = []) {
   const z = $('#bandejaZona'); if (!z) return;
   const todos = tareasEn('bandeja').sort((a, b) => b.creado.localeCompare(a.creado));
@@ -2981,7 +2934,7 @@ async function capturarDe(sel, estado = 'bandeja', extra = {}) {
 async function capturarDe_(sel, estado, extra) {
   const ta = $(sel); if (!ta) return [];
   const txt = ta.value.trim();
-  if (!txt) { sacudir(ta.closest('.cap,.capf,.qcap') || ta, sel === '#blocIn' ? 'Escribe la idea primero' : sel === '#enfCap' ? 'Escribe la idea primero' : 'Escribe qué vas a hacer'); ta.focus(); return []; }
+  if (!txt) { sacudir(ta.closest('.cap,.capf,.qcap') || ta, sel === '#enfCap' ? 'Escribe la idea primero' : 'Escribe qué vas a hacer'); ta.focus(); return []; }
   const lns = lineasDe(txt);
   let forzar = false;
   if (lns.length === 1) {
@@ -3477,7 +3430,7 @@ function renderHoy() {
           <button class="btn sq" data-a="ir" data-v="enfoque" aria-label="Enfoque en pantalla completa">${ic('expand')}</button>`
         : `<button class="btn pri grow" data-a="play" data-id="${ahora.id}">${ic('play', 'fill')}Empezar</button><button class="btn sq" data-a="cambiarTarea" aria-label="Cambiar la tarea de Ahora" title="Cambiar la tarea de Ahora">${ic('refresh')}</button>`}
         <button class="btn sq okb" data-a="ck" data-id="${ahora.id}" aria-label="Marcar como hecha">${ic('check')}</button></div>
-      <div class="hero-m">${ic('clock')}<span id="heroFin">${tiempo}</span>${run || desc ? '' : `<button class="lnk2" data-a="heroModo">Cambiar modo</button>`}<button class="lnk2" data-a="cambiarTarea">Cambiar tarea</button></div></div>`;
+      <div class="hero-m">${ic('clock')}<span id="heroFin">${tiempo}</span>${run || desc ? `<button class="lnk2" data-a="cambiarTarea">Cambiar tarea</button>` : `<button class="lnk2" data-a="heroModo">Cambiar modo</button>`}</div></div>`;
     if (!enMarcha()) zA += `<button class="arr" data-a="arranque">${ic('sparkle')}¿No sabes por dónde empezar?</button>`;
   }
 
@@ -3789,19 +3742,6 @@ function htmlAgOpc() {
       ${d >= hoy() && d <= manana() ? `<button class="tr opt" data-a="plan" data-v="${d === hoy() ? 'hoy' : 'manana'}"><span class="mi">${ic('star')}</span><span class="tb"><span class="tt">Prioridades de ${d === hoy() ? 'hoy' : 'mañana'}</span></span></button>` : ''}</div>
     <p class="hint">Mantén presionado un bloque para moverlo de hora. Siempre puedes deshacer.</p><div class="sh-end"></div>`;
 }
-// Línea del día: los bloques con hora de hoy en una franja, con la hora actual marcada.
-function htmlLineaDia() {
-  const ts = tareasDia(hoy()).filter(t => t.hora);
-  if (!ts.length) return '';
-  const evs = ts.map(t => ({ t, s:hm2min(t.hora), e:hm2min(t.hora) + Math.max(+t.dur || 30, 15) }));
-  const d = new Date(), nm = d.getHours() * 60 + d.getMinutes();
-  const ini = Math.min(...evs.map(e => e.s), nm) - 30, fin = Math.max(...evs.map(e => e.e), nm) + 30, L = fin - ini;
-  const pc = m => ((m - ini) / L * 100).toFixed(2);
-  const hechas = ts.filter(t => t.estado === 'hecho').length;
-  return `<button class="ld" data-a="tab" data-v="agenda" aria-label="Línea del día: ${hechas} de ${ts.length} bloques hechos. Abrir agenda">
-    <div class="ld-r">${evs.map(e => `<i class="${e.t.estado === 'hecho' ? 'ok' : franja(e.t)?.k || ''}" style="left:${pc(e.s)}%;width:${pc(e.e) - pc(e.s)}%;--a:${colorA(e.t.area)}"></i>`).join('')}<u style="left:${pc(nm)}%"></u></div>
-    <div class="ld-h"><span>${min2hm(Math.max(0, Math.round(ini / 30) * 30))}</span><span>${hechas}/${ts.length} bloques</span><span>${min2hm(Math.min(1439, Math.round(fin / 30) * 30))}</span></div></button>`;
-}
 function ajustarAgenda(w) {
   w = w || $('#tlWrap'); if (!w) return;
   const top = w.getBoundingClientRect().top + scrollY;
@@ -3853,7 +3793,6 @@ function infoPend(t) {
   return { t, tipo, dias, olvidada, score, motivo, mk };
 }
 const pendientesSinPlan = () => vivas().map(infoPend).filter(Boolean).sort((a, b) => b.score - a.score);
-const diasRevision = () => S.ajustes.ultRevision ? diasDesde(S.ajustes.ultRevision) : null;
 
 /* ================= Vista: Tablero ================= */
 const COLS = [
@@ -3897,7 +3836,6 @@ function htmlBarraFiltros(n, total, delante = '') {
     ${ch.map(([k, nm, c]) => `<button class="chip on" data-a="quitarFiltro" data-k="${k}" aria-label="Quitar filtro: ${esc(nm)}">${c ? `<i class="dot" style="--a:${c}"></i>` : ''}${esc(nm)}${ic('x')}</button>`).join('')}
     ${ch.length ? `<span class="fcnt">${n} de ${total}</span><button class="lnk2" data-a="limpiarFiltros">Limpiar filtros</button>` : ''}</div>`;
 }
-const sinCoincidencias = (txt = 'Ninguna tarea coincide con los filtros.') => `<div class="zero"><div class="orb ac">${ic('filter')}</div><h3>Sin coincidencias</h3><p>${txt}</p><button class="btn pri" style="margin-top:16px" data-a="limpiarFiltros">Limpiar filtros</button></div>`;
 // Una captura solo hereda área o proyecto si ese filtro se ve en pantalla.
 function ctxCaptura() {
   if (ui.view !== 'tablero') return {};
@@ -3975,15 +3913,6 @@ function ajustarBoard() {
   const top = b.getBoundingClientRect().top + scrollY;
   const extra = document.body.classList.contains('has-mini') ? 54 : 0;
   b.style.height = Math.max(340, innerHeight - top - (desk() ? 0 : $('#tabs').offsetHeight) - extra - 10) + 'px';
-}
-function htmlBloc() {
-  const ts = tareasEn('algun').filter(t => pasaFiltro(t, { sinEstado:true })).sort((a, b) => b.creado.localeCompare(a.creado));
-  return `<div class="panel cap" style="margin-top:12px" id="blocBox"><div class="cap-r"><textarea id="blocIn" rows="1" maxlength="${MAX_TITULO}" placeholder="Una idea para algún día…" enterkeyhint="send" aria-label="Nueva idea" style="min-height:50px"></textarea><button class="cap-send" data-a="blocAdd" aria-label="Guardar idea">${ic('plus')}</button></div></div>
-    <p class="hint">Ideas sin fecha ni presión. Revísalas cada semana y activa las que ya tengan su momento.</p>
-    ${ts.length ? `<div class="bloc">${ts.map(t => `<div class="note" style="--a:${colorA(t.area)}" data-a="abrir" data-id="${t.id}" role="button" tabindex="0"><div class="nt">${esc(t.titulo)}</div>
-      ${t.notas && t.notas.length ? `<div class="nn">${esc(t.notas[t.notas.length - 1].x)}</div>` : ''}
-      <div class="nm"><span class="tag"><i class="dot" style="--a:${colorA(t.area)}"></i>${esc(area(t.area)?.n || haceCuanto(t.creado))}</span><button class="qk" data-a="activar" data-id="${t.id}">${ic('arrowR')}Activar</button></div></div>`).join('')}</div>`
-      : `<div class="zero"><div class="orb ac">${ic('bulb')}</div><h3>Sin ideas guardadas</h3><p>Lo que no harás pronto pero no quieres olvidar, guárdalo aquí.</p></div>`}`;
 }
 
 /* ================= Enfoque: Pomodoro y bloques ================= */
@@ -4964,7 +4893,6 @@ const ACT = {
     if (c.length) { pintarBandejaLista(c.map(t => t.id)); encabezado(); pintarTabs(); toast(c.length > 1 ? `${c.length} pendientes guardados en la Bandeja` : `Guardado: «${c[0].titulo}»`, null, null, 'check'); }
   },
   capSheetAdd:async () => { if (!capAreaOk('#capSheetIn', 'capSheet')) return; const c = await capturarDe('#capSheetIn', 'bandeja', ui.capAreaManual && ui.capArea ? { area:ui.capArea } : {}); if (c.length) { capAreaReset(); cerrarSheet(false, true); toast(c.length > 1 ? `${c.length} pendientes guardados en la Bandeja` : `Guardado: «${c[0].titulo}»`, null, null, 'check'); } },
-  blocAdd:async () => { const c = await capturarDe('#blocIn', 'algun'); if (c.length) renderVista(); },
   procesar:() => abrirProc(),
   abrir:el => abrirSheet({ k:'detalle', id:el.dataset.id }),
   quitar:el => {
@@ -5453,7 +5381,7 @@ const IN = {
 document.addEventListener('input', e => {
   const el = e.target;
   if (el.dataset && el.dataset.in && IN[el.dataset.in]) IN[el.dataset.in](el);
-  if (el.matches('#capIn,#capSheetIn,#blocIn,#bitIn,#procTt,#divIn')) autoAlto(el);
+  if (el.matches('#capIn,#capSheetIn,#bitIn,#procTt,#divIn')) autoAlto(el);
   if (el.id === 'capIn') pintarCapForm('cap');
   if (el.id === 'capSheetIn') { if (ui.sheet && ui.sheet.k === 'captura') ui.sheet.draft = el.value; pintarCapForm('capSheet'); }
   if (el.id === 'procTt') deb('pclar', () => { const c = $('#procClar'); if (c) c.innerHTML = htmlClaridad(el.value, 'proc'); }, 350);
@@ -5498,7 +5426,6 @@ document.addEventListener('keydown', e => {
   if (el.id === 'mnKey') { e.preventDefault(); ACT.mnIAprobar(); return; }
   if (el.id === 'capIn') { e.preventDefault(); ACT.capAdd(); }
   else if (el.id === 'capSheetIn') { e.preventDefault(); ACT.capSheetAdd(); }
-  else if (el.id === 'blocIn') { e.preventDefault(); ACT.blocAdd(); }
   else if (el.id === 'bitIn') { e.preventDefault(); ACT.bitAdd(); }
   else if (el.id === 'enfCap') { e.preventDefault(); ACT.enfCapAdd(); }
   else if (el.id === 'pEsperaIn') { e.preventDefault(); ACT.pGuardarEsp(); }
