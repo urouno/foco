@@ -3936,7 +3936,11 @@ function tic() {
   if (t.corriendo && Date.now() >= t.fin) finFase();
   actualizarReloj();
   if (S.diaRoll !== hoy()) { rollover(); renderSeguro(); }
+  // Hoy y Agenda muestran tiempos relativos («en 10 min», «atrasada», la línea de ahora): se repintan al cambiar el minuto.
+  const d = new Date(), mm = d.getHours() * 60 + d.getMinutes();
+  if (mm !== minutoVisto) { minutoVisto = mm; if ((ui.view === 'hoy' || ui.view === 'agenda') && !ui.sheet && document.visibilityState === 'visible') renderSeguro(); }
 }
+let minutoVisto = new Date().getHours() * 60 + new Date().getMinutes();
 const FASES = { foco:'Enfoque', corto:'Descanso', largo:'Descanso largo', listo:'Bloque terminado' };
 function fmt(seg) { const m = Math.floor(seg / 60), s = seg % 60; return `${pad(m)}:${pad(s)}`; }
 function actualizarReloj() {
