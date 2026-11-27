@@ -2974,44 +2974,41 @@ function togglePrio(on, accion) {
 }
 
 /* ================= Vista: Bandeja (incluye modo «Vaciar la mente») ================= */
-function htmlBandejaModo() {
-  const nb = tareasEn('bandeja').length, nm = mnAbiertos().length, m = ui.bModo === 'mente';
-  return `<div class="seg b-modo" role="tablist" aria-label="Modo de Bandeja">
-    <button class="${!m ? 'on' : ''}" data-a="bModo" data-v="capturar" role="tab" aria-selected="${!m}">${ic('inbox')}Capturar${nb ? `<span class="n">${nb}</span>` : ''}</button>
-    <button class="${m ? 'on' : ''}" data-a="bModo" data-v="mente" role="tab" aria-selected="${m}">${ic('brain')}Vaciar la mente${nm ? `<span class="n">${nm}</span>` : ''}</button></div>`;
+function htmlIrMente() {
+  const n = mnAbiertos().length;
+  return `<button class="mn-ir" id="bIrMente" data-a="bModo" data-v="mente"><span class="mi">${ic('brain')}</span><span class="tb"><b>¿Traes mucho en la cabeza?${n ? ` · ${n} por aclarar` : ''}</b><small>Escríbelo todo sin orden y Foco lo acomoda</small></span>${ic('chevR', 'chev-r')}</button>`;
 }
 function renderBandeja() {
   const v = $('#v-bandeja'), esMente = ui.bModo === 'mente';
   v.classList.toggle('modo-mente', esMente);
   if (esMente) {
     if (!$('#mnIn', v)) {
-      v.innerHTML = htmlBandejaModo() + `<div class="mn-izq"><div class="panel mn-cap" id="mnBox">
+      v.innerHTML = `<button class="lnk2" style="margin-bottom:8px" data-a="bModo" data-v="capturar">${ic('arrowL')}Volver a Bandeja</button>
+        <div class="mn-izq"><div class="panel mn-cap" id="mnBox">
           <textarea id="mnIn" class="mn-in" data-in="mnIn" maxlength="${MN_MAX}" autocomplete="off" autocapitalize="sentences" spellcheck="true" aria-label="Escribe lo que traes en la cabeza" placeholder="¿Qué traes en la cabeza?&#10;&#10;Escríbelo como salga: pendientes, ideas, lo que te preocupa, lo que no sabes qué es. El orden viene después."></textarea>
           <div class="mn-prev" id="mnPrev"></div>
           <div class="mn-bot"><button class="lnk2" id="mnIAbtn" data-a="mnIA"></button><span class="sp"></span><button class="btn sm pri" id="mnOrdenar" data-a="mnOrdenar" title="También con ⌘ + Enter o Ctrl + Enter">${ic('sparkle')}Ordenar</button></div>
         </div></div><div id="mnZona"></div>`;
       const ta = $('#mnIn'); ta.value = S.menteBor || ''; mnAltura(ta);
-    } else {
-      const seg = $('.b-modo', v); if (seg) seg.outerHTML = htmlBandejaModo();
     }
     pintarMnPrev(); pintarMnZona();
     return;
   }
   if (!$('#capIn', v)) {
-    v.innerHTML = htmlBandejaModo() + htmlCapForm('cap') + `<div id="bandejaZona"></div>
+    v.innerHTML = htmlCapForm('cap') + htmlIrMente() + `<div id="bandejaZona"></div>
       <details class="tips"><summary>${ic('bulb')}Cómo escribir un buen pendiente${ic('chevD', 'chev')}</summary>
-        <div>Empieza con un <b>verbo</b> (Revisar, Enviar, Llamar…) y di <b>sobre qué</b>: «Enviar la cotización a Luis». Los detalles los completas al organizar.<br>El área es opcional (se sugiere sola si la reconoce). Si pegas una lista, cada línea se vuelve un pendiente.</div></details>`;
+        <div>Empieza con un <b>verbo</b> (Revisar, Enviar, Llamar…) y di <b>sobre qué</b>: «Enviar la cotización a Luis». Los detalles los completas al organizar.<br>El área se sugiere sola mientras escribes; cámbiala en el selector a la izquierda de Guardar si no es. Si pegas una lista, cada línea se vuelve un pendiente.</div></details>`;
   } else {
-    const seg = $('.b-modo', v); if (seg) seg.outerHTML = htmlBandejaModo();
+    const bm = $('#bIrMente', v); if (bm) bm.outerHTML = htmlIrMente();
   }
   pintarCapForm('cap'); pintarBandejaLista();
 }
-// Captura en un paso: verbo (sugerido), qué vas a hacer y área opcional.
+// Captura en un paso: verbo (sugerido), qué vas a hacer y área obligatoria.
 function htmlCapForm(pfx) {
   return `<div class="panel capf" id="${pfx}Box">
     <button class="vtop" id="${pfx}Verbo" data-a="verboAbrir" data-dest="${pfx}" aria-label="Elegir un verbo para empezar a redactar">${ic('bolt')}¿No sabes cómo empezar? Elige un verbo${ic('chevD')}</button>
     <textarea id="${pfx}In" class="capf-in" rows="1" maxlength="2000" placeholder="Anota un pendiente" enterkeyhint="send" autocomplete="off" autocapitalize="sentences" aria-label="Anota un pendiente"></textarea>
-    <div class="capf-bot"><button type="button" class="areasel" id="${pfx}Area" data-a="areaAbrir" data-dest="${pfx}" aria-label="Elegir área (opcional)"></button><button class="btn sm pri" data-a="${pfx === 'cap' ? 'capAdd' : 'capSheetAdd'}" aria-label="Guardar entrada en la Bandeja">${ic('inbox')}Guardar entrada</button></div>
+    <div class="capf-bot"><button type="button" class="areasel" id="${pfx}Area" data-a="areaAbrir" data-dest="${pfx}" aria-label="Elegir área (obligatoria)"></button><button class="btn sm pri" data-a="${pfx === 'cap' ? 'capAdd' : 'capSheetAdd'}" aria-label="Guardar entrada en la Bandeja">${ic('inbox')}Guardar entrada</button></div>
   </div><div class="capf-hint" id="${pfx}Hint" aria-live="polite"></div>`;
 }
 function pintarCapForm(pfx) {
@@ -3021,7 +3018,7 @@ function pintarCapForm(pfx) {
   if (!ui.capAreaManual) ui.capArea = lns.length === 1 ? predecirArea(limpiarTitulo(lns[0])) : '';
   const sa = $(`#${pfx}Area`), ar = area(ui.capArea);
   sa.classList.toggle('vacia', !ar);
-  sa.innerHTML = (ar ? `<i class="dot" style="--a:${ar.c}"></i>` : ic('layers')) + `<span>${esc(ar ? ar.n : 'Área (opcional)')}</span>${ic('chevD')}`;
+  sa.innerHTML = (ar ? `<i class="dot" style="--a:${ar.c}"></i>` : ic('layers')) + `<span>${esc(ar ? ar.n : 'Área…')}</span>${ic('chevD')}`;
   let h = '';
   if (lns.length === 1 && lns[0].length > 60 && mnSegmentar(lns[0]).length >= 3) h = `Parece que traes varias cosas juntas. <button data-a="mnDesdeCap" data-dest="${pfx}">Vaciar la mente</button>`;
   else if (lns.length > 1) h = `Se guardarán ${lns.length} pendientes, uno por línea.`;
@@ -3031,11 +3028,19 @@ function pintarCapForm(pfx) {
     else if (i && i.k === 'verbo') h = `Tip: empieza con un verbo. ${TOCA()} «Elige un verbo» si no sabes cómo empezar.`;
     else if (i && i.k === 'vago') h = `«${esc(i.msg.split('»')[0].slice(1))}» es poco específico. ¿Qué harás exactamente?`;
   }
-  if (lns.length === 1 && !ui.capAreaManual && ui.capArea) h = `Área sugerida: <b>${esc(area(ui.capArea)?.n || '')}</b>.` + (h ? '<br>' + h : '');
+  if (lns.length === 1 && !ui.capAreaManual && ui.capArea) h = `Área sugerida: <b>${esc(area(ui.capArea)?.n || '')}</b>. Cámbiala en el selector si no es.` + (h ? '<br>' + h : '');
+  else if (lns.length && !ui.capAreaManual && !ui.capArea && lns.length === 1 && txt.trim().length > 2) h = 'Elige un área en el selector.' + (h ? '<br>' + h : '');
   $(`#${pfx}Hint`).innerHTML = h;
 }
-// Captura sin fricción: el área se sugiere si se reconoce, pero nunca bloquea guardar.
-function capAreaOk() { return true; }
+// Un pendiente no se guarda sin área: la elegida o la que se predice para cada línea.
+function capAreaOk(sel, pfx) {
+  const ta = $(sel); if (!ta) return true;
+  const ls = lineasDe(ta.value); if (!ls.length) return true;
+  if (ui.capAreaManual && ui.capArea) return true;
+  if (ls.every(l => predecirArea(limpiarTitulo(l)))) return true;
+  sacudir($(`#${pfx}Area`), 'Elige un área para guardar');
+  return false;
+}
 function capAreaReset() { ui.capArea = ''; ui.capAreaManual = false; }
 function pintarCapAreas() { pintarCapForm('cap'); pintarCapForm('capSheet'); }
 function pintarBandejaLista(nuevos = []) {
@@ -3382,7 +3387,7 @@ function cuerpoProc(t) {
     <div id="procClar">${htmlClaridad(t.titulo, 'proc')}</div>
     <div class="f-sec" style="margin-top:8px;display:flex;flex-wrap:wrap;align-items:center;gap:8px">
       ${togglePrio(P.prio, 'pPrio')}
-      ${t.area ? '' : `<div class="areapick" id="procQa" role="radiogroup" aria-label="Área (opcional)">${areas().map(a => `<button class="chip area ${P.qa === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="pQa" data-v="${a.id}" role="radio" aria-checked="${P.qa === a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('')}</div>`}
+      ${t.area ? '' : `<div class="areapick" id="procQa" role="radiogroup" aria-label="Área (obligatoria)">${areas().map(a => `<button class="chip area ${P.qa === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="pQa" data-v="${a.id}" role="radio" aria-checked="${P.qa === a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('')}</div>`}
     </div>
     <p class="proc-h">¿Qué hago con esto?</p>
     <button class="two" data-a="pYa"><span class="ico">${ic('bolt')}</span><span><b>Lo hago ahora</b><small>Abre un temporizador de 5 minutos para hacerlo ya</small></span>${ic('play', 'fill')}</button>
@@ -3401,10 +3406,11 @@ function cuerpoProc(t) {
     <div class="f-sec"><label>¿Cuándo le doy seguimiento?</label><div class="chips">${[['', 'Sin fecha'], [manana(), 'Mañana'], [addDays(hoy(), 3), 'En 3 días'], [addDays(hoy(), 7), 'En una semana']].map(([v, n]) => `<button class="chip ${(d.seg || '') === v ? 'on' : ''}" data-a="pSeg" data-v="${v}">${n}</button>`).join('')}</div></div>
     <div class="proc-foot"><button class="btn" data-a="pAtras">Atrás</button><button class="btn pri" data-a="pGuardarEsp">${ic('check')}Guardar</button></div>`;
 }
-// Aplica área (opcional) y prioridad elegidas en la tarjeta antes de mover.
+// Todo pendiente organizado necesita área: se guarda la elegida o la sugerida, junto con la prioridad.
 function procArea() {
   const t = tActualProc(); if (!t) return false;
-  if (proc.qa && t.area !== proc.qa) t.area = proc.qa;
+  if (!proc.qa) { sacudir($('#procQa'), 'Elige un área primero'); return false; }
+  if (t.area !== proc.qa) t.area = proc.qa;
   t.importante = !!proc.prio;
   t.urgente = false;
   return true;
@@ -5222,7 +5228,7 @@ const ACT = {
   // Organizar bandeja (decisiones en 1 toque)
   cerrarProc:() => cerrarProc(),
   procPlan:() => { cerrarProc(); abrirPlan(); },
-  pQa:el => { proc.qa = proc.qa === el.dataset.v ? '' : el.dataset.v; document.querySelectorAll('#procQa .chip').forEach(b => { const on = b.dataset.v === proc.qa; b.classList.toggle('on', on); b.setAttribute('aria-checked', on); }); },
+  pQa:el => { proc.qa = el.dataset.v; document.querySelectorAll('#procQa .chip').forEach(b => { const on = b.dataset.v === proc.qa; b.classList.toggle('on', on); b.setAttribute('aria-checked', on); }); },
   pPrio:() => { proc.prio = !proc.prio; repintarCuerpoProc(); },
   // «Lo hago ahora»: abre un temporizador de 5 minutos sobre este pendiente.
   pYa:() => {
