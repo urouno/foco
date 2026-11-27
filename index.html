@@ -1567,6 +1567,11 @@ body{letter-spacing:-.005em;text-rendering:optimizeLegibility}
   .sh-foot .btn.del-txt:hover{background:var(--hot-s)}
   .qk-up:hover{background:var(--ac-s)}
 }
+.hoy-b > .sec-t:first-child{margin-top:14px}
+@media (min-width:1024px){
+  .hoy-g{grid-template-areas:"a b"}
+  .hoy-b > .sec-t:first-child{margin-top:0}
+}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -3658,27 +3663,18 @@ function renderHoy() {
         : `<button class="btn pri grow" data-a="play" data-id="${ahora.id}">${ic('play', 'fill')}Empezar</button><button class="btn sq" data-a="cambiarTarea" aria-label="Cambiar la tarea de Ahora" title="Cambiar la tarea de Ahora">${ic('refresh')}</button>`}
         <button class="btn sq okb" data-a="ck" data-id="${ahora.id}" aria-label="Marcar como hecha">${ic('check')}</button></div>
       <div class="hero-m">${run || desc ? `<span class="mut sm">${t.modo === 'pomo' ? `Sesión de ${S.ajustes.pomo} min` : `Bloque de ${t.bloqueMin} min`}</span><button class="lnk2" data-a="cambiarTarea">Cambiar tarea</button>` : `${ic('clock')}<span id="heroFin">${tiempo}</span><button class="lnk2" data-a="heroModo">Cambiar modo</button>`}</div></div>`;
-    if (!enMarcha()) zA += `<button class="arr" data-a="arranque">${ic('sparkle')}¿No sabes por dónde empezar?</button>`;
   }
 
-  // ----- Planeados: todo lo de hoy (de la Bandeja, «Lo hago ahora» o ya programado) -----
+  // ----- Planeados: directo debajo de Ahora, sin bloques intermedios -----
   const dc = !!ahora && !proceso.length && ahora === cola[0];
   const resto = cola.filter(x => x !== ahora), extra = proceso.slice(1), otrasR = otras.filter(x => x !== ahora);
   const nPlan = extra.length + resto.length + otrasR.length;
   const ant = pendientesAnteriores();
   const zonas = !!(ahora || nPlan || ant.length || hechas.length);
-  if (zonas) zB += `<div class="sec-t">${ic('sun')}Planeados <span class="n">${nPlan}</span></div>
+  if (zonas) zB += `<div class="sec-t">${ic('sun')}Planeados <span class="n">${nPlan}</span><span class="sp"></span><button class="lnk2" data-a="plan" data-v="${tarde ? 'manana' : 'hoy'}">${ic(tarde ? 'moon' : 'list')}${tarde ? 'Mañana' : 'Ordenar'}</button></div>
     ${extra.length ? `<div class="group">${extra.map(x => filaHoy(x, 0, { curso:true })).join('')}</div>` : ''}
     <div class="group" data-list="hoy" data-base="${dc ? 1 : 0}" data-hero="${dc ? ahora.id : ''}" id="hoyList">${resto.map((x, i) => filaHoy(x, i + (dc ? 2 : 1))).join('')}${resto.length || extra.length || otrasR.length ? '' : '<div class="empty">Nada más planeado hoy.</div>'}</div>
     ${otrasR.length ? `<div class="group">${otrasR.map(x => filaHoy(x, 0, { otra:true })).join('')}</div>` : ''}`;
-
-  // ----- Avance en una línea y próximo compromiso -----
-  if (total) zT += `<div class="avance"><div class="av-t"><b>${hechasP} de ${total}</b><span>${prioIds ? 'del orden' : 'tareas'}</span>${pendP.length ? `<small>${est ? `≈ ${txtHM(est)}` : ''}${sinEst ? `${est ? ' · ' : ''}${sinEst} sin estimar` : ''}</small>` : ''}</div>
-    ${total <= 12 ? `<div class="segbar" role="img" aria-label="${hechasP} de ${total} hechas">${Array.from({ length:total }, (_, i) => `<i class="${i < hechasP ? 'on' : ''}"></i>`).join('')}</div>` : `<div class="bar okbar"><i style="width:${hechasP / total * 100}%"></i></div>`}</div>`;
-  const nm = new Date().getHours() * 60 + new Date().getMinutes();
-  const prox = tareasDia(hoy()).filter(x => x.estado !== 'hecho' && x.hora && hm2min(x.hora) >= nm - 5 && x !== ahora).sort((a, b) => a.hora.localeCompare(b.hora))[0];
-  if (prox) { const m = hm2min(prox.hora) - nm; zT += `<button class="prox" data-a="tab" data-v="agenda">${ic('clock')}<span><b>${prox.hora}</b> ${esc(prox.titulo)}</span><small>${m <= 0 ? 'ahora' : m < 60 ? `en ${m} min` : `en ${txtHM(m)}`}</small></button>`; }
-  zT += `<div class="hoy-acc"><button class="lnk2" data-a="plan" data-v="${tarde ? 'manana' : 'hoy'}">${ic(tarde ? 'moon' : 'list')}${tarde ? 'Preparar mañana' : rec ? 'Cambiar orden' : 'Ordenar el día'}</button><button class="lnk2" data-a="irEnfoque">${ic('timer')}Enfoque libre</button></div>`;
 
   // ----- Atrasadas (días anteriores sin terminar) y Completadas (solo las de hoy) -----
   const filaDec = (x, botones) => `<div class="tr dec ${area(x.area) ? 'ca' : ''}" style="--a:${colorA(x.area)}" data-a="abrir" data-id="${x.id}" data-drag role="button" tabindex="0"><div class="tb"><div class="tt">${esc(x.titulo)}</div><div class="mt">${metaCorta(x, 2, { area:true })}</div><div class="dec-b">${botones}</div></div></div>`;
@@ -3687,7 +3683,7 @@ function renderHoy() {
   if (zonas) zB += `<details class="sec-d" data-k="hechas" ${abierto('hechas') ? 'open' : ''}><summary class="sec-t">${ic('check')}Completadas <span class="n">${hechas.length}</span><span class="sp"></span>${ic('chevD', 'chev')}</summary><div class="group" data-list="hecho">${hechas.map(x => filaHecha(x, true)).join('')}${hechas.length ? '' : '<div class="empty">Arrastra aquí una tarea para completarla.</div>'}</div></details>`;
   const plMan = tareasEn('prox').filter(x => x.fecha === manana()).length;
   if (plMan && tarde) zB += `<button class="panel row-link" data-a="plan" data-v="manana">${ic('moon')}<span><b>Mañana</b> · ${plMan} ${plMan === 1 ? 'tarea planeada' : 'tareas planeadas'}</span>${ic('chevR')}</button>`;
-  v.innerHTML = `<div class="hoy-g"><div class="hoy-a">${zA}</div><div class="hoy-t">${zT}</div><div class="hoy-b">${zB}</div></div>`;
+  v.innerHTML = `<div class="hoy-g"><div class="hoy-a">${zA}</div><div class="hoy-b">${zB}</div></div>`;
 }
 // Rango visible de la Agenda: tu horario de trabajo, ampliado si alguna tarea queda fuera (o el día completo).
 let AG_INI = 0, AG_FIN = 24;
