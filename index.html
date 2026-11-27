@@ -4780,7 +4780,7 @@ function htmlDetalle(t) {
       `<div class="chips">${estados.map(([k, n]) => `<button class="chip ${t.estado === k ? 'on' : ''}" data-a="dtEstado" data-v="${k}">${n}</button>`).join('')}</div>`),
     area: fila('area', 'layers', 'teal', 'Área', A ? `<i class="dot" style="--a:${A.c}"></i>${esc(A.n)}` : 'Sin área',
       `<div class="chips">${areas().map(a => `<button class="chip area ${t.area === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="dtArea" data-v="${a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('')}<button class="chip" data-a="irAreas">${ic('plus')}Nueva área</button></div>`),
-    prio: fila('prio', 'star', 'warn', 'Prioridad', q ? pq(t) : 'Normal', togglePrio(esPrioritaria(t), 'dtPrio')),
+    prio: `<div class="dr"><button class="dr-h" data-a="dtPrio" role="switch" aria-checked="${!!q}"><span class="dr-i warn">${ic('star', q ? 'fill' : '')}</span><span class="dr-l">Prioritaria</span><span class="sw ${q ? 'on' : ''}" aria-hidden="true"></span></button></div>`,
     fecha: fila('fecha', 'cal', 'hot', 'Día planeado', fechaTxt,
       `<div class="chips">${[['hoy', 'Hoy'], ['manana', 'Mañana'], ['lunes', 'Próximo lunes'], ['semana', 'En una semana'], ['', 'Sin fecha']].map(([v, n]) => `<button class="chip ${(v === 'hoy' && t.fecha === hoy()) || (v === 'manana' && t.fecha === manana()) || (v === '' && !t.fecha) ? 'on' : ''}" data-a="dtCuando" data-v="${v}">${n}</button>`).join('')}</div>
        <label class="f-l" style="margin-top:12px" for="dtFechaIn">Otra fecha</label><input type="date" class="in" id="dtFechaIn" data-in="dtFecha" value="${t.fecha}" ${t.estado !== 'hecho' ? `min="${hoy()}"` : ''}>`),
