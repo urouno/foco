@@ -1500,6 +1500,73 @@ body{letter-spacing:-.005em;text-rendering:optimizeLegibility}
 .rec-mes{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
 .rec-mes .in{width:78px;min-height:38px;padding:6px 10px;text-align:center}
 .rec-act{display:flex;gap:8px;margin-top:10px}
+/* 9. Claridad por diseño: validación visual, destino, edición y borrado uniformes */
+@keyframes tabpulse{0%{transform:scale(1)}35%{transform:scale(1.14)}70%{transform:scale(.96)}100%{transform:scale(1)}}
+#tabs button.tab-pulse .tp{background:var(--ac-s);color:var(--ac-t);animation:tabpulse .55s var(--ease)}
+#tabs button.tab-pulse .bdg{animation:tabpulse .55s var(--ease)}
+.capf-tools{display:flex;align-items:center;gap:6px;min-width:0;flex:1;flex-wrap:wrap}
+.areasel.vacia{background:transparent;border:1.5px dashed var(--ln2);color:var(--mut)}
+.areasel.sug svg.sug-i{width:13px;height:13px;color:var(--ac-t);flex:none}
+.vpill{display:inline-flex;align-items:center;gap:5px;min-height:38px;padding:0 11px;border-radius:999px;background:var(--sf2);border:1px solid transparent;font-size:var(--fs-s);font-weight:500;color:var(--mut);transition:background .15s,color .15s}
+.vpill svg.i{width:14px;height:14px;color:var(--ac-t)}
+.vpill:active{transform:scale(.97)}
+.btn.pri.incompleto{background:var(--sf3);color:var(--mut);box-shadow:none}
+.toast-acts{display:inline-flex;align-items:center;gap:10px;margin-left:4px;flex:none}
+#toast .toast-acts button{color:var(--ac-s);font-weight:700;padding:4px 2px}
+#toast .toast-acts button.sec{color:rgba(255,255,255,.78);font-weight:600}
+.b-act.del{width:34px;padding:0;color:var(--mut2);border-color:transparent;background:transparent}
+.b-act.del svg.i{width:16px;height:16px}
+.b-act.del:active{background:var(--hot-s);color:var(--hot)}
+.mn-c{position:relative}
+.mn-del{position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;color:var(--mut2);opacity:.7;transition:opacity .15s,background .15s,color .15s}
+.mn-del svg.i{width:15px;height:15px}
+.mn-del:active{background:var(--hot-s);color:var(--hot);opacity:1}
+.mn-c .mn-t{padding-right:30px}
+.sw-del-bg{position:absolute;inset:0;background:var(--hot-f);color:var(--on-hot);display:flex;align-items:center;justify-content:flex-end;padding-right:20px;gap:6px;font-size:var(--fs-s);font-weight:600;pointer-events:none;border-radius:inherit}
+.sw-del-bg svg.i{width:18px;height:18px}
+.tr.swiping{transition:none!important;z-index:2;background:var(--sf)}
+.edit-wrap{position:relative;display:block}
+.edit-wrap .dt-title{padding-right:42px;border:1.5px solid var(--ln);transition:border-color .15s,box-shadow .15s,background .15s}
+.edit-wrap .dt-title:focus{border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-s)}
+.edit-wrap .proc-tt{padding:6px 34px 6px 8px;margin-left:-8px;width:calc(100% + 8px);border-radius:10px;border:1.5px solid transparent;transition:border-color .15s,background .15s}
+.edit-wrap .proc-tt:focus{background:var(--sf2);border-color:var(--ac)}
+.edit-wrap .edit-ico{position:absolute;top:16px;right:14px;color:var(--mut2);pointer-events:none;opacity:.65;transition:opacity .15s}
+.edit-wrap.proc-ew .edit-ico{top:14px;right:8px}
+.edit-wrap .edit-ico svg.i{width:16px;height:16px}
+.edit-wrap:focus-within .edit-ico{opacity:0}
+.dt-est{display:flex;flex-wrap:wrap;gap:6px;margin:-4px 0 16px}
+.dt-est .chip{min-height:34px;padding:0 12px;font-size:var(--fs-s)}
+.dt-add-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.dt-add-chip{display:inline-flex;align-items:center;gap:5px;min-height:36px;padding:0 12px;border-radius:999px;background:transparent;border:1.5px dashed var(--ln2);color:var(--mut);font-size:var(--fs-s);font-weight:500;transition:background .15s,border-color .15s,color .15s}
+.dt-add-chip svg.i{width:14px;height:14px}
+.dt-add-chip:active{background:var(--sf2);color:var(--ink)}
+.sh-foot .btn.del-txt{padding:0 12px;background:transparent;color:var(--hot);font-size:var(--fs-s);gap:5px;flex:none}
+.sh-foot .btn.del-txt svg.i{width:17px;height:17px}
+.ar-r input[type=text]{border-radius:8px;padding:6px 8px;border:1px solid transparent;transition:background .15s,border-color .15s}
+.ar-r input[type=text]:focus{background:var(--sf2);border-color:var(--ac)}
+.ar-r .sw-c{box-shadow:0 0 0 2px var(--sf),0 0 0 3.5px var(--ln2)}
+.tr-chev{color:var(--mut2);opacity:.45;flex:none;display:grid;place-items:center;margin-left:-4px}
+.tr-chev svg.i{width:16px;height:16px}
+.qk-up{display:inline-flex;align-items:center;gap:3px;min-height:32px;padding:0 10px;border-radius:999px;background:var(--sf2);color:var(--ac-t);font-size:12px;font-weight:600;flex:none}
+.qk-up svg.i{width:13px;height:13px}
+.tl,.sm-col{cursor:pointer}
+.ag-slot-cap{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.ag-slot-cap .in{flex:1;min-width:0}
+.act .dest-tag{display:inline-block;margin-top:2px;font-size:11px;font-weight:600;color:var(--mut2);letter-spacing:.01em}
+@media (hover:hover){
+  .vpill:hover{background:var(--sf3);color:var(--ink)}
+  .b-act.del{opacity:.35}
+  .tr.b-item:hover .b-act.del,.b-act.del:focus-visible{opacity:1}
+  .b-act.del:hover{background:var(--hot-s);color:var(--hot)}
+  .mn-del{opacity:0}
+  .mn-c:hover .mn-del,.mn-del:focus-visible{opacity:.85}
+  .mn-del:hover{background:var(--hot-s);color:var(--hot);opacity:1}
+  .edit-wrap .dt-title:hover,.edit-wrap .proc-tt:hover{border-color:var(--ln2)}
+  .ar-r input[type=text]:hover{background:var(--sf2)}
+  .dt-add-chip:hover{background:var(--sf2);border-color:var(--ac);color:var(--ink)}
+  .sh-foot .btn.del-txt:hover{background:var(--hot-s)}
+  .qk-up:hover{background:var(--ac-s)}
+}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -1637,7 +1704,9 @@ const IC = {
   folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
   listo:'<circle cx="12" cy="12" r="9"/><path d="m8.5 12.2 2.4 2.4 4.6-4.9"/>',
   circleDot:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/>',
-  book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>'
+  book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
+  pencil:'<path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>',
+  arrowL:'<path d="M19 12H5M12 19l-7-7 7-7"/>'
 };
 const ic = (n, cls = '') => `<svg class="i ${cls}" viewBox="0 0 24 24" aria-hidden="true">${IC[n] || ''}</svg>`;
 
@@ -2773,7 +2842,7 @@ function pintarTabs() {
     const hijas = sv.length > 1 ? sv.filter(k => k !== propia) : [];
     const v = g.k === 'hoy' ? 'hoy' : dk && propia ? propia : ui.ult[g.k] || g.vs[0];
     const enG = g === g0, on = dk ? enG && (!hijas.includes(ui.view)) : enG;
-    return `<button class="tnav ${i < mitad ? 'tnav-i' : 'tnav-d'} ${on ? 'on' : ''} ${enG ? 'eng' : ''}" data-a="tab" data-v="${v}" ${on ? 'aria-current="page"' : ''} aria-label="${g.n}${g.k === 'bandeja' && nb ? `, ${nb} por organizar` : ''}"><span class="tp">${ic(g.ic)}</span><span class="tl">${g.n}</span>${g.k === 'bandeja' && nb ? `<i class="bdg">${nb > 99 ? '99+' : nb}</i>` : ''}${g.k === 'hoy' && run && ui.view !== 'enfoque' ? '<i class="tdot"></i>' : ''}<kbd>${i + 1}</kbd></button>`
+    return `<button class="tnav ${i < mitad ? 'tnav-i' : 'tnav-d'} ${on ? 'on' : ''} ${enG ? 'eng' : ''}" data-a="tab" data-v="${v}" data-g="${g.k}" ${on ? 'aria-current="page"' : ''} aria-label="${g.n}${g.k === 'bandeja' && nb ? `, ${nb} por organizar` : ''}"><span class="tp">${ic(g.ic)}</span><span class="tl">${g.n}</span>${g.k === 'bandeja' && nb ? `<i class="bdg">${nb > 99 ? '99+' : nb}</i>` : ''}${g.k === 'hoy' && run && ui.view !== 'enfoque' ? '<i class="tdot"></i>' : ''}<kbd>${i + 1}</kbd></button>`
       + (hijas.length ? `<div class="sub">${hijas.map(k => { const V = VISTAS.find(x => x.k === k), sel = ui.view === k; return `<button class="${sel ? 'on' : ''}" data-a="tab" data-v="${k}" ${sel ? 'aria-current="page"' : ''}>${ic(V.ic)}<span class="tl">${V.n}</span>${cuenta[k] ? `<i class="cnt">${cuenta[k] > 99 ? '99+' : cuenta[k]}</i>` : ''}</button>`; }).join('')}</div>` : '');
   }).join('');
   const html = `<div class="brand"><img src="icon-180.png" alt="" width="28" height="28">Foco</div>` + grupos
@@ -2841,12 +2910,22 @@ document.addEventListener('focusout', e => {
 });
 
 let toastT;
-function toast(msg, accion, fn, icono) {
+function pulsarTab(g) {
+  if (!g || calma()) return;
+  const b = $(`#tabs button[data-g="${g}"]`);
+  if (!b) return;
+  b.classList.remove('tab-pulse'); void b.offsetWidth; b.classList.add('tab-pulse');
+  setTimeout(() => b.classList.remove('tab-pulse'), 650);
+}
+function toast(msg, accion, fn, icono, accion2, fn2) {
   const el = $('#toast');
-  el.innerHTML = (icono ? ic(icono) : '') + `<span>${esc(msg)}</span>` + (accion ? `<button id="toastBtn">${esc(accion)}</button>` : '');
+  const btns = (accion || accion2)
+    ? `<span class="toast-acts">${accion2 ? `<button id="toastBtn2" class="sec">${esc(accion2)}</button>` : ''}${accion ? `<button id="toastBtn">${esc(accion)}</button>` : ''}</span>` : '';
+  el.innerHTML = (icono ? ic(icono) : '') + `<span>${esc(msg)}</span>` + btns;
   el.classList.add('on');
   if (accion) $('#toastBtn').onclick = () => { el.classList.remove('on'); fn && fn(); };
-  clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('on'), accion ? 6000 : 3800);
+  if (accion2) $('#toastBtn2').onclick = () => { el.classList.remove('on'); fn2 && fn2(); };
+  clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('on'), (accion || accion2) ? 6000 : 3800);
 }
 function sacudir(el, msg) { if (el) { el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); } if (msg) toast(msg); }
 // Diálogo propio (en lugar de confirm del navegador). Resuelve 1 = principal, 2 = alterno, 0 = cancelar.
@@ -2956,12 +3035,12 @@ function metaCorta(t, max = 2, op = {}) {
   return [...must, ...resto].sort((a, b) => a.i - b.i).map(x => x.html).join('');
 }
 function filaHoy(t, n, op = {}) {
-  return `<div class="tr ${area(t.area) ? 'ca' : ''}" style="--a:${colorA(t.area)}" data-id="${t.id}" data-a="abrir" ${n ? 'data-drag="grip"' : ''} role="button" tabindex="0" aria-label="${esc(t.titulo)}. Abrir detalle">
+  return `<div class="tr ${area(t.area) ? 'ca' : ''}" style="--a:${colorA(t.area)}" data-id="${t.id}" data-a="abrir" data-swipe="1" ${n ? 'data-drag="grip"' : ''} role="button" tabindex="0" aria-label="${esc(t.titulo)}. Abrir detalle">
     <button class="ck ${n ? 'num' : ''}" data-a="ck" data-id="${t.id}" aria-label="${n ? `Prioridad ${n}. ` : ''}Marcar como hecha: ${esc(t.titulo)}">${n ? `<span>${n}</span>` : ''}${ic('check')}</button>
     <div class="tb"><div class="tt">${esc(t.titulo)}</div><div class="mt">${op.curso ? `<span class="pq cur">${ic('timer')}En curso</span>` : ''}${metaCorta(t, 2, { area:true })}</div></div>
-    ${op.otra ? `<button class="ib-s" data-a="hacerPrio" data-id="${t.id}" aria-label="Hacer prioridad: ${esc(t.titulo)}">${ic('star')}</button>` : ''}
+    ${op.otra ? `<button class="qk-up" data-a="hacerPrio" data-id="${t.id}" title="Subir al orden de hoy" aria-label="Subir al orden de hoy: ${esc(t.titulo)}">${ic('arrowUp')}Subir</button>` : ''}
     <button class="ib-play" data-a="play" data-id="${t.id}" aria-label="Empezar enfoque: ${esc(t.titulo)}">${ic('play', 'fill')}</button>
-    ${n ? `<span class="grip" data-grip aria-hidden="true">${ic('grip', 'fill')}</span>` : ''}
+    ${n ? `<span class="grip" data-grip aria-hidden="true">${ic('grip', 'fill')}</span>` : `<span class="tr-chev" aria-hidden="true">${ic('chevR')}</span>`}
   </div>`;
 }
 function filaHecha(t, drag) {
@@ -2995,20 +3074,20 @@ function renderBandeja() {
     return;
   }
   if (!$('#capIn', v)) {
-    v.innerHTML = htmlCapForm('cap') + htmlIrMente() + `<div id="bandejaZona"></div>
-      <details class="tips"><summary>${ic('bulb')}Cómo escribir un buen pendiente${ic('chevD', 'chev')}</summary>
-        <div>Empieza con un <b>verbo</b> (Revisar, Enviar, Llamar…) y di <b>sobre qué</b>: «Enviar la cotización a Luis». Los detalles los completas al organizar.<br>El área se sugiere sola mientras escribes; cámbiala en el selector a la izquierda de Guardar si no es. Si pegas una lista, cada línea se vuelve un pendiente.</div></details>`;
+    v.innerHTML = htmlCapForm('cap') + htmlIrMente() + `<div id="bandejaZona"></div>`;
   } else {
     const bm = $('#bIrMente', v); if (bm) bm.outerHTML = htmlIrMente();
   }
   pintarCapForm('cap'); pintarBandejaLista();
 }
-// Captura en un paso: verbo (sugerido), qué vas a hacer y área obligatoria.
+// Captura en un paso: qué vas a hacer, área obligatoria (con estado visual claro) y botón compacto de verbo.
 function htmlCapForm(pfx) {
   return `<div class="panel capf" id="${pfx}Box">
-    <button class="vtop" id="${pfx}Verbo" data-a="verboAbrir" data-dest="${pfx}" aria-label="Elegir un verbo para empezar a redactar">${ic('bolt')}¿No sabes cómo empezar? Elige un verbo${ic('chevD')}</button>
-    <textarea id="${pfx}In" class="capf-in" rows="1" maxlength="2000" placeholder="Anota un pendiente" enterkeyhint="send" autocomplete="off" autocapitalize="sentences" aria-label="Anota un pendiente"></textarea>
-    <div class="capf-bot"><button type="button" class="areasel" id="${pfx}Area" data-a="areaAbrir" data-dest="${pfx}" aria-label="Elegir área (obligatoria)"></button><button class="btn sm pri" data-a="${pfx === 'cap' ? 'capAdd' : 'capSheetAdd'}" aria-label="Guardar entrada en la Bandeja">${ic('inbox')}Guardar entrada</button></div>
+    <textarea id="${pfx}In" class="capf-in" rows="1" maxlength="2000" placeholder="¿Qué pendiente quieres anotar?" enterkeyhint="send" autocomplete="off" autocapitalize="sentences" aria-label="Anota un pendiente"></textarea>
+    <div class="capf-bot"><div class="capf-tools">
+      <button type="button" class="areasel vacia" id="${pfx}Area" data-a="areaAbrir" data-dest="${pfx}" aria-label="Elegir área (obligatoria)"></button>
+      <button type="button" class="vpill" id="${pfx}Verbo" data-a="verboAbrir" data-dest="${pfx}" title="Empezar con un verbo" aria-label="Elegir un verbo">${ic('bolt')}Verbo</button>
+    </div><button class="btn sm pri incompleto" id="${pfx}Btn" data-a="${pfx === 'cap' ? 'capAdd' : 'capSheetAdd'}" aria-label="Guardar en Bandeja">${ic('inbox')}Guardar en Bandeja</button></div>
   </div><div class="capf-hint" id="${pfx}Hint" aria-live="polite"></div>`;
 }
 function pintarCapForm(pfx) {
@@ -3016,20 +3095,20 @@ function pintarCapForm(pfx) {
   const txt = ta.value, lns = lineasDe(txt);
   // Con una sola línea, el área se sugiere sola mientras escribes, salvo que ya hayas elegido una.
   if (!ui.capAreaManual) ui.capArea = lns.length === 1 ? predecirArea(limpiarTitulo(lns[0])) : '';
-  const sa = $(`#${pfx}Area`), ar = area(ui.capArea);
+  const sa = $(`#${pfx}Area`), ar = area(ui.capArea), sug = !!(ar && !ui.capAreaManual);
   sa.classList.toggle('vacia', !ar);
-  sa.innerHTML = (ar ? `<i class="dot" style="--a:${ar.c}"></i>` : ic('layers')) + `<span>${esc(ar ? ar.n : 'Área…')}</span>${ic('chevD')}`;
+  sa.classList.toggle('sug', sug);
+  sa.innerHTML = (ar ? `<i class="dot" style="--a:${ar.c}"></i>` : ic('plus')) + `<span>${esc(ar ? ar.n : 'Elegir área')}</span>` + (sug ? ic('sparkle', 'sug-i') : '') + ic('chevD');
+  const areaLista = !!ar || (lns.length > 1 && lns.every(l => predecirArea(limpiarTitulo(l))));
+  const btn = $(`#${pfx}Btn`);
+  if (btn) btn.classList.toggle('incompleto', !lns.length || !areaLista);
   let h = '';
   if (lns.length === 1 && lns[0].length > 60 && mnSegmentar(lns[0]).length >= 3) h = `Parece que traes varias cosas juntas. <button data-a="mnDesdeCap" data-dest="${pfx}">Vaciar la mente</button>`;
-  else if (lns.length > 1) h = `Se guardarán ${lns.length} pendientes, uno por línea.`;
+  else if (lns.length > 1) h = `${lns.length} pendientes (uno por línea)`;
   else if (lns.length === 1 && txt.trim().length > 2) {
     const i = analizar(lns[0]).find(x => ['relleno', 'verbo', 'vago'].includes(x.k));
-    if (i && i.propuesta) h = `${i.k === 'relleno' ? 'Más corto:' : 'Con verbo:'} <button data-a="clarUsar" data-dest="${pfx}" data-v="${esc(i.propuesta)}">«${esc(i.propuesta)}»</button>`;
-    else if (i && i.k === 'verbo') h = `Tip: empieza con un verbo. ${TOCA()} «Elige un verbo» si no sabes cómo empezar.`;
-    else if (i && i.k === 'vago') h = `«${esc(i.msg.split('»')[0].slice(1))}» es poco específico. ¿Qué harás exactamente?`;
+    if (i && i.propuesta) h = `<button data-a="clarUsar" data-dest="${pfx}" data-v="${esc(i.propuesta)}">Usar «${esc(i.propuesta)}»</button>`;
   }
-  if (lns.length === 1 && !ui.capAreaManual && ui.capArea) h = `Área sugerida: <b>${esc(area(ui.capArea)?.n || '')}</b>. Cámbiala en el selector si no es.` + (h ? '<br>' + h : '');
-  else if (lns.length && !ui.capAreaManual && !ui.capArea && lns.length === 1 && txt.trim().length > 2) h = 'Elige un área en el selector.' + (h ? '<br>' + h : '');
   $(`#${pfx}Hint`).innerHTML = h;
 }
 // Un pendiente no se guarda sin área: la elegida o la que se predice para cada línea.
@@ -3052,14 +3131,14 @@ function pintarBandejaLista(nuevos = []) {
   if (items.length) {
     html += `<button class="cta" data-a="procesar"><span class="ico">${ic('sparkle')}</span><span><b>Organizar ${items.length} ${items.length === 1 ? 'pendiente' : 'pendientes'}</b><small>Decide en un toque qué hacer con cada uno</small></span>${ic('arrowR')}</button>
       <div class="sec-t">Por organizar <span class="n">${items.length}</span><span class="sp"></span>${items.length > 1 ? `<button class="lnk2" data-a="bSelModo">${ui.bSel ? 'Cancelar' : 'Seleccionar varios'}</button>` : ''}</div>
-      ${ui.bSel ? `<div class="lote-bar"><button class="chip" data-a="bSelTodos">${items.every(t => ui.bSel.has(t.id)) ? 'Ninguno' : 'Todos'}</button><b>${ui.bSel.size} ${ui.bSel.size === 1 ? 'seleccionado' : 'seleccionados'}</b><button class="btn sm pri" data-a="loteAbrir" ${ui.bSel.size ? '' : 'disabled'}>${ic('layers')}Asignar</button></div>` : ''}
+      ${ui.bSel ? `<div class="lote-bar"><button class="chip" data-a="bSelTodos">${items.every(t => ui.bSel.has(t.id)) ? 'Ninguno' : 'Todos'}</button><b>${ui.bSel.size} ${ui.bSel.size === 1 ? 'seleccionado' : 'seleccionados'}</b><button class="btn sm danger" data-a="loteBorrar" ${ui.bSel.size ? '' : 'disabled'} aria-label="Eliminar seleccionados" title="Eliminar seleccionados">${ic('trash')}</button><button class="btn sm pri" data-a="loteAbrir" ${ui.bSel.size ? '' : 'disabled'}>${ic('layers')}Asignar</button></div>` : ''}
       <div class="group ${ui.bSel ? '' : 'bandeja-lista'}">${items.map(t => ui.bSel ? `<button class="tr pl ${ui.bSel.has(t.id) ? 'on' : ''}" style="--a:${t.area ? colorA(t.area) : 'transparent'}" data-a="bSelTog" data-id="${t.id}" aria-pressed="${ui.bSel.has(t.id)}"><span class="ck">${ui.bSel.has(t.id) ? ic('check') : ''}</span>
         <span class="tb"><span class="tt">${esc(t.titulo)}</span><span class="mt">${metaCorta(t, 2, { area:true })}</span></span></button>`
-        : `<div class="tr nock b-item ${nuevos.includes(t.id) ? 'in-anim' : ''}" style="--a:${t.area ? colorA(t.area) : 'transparent'}" data-a="abrir" data-id="${t.id}" role="button" tabindex="0" aria-label="${esc(t.titulo)}. Abrir detalle">
+        : `<div class="tr nock b-item ${nuevos.includes(t.id) ? 'in-anim' : ''}" style="--a:${t.area ? colorA(t.area) : 'transparent'}" data-a="abrir" data-id="${t.id}" data-swipe="1" role="button" tabindex="0" aria-label="${esc(t.titulo)}. Abrir detalle">
         <div class="tb"><div class="tt">${esc(t.titulo)}</div><div class="mt"><span class="tag ${Date.now() - new Date(t.creado) > 3 * 864e5 ? 'f-olv' : ''}">${haceCuanto(t.creado)}</span>${metaCorta(t, 2, { area:true })}</div></div>
-        <div class="b-acts"><button class="b-act" data-a="bHoy" data-id="${t.id}" aria-label="Pasar a Hoy: ${esc(t.titulo)}">Hoy</button><button class="b-act sq" data-a="bHecho" data-id="${t.id}" title="Hecho ya (<2 min)" aria-label="Marcar como hecha ahora: ${esc(t.titulo)}">${ic('check')}</button></div></div>`).join('')}</div>`;
+        <div class="b-acts"><button class="b-act" data-a="bHoy" data-id="${t.id}" aria-label="Pasar a Hoy: ${esc(t.titulo)}">Hoy</button><button class="b-act sq" data-a="bHecho" data-id="${t.id}" title="Hecho ya" aria-label="Marcar como hecha: ${esc(t.titulo)}">${ic('check')}</button><button class="b-act del" data-a="quitar" data-id="${t.id}" title="Eliminar" aria-label="Eliminar: ${esc(t.titulo)}">${ic('trash')}</button></div></div>`).join('')}</div>`;
   } else {
-    html += `<div class="zero"><div class="orb">${ic('check')}</div><h3>Bandeja vacía</h3><p>Cuando algo te ronde la cabeza, anótalo arriba. Después lo organizas con calma.</p></div>`;
+    html += `<div class="zero"><div class="orb">${ic('check')}</div><h3>Bandeja vacía</h3><p>Anota arriba cualquier pendiente y después decídelo aquí.</p></div>`;
   }
   if (rec.length) html += `<div class="org"><div class="org-t">${ic('check')}Organizados hoy <span class="n">${rec.length}</span></div>
     <ul class="org-l">${rec.map(r => { const t = byId(r.id); return `<li><span class="ot">${esc(t.titulo)}</span><span class="od">${DEST[r.d] || ''} · ${horaDe(r.t)}</span></li>`; }).join('')}</ul></div>`;
@@ -3141,10 +3220,12 @@ function mnCard(m, nuevos, conTipo) {
     m.por === 'ia' ? `<span class="tag" title="Afinado con IA">${ic('sparkle')}IA</span>` : ''
   ].filter(Boolean).join('');
   let pie = '';
+  const mnDestTxt = m.fecha && m.tipo === 'pendiente' ? (m.fecha <= hoy() ? 'Hoy' : fechaCorta(m.fecha)) : 'Bandeja';
   if (m.apoyo) pie = htmlMnApoyo();
   else if (m.tipo === 'nota') pie = `<div class="mn-q"><span>¿Qué es esto?</span><div class="chips">${MN_ELEGIBLES.map(k => `<button class="chip mn-qc ${m.sug === k ? 'on' : ''}" data-a="mnTipo" data-id="${m.id}" data-v="${k}">${MN_TIPOS[k].n}</button>`).join('')}</div></div>`;
-  else if (p) pie = `<div class="mn-p"><span>${ic('arrowR')}<em>${esc(p.x)}</em></span><button class="mn-add" data-a="mnTarea" data-id="${m.id}" aria-label="Crear tarea: ${esc(p.x)}">${ic('plus')}Tarea</button></div>`;
+  else if (p) pie = `<div class="mn-p"><span>${ic('arrowR')}<em>${esc(p.x)}</em></span><button class="mn-add" data-a="mnTarea" data-id="${m.id}" aria-label="Pasar a ${mnDestTxt}: ${esc(p.x)}">${ic('plus')}${mnDestTxt}</button></div>`;
   return `<div class="mn-c ${nuevos.includes(m.id) ? 'in-anim' : ''}" style="--c:${T.c}" data-a="mnAbrir" data-id="${m.id}" role="button" tabindex="0" aria-label="${T.n}: ${esc(m.texto)}. Abrir para aclarar">
+    <button class="mn-del" data-a="mnBorrarCard" data-id="${m.id}" title="Eliminar" aria-label="Eliminar pensamiento">${ic('trash')}</button>
     <div class="mn-t">${esc(m.texto)}</div>${tags ? `<div class="mn-m">${tags}</div>` : ''}${pie}</div>`;
 }
 function mnFilaCerrada(m) {
@@ -3375,8 +3456,8 @@ function renderProc() {
   o.innerHTML = `
     <div class="proc-top"><button class="ib" data-a="cerrarProc" aria-label="Cerrar">${ic('x')}</button><div class="proc-prog" role="progressbar" aria-valuenow="${P.i}" aria-valuemax="${n}"><div style="width:${P.i / n * 100}%"></div></div><span class="proc-n">${P.i + 1}/${n}</span></div>
     <div class="proc-card ${P.anim}" id="procCard"><div class="proc-q">${q}</div>
-      <textarea class="proc-tt" id="procTt" rows="2" maxlength="${MAX_TITULO}" aria-label="Título (puedes corregirlo)">${esc(t.titulo)}</textarea>
-      <div class="proc-meta">Capturado ${haceCuanto(t.creado).toLowerCase()}${t.area ? ' · ' + esc(area(t.area)?.n || '') : ''} · puedes corregir el texto</div></div>
+      <div class="edit-wrap proc-ew"><textarea class="proc-tt" id="procTt" rows="2" maxlength="${MAX_TITULO}" aria-label="Título de la tarea">${esc(t.titulo)}</textarea><span class="edit-ico" aria-hidden="true">${ic('pencil')}</span></div>
+      <div class="proc-meta">Capturado ${haceCuanto(t.creado).toLowerCase()}${t.area ? ' · ' + esc(area(t.area)?.n || '') : ''}</div></div>
     <div id="procBody" style="display:flex;flex-direction:column;flex:1">${cuerpoProc(t)}</div>`;
   P.anim = '';
   autoAlto($('#procTt'));
@@ -3390,14 +3471,14 @@ function cuerpoProc(t) {
       ${t.area ? '' : `<div class="areapick" id="procQa" role="radiogroup" aria-label="Área (obligatoria)">${areas().map(a => `<button class="chip area ${P.qa === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="pQa" data-v="${a.id}" role="radio" aria-checked="${P.qa === a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('')}</div>`}
     </div>
     <p class="proc-h">¿Qué hago con esto?</p>
-    <button class="two" data-a="pYa"><span class="ico">${ic('bolt')}</span><span><b>Lo hago ahora</b><small>Abre un temporizador de 5 minutos para hacerlo ya</small></span>${ic('play', 'fill')}</button>
+    <button class="two" data-a="pYa"><span class="ico">${ic('bolt')}</span><span><b>Lo hago ahora</b><small>Temporizador de 5 min</small></span>${ic('play', 'fill')}</button>
     <div class="sec-t" style="margin-top:16px">Mover a</div>
     <div class="acts">
-      <button class="act" style="--k:var(--foco-t);--k-s:var(--foco-s)" data-a="pHoy"><span class="ico">${ic('sun')}</span><span><b>Para hoy</b><span>Se suma a tu día</span></span></button>
-      <button class="act" style="--k:var(--ac-t);--k-s:var(--ac-s)" data-a="pProx"><span class="ico">${ic('arrowR')}</span><span><b>Próximas</b><span>Sin fecha, para después</span></span></button>
-      <button class="act" style="--k:var(--ac-t);--k-s:var(--ac-s)" data-a="pManana"><span class="ico">${ic('moon')}</span><span><b>Mañana</b><span>Programada para mañana</span></span></button>
-      <button class="act" style="--k:var(--warn);--k-s:var(--warn-s)" data-a="pEspera"><span class="ico">${ic('hourglass')}</span><span><b>En espera</b><span>Depende de alguien más</span></span></button>
-      <button class="act" style="--k:var(--vio);--k-s:var(--vio-s)" data-a="pAlgun"><span class="ico">${ic('bulb')}</span><span><b>Algún día</b><span>Idea sin fecha planeada</span></span></button>
+      <button class="act" style="--k:var(--foco-t);--k-s:var(--foco-s)" data-a="pHoy"><span class="ico">${ic('sun')}</span><span><b>Hoy</b><span>En tu lista de hoy</span><em class="dest-tag">→ Hoy</em></span></button>
+      <button class="act" style="--k:var(--ac-t);--k-s:var(--ac-s)" data-a="pProx"><span class="ico">${ic('arrowR')}</span><span><b>Próximas</b><span>Sin fecha, para después</span><em class="dest-tag">→ Planifica · Tablero</em></span></button>
+      <button class="act" style="--k:var(--ac-t);--k-s:var(--ac-s)" data-a="pManana"><span class="ico">${ic('moon')}</span><span><b>Mañana</b><span>Programada para mañana</span><em class="dest-tag">→ Planifica · Agenda</em></span></button>
+      <button class="act" style="--k:var(--warn);--k-s:var(--warn-s)" data-a="pEspera"><span class="ico">${ic('hourglass')}</span><span><b>En espera</b><span>Depende de alguien más</span><em class="dest-tag">→ Planifica · Tablero</em></span></button>
+      <button class="act" style="--k:var(--vio);--k-s:var(--vio-s)" data-a="pAlgun"><span class="ico">${ic('bulb')}</span><span><b>Algún día</b><span>Idea sin fecha</span><em class="dest-tag">→ Planifica · Tablero</em></span></button>
       <button class="act del" data-a="pBorrar"><span class="ico">${ic('trash')}</span><span><b>Eliminar</b><span>Ya no hace falta</span></span></button>
     </div>`;
   const d = P.d;
@@ -3471,22 +3552,21 @@ function htmlPlan() {
   const nada = !enHoy.length && !prox.length;
   const hechasSel = plan.sel.map(byId).filter(t => t && t.estado === 'hecho');
   const pend = plan.pend && byId(plan.pend);
-  return cab(`<h2>Prioridades de ${plan.para === 'hoy' ? 'hoy' : 'mañana'}</h2>`, `<span class="pl-cnt">${plan.sel.length}/6</span>`) + `
+  return cab(`<h2>Orden de ${plan.para === 'hoy' ? 'hoy' : 'mañana'}</h2>`, `<span class="pl-cnt">${plan.sel.length}/6</span>`) + `
     <div class="seg" role="tablist"><button class="${plan.para === 'hoy' ? 'on' : ''}" data-a="plPara" data-v="hoy" role="tab">Hoy</button><button class="${plan.para === 'manana' ? 'on' : ''}" data-a="plPara" data-v="manana" role="tab">Mañana</button></div>
-    <p class="hint" style="margin:12px 2px 0">Toca las tareas en orden de importancia, máximo 6. La número 1 será la primera que trabajes. Las demás de hoy quedan en «Otras tareas de hoy».</p>
-    ${pend ? `<div class="ag-banner">${ic('star')}<span>Ya tienes 6. Toca la prioridad que quieres sustituir por «${esc(pend.titulo)}».</span><button class="lnk2" data-a="plPendNo">Cancelar</button></div>` : ''}
-    ${hechasSel.length ? `<div class="sec-t">${ic('check')}Prioridades ya completadas <span class="n">${hechasSel.length}</span></div><div class="group">${hechasSel.map(fila).join('')}</div>` : ''}
+    ${pend ? `<div class="ag-banner">${ic('list')}<span>Ya tienes 6. Toca la que quieres sustituir por «${esc(pend.titulo)}».</span><button class="lnk2" data-a="plPendNo">Cancelar</button></div>` : ''}
+    ${hechasSel.length ? `<div class="sec-t">${ic('check')}Completadas <span class="n">${hechasSel.length}</span></div><div class="group">${hechasSel.map(fila).join('')}</div>` : ''}
     ${enHoy.length ? `<div class="sec-t">${plan.para === 'hoy' ? 'Ya están en Hoy' : 'Sin terminar hoy'}</div><div class="group">${enHoy.map(fila).join('')}</div>` : ''}
-    ${prox.length ? `<div class="sec-t">Próximas acciones <span class="n">${prox.length}</span></div><div class="group">${prox.map(fila).join('')}</div>` : ''}
-    ${nada ? `<div class="zero"><div class="orb ac">${ic('list')}</div><h3>No hay tareas para elegir</h3><p>Primero anota pendientes en la Bandeja y organízalos como «Próxima acción».</p><button class="btn pri" style="margin-top:16px" data-a="irBandeja">Ir a la Bandeja</button></div>` : ''}
-    ${plan.para === 'manana' && enHoy.length ? `<div class="group" style="margin-top:16px"><div class="set-r"><span class="sl">Regresar a Próximas las que no elija<small>Así mañana empiezas solo con tus 6</small></span><button class="sw ${plan.regresar ? 'on' : ''}" data-a="plReg" role="switch" aria-checked="${plan.regresar}" aria-label="Regresar las no elegidas"></button></div></div>` : ''}
-    ${nada ? '<div class="sh-end"></div>' : `<div class="sh-foot"><button class="btn" data-a="cerrarSheet">Cancelar</button><button class="btn pri" data-a="plGuardar">${ic('check')}Guardar plan</button></div>`}`;
+    ${prox.length ? `<div class="sec-t">Próximas <span class="n">${prox.length}</span></div><div class="group">${prox.map(fila).join('')}</div>` : ''}
+    ${nada ? `<div class="zero"><div class="orb ac">${ic('list')}</div><h3>No hay tareas para elegir</h3><p>Anota pendientes en la Bandeja para organizarlos aquí.</p><button class="btn pri" style="margin-top:16px" data-a="irBandeja">Ir a la Bandeja</button></div>` : ''}
+    ${plan.para === 'manana' && enHoy.length ? `<div class="group" style="margin-top:16px"><div class="set-r"><span class="sl">Regresar a Próximas las que no elija<small>Mañana empiezas solo con estas</small></span><button class="sw ${plan.regresar ? 'on' : ''}" data-a="plReg" role="switch" aria-checked="${plan.regresar}" aria-label="Regresar las no elegidas"></button></div></div>` : ''}
+    ${nada ? '<div class="sh-end"></div>' : `<div class="sh-foot"><button class="btn" data-a="cerrarSheet">Cancelar</button><button class="btn pri" data-a="plGuardar">${ic('check')}Guardar orden</button></div>`}`;
 }
 async function guardarPlan() {
   if (!plan.sel.length) {
     const hay = plan.para === 'hoy' && (tareasEn('hoy').length || tareasEn('proceso').length);
     if (!hay) { toast('Elige al menos una tarea'); sacudir($('.pl-cnt')); return; }
-    const r = await dialogo({ titulo:'¿Guardar el día sin prioridades?', texto:'Tus tareas de hoy se conservan en «Otras tareas de hoy».', ok:'Guardar sin prioridades' });
+    const r = await dialogo({ titulo:'¿Guardar el día sin orden fijo?', texto:'Tus tareas de hoy se conservan en Hoy.', ok:'Guardar' });
     if (r !== 1) return;
   }
   const f = plan.para === 'hoy' ? hoy() : manana();
@@ -3506,7 +3586,7 @@ async function guardarPlan() {
   if (plan.sel.length) registrarEvento('plan');
   const para = plan.para;
   cerrarSheet(true);
-  toast(para === 'hoy' ? 'Plan de hoy listo' : 'Plan de mañana listo. Descansa.');
+  toast(para === 'hoy' ? 'Orden de hoy listo' : 'Orden de mañana listo. Descansa.');
   if (!['hoy', 'agenda'].includes(ui.view)) ir('hoy'); else render();
 }
 
@@ -3544,7 +3624,7 @@ function renderHoy() {
     const hayProx = tareasEn('prox').length;
     zA = total
       ? `<div class="panel zero"><div class="orb">${ic('check')}</div><h3>Lista terminada</h3><p>Hiciste lo que planeaste. Puedes descansar o preparar mañana.</p><button class="btn pri" style="margin-top:16px" data-a="plan" data-v="manana">${ic('moon')}Preparar mañana</button></div>`
-      : `<div class="panel zero"><div class="orb ac">${ic('sun')}</div><h3>¿Qué harás hoy?</h3><p>${hayProx ? 'Elige hasta 6 tareas y trabájalas una a la vez.' : 'Anota tus pendientes en la Bandeja y después elige qué hacer hoy.'}</p><button class="btn pri" style="margin-top:16px" data-a="${hayProx ? 'plan' : 'irBandeja'}" ${hayProx ? 'data-v="hoy"' : ''}>${ic(hayProx ? 'star' : 'inbox')}${hayProx ? 'Elegir prioridades' : 'Ir a la Bandeja'}</button></div>`;
+      : `<div class="panel zero"><div class="orb ac">${ic('sun')}</div><h3>¿Qué harás hoy?</h3><p>${hayProx ? 'Elige hasta 6 tareas y trabájalas una a la vez.' : 'Anota tus pendientes en la Bandeja y después elige qué hacer hoy.'}</p><button class="btn pri" style="margin-top:16px" data-a="${hayProx ? 'plan' : 'irBandeja'}" ${hayProx ? 'data-v="hoy"' : ''}>${ic(hayProx ? 'list' : 'inbox')}${hayProx ? 'Ordenar el día' : 'Ir a la Bandeja'}</button></div>`;
   } else {
     const enCurso = ahora.estado === 'proceso';
     const run = t.tareaId === ahora.id && t.fase === 'foco' && (t.corriendo || t.restante < t.total);
@@ -3581,17 +3661,16 @@ function renderHoy() {
   const zonas = !!(ahora || nPlan || ant.length || hechas.length);
   if (zonas) zB += `<div class="sec-t">${ic('sun')}Planeados <span class="n">${nPlan}</span></div>
     ${extra.length ? `<div class="group">${extra.map(x => filaHoy(x, 0, { curso:true })).join('')}</div>` : ''}
-    <div class="group" data-list="hoy" data-base="${dc ? 1 : 0}" data-hero="${dc ? ahora.id : ''}" id="hoyList">${resto.map((x, i) => filaHoy(x, i + (dc ? 2 : 1))).join('')}${resto.length || extra.length || otrasR.length ? '' : '<div class="empty">Nada más planeado. Arrastra aquí una tarea para planearla hoy.</div>'}</div>
-    ${resto.length ? tip('hoy-orden', 'grip', `${TOCA()} el círculo para completar. Arrastra los puntos para reordenar o moverla a otra sección.`) : ''}
-    ${otrasR.length ? `<div class="group">${otrasR.map(x => filaHoy(x, 0, { otra:true })).join('')}</div><p class="hint">${ic('star')} la vuelve prioridad.</p>` : ''}`;
+    <div class="group" data-list="hoy" data-base="${dc ? 1 : 0}" data-hero="${dc ? ahora.id : ''}" id="hoyList">${resto.map((x, i) => filaHoy(x, i + (dc ? 2 : 1))).join('')}${resto.length || extra.length || otrasR.length ? '' : '<div class="empty">Nada más planeado hoy.</div>'}</div>
+    ${otrasR.length ? `<div class="group">${otrasR.map(x => filaHoy(x, 0, { otra:true })).join('')}</div>` : ''}`;
 
   // ----- Avance en una línea y próximo compromiso -----
-  if (total) zT += `<div class="avance"><div class="av-t"><b>${hechasP} de ${total}</b><span>${prioIds ? 'prioridades' : 'tareas'}</span>${pendP.length ? `<small>${est ? `≈ ${txtHM(est)}` : ''}${sinEst ? `${est ? ' · ' : ''}${sinEst} sin estimar` : ''}</small>` : ''}</div>
+  if (total) zT += `<div class="avance"><div class="av-t"><b>${hechasP} de ${total}</b><span>${prioIds ? 'del orden' : 'tareas'}</span>${pendP.length ? `<small>${est ? `≈ ${txtHM(est)}` : ''}${sinEst ? `${est ? ' · ' : ''}${sinEst} sin estimar` : ''}</small>` : ''}</div>
     ${total <= 12 ? `<div class="segbar" role="img" aria-label="${hechasP} de ${total} hechas">${Array.from({ length:total }, (_, i) => `<i class="${i < hechasP ? 'on' : ''}"></i>`).join('')}</div>` : `<div class="bar okbar"><i style="width:${hechasP / total * 100}%"></i></div>`}</div>`;
   const nm = new Date().getHours() * 60 + new Date().getMinutes();
   const prox = tareasDia(hoy()).filter(x => x.estado !== 'hecho' && x.hora && hm2min(x.hora) >= nm - 5 && x !== ahora).sort((a, b) => a.hora.localeCompare(b.hora))[0];
   if (prox) { const m = hm2min(prox.hora) - nm; zT += `<button class="prox" data-a="tab" data-v="agenda">${ic('clock')}<span><b>${prox.hora}</b> ${esc(prox.titulo)}</span><small>${m <= 0 ? 'ahora' : m < 60 ? `en ${m} min` : `en ${txtHM(m)}`}</small></button>`; }
-  zT += `<div class="hoy-acc"><button class="lnk2" data-a="plan" data-v="${tarde ? 'manana' : 'hoy'}">${ic(tarde ? 'moon' : 'star')}${tarde ? 'Preparar mañana' : rec ? 'Cambiar prioridades' : 'Elegir prioridades'}</button><button class="lnk2" data-a="irEnfoque">${ic('timer')}Enfoque libre</button></div>`;
+  zT += `<div class="hoy-acc"><button class="lnk2" data-a="plan" data-v="${tarde ? 'manana' : 'hoy'}">${ic(tarde ? 'moon' : 'list')}${tarde ? 'Preparar mañana' : rec ? 'Cambiar orden' : 'Ordenar el día'}</button><button class="lnk2" data-a="irEnfoque">${ic('timer')}Enfoque libre</button></div>`;
 
   // ----- Atrasadas (días anteriores sin terminar) y Completadas (solo las de hoy) -----
   const filaDec = (x, botones) => `<div class="tr dec ${area(x.area) ? 'ca' : ''}" style="--a:${colorA(x.area)}" data-a="abrir" data-id="${x.id}" data-drag role="button" tabindex="0"><div class="tb"><div class="tt">${esc(x.titulo)}</div><div class="mt">${metaCorta(x, 2, { area:true })}</div><div class="dec-b">${botones}</div></div></div>`;
@@ -3883,14 +3962,27 @@ function htmlAgPend() {
     ${P.sin.length ? `<div class="sec-t">Este día, sin hora <span class="n">${P.sin.length}</span></div><div class="group">${P.sin.map(fila).join('')}</div>` : ''}
     ${P.por.length ? `<div class="sec-t">Sin día <span class="n">${P.por.length}</span></div><div class="group">${P.por.map(fila).join('')}</div>` : ''}<div class="sh-end"></div>`;
 }
+// Tocar una hora vacía en la Agenda: crea una tarea ahí o coloca una pendiente en 1 toque.
+function htmlAgSlot() {
+  const s = ui.agSlot || { d:hoy(), m:540 };
+  const hTxt = min2hm(s.m), dTxt = s.d === hoy() ? 'Hoy' : s.d === manana() ? 'Mañana' : cap1(fechaCorta(s.d));
+  const sin = tareasDia(s.d).filter(t => t.estado !== 'hecho' && !t.hora);
+  const por = tareasEn('prox').filter(t => !t.fecha).sort(ordenPrioridad);
+  const fila = t => `<button class="tr opt" data-a="agSlotPon" data-id="${t.id}" style="--a:${colorA(t.area)}"><i class="dot"></i><span class="tb"><span class="tt">${esc(t.titulo)}</span><span class="mt">${metaCorta(t, 2, { area:true })}</span></span>${ic('plus')}</button>`;
+  return cab(`<h2>${dTxt} · ${hTxt}</h2>`) + `
+    <div class="ag-slot-cap"><input class="in" id="agSlotIn" maxlength="${MAX_TITULO}" placeholder="Nueva tarea a las ${hTxt}" enterkeyhint="done" autocomplete="off" autocapitalize="sentences" aria-label="Nueva tarea a las ${hTxt}"><button class="btn pri" data-a="agSlotCrear">${ic('plus')}Agendar</button></div>
+    ${sin.length ? `<div class="sec-t">Este día, sin hora <span class="n">${sin.length}</span></div><div class="group">${sin.map(fila).join('')}</div>` : ''}
+    ${por.length ? `<div class="sec-t">Próximas sin día <span class="n">${por.length}</span></div><div class="group">${por.slice(0, 20).map(fila).join('')}</div>` : ''}
+    <div class="sh-end"></div>`;
+}
 function htmlAgOpc() {
   const d = ui.dia || hoy();
   return cab('<h2>Agenda</h2>') + `<div class="f-sec"><label class="f-l" for="agIrIn">Ir a una fecha</label><input type="date" class="in" id="agIrIn" data-in="agIr" value="${d}"></div>
     <div class="group">
       ${d !== hoy() ? `<button class="tr opt" data-a="dia" data-v="${hoy()}"><span class="mi">${ic('sun')}</span><span class="tb"><span class="tt">Volver a hoy</span></span></button>` : ''}
-      <div class="set-r"><span class="sl">Día completo<small>Ver de 0 a 24 h en lugar de tu horario de trabajo</small></span><button class="sw ${ui.diaCompleto ? 'on' : ''}" data-a="agCompleto" role="switch" aria-checked="${!!ui.diaCompleto}" aria-label="Día completo"></button></div>
-      ${d >= hoy() && d <= manana() ? `<button class="tr opt" data-a="plan" data-v="${d === hoy() ? 'hoy' : 'manana'}"><span class="mi">${ic('star')}</span><span class="tb"><span class="tt">Prioridades de ${d === hoy() ? 'hoy' : 'mañana'}</span></span></button>` : ''}</div>
-    <p class="hint">Mantén presionado un bloque para moverlo de hora. Siempre puedes deshacer.</p><div class="sh-end"></div>`;
+      <div class="set-r"><span class="sl">Día completo<small>Ver de 0 a 24 h</small></span><button class="sw ${ui.diaCompleto ? 'on' : ''}" data-a="agCompleto" role="switch" aria-checked="${!!ui.diaCompleto}" aria-label="Día completo"></button></div>
+      ${d >= hoy() && d <= manana() ? `<button class="tr opt" data-a="plan" data-v="${d === hoy() ? 'hoy' : 'manana'}"><span class="mi">${ic('list')}</span><span class="tb"><span class="tt">Orden de ${d === hoy() ? 'hoy' : 'mañana'}</span></span></button>` : ''}</div>
+    <div class="sh-end"></div>`;
 }
 function ajustarAgenda(w) {
   w = w || $('#tlWrap'); if (!w) return;
@@ -3946,12 +4038,12 @@ const pendientesSinPlan = () => vivas().map(infoPend).filter(Boolean).sort((a, b
 
 /* ================= Vista: Tablero ================= */
 const COLS = [
-  { k:'prox', n:'Próximas', c:'var(--mut2)', d:'Pendientes, atrasadas y sin planear' },
-  { k:'proceso', n:'En curso', c:'var(--ac)', d:'Lo que está en Hoy' },
+  { k:'prox', n:'Próximas', c:'var(--mut2)', d:'Pendientes y en espera' },
+  { k:'proceso', n:'Hoy', c:'var(--ac)', d:'Lo que harás hoy' },
   { k:'hecho', n:'Hecho', c:'var(--ok-f)', d:'Últimos 7 días' }
 ];
-const COLN = { prox:'Próximas', hoy:'En curso', proceso:'En curso', espera:'Próximas', hecho:'Hecho' };
-// Tres estados: En curso = lo que está en Hoy; Hecho = completadas; Próximas = todo lo demás pendiente (atrasadas, en espera, sin día o con día futuro).
+const COLN = { prox:'Próximas', hoy:'Hoy', proceso:'Hoy', espera:'Próximas', hecho:'Hecho' };
+// Tres columnas alineadas con el resto de la app: Próximas, Hoy y Hecho.
 const atrasadaHoy = t => t.estado === 'hoy' && t.fecha && t.fecha < hoy();
 function colDe(t) {
   if (t.estado === 'hecho') return 'hecho';
@@ -3961,7 +4053,7 @@ function colDe(t) {
 }
 /* Filtros compartidos de Planifica: los mismos en Tablero y Agenda. Hoy y Bandeja no se filtran. */
 const PRIO_F = { si:'Prioritarias', no:'Normales' };
-const EST_F = { prox:'Próximas', proceso:'En curso' };
+const EST_F = { prox:'Próximas', proceso:'Hoy' };
 const REC_F = { si:'Solo rutinas', no:'Tareas únicas' };
 const prioDe = t => esPrioritaria(t) ? 'si' : 'no';
 function pasaFiltro(t, op = {}) {
@@ -4045,7 +4137,6 @@ function renderTablero() {
   let html = htmlBarraFiltros(nAct, base.length);
   const datos = COLS.map(c => ({ c, ts:tareasCol(c.k) }));
   html += `<div class="coltabs" id="coltabs" role="tablist" aria-label="Columnas">${datos.map(({ c, ts }) => `<button class="${ui.col === c.k ? 'on' : ''}" data-a="colGo" data-v="${c.k}" role="tab"><span>${c.n}</span><b class="${c.lim && ts.length >= c.lim ? 'full' : ''}">${ts.length}${c.lim ? '/' + c.lim : ''}</b></button>`).join('')}</div>`;
-  html += tip('tablero', 'arrowR', 'Avanza cada tarjeta con su botón o arrastrándola.');
   const algunHtml = algun.length ? `<details class="algun-sec" data-k="tb-algun" ${abierto('tb-algun') ? 'open' : ''}><summary>${ic('bulb')}Algún día <span class="cnt">${algun.length}</span>${ic('chevD', 'chev')}</summary><div class="algun-l">${algun.map(t => cardK(t, 'algun')).join('')}</div></details>` : '';
   html += `<div class="board" id="board">${datos.map(({ c, ts }) => `<section class="col" style="--c:${c.c}" data-col="${c.k}" aria-label="${c.n}">
       <div class="col-h"><div><i class="cd"></i>${c.n}<span class="cnt">${ts.length}</span></div><small>${c.d}</small></div>
@@ -4514,12 +4605,13 @@ function abrirSheet(ctx) {
   // Encima de «Organizar» cuando se abre desde ahí
   sh.classList.toggle('top', !!ctx.top); $('#sheetBg').classList.toggle('top', !!ctx.top);
   sh.style.setProperty('--dy', '0px');
-  sh.setAttribute('aria-label', { detalle:'Detalle de la tarea', plan:'Planear', ajustes:'Ajustes', captura:'Capturar', picker:'Elegir tarea', filtro:'Filtrar', buscar:'Buscar', menu:'Opciones', proyectos:'Proyectos', lote:'Asignar a varios', sync:'Sincronización', ayuda:'Ayuda', verbo:'Elegir verbo', areaSel:'Elegir área', dividir:'Dividir en pasos', widgets:'Widgets', programar:'Programar', revision:'Revisión de pendientes', mente:'Aclarar pensamiento', mnIA:'Inteligencia artificial' }[ctx.k] || '');
+  sh.setAttribute('aria-label', { detalle:'Detalle de la tarea', plan:'Planear', ajustes:'Ajustes', captura:'Capturar', picker:'Elegir tarea', filtro:'Filtrar', buscar:'Buscar', menu:'Opciones', proyectos:'Proyectos', lote:'Asignar a varios', sync:'Sincronización', ayuda:'Ayuda', verbo:'Elegir verbo', areaSel:'Elegir área', dividir:'Dividir en pasos', widgets:'Widgets', programar:'Programar', revision:'Revisión de pendientes', mente:'Aclarar pensamiento', mnIA:'Inteligencia artificial', agSlot:'Agendar en esta hora' }[ctx.k] || '');
   $('#sheetBg').classList.add('on'); sh.classList.add('on');
   document.documentElement.classList.add('lock');
   if (ctx.k === 'captura') setTimeout(() => $('#capSheetIn')?.focus(), 320);
-  if (ctx.k === 'buscar') setTimeout(() => { const i = $('#buscarIn'); if (i) { i.focus(); i.select(); } }, 320);
-  else if (ctx.k !== 'captura') setTimeout(() => { if (ui.sheet && !sh.contains(document.activeElement)) { const x = $('#sheet .ib.x'); if (x) x.focus({ preventScroll:true }); } }, 320);
+  else if (ctx.k === 'agSlot') setTimeout(() => $('#agSlotIn')?.focus(), 320);
+  else if (ctx.k === 'buscar') setTimeout(() => { const i = $('#buscarIn'); if (i) { i.focus(); i.select(); } }, 320);
+  else setTimeout(() => { if (ui.sheet && !sh.contains(document.activeElement)) { const x = $('#sheet .ib.x'); if (x) x.focus({ preventScroll:true }); } }, 320);
 }
 function cerrarSheet(silencioso, sinVolver) {
   if (!ui.sheet) return;
@@ -4557,6 +4649,7 @@ function refrescarSheet(inicio) {
   else if (c.k === 'cambiar') html = htmlCambiar();
   else if (c.k === 'proyectos') html = htmlProyectosSheet();
   else if (c.k === 'agPend') html = htmlAgPend();
+  else if (c.k === 'agSlot') html = htmlAgSlot();
   else if (c.k === 'agOpc') html = htmlAgOpc();
   else if (c.k === 'lote') html = htmlLote();
   else if (c.k === 'sync') html = htmlSync();
@@ -4603,8 +4696,9 @@ function htmlAreaNueva(an) {
 }
 function htmlAreaSel() {
   const c = ui.sheet, sel = c.dest === 'proc' ? ((proc && proc.d.area) || '') : ui.capArea, an = ui.areaNueva;
+  const oblig = c.dest === 'cap' || c.dest === 'capSheet';
   const fila = (id, n, col) => `<button class="tr opt" data-a="areaElegir" data-v="${id}" aria-pressed="${sel === id}"><i class="dot" style="--a:${col}"></i><span class="tb"><span class="tt">${esc(n)}</span></span><span class="ib-s" style="color:var(--ac-t)">${sel === id ? ic('check') : ''}</span></button>`;
-  return cab('<h2>Área</h2>') + `<div class="group">${areas().map(a => fila(a.id, a.n, a.c)).join('')}${fila('', 'Sin área', 'var(--sf3)')}</div>
+  return cab('<h2>Área</h2>') + `<div class="group">${areas().map(a => fila(a.id, a.n, a.c)).join('')}${oblig ? '' : fila('', 'Sin área', 'var(--sf3)')}</div>
     <div class="group" style="margin-top:16px">${an ? htmlAreaNueva(an) : `<button class="tr opt" data-a="areaAdd" ${areas().length >= 12 ? 'disabled' : ''}><span class="tb"><span class="tt" style="color:var(--ac-t)">${areas().length >= 12 ? 'Llegaste al máximo de 12 áreas' : '+ Nueva área'}</span></span></button>`}</div>
     <div class="sh-end"></div>`;
 }
@@ -4688,7 +4782,6 @@ function htmlSync() {
 }
 function htmlCaptura() {
   return cab('<h2>Capturar</h2>') + htmlCapForm('capSheet') + `
-    <p class="hint">Se guarda en tu Bandeja. Los detalles los completas al organizar.</p>
     <button class="mn-ir" data-a="irMente"><span class="mi">${ic('brain')}</span><span class="tb"><b>¿Traes mucho en la cabeza?</b><small>Escríbelo todo sin orden y Foco lo acomoda</small></span>${ic('chevR', 'chev-r')}</button>
     <div class="sh-end"></div>`;
 }
@@ -4772,63 +4865,70 @@ function htmlResultados() {
   return (act.length ? `<div class="sec-t">Activas <span class="n">${act.length}</span></div><div class="group">${act.slice(0, 40).map(fila).join('')}</div>` : '')
     + (hechas.length ? `<div class="sec-t">${ic('check')}Completadas <span class="n">${hechas.length}</span></div><div class="group">${hechas.slice(0, 40).map(fila).join('')}</div>` : '');
 }
-// Detalle como lista de ajustes de iOS: cada fila muestra su valor y abre un solo selector a la vez.
+// Detalle: estado visible arriba, campos llenos a la vista y campos opcionales vacíos como chips «+».
 function htmlDetalle(t) {
   const q = cuad(t), op = ui.dtOpen, A = area(t.area);
   const [rk, rv] = (t.rec || '').split(':');
   const diasSem = rk === 'semanal' ? (rv || '').split(',').filter(Boolean).map(Number) : [];
   const fila = (k, icono, tono, label, valor, cuerpo) => `<div class="dr ${op === k ? 'open' : ''}"><button class="dr-h" data-a="dtFila" data-v="${k}" aria-expanded="${op === k}"><span class="dr-i ${tono}">${ic(icono)}</span><span class="dr-l">${label}</span><span class="dr-v">${valor}</span>${ic('chevD', 'chev')}</button>${op === k ? `<div class="dr-b">${cuerpo}</div>` : ''}</div>`;
-  const estados = Object.entries(ESTADOS).filter(([k]) => k !== 'bandeja' || t.estado === 'bandeja');
-  const fechaTxt = t.fecha ? `${fechaCorta(t.fecha)}${t.fecha === hoy() || t.fecha === manana() ? ' · ' + DIAS3[parseYmd(t.fecha).getDay()] : ''}` : 'Sin fecha';
+  const estVis = ['bandeja', 'hoy', 'prox', 'espera', 'algun', 'hecho'].filter(k => (k !== 'bandeja' || t.estado === 'bandeja') && (k !== 'hecho' || t.estado === 'hecho'));
+  const estCur = t.estado === 'proceso' ? 'hoy' : t.estado;
+  const fechaTxt = t.fecha ? `${fechaCorta(t.fecha)}${t.fecha === hoy() || t.fecha === manana() ? ' · ' + DIAS3[parseYmd(t.fecha).getDay()] : ''}` : '<span class="mut2">Sin fecha</span>';
   const horaVal = t.hora ? `${pad(Math.floor(hm2min(t.hora) / 60))}:${pad(hm2min(t.hora) % 60)}` : '';
   const F = {
-    estado: fila('estado', 'circleDot', 'ind', 'Estado', `<span class="pill ${EST_CLS[t.estado]}">${ESTADOS[t.estado]}</span>`,
-      `<div class="chips">${estados.map(([k, n]) => `<button class="chip ${t.estado === k ? 'on' : ''}" data-a="dtEstado" data-v="${k}">${n}</button>`).join('')}</div>`),
-    area: fila('area', 'layers', 'teal', 'Área', A ? `<i class="dot" style="--a:${A.c}"></i>${esc(A.n)}` : 'Sin área',
+    area: fila('area', 'layers', 'teal', 'Área', A ? `<i class="dot" style="--a:${A.c}"></i>${esc(A.n)}` : '<span style="color:var(--hot)">Elegir área</span>',
       `<div class="chips">${areas().map(a => `<button class="chip area ${t.area === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="dtArea" data-v="${a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('')}<button class="chip" data-a="irAreas">${ic('plus')}Nueva área</button></div>`),
     prio: `<div class="dr"><button class="dr-h" data-a="dtPrio" role="switch" aria-checked="${!!q}"><span class="dr-i warn">${ic('star', q ? 'fill' : '')}</span><span class="dr-l">Prioritaria</span><span class="sw ${q ? 'on' : ''}" aria-hidden="true"></span></button></div>`,
     fecha: fila('fecha', 'cal', 'hot', 'Día planeado', fechaTxt,
       `<div class="chips">${[['hoy', 'Hoy'], ['manana', 'Mañana'], ['lunes', 'Próximo lunes'], ['semana', 'En una semana'], ['', 'Sin fecha']].map(([v, n]) => `<button class="chip ${(v === 'hoy' && t.fecha === hoy()) || (v === 'manana' && t.fecha === manana()) || (v === '' && !t.fecha) ? 'on' : ''}" data-a="dtCuando" data-v="${v}">${n}</button>`).join('')}</div>
        <label class="f-l" style="margin-top:12px" for="dtFechaIn">Otra fecha</label><input type="date" class="in" id="dtFechaIn" data-in="dtFecha" value="${t.fecha}" ${t.estado !== 'hecho' ? `min="${hoy()}"` : ''}>`),
-    hora: fila('hora', 'clock', 'blue', 'Hora', t.hora || '<span class="mut2">Opcional</span>',
-      `<div class="row2"><input type="time" class="in" data-in="dtHora" value="${horaVal}" step="900" aria-label="Hora">${t.hora ? `<button class="btn" data-a="dtSinHora">${ic('x')}Quitar hora</button>` : '<span></span>'}</div><p class="hint">La tarea aparecerá en la Agenda de ese día.</p>`),
+    hora: fila('hora', 'clock', 'blue', 'Hora', t.hora || '<span class="mut2">Sin hora</span>',
+      `<div class="row2"><input type="time" class="in" data-in="dtHora" value="${horaVal}" step="900" aria-label="Hora">${t.hora ? `<button class="btn" data-a="dtSinHora">${ic('x')}Quitar hora</button>` : '<span></span>'}</div>`),
     proy: fila('proy', 'folder', 'gray', 'Proyecto', t.proyecto ? esc(t.proyecto) : '<span class="mut2">Ninguno</span>',
       `<input class="in" data-in="dtProyecto" list="proyectos" maxlength="60" value="${esc(t.proyecto)}" placeholder="Ej. App de finanzas" aria-label="Proyecto">`),
     lim: fila('lim', 'flag', 'hot', 'Fecha límite', t.limite ? `${fechaCorta(t.limite)}${t.limite < hoy() && t.estado !== 'hecho' ? ' · vencida' : ''}` : '<span class="mut2">Opcional</span>',
-      `<input type="date" class="in" data-in="dtLimite" value="${t.limite || ''}" aria-label="Fecha límite">${t.limite ? `<button class="btn full" style="margin-top:8px" data-a="dtLimQuitar">${ic('x')}Quitar fecha límite</button>` : ''}<p class="hint">Cuándo vence, si lo necesitas. Es distinta del día en que planeas trabajarla.</p>`),
-    notas: fila('notas', 'note', 'gray', 'Notas y bitácora', (t.notas || []).length ? `${t.notas.length} ${t.notas.length === 1 ? 'nota' : 'notas'}` : '<span class="mut2">Sin notas</span>',
+      `<input type="date" class="in" data-in="dtLimite" value="${t.limite || ''}" aria-label="Fecha límite">${t.limite ? `<button class="btn full" style="margin-top:8px" data-a="dtLimQuitar">${ic('x')}Quitar fecha límite</button>` : ''}`),
+    notas: fila('notas', 'note', 'gray', 'Notas', (t.notas || []).length ? `${t.notas.length} ${t.notas.length === 1 ? 'nota' : 'notas'}` : '<span class="mut2">Sin notas</span>',
       `<div class="bit">${(t.notas || []).slice().reverse().map(n => `<div class="bit-i"><small>${fechaCorta(diaDeISO(n.t))} · ${horaDe(n.t)}</small>${esc(n.x)}</div>`).join('')}</div>
-       <div class="bit-add" id="bitBox"><textarea class="in" id="bitIn" rows="1" maxlength="1000" placeholder="Agrega un avance, decisión o cambio de idea" aria-label="Nueva nota"></textarea><button class="cap-send" data-a="bitAdd" aria-label="Agregar nota">${ic('arrowUp')}</button></div>`),
+       <div class="bit-add" id="bitBox"><textarea class="in" id="bitIn" rows="1" maxlength="1000" placeholder="Agrega una nota o avance" aria-label="Nueva nota"></textarea><button class="cap-send" data-a="bitAdd" aria-label="Agregar nota">${ic('arrowUp')}</button></div>`),
     rec: fila('rec', 'repeat', 'gray', 'Repetición', t.rec ? recTexto(t.rec) : 'No se repite',
       `<div class="chips">${[['', 'No se repite'], ['diaria', 'Todos los días'], ['laboral', 'Lunes a viernes'], ['semanal', 'Ciertos días'], ['mensual', 'Cada mes']].map(([k, n]) => `<button class="chip ${(rk || '') === k ? 'on' : ''}" data-a="dtRec" data-v="${k}">${n}</button>`).join('')}</div>
        ${rk === 'semanal' ? `<div class="days" role="group" aria-label="Días">${DIAS1.map((d, i) => `<button class="${diasSem.includes(i) ? 'on' : ''}" data-a="dtDia" data-v="${i}" aria-label="${DIAS[i]}" aria-pressed="${diasSem.includes(i)}">${d}</button>`).join('')}</div>` : ''}
        ${rk === 'mensual' ? `<div class="rec-mes"><button class="chip ${+rv === 1 ? 'on' : ''}" data-a="dtDiaMes" data-v="1">Día 1</button><button class="chip ${+rv === 15 ? 'on' : ''}" data-a="dtDiaMes" data-v="15">Día 15</button><button class="chip ${+rv >= 31 ? 'on' : ''}" data-a="dtDiaMes" data-v="31">Último día</button><input type="number" class="in" min="1" max="31" value="${clamp(+rv || 1, 1, 31)}" data-in="dtDiaMesIn" aria-label="Día del mes"></div>` : ''}
-       ${t.rec && t.estado !== 'hecho' ? `<div class="rec-act"><button class="btn sm ghost" data-a="dtSaltar">${ic('skip')}Saltar esta vez</button></div>` : ''}
-       ${t.rec ? `<p class="hint">Al completarla se programa la siguiente. Si un día no la marcas, avanza automáticamente a su próxima fecha.</p>` : ''}`),
+       ${t.rec && t.estado !== 'hecho' ? `<div class="rec-act"><button class="btn sm ghost" data-a="dtSaltar">${ic('skip')}Saltar esta vez</button></div>` : ''}`),
     dur: fila('dur', 'timer', 'vio', 'Duración', t.dur ? `${t.dur} min` : '<span class="mut2">Sin estimar</span>',
       `<div class="chips">${[5, 15, 25, 50, 90].map(m => `<button class="chip ${t.dur === m ? 'on' : ''}" data-a="dtDur" data-v="${m}">${m} min</button>`).join('')}<button class="chip ${!t.dur ? 'on' : ''}" data-a="dtDur" data-v="0">Sin estimar</button></div>`)
   };
-  const masFilas = [F.proy, F.lim, F.notas, F.rec, F.dur, F.estado];
-  if (t.estado === 'espera') masFilas.push(fila('esp', 'hourglass', 'warn', 'Esperando a', t.espera ? esc(t.espera) : '<span style="color:var(--hot)">Sin indicar</span>',
-    `<input class="in" data-in="dtEspera" maxlength="120" value="${esc(t.espera)}" placeholder="¿De quién o de qué?" aria-label="Esperando a">`),
-    fila('seg', 'refresh', 'warn', 'Próximo seguimiento', t.seg ? (t.seg === hoy() ? 'Hoy' : fechaCorta(t.seg)) : '<span class="mut2">Sin fecha</span>',
-    `<div class="chips">${[['1', 'Mañana'], ['3', 'En 3 días'], ['7', 'En una semana'], ['', 'Sin seguimiento']].map(([v, n]) => `<button class="chip ${(v === '' && !t.seg) || (v && t.seg === addDays(hoy(), +v)) ? 'on' : ''}" data-a="dtSegCuando" data-v="${v}">${n}</button>`).join('')}</div>
-     <input type="date" class="in" style="margin-top:12px" data-in="dtSeg" value="${t.seg || ''}" min="${hoy()}" aria-label="Fecha de seguimiento"><p class="hint">Ese día aparecerá en Hoy, sin dejar de estar en espera.</p>`));
-  const masAb = dtMasAbierto(t);
-  const llenos = [t.proyecto && 'Proyecto', t.limite && 'Fecha límite', (t.notas || []).length && 'Notas', t.rec && 'Repetición', t.dur && 'Duración'].filter(Boolean);
+  const esperaFilas = t.estado === 'espera' ? [
+    fila('esp', 'hourglass', 'warn', 'Esperando a', t.espera ? esc(t.espera) : '<span style="color:var(--hot)">Sin indicar</span>',
+      `<input class="in" data-in="dtEspera" maxlength="120" value="${esc(t.espera)}" placeholder="¿De quién o de qué?" aria-label="Esperando a">`),
+    fila('seg', 'refresh', 'warn', 'Seguimiento', t.seg ? (t.seg === hoy() ? 'Hoy' : fechaCorta(t.seg)) : '<span class="mut2">Sin fecha</span>',
+      `<div class="chips">${[['1', 'Mañana'], ['3', 'En 3 días'], ['7', 'En una semana'], ['', 'Sin seguimiento']].map(([v, n]) => `<button class="chip ${(v === '' && !t.seg) || (v && t.seg === addDays(hoy(), +v)) ? 'on' : ''}" data-a="dtSegCuando" data-v="${v}">${n}</button>`).join('')}</div>
+       <input type="date" class="in" style="margin-top:12px" data-in="dtSeg" value="${t.seg || ''}" min="${hoy()}" aria-label="Fecha de seguimiento">`)
+  ] : [];
+  const opSpec = [
+    ['proy', 'Proyecto', !!t.proyecto],
+    ['dur', 'Duración', !!t.dur],
+    ['lim', 'Fecha límite', !!t.limite],
+    ['rec', 'Repetir', !!t.rec],
+    ['notas', 'Nota', !!(t.notas && t.notas.length)]
+  ];
+  const extrasVis = opSpec.filter(([k, , lleno]) => lleno || op === k).map(([k]) => F[k]);
+  const extrasAdd = opSpec.filter(([k, , lleno]) => !lleno && op !== k);
   return cab(`<h2>Tarea</h2>`, `<span class="saved ${Date.now() - ui.savedAt < 1300 ? 'on' : ''}" id="savedTag">${ic('check')}Guardado</span>`) + `
-    <textarea class="dt-title" data-in="dtTitulo" rows="1" maxlength="${MAX_TITULO}" aria-label="Título de la tarea">${esc(t.titulo)}</textarea>
+    <div class="edit-wrap"><textarea class="dt-title" data-in="dtTitulo" rows="1" maxlength="${MAX_TITULO}" aria-label="Título de la tarea">${esc(t.titulo)}</textarea><span class="edit-ico" aria-hidden="true">${ic('pencil')}</span></div>
     <div id="dtClar">${t.estado === 'hecho' ? '' : htmlClaridad(t.titulo, 'dt')}</div>
-    <div class="sec-t">${ic('layers')}Organización</div><div class="group">${F.area}${F.prio}</div>
-    <div class="sec-t">${ic('cal')}Planificación</div><div class="group">${F.fecha}${F.hora}</div>
-    ${reprogramaciones(t) || (t.reprog && (t.reprog.o || t.reprog.d)) ? `<p class="hint dt-rep">${ic('repeat')}${reprogramaciones(t) ? `Reprogramada ${reprogramaciones(t)} ${reprogramaciones(t) === 1 ? 'vez' : 'veces'}` : 'Sin reprogramar'}${t.reprog.o ? ` · día original: ${fechaCorta(t.reprog.o).toLowerCase()}` : t.reprog.d ? ' · día original anterior a esta versión (desconocido)' : ''}</p>` : ''}
-    <div class="group" style="margin-top:16px"><div class="dr ${masAb ? 'open' : ''}"><button class="dr-h" data-a="dtMas" aria-expanded="${masAb}"><span class="dr-i gray">${ic('plus')}</span><span class="dr-l">Más detalles</span><span class="dr-v">${llenos.length ? esc(llenos.join(' · ')) : '<span class="mut2">Opcional</span>'}</span>${ic('chevD', 'chev')}</button></div></div>
-    ${masAb ? `<div class="group mas-b">${masFilas.join('')}</div>` : ''}
-    <div class="dt-meta">Creada ${fechaCorta(diaDeISO(t.creado)).toLowerCase()} · ${t.pomos || 0} ${+t.pomos === 1 ? 'pomodoro' : 'pomodoros'}${t.hecho ? ' · hecha ' + fechaCorta(diaDeISO(t.hecho)).toLowerCase() + ' a las ' + horaDe(t.hecho) : ''} · los cambios se guardan solos</div>
-    <div class="sh-foot"><button class="btn sq danger" data-a="dtBorrar" aria-label="Eliminar tarea">${ic('trash')}</button>
+    <div class="dt-est" role="radiogroup" aria-label="Ubicación">${estVis.map(k => `<button class="chip ${estCur === k ? 'on' : ''}" data-a="dtEstado" data-v="${k}" role="radio" aria-checked="${estCur === k}">${ESTADOS[k]}</button>`).join('')}</div>
+    ${esperaFilas.length ? `<div class="group" style="margin-bottom:14px">${esperaFilas.join('')}</div>` : ''}
+    <div class="group">${F.area}${F.prio}${F.fecha}${F.hora}</div>
+    ${reprogramaciones(t) || (t.reprog && (t.reprog.o || t.reprog.d)) ? `<p class="hint dt-rep">${ic('repeat')}${reprogramaciones(t) ? `Reprogramada ${reprogramaciones(t)} ${reprogramaciones(t) === 1 ? 'vez' : 'veces'}` : 'Sin reprogramar'}${t.reprog.o ? ` · día original: ${fechaCorta(t.reprog.o).toLowerCase()}` : ''}</p>` : ''}
+    ${extrasVis.length ? `<div class="group" style="margin-top:14px">${extrasVis.join('')}</div>` : ''}
+    ${extrasAdd.length ? `<div class="dt-add-row">${extrasAdd.map(([k, lbl]) => `<button class="dt-add-chip" data-a="dtFila" data-v="${k}">${ic('plus')}${lbl}</button>`).join('')}</div>` : ''}
+    <div class="dt-meta">Creada ${fechaCorta(diaDeISO(t.creado)).toLowerCase()}${t.pomos ? ` · ${t.pomos} ${+t.pomos === 1 ? 'pomodoro' : 'pomodoros'}` : ''}${t.hecho ? ' · hecha ' + fechaCorta(diaDeISO(t.hecho)).toLowerCase() + ' ' + horaDe(t.hecho) : ''}</div>
+    <div class="sh-foot"><button class="btn del-txt" data-a="dtBorrar" aria-label="Eliminar tarea">${ic('trash')}Eliminar</button>
       ${t.estado !== 'hecho' ? `<button class="btn" data-a="play" data-id="${t.id}">${ic('play', 'fill')}Enfocar</button><button class="btn pri" data-a="dtCompletar">${ic('check')}Hecha</button>` : `<button class="btn pri" data-a="dtEstado" data-v="hoy">${ic('refresh')}Reabrir para hoy</button>`}</div>`;
 }
-// «Más detalles» se abre al tocarlo, o solo cuando se pide uno de sus campos (p. ej. «Anotar de quién esperas»).
+// Compatibilidad de campos opcionales abiertos por código.
 const DT_MAS = ['proy', 'lim', 'notas', 'rec', 'dur', 'estado', 'esp', 'seg'];
 const dtMasAbierto = t => !!ui.dtMas || DT_MAS.includes(ui.dtOpen) || (t.estado === 'espera' && !t.espera);
 function guardarDetalleTexto() {
@@ -4851,21 +4951,20 @@ function htmlAjustes() {
   return cab('<h2>Ajustes</h2>') + `
     <div class="f-sec"><span class="f-l">Apariencia</span>
       <div class="seg" role="radiogroup" aria-label="Tema">${[['auto', 'Automático'], ['light', 'Claro'], ['dark', 'Oscuro']].map(([k, n]) => `<button class="${tema === k ? 'on' : ''}" data-a="tema" data-v="${k}" role="radio" aria-checked="${tema === k}">${n}</button>`).join('')}</div>
-      <p class="hint">Automático sigue el modo claro u oscuro de tu sistema.</p>
       <span class="f-l" style="margin-top:16px">Densidad de listas y tablero</span>
       <div class="seg" role="radiogroup" aria-label="Densidad">${[['comoda', 'Cómoda'], ['compacta', 'Compacta']].map(([k, n]) => `<button class="${(pref.v('densidad') || 'comoda') === k ? 'on' : ''}" data-a="densidad" data-v="${k}" role="radio" aria-checked="${(pref.v('densidad') || 'comoda') === k}">${n}</button>`).join('')}</div>
       <span class="f-l" style="margin-top:16px">Al abrir Foco</span>
       <div class="seg" role="radiogroup" aria-label="Pantalla inicial">${[['hoy', 'Mostrar Hoy'], ['ultima', 'Última vista']].map(([k, n]) => `<button class="${(pref.v('inicio') || 'hoy') === k ? 'on' : ''}" data-a="inicio" data-v="${k}" role="radio" aria-checked="${(pref.v('inicio') || 'hoy') === k}">${n}</button>`).join('')}</div>
       <div class="group" style="margin-top:16px"><div class="set-r"><span class="sl">Modo calma<small>Sin confeti, animaciones ni avisos de logros</small></span><button class="sw ${pref.v('calma') ? 'on' : ''}" data-a="calma" role="switch" aria-checked="${!!pref.v('calma')}" aria-label="Modo calma"></button></div></div></div>
     <div class="f-sec" id="secAreas"><span class="f-l">Áreas</span><div class="group">
-      ${a.areas.map(x => `<div class="ar-r"><button class="sw-c" style="--a:${x.c}" data-a="areaColor" data-id="${x.id}" aria-label="Cambiar color de ${esc(x.n)}" aria-expanded="${ui.areaColor === x.id}"></button><input type="text" value="${esc(x.n)}" maxlength="30" data-in="areaN" data-id="${x.id}" aria-label="Nombre del área"><span class="cnt">${activasDe(x.id) || ''}</span><button class="ib" data-a="areaDel" data-id="${x.id}" aria-label="Eliminar área ${esc(x.n)}">${ic('trash')}</button></div>${ui.areaColor === x.id ? paleta(x.c, 'areaColorSel', x.id) : ''}`).join('')}
+      ${a.areas.map(x => { const n = activasDe(x.id); return `<div class="ar-r"><button class="sw-c" style="--a:${x.c}" data-a="areaColor" data-id="${x.id}" title="Cambiar color" aria-label="Cambiar color de ${esc(x.n)}" aria-expanded="${ui.areaColor === x.id}"></button><input type="text" value="${esc(x.n)}" maxlength="30" data-in="areaN" data-id="${x.id}" aria-label="Nombre del área"><span class="cnt">${n ? `${n} ${n === 1 ? 'tarea' : 'tareas'}` : ''}</span><button class="ib" data-a="areaDel" data-id="${x.id}" aria-label="Eliminar área ${esc(x.n)}">${ic('trash')}</button></div>${ui.areaColor === x.id ? paleta(x.c, 'areaColorSel', x.id) : ''}`; }).join('')}
       ${an ? `<div class="ar-new"><label class="f-l" for="areaNuevaN">Nombre de la nueva área</label>
           <input class="in ${an.err ? 'bad' : ''}" id="areaNuevaN" maxlength="30" placeholder="Ej. Casa, Salud, Curso de producción" value="${esc(an.n)}" enterkeyhint="done" autocomplete="off">
           ${an.err ? `<div class="err">${esc(an.err)}</div>` : ''}
           <span class="f-l" style="margin:12px 2px 0">Color</span>${paleta(an.c, 'areaNuevaC')}
           <div class="row"><button class="btn" data-a="areaNuevaNo">Cancelar</button><button class="btn pri" data-a="areaNuevaOk">${ic('check')}Agregar</button></div></div>`
         : `<div class="ar-r"><button class="btn full" style="background:none;color:var(--ac-t)" data-a="areaAdd" ${a.areas.length >= 12 ? 'disabled' : ''}>${ic('plus')}${a.areas.length >= 12 ? 'Llegaste al máximo de 12 áreas' : 'Agregar área'}</button></div>`}
-      </div><p class="hint">Toca el nombre para cambiarlo y el círculo para cambiar el color. El número indica sus tareas pendientes.</p></div>
+      </div></div>
     <div class="f-sec"><span class="f-l">Conexión con Google Sheets</span>
       <div class="panel">
         <label class="f-l" for="cfgUrl">URL de la aplicación web</label>
@@ -5057,6 +5156,12 @@ const ACT = {
     m.borrado = true; mnGuardar(m); cerrarSheet(false, true);
     toast('Eliminada', 'Deshacer', () => { m.borrado = false; mnGuardar(m); mnRefrescar(); });
   },
+  mnBorrarCard:(el, e) => {
+    if (e) e.stopPropagation();
+    const m = mnById(el.dataset.id); if (!m) return;
+    m.borrado = true; mnGuardar(m); mnRefrescar();
+    toast('Pensamiento eliminado', 'Deshacer', () => { m.borrado = false; mnGuardar(m); mnRefrescar(); });
+  },
   mnIA:() => { ui.mnIAmsg = null; abrirSheet({ k:'mnIA', volver:ui.sheet && ui.sheet.k === 'ajustes' ? { k:'ajustes' } : null }); },
   mnAfinar:() => mnAfinar(mnAbiertos().filter(m => m.por === 'local'), true),
   mnIAon:() => {
@@ -5080,9 +5185,17 @@ const ACT = {
     const c = await capturarDe('#capIn', 'bandeja', ui.capAreaManual && ui.capArea ? { area:ui.capArea } : {});
     if (c.length) capAreaReset();
     pintarCapForm('cap');
-    if (c.length) { pintarBandejaLista(c.map(t => t.id)); encabezado(); pintarTabs(); toast(c.length > 1 ? `${c.length} pendientes guardados en la Bandeja` : `Guardado: «${c[0].titulo}»`, null, null, 'check'); }
+    if (c.length) { pintarBandejaLista(c.map(t => t.id)); encabezado(); pintarTabs(); pulsarTab('bandeja'); toast(c.length > 1 ? `${c.length} en Bandeja` : `En Bandeja: «${c[0].titulo}»`, null, null, 'check'); }
   },
-  capSheetAdd:async () => { if (!capAreaOk('#capSheetIn', 'capSheet')) return; const c = await capturarDe('#capSheetIn', 'bandeja', ui.capAreaManual && ui.capArea ? { area:ui.capArea } : {}); if (c.length) { capAreaReset(); cerrarSheet(false, true); toast(c.length > 1 ? `${c.length} pendientes guardados en la Bandeja` : `Guardado: «${c[0].titulo}»`, null, null, 'check'); } },
+  capSheetAdd:async () => {
+    if (!capAreaOk('#capSheetIn', 'capSheet')) return;
+    const c = await capturarDe('#capSheetIn', 'bandeja', ui.capAreaManual && ui.capArea ? { area:ui.capArea } : {});
+    if (c.length) {
+      capAreaReset(); cerrarSheet(false, true); pulsarTab('bandeja');
+      const enB = ui.view === 'bandeja' && ui.bModo !== 'mente';
+      toast(c.length > 1 ? `${c.length} en Bandeja` : `En Bandeja: «${c[0].titulo}»`, enB ? null : 'Ver', enB ? null : () => { ui.bModo = 'capturar'; ir('bandeja'); }, 'inbox');
+    }
+  },
   procesar:() => abrirProc(),
   abrir:el => abrirSheet({ k:'detalle', id:el.dataset.id }),
   quitar:el => {
@@ -5096,7 +5209,7 @@ const ACT = {
     if (card) { if (card.classList.contains('done')) return; card.classList.add('done'); }
     sonidoCheck();
     setTimeout(() => card && card.classList.add('out'), 380);
-    setTimeout(() => { completar(t, el); spRefrescar(); }, 620);
+    setTimeout(() => { completar(t, el); spRefrescar(); pulsarTab('progreso'); }, 620);
   },
   play:el => enfocar(el.dataset.id, true),
   enfVolver:() => ir(ui.volverDe && ui.volverDe !== 'enfoque' ? ui.volverDe : 'hoy'),
@@ -5167,6 +5280,13 @@ const ACT = {
   bSelTog:el => { const id = el.dataset.id; ui.bSel.has(id) ? ui.bSel.delete(id) : ui.bSel.add(id); pintarBandejaLista(); },
   bSelTodos:() => { const ids = ui.bIds || []; const todos = ids.every(id => ui.bSel.has(id)); ids.forEach(id => todos ? ui.bSel.delete(id) : ui.bSel.add(id)); pintarBandejaLista(); },
   loteAbrir:() => { ui.lote = {}; abrirSheet({ k:'lote' }); },
+  loteBorrar:() => {
+    const ts = [...(ui.bSel || [])].map(byId).filter(Boolean);
+    if (!ts.length) return;
+    ts.forEach(t => { t.borrado = true; upsertT(t); });
+    ui.bSel = null; render();
+    toast(`${ts.length} ${ts.length === 1 ? 'pendiente eliminado' : 'pendientes eliminados'}`, 'Deshacer', () => { ts.forEach(t => { t.borrado = false; upsertT(t); }); render(); });
+  },
   loteSet:el => { const L = ui.lote || (ui.lote = {}); L[el.dataset.k] = L[el.dataset.k] === el.dataset.v ? undefined : el.dataset.v; if (el.dataset.k === 'dest' && el.dataset.v) L.fecha = ''; refrescarSheet(); },
   loteAplicar:() => {
     const L = ui.lote || {}, ts = [...(ui.bSel || [])].map(byId).filter(Boolean);
@@ -5182,6 +5302,7 @@ const ACT = {
       upsertT(t);
     });
     ui.bSel = null; ui.lote = null; cerrarSheet(true); render();
+    if (L.dest === 'hoy') pulsarTab('hoy'); else if (L.dest || L.fecha) pulsarTab('planifica');
     toast(`${ts.length} ${ts.length === 1 ? 'pendiente actualizado' : 'pendientes actualizados'}`, 'Deshacer', () => { antes.forEach(([t, o]) => { Object.assign(t, o); upsertT(t); }); render(); });
   },
   abrirRes:el => abrirSheet({ k:'detalle', id:el.dataset.id, volver:{ k:'buscar' } }),
@@ -5190,7 +5311,8 @@ const ACT = {
     const t = byId(el.dataset.id); if (!t) return;
     const prev = t.estado, pf = t.fecha, dest = el.dataset.v;
     setEstado(t, dest); renderVista();
-    toast(`Movida a ${COLN[dest]}`, 'Deshacer', () => { t.estado = prev; t.fecha = pf; upsertT(t); renderVista(); });
+    if (dest === 'hoy') pulsarTab('hoy');
+    toast(`Movida a ${COLN[dest]}`, 'Deshacer', () => { t.estado = prev; t.fecha = pf; upsertT(t); renderVista(); }, null, dest === 'hoy' && ui.view !== 'hoy' ? 'Ver' : null, dest === 'hoy' && ui.view !== 'hoy' ? () => ir('hoy') : null);
   },
   activar:el => { const t = byId(el.dataset.id); setEstado(t, 'prox'); renderVista(); toast('Movida a Próximas'); },
   agVista:el => { pref.set('agVista', el.dataset.v); ui.agY = null; renderVista(); },
@@ -5203,21 +5325,33 @@ const ACT = {
   agOpc:() => abrirSheet({ k:'agOpc' }),
   agSelPend:el => { ui.agSel = el.dataset.id; cerrarSheet(true); renderVista(); },
   agSelNo:() => { ui.agSel = ''; renderVista(); },
+  agSlotPon:el => { const s = ui.agSlot, t = byId(el.dataset.id); if (!s || !t) return; cerrarSheet(true); agendar(t, s.d, s.m); },
+  agSlotCrear:() => {
+    const s = ui.agSlot, inp = $('#agSlotIn'); if (!s || !inp) return;
+    const v = inp.value.trim(); if (!v) { sacudir(inp, 'Escribe qué vas a agendar'); inp.focus(); return; }
+    const ar = predecirArea(limpiarTitulo(v)) || (areas()[0] && areas()[0].id) || '';
+    const est = s.d === hoy() ? 'hoy' : 'prox';
+    const { creadas } = capturar(v, est, { area:ar, fecha:s.d, hora:min2hm(s.m), dur:25 }, true);
+    cerrarSheet(true); renderVista();
+    if (creadas.length) toast(`Agendada ${s.d === hoy() ? 'hoy' : fechaCorta(s.d).toLowerCase()} a las ${min2hm(s.m)}`, null, null, 'check');
+  },
   solMover:el => { const t = byId(el.dataset.id); if (!t) return; const m = siguienteHueco(t); if (m == null) { toast('No hay otro hueco libre ese día'); return; } agendar(t, t.fecha, m); },
   solMantener:el => { const t = byId(el.dataset.id); if (!t) return; t.solOk = planStr(t); upsertT(t); renderVista(); toast('Solapamiento aceptado', 'Deshacer', () => { t.solOk = ''; upsertT(t); renderVista(); }); },
   semTap:(el, e) => {
-    if (!ui.agSel) return;
+    if (e.target.closest('.tl-b')) return;
     const y = e.clientY - el.getBoundingClientRect().top;
     const m = clamp(Math.round(y / 15) * 15, 0, (AG_FIN - AG_INI) * 60 - 15) + AG_INI * 60;
+    if (!ui.agSel) { ui.agSlot = { d:el.dataset.dia, m }; abrirSheet({ k:'agSlot' }); return; }
     agendar(byId(ui.agSel), el.dataset.dia, m);
   },
   bModo:el => { const m = el.dataset.v === 'mente' ? 'mente' : 'capturar'; if (ui.bModo === m) return; ui.bModo = m; encabezado(); renderBandeja(); },
   agSel:el => { ui.agSel = ui.agSel === el.dataset.id ? '' : el.dataset.id; renderVista(); },
   tlTap:(el, e) => {
-    if (!ui.agSel) return;
-    const t = byId(ui.agSel); if (!t) return;
+    if (e.target.closest('.tl-b')) return;
     const y = e.clientY - el.getBoundingClientRect().top;
     const m = clamp(Math.round(y / 15) * 15, 0, (AG_FIN - AG_INI) * 60 - 15) + AG_INI * 60;
+    if (!ui.agSel) { ui.agSlot = { d:ui.dia || hoy(), m }; abrirSheet({ k:'agSlot' }); return; }
+    const t = byId(ui.agSel); if (!t) return;
     agendar(t, ui.dia || hoy(), m);
   },
   pPer:el => { ui.pPer = el.dataset.v; ui.pDia = ''; renderVista(); },
@@ -5240,11 +5374,11 @@ const ACT = {
     tm.modo = 'bloque'; tm.tareaId = t.id; tm.fase = 'foco'; tm.total = tm.restante = 300; tm.inicio = '';
     save(); cerrarProc(); iniciar(); ir('enfoque'); toast('5 minutos. Solo empieza.');
   },
-  pHoy:() => { guardarTituloProc(); if (!procArea()) return; const t = tActualProc(); t.estado = 'hoy'; t.fecha = hoy(); t.orden = 50 + tareasEn('hoy').length; upsertT(t); regProc(t, 'hoy'); volarProc('right'); },
-  pProx:() => { guardarTituloProc(); if (!procArea()) return; const t = tActualProc(); t.estado = 'prox'; t.fecha = ''; t.hora = ''; upsertT(t); regProc(t, 'prox'); volarProc('right'); },
-  pManana:() => { guardarTituloProc(); if (!procArea()) return; const t = tActualProc(); t.estado = 'prox'; t.fecha = manana(); upsertT(t); regProc(t, 'prox'); volarProc('right'); },
+  pHoy:() => { guardarTituloProc(); if (!procArea()) return; const t = tActualProc(); t.estado = 'hoy'; t.fecha = hoy(); t.orden = 50 + tareasEn('hoy').length; upsertT(t); regProc(t, 'hoy'); pulsarTab('hoy'); volarProc('right'); },
+  pProx:() => { guardarTituloProc(); if (!procArea()) return; const t = tActualProc(); t.estado = 'prox'; t.fecha = ''; t.hora = ''; upsertT(t); regProc(t, 'prox'); pulsarTab('planifica'); volarProc('right'); },
+  pManana:() => { guardarTituloProc(); if (!procArea()) return; const t = tActualProc(); t.estado = 'prox'; t.fecha = manana(); upsertT(t); regProc(t, 'prox'); pulsarTab('planifica'); volarProc('right'); },
   pEspera:() => { guardarTituloProc(); if (!procArea()) return; const t = tActualProc(); proc.paso = 'espera'; proc.d = { espera:t.espera || '', seg:t.seg || '' }; renderProc(); setTimeout(() => $('#pEsperaIn')?.focus(), 350); },
-  pAlgun:() => { guardarTituloProc(); if (!procArea()) return; const t = tActualProc(); regProc(t, 'algun'); setEstado(t, 'algun'); volarProc('right'); },
+  pAlgun:() => { guardarTituloProc(); if (!procArea()) return; const t = tActualProc(); regProc(t, 'algun'); setEstado(t, 'algun'); pulsarTab('planifica'); volarProc('right'); },
   pBorrar:() => { const t = tActualProc(); regProc(t, 'borrado'); t.borrado = true; upsertT(t); volarProc('left'); },
   pAtras:() => { proc.paso = 'que'; renderProc(); },
   pSeg:el => { leerCamposProc(); proc.d.seg = el.dataset.v; repintarCuerpoProc(); },
@@ -5253,7 +5387,7 @@ const ACT = {
     const t = tActualProc(), d = proc.d;
     if (!(d.espera || '').trim()) { d.errEsp = true; repintarCuerpoProc(); sacudir($('#pEsperaIn')); $('#pEsperaIn').focus(); return; }
     Object.assign(t, { estado:'espera', espera:d.espera.trim().slice(0, 120), seg:d.seg || '', fecha:'' });
-    upsertT(t); regProc(t, 'espera'); volarProc('right');
+    upsertT(t); regProc(t, 'espera'); pulsarTab('planifica'); volarProc('right');
   },
   // Planear
   plSel:el => {
@@ -5273,18 +5407,18 @@ const ACT = {
     const antes = rec.prio.slice();
     t.orden = rec.prio.length; upsertT(t);
     guardarPlanDia(hoy(), [...rec.prio, t.id]); renderVista();
-    toast(`«${t.titulo}» es prioridad ${antes.length + 1}`, 'Deshacer', () => { guardarPlanDia(hoy(), antes); renderVista(); });
+    toast(`«${t.titulo}» subió al lugar ${antes.length + 1}`, 'Deshacer', () => { guardarPlanDia(hoy(), antes); renderVista(); });
   },
   pendHoy:el => decidirPendiente(el.dataset.id, 'hoy'),
   bHoy:el => {
     const t = byId(el.dataset.id); if (!t) return;
     const prev = [t.estado, t.fecha];
-    setEstado(t, 'hoy'); regProc(t, 'hoy'); renderVista(); pintarTabs();
-    toast(`«${t.titulo}» pasó a Hoy`, 'Deshacer', () => { [t.estado, t.fecha] = prev; upsertT(t); renderVista(); pintarTabs(); });
+    setEstado(t, 'hoy'); regProc(t, 'hoy'); renderVista(); pintarTabs(); pulsarTab('hoy');
+    toast(`En Hoy: «${t.titulo}»`, 'Deshacer', () => { [t.estado, t.fecha] = prev; upsertT(t); renderVista(); pintarTabs(); }, 'sun', 'Ver', () => ir('hoy'));
   },
   bHecho:el => {
     const t = byId(el.dataset.id); if (!t) return;
-    completar(t, el); regProc(t, 'hecho'); renderVista(); pintarTabs();
+    completar(t, el); regProc(t, 'hecho'); renderVista(); pintarTabs(); pulsarTab('progreso');
   },
   connCerrar:() => { pref.set('connOff', 1); pintarBandejaLista(); },
   pendProx:el => decidirPendiente(el.dataset.id, 'prox'),
@@ -5425,7 +5559,8 @@ const ACT = {
   enfCapAdd:async () => {
     const c = await capturarDe('#enfCap'); if (!c.length) return;
     ui.enfCaps = [...c.map(t => t.titulo), ...ui.enfCaps].slice(0, 3);
-    $('#enfCaps').innerHTML = pintarCaps(); pintarTabs(); toast('Guardado en la Bandeja');
+    $('#enfCaps').innerHTML = pintarCaps(); pintarTabs(); pulsarTab('bandeja');
+    toast('Guardado en Bandeja', 'Ver', () => { ui.bModo = 'capturar'; ir('bandeja'); }, 'inbox');
   },
   otroBloque:() => { const t = T(); t.fase = 'foco'; t.total = t.restante = segFase('foco'); t.inicio = ''; iniciar(); },
   descansar:() => { const t = T(); t.fase = 'corto'; t.total = t.restante = segFase('corto'); t.inicio = ''; iniciar(); },
@@ -5646,6 +5781,7 @@ document.addEventListener('keydown', e => {
   else if (el.id === 'pEsperaIn') { e.preventDefault(); ACT.pGuardarEsp(); }
   else if (el.id === 'cfgClave') { e.preventDefault(); ACT.cfgGuardar(); }
   else if (el.id === 'areaNuevaN') { e.preventDefault(); ACT.areaNuevaOk(); }
+  else if (el.id === 'agSlotIn') { e.preventDefault(); ACT.agSlotCrear(); }
   else if (el.id === 'verboQ') {
     e.preventDefault();
     const q = norm(el.value.trim()); if (!q) return;
@@ -5873,6 +6009,65 @@ document.addEventListener('contextmenu', e => { if (e.target.closest('[data-drag
   };
   sh.addEventListener('touchend', fin); sh.addEventListener('touchcancel', fin);
   $('#sheetBg').addEventListener('touchmove', e => { if (e.cancelable) e.preventDefault(); }, { passive:false });
+})();
+
+/* Deslizar a la izquierda para eliminar en móvil (Bandeja y Hoy), siempre con Deshacer. */
+(() => {
+  let sw = null;
+  document.addEventListener('touchstart', e => {
+    if (D.st || e.touches.length !== 1) return;
+    const el = e.target.closest('.tr[data-swipe="1"]');
+    if (!el || e.target.closest('button,input,textarea,[data-grip]')) return;
+    sw = { el, x0:e.touches[0].clientX, y0:e.touches[0].clientY, dx:0, on:false, bg:null };
+  }, { passive:true });
+  document.addEventListener('touchmove', e => {
+    if (!sw) return;
+    if (D.st) { limpiar(); return; }
+    const dx = e.touches[0].clientX - sw.x0, dy = e.touches[0].clientY - sw.y0;
+    if (!sw.on) {
+      if (dx < -14 && Math.abs(dx) > Math.abs(dy) * 1.4) {
+        sw.on = true;
+        sw.el.classList.add('swiping');
+        const p = sw.el.parentElement;
+        if (p) {
+          if (getComputedStyle(p).position === 'static') p.style.position = 'relative';
+          const bg = document.createElement('div');
+          bg.className = 'sw-del-bg';
+          bg.style.top = sw.el.offsetTop + 'px';
+          bg.style.height = sw.el.offsetHeight + 'px';
+          bg.style.bottom = 'auto';
+          bg.innerHTML = `${ic('trash')}<span>Eliminar</span>`;
+          p.insertBefore(bg, sw.el);
+          sw.bg = bg;
+        }
+      } else if (Math.abs(dy) > 10 || dx > 10) { sw = null; return; }
+      else return;
+    }
+    sw.dx = clamp(dx, -130, 0);
+    sw.el.style.transform = `translateX(${sw.dx}px)`;
+    if (e.cancelable) e.preventDefault();
+  }, { passive:false });
+  function limpiar() {
+    if (!sw) return;
+    const s = sw; sw = null;
+    s.el.classList.remove('swiping');
+    s.el.style.transform = '';
+    if (s.bg) s.bg.remove();
+  }
+  const fin = () => {
+    if (!sw) return;
+    const s = sw;
+    if (s.on && s.dx <= -84) {
+      D.justDragged = true; setTimeout(() => { D.justDragged = false; }, 220);
+      sw = null;
+      s.el.classList.remove('swiping');
+      s.el.style.transform = 'translateX(-100%)';
+      setTimeout(() => { if (s.bg) s.bg.remove(); }, 220);
+      ACT.quitar(s.el);
+    } else limpiar();
+  };
+  document.addEventListener('touchend', fin);
+  document.addEventListener('touchcancel', limpiar);
 })();
 
 /* ================= Inicio ================= */
