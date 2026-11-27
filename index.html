@@ -1542,6 +1542,7 @@ body{letter-spacing:-.005em;text-rendering:optimizeLegibility}
 .dt-add-chip:active{background:var(--sf2);color:var(--ink)}
 .sh-foot .btn.del-txt{padding:0 12px;background:transparent;color:var(--hot);font-size:var(--fs-s);gap:5px;flex:none}
 .sh-foot .btn.del-txt svg.i{width:17px;height:17px}
+.dt-done{margin-top:16px;color:var(--ok);border-color:color-mix(in srgb,var(--ok-f) 32%,transparent)}
 .ar-r input[type=text]{border-radius:8px;padding:6px 8px;border:1px solid transparent;transition:background .15s,border-color .15s}
 .ar-r input[type=text]:focus{background:var(--sf2);border-color:var(--ac)}
 .ar-r .sw-c{box-shadow:0 0 0 2px var(--sf),0 0 0 3.5px var(--ln2)}
@@ -1565,6 +1566,7 @@ body{letter-spacing:-.005em;text-rendering:optimizeLegibility}
   .ar-r input[type=text]:hover{background:var(--sf2)}
   .dt-add-chip:hover{background:var(--sf2);border-color:var(--ac);color:var(--ink)}
   .sh-foot .btn.del-txt:hover{background:var(--hot-s)}
+  .dt-done:hover{background:var(--ok-s);border-color:color-mix(in srgb,var(--ok-f) 48%,transparent)}
   .qk-up:hover{background:var(--ac-s)}
 }
 .hoy-b > .sec-t:first-child{margin-top:14px}
@@ -3529,7 +3531,7 @@ function finProc() {
   } else cerrarProc();
 }
 
-/* ================= Planear (Ivy Lee) ================= */
+/* ================= Planear (orden del día) ================= */
 let plan = null;
 function abrirPlan(para) {
   para = para || (new Date().getHours() >= 17 ? 'manana' : 'hoy');
@@ -3538,10 +3540,9 @@ function abrirPlan(para) {
   const sel = rec ? rec.prio.filter(id => byId(id) && !byId(id).borrado)
     : para === 'hoy' ? [...tareasEn('proceso'), ...tareasEn('hoy').sort(byOrden)].map(t => t.id)
     : tareasEn('prox').filter(t => t.fecha === f).sort(byOrden).map(t => t.id);
-  plan = { para, sel:sel.slice(0, MAX_PRIO), regresar:true, selPor:{}, pend:'' };
+  plan = { para, sel:sel.slice(), regresar:true, selPor:{} };
   abrirSheet({ k:'plan' });
 }
-const MAX_PRIO = 6;
 function candidatosPlan() {
   const f = plan.para === 'hoy' ? hoy() : manana();
   return {
@@ -3560,14 +3561,12 @@ function htmlPlan() {
   const { enHoy, prox } = candidatosPlan();
   const fila = t => {
     const i = plan.sel.indexOf(t.id), hecha = t.estado === 'hecho';
-    return `<button class="tr pl ${i >= 0 ? 'on' : ''} ${plan.pend && i >= 0 && !hecha ? 'sust' : ''} ${plan.pend === t.id ? 'pend' : ''}" data-a="plSel" data-id="${t.id}" style="--a:${colorA(t.area)}" aria-pressed="${i >= 0}" ${hecha ? 'disabled' : ''}><span class="ck">${i >= 0 ? `<b>${i + 1}</b>` : ''}</span><span class="tb"><span class="tt">${esc(t.titulo)}</span><span class="mt">${metaCorta(t, 2, { area:true })}</span></span></button>`;
+    return `<button class="tr pl ${i >= 0 ? 'on' : ''}" data-a="plSel" data-id="${t.id}" style="--a:${colorA(t.area)}" aria-pressed="${i >= 0}" ${hecha ? 'disabled' : ''}><span class="ck">${i >= 0 ? `<b>${i + 1}</b>` : ''}</span><span class="tb"><span class="tt">${esc(t.titulo)}</span><span class="mt">${metaCorta(t, 2, { area:true })}</span></span></button>`;
   };
   const nada = !enHoy.length && !prox.length;
   const hechasSel = plan.sel.map(byId).filter(t => t && t.estado === 'hecho');
-  const pend = plan.pend && byId(plan.pend);
-  return cab(`<h2>Orden de ${plan.para === 'hoy' ? 'hoy' : 'mañana'}</h2>`, `<span class="pl-cnt">${plan.sel.length}/6</span>`) + `
+  return cab(`<h2>Orden de ${plan.para === 'hoy' ? 'hoy' : 'mañana'}</h2>`, `<span class="pl-cnt">${plan.sel.length} ${plan.sel.length === 1 ? 'tarea' : 'tareas'}</span>`) + `
     <div class="seg" role="tablist"><button class="${plan.para === 'hoy' ? 'on' : ''}" data-a="plPara" data-v="hoy" role="tab">Hoy</button><button class="${plan.para === 'manana' ? 'on' : ''}" data-a="plPara" data-v="manana" role="tab">Mañana</button></div>
-    ${pend ? `<div class="ag-banner">${ic('list')}<span>Ya tienes 6. Toca la que quieres sustituir por «${esc(pend.titulo)}».</span><button class="lnk2" data-a="plPendNo">Cancelar</button></div>` : ''}
     ${hechasSel.length ? `<div class="sec-t">${ic('check')}Completadas <span class="n">${hechasSel.length}</span></div><div class="group">${hechasSel.map(fila).join('')}</div>` : ''}
     ${enHoy.length ? `<div class="sec-t">${plan.para === 'hoy' ? 'Ya están en Hoy' : 'Sin terminar hoy'}</div><div class="group">${enHoy.map(fila).join('')}</div>` : ''}
     ${prox.length ? `<div class="sec-t">Próximas <span class="n">${prox.length}</span></div><div class="group">${prox.map(fila).join('')}</div>` : ''}
@@ -3589,7 +3588,7 @@ async function guardarPlan() {
     else { t.estado = 'prox'; t.fecha = f; }
     t.orden = i; upsertT(t);
   });
-  guardarPlanDia(f, plan.sel.slice(0, MAX_PRIO));
+  guardarPlanDia(f, plan.sel.slice());
   // Hoy: lo no elegido sigue siendo de hoy (otras tareas). Mañana: opcionalmente regresa a próximas.
   if (plan.para === 'manana' && plan.regresar) {
     [...tareasEn('hoy'), ...tareasEn('proceso')].filter(t => !plan.sel.includes(t.id)).forEach(t => {
@@ -3637,7 +3636,7 @@ function renderHoy() {
     const hayProx = tareasEn('prox').length;
     zA = total
       ? `<div class="panel zero"><div class="orb">${ic('check')}</div><h3>Lista terminada</h3><p>Hiciste lo que planeaste. Puedes descansar o preparar mañana.</p><button class="btn pri" style="margin-top:16px" data-a="plan" data-v="manana">${ic('moon')}Preparar mañana</button></div>`
-      : `<div class="panel zero"><div class="orb ac">${ic('sun')}</div><h3>¿Qué harás hoy?</h3><p>${hayProx ? 'Elige hasta 6 tareas y trabájalas una a la vez.' : 'Anota tus pendientes en la Bandeja y después elige qué hacer hoy.'}</p><button class="btn pri" style="margin-top:16px" data-a="${hayProx ? 'plan' : 'irBandeja'}" ${hayProx ? 'data-v="hoy"' : ''}>${ic(hayProx ? 'list' : 'inbox')}${hayProx ? 'Ordenar el día' : 'Ir a la Bandeja'}</button></div>`;
+      : `<div class="panel zero"><div class="orb ac">${ic('sun')}</div><h3>¿Qué harás hoy?</h3><p>${hayProx ? 'Elige las tareas de hoy y trabájalas una a la vez.' : 'Anota tus pendientes en la Bandeja y después elige qué hacer hoy.'}</p><button class="btn pri" style="margin-top:16px" data-a="${hayProx ? 'plan' : 'irBandeja'}" ${hayProx ? 'data-v="hoy"' : ''}>${ic(hayProx ? 'list' : 'inbox')}${hayProx ? 'Ordenar el día' : 'Ir a la Bandeja'}</button></div>`;
   } else {
     const enCurso = ahora.estado === 'proceso';
     const run = t.tareaId === ahora.id && t.fase === 'foco' && (t.corriendo || t.restante < t.total);
@@ -4538,12 +4537,12 @@ function ayuda(k) {
       ['check', 'Corrige con un toque', 'Abre un pensamiento para cambiar su tipo o sus pasos. Foco aprende de tus correcciones.'],
       ['bolt', 'IA opcional', 'Foco funciona sin IA. Si quieres resultados más finos, conecta tu clave gratuita de Google Gemini en esta pantalla. Está apagada hasta que tú la actives.'],
       ['cloudOk', 'Respaldo', 'Si conectaste tu hoja de Google, lo que ordenas se respalda en ella, en la pestaña de Ajustes.']] },
-    hoy:{ d:'Tus prioridades del día con el método Ivy Lee: máximo 6 tareas, en orden de importancia, trabajadas una a la vez.', p:[
+    hoy:{ d:'Tus prioridades del día en orden de importancia, trabajadas una a la vez.', p:[
       ['play', 'La tarjeta de arriba', 'Es la tarea que toca ahora. Toca «Empezar» y el reloj corre ahí mismo: puedes pausar, terminar o abrirlo en pantalla completa.'],
       ['check', 'Marcar como hecha', 'Toca el círculo de cualquier tarea o el botón verde. Siempre puedes deshacerlo desde el aviso.'],
       ['grip', 'Cambiar el orden', 'Arrastra desde los seis puntos de la derecha. Si sueltas la tarea sobre la tarjeta de arriba, se vuelve la siguiente.'],
       ['clock', 'Horarios en vivo', 'Las tareas con hora te avisan «en 20 min», «ahora» o «atrasada», y la línea del día muestra tus bloques y la hora actual.'],
-      ['star', 'Prioridades', 'Hasta 6 por día, en orden. Las demás tareas de hoy quedan en «Otras tareas de hoy»; con la estrella vuelves prioridad una de ellas.'],
+      ['star', 'Prioridades', 'Elige y ordena todas las tareas que necesites para hoy. Si agregas más después, súbelas al orden del día con «Subir».'],
       ['moon', 'Planear', 'Por la noche elige tus prioridades de mañana. Lo que no termines aparece en «Pendientes anteriores» para que decidas: mantenerlo hoy, elegir otro día o devolverlo a próximas.'],
       ['refresh', 'Seguimientos', 'Las tareas en espera con fecha de seguimiento aparecen aquí ese día, sin dejar de estar en espera.'],
       ['timer', 'Enfoque', 'El botón «Enfoque» (o la tecla F) abre el reloj en grande, con tarea o en enfoque libre. Sal con la flecha de arriba.']] },
@@ -4553,7 +4552,7 @@ function ayuda(k) {
       ['grip', 'Mover', 'Mantén presionado un bloque para cambiarlo de hora. Siempre puedes deshacer.'],
       ['timer', 'Capacidad', 'Compara lo estimado con lo que cabe en tu horario (Ajustes: horario, pausas y margen). La ocupación no cuenta dos veces los bloques encimados.'],
       ['flag', 'Solapamientos', 'Si dos bloques se enciman, puedes mover uno al siguiente hueco libre o mantenerlos así a propósito.'],
-      ['star', 'Prioridades', 'Para hoy y mañana, elige y ordena hasta 6 prioridades con el método Ivy Lee.']] },
+      ['star', 'Prioridades', 'Para hoy y mañana, elige y ordena todas las tareas que quieras trabajar.']] },
     tablero:{ d:'Tus tareas en tres estados, con los mismos filtros que la Agenda.', p:[
       ['list', 'Próximas', 'Lo que está pendiente y no está en Hoy: atrasadas, en espera, sin día o con un día futuro.'],
       ['timer', 'En curso', 'Lo que está en Hoy. La que estás trabajando ahora aparece primero, con su reloj.'],
@@ -4574,7 +4573,7 @@ function ayuda(k) {
 }
 const ONB = [
   { ic:'inbox', paso:'Bandeja', t:'Vacía tu cabeza', d:'Anota cada pendiente en cuanto se te ocurra, empezando con un verbo: «Enviar…», «Revisar…». Luego toca «Organizar» para decidir qué es cada cosa. Si traes de todo revuelto, escríbelo sin orden en Mente.' },
-  { ic:'cal', paso:'Planifica', t:'Mira todo y dale horario', d:'En Agenda y Tablero ves todo lo que organizaste, con los mismos filtros. Dale día y hora, y elige tus 6 más importantes de hoy o de mañana.' },
+  { ic:'cal', paso:'Planifica', t:'Mira todo y dale horario', d:'En Agenda y Tablero ves todo lo que organizaste, con los mismos filtros. Dale día y hora, y elige el orden de tus tareas de hoy o de mañana.' },
   { ic:'sun', paso:'Hoy', t:'Una a la vez', d:'Trabaja tus tareas en orden con un Pomodoro que corre en la misma tarjeta, o ábrelo en grande con Enfoque. En Progreso verás tu avance.' }
 ];
 function abrirOnb() { ui.onb = 0; $('#onb').classList.add('on'); document.documentElement.classList.add('lock'); pintarOnb(); }
@@ -4928,9 +4927,10 @@ function htmlDetalle(t) {
     ${reprogramaciones(t) || (t.reprog && (t.reprog.o || t.reprog.d)) ? `<p class="hint dt-rep">${ic('repeat')}${reprogramaciones(t) ? `Reprogramada ${reprogramaciones(t)} ${reprogramaciones(t) === 1 ? 'vez' : 'veces'}` : 'Sin reprogramar'}${t.reprog.o ? ` · día original: ${fechaCorta(t.reprog.o).toLowerCase()}` : ''}</p>` : ''}
     ${extrasVis.length ? `<div class="group" style="margin-top:14px">${extrasVis.join('')}</div>` : ''}
     ${extrasAdd.length ? `<div class="dt-add-row">${extrasAdd.map(([k, lbl]) => `<button class="dt-add-chip" data-a="dtFila" data-v="${k}">${ic('plus')}${lbl}</button>`).join('')}</div>` : ''}
-    <div class="dt-meta">Creada ${fechaCorta(diaDeISO(t.creado)).toLowerCase()}${t.pomos ? ` · ${t.pomos} ${+t.pomos === 1 ? 'pomodoro' : 'pomodoros'}` : ''}${t.hecho ? ' · hecha ' + fechaCorta(diaDeISO(t.hecho)).toLowerCase() + ' ' + horaDe(t.hecho) : ''}</div>
+    ${t.estado !== 'hecho' ? `<button class="btn full ghost dt-done" data-a="dtCompletar">${ic('check')}Marcar tarea como hecha</button>` : ''}
+    <div class="dt-meta">Se guarda automáticamente · creada ${fechaCorta(diaDeISO(t.creado)).toLowerCase()}${t.pomos ? ` · ${t.pomos} ${+t.pomos === 1 ? 'pomodoro' : 'pomodoros'}` : ''}${t.hecho ? ' · hecha ' + fechaCorta(diaDeISO(t.hecho)).toLowerCase() + ' ' + horaDe(t.hecho) : ''}</div>
     <div class="sh-foot"><button class="btn del-txt" data-a="dtBorrar" aria-label="Eliminar tarea">${ic('trash')}Eliminar</button>
-      ${t.estado !== 'hecho' ? `<button class="btn" data-a="play" data-id="${t.id}">${ic('play', 'fill')}Enfocar</button><button class="btn pri" data-a="dtCompletar">${ic('check')}Hecha</button>` : `<button class="btn pri" data-a="dtEstado" data-v="hoy">${ic('refresh')}Reabrir para hoy</button>`}</div>`;
+      ${t.estado !== 'hecho' ? `<button class="btn" data-a="play" data-id="${t.id}">${ic('play', 'fill')}Enfocar</button>` : `<button class="btn" data-a="dtEstado" data-v="hoy">${ic('refresh')}Reabrir</button>`}<button class="btn pri" data-a="cerrarSheet">Listo</button></div>`;
 }
 // Compatibilidad de campos opcionales abiertos por código.
 const DT_MAS = ['proy', 'lim', 'notas', 'rec', 'dur', 'estado', 'esp', 'seg'];
@@ -5399,18 +5399,14 @@ const ACT = {
   // Planear
   plSel:el => {
     const id = el.dataset.id, i = plan.sel.indexOf(id);
-    // Con 6 elegidas, la séptima pide sustituir una (sin perder ninguna tarea).
-    if (plan.pend && i >= 0) { const nueva = plan.pend; plan.sel[i] = nueva; plan.pend = ''; toast(`«${byId(nueva).titulo}» sustituyó a «${byId(id).titulo}»`); refrescarSheet(); return; }
     if (i >= 0) plan.sel.splice(i, 1);
-    else if (plan.sel.length >= MAX_PRIO) { plan.pend = id; refrescarSheet(); return; }
     else plan.sel.push(id);
     refrescarSheet();
   },
-  plPendNo:() => { plan.pend = ''; refrescarSheet(); },
   hacerPrio:el => {
     const t = byId(el.dataset.id), rec = planDe(hoy()); if (!t) return;
-    if (!rec) { abrirPlan('hoy'); if (!plan.sel.includes(t.id)) { if (plan.sel.length < MAX_PRIO) plan.sel.push(t.id); else plan.pend = t.id; } refrescarSheet(); return; }
-    if (rec.prio.length >= MAX_PRIO) { abrirPlan('hoy'); plan.pend = t.id; refrescarSheet(); return; }
+    if (!rec) { abrirPlan('hoy'); if (!plan.sel.includes(t.id)) plan.sel.push(t.id); refrescarSheet(); return; }
+    if (rec.prio.includes(t.id)) return;
     const antes = rec.prio.slice();
     t.orden = rec.prio.length; upsertT(t);
     guardarPlanDia(hoy(), [...rec.prio, t.id]); renderVista();
