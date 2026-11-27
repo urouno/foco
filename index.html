@@ -1990,6 +1990,14 @@ function guardarPlanDia(d, prio) {
   S.planes[d] = rec;
   encolar('Ajustes', { clave:'plan:' + d, valor:JSON.stringify(rec), actualizado:ahora });
 }
+function reordenarPlanHoy(pendIds) {
+  const rec = planDe(hoy()); if (!rec) return;
+  const viv = id => { const t = byId(id); return t && !t.borrado; };
+  const hechas = rec.prio.filter(id => viv(id) && byId(id).estado === 'hecho');
+  const limpias = pendIds.filter(id => viv(id) && !hechas.includes(id));
+  const restos = rec.prio.filter(id => viv(id) && !hechas.includes(id) && !limpias.includes(id));
+  guardarPlanDia(hoy(), [...limpias, ...restos, ...hechas]);
+}
 function guardarAjustes() {
   S.ajustes.actualizado = nowISO();
   const { actualizado, ...resto } = S.ajustes;
@@ -3635,7 +3643,7 @@ function renderHoy() {
       : `${t.modo === 'pomo' ? `Pomodoro de ${durPlan} min` : `Bloque de ${durPlan} min`} · terminarías a las ${horaFin(durPlan * 60)}`;
     const bloqueInfo = t.modo === 'pomo' && !desc ? ` · Bloque ${(t.ciclo % S.ajustes.cada) + 1} de ${S.ajustes.cada}` : '';
     const deCola = !proceso.length && ahora === cola[0];
-    zA = `<div class="hero ${enCurso || run ? 'is-run' : ''} ${desc ? 'is-desc' : ''} ${area(ahora.area) ? 'ca' : ''}" style="--ha:${colorA(ahora.area)}" data-id="${ahora.id}" data-a="abrir" ${cola.length > 1 ? 'data-list="hoytop"' : ''} role="button" tabindex="0" aria-label="${esc(ahora.titulo)}. Abrir detalle">
+    zA = `<div class="hero ${enCurso || run ? 'is-run' : ''} ${desc ? 'is-desc' : ''} ${area(ahora.area) ? 'ca' : ''}" style="--ha:${colorA(ahora.area)}" data-id="${ahora.id}" data-a="abrir" ${cola.length + otras.length > 1 ? 'data-list="hoytop"' : ''} role="button" tabindex="0" aria-label="${esc(ahora.titulo)}. Abrir detalle">
       <div class="hero-l"><i class="live"></i>${desc ? 'En descanso' : run ? 'Enfocando ahora' : 'Ahora'}</div>
       <div class="hero-t">${esc(ahora.titulo)}</div>
       <div class="mt">${metaCorta(ahora, 2, { area:true })}</div>
@@ -5037,7 +5045,9 @@ function leerCamposProc() {
 }
 function hacerPrimera(id) {
   const t = byId(id); if (!t) return;
+  if (!enMarcha()) tareasEn('proceso').forEach(o => { if (o.id !== id) { o.estado = 'hoy'; upsertT(o); } });
   [t, ...tareasEn('hoy').sort(byOrden).filter(x => x.id !== id)].forEach((x, i) => { if (+x.orden !== i) { x.orden = i; upsertT(x); } });
+  reordenarPlanHoy([id]);
   renderVista(); toast('Ahora es tu siguiente tarea');
 }
 function dtRefrescar() { refrescarSheet(); renderVista(); }
@@ -5234,6 +5244,7 @@ const ACT = {
     if (!['hoy', 'proceso'].includes(x.estado) || (x.fecha && x.fecha < hoy())) { x.estado = 'hoy'; x.fecha = hoy(); upsertT(x); }
     tareasEn('proceso').forEach(o => { if (o.id !== id) { o.estado = 'hoy'; upsertT(o); } });
     [x, ...tareasEn('hoy').sort(byOrden).filter(o => o.id !== id)].forEach((o, i) => { if (+o.orden !== i) { o.orden = i; upsertT(o); } });
+    reordenarPlanHoy([id]);
     t.tareaId = id; save(); pushTimer();
     if (corr && enCurso) await iniciar(); else renderVista();
     toast(`Ahora: «${x.titulo}»`);
@@ -5949,8 +5960,9 @@ function soltar(id, destino, ids, el, list) {
     t.estado = 'hoy'; t.fecha = hoy(); t.hecho = ''; upsertT(t);
     const base = +(list && list.dataset.base) || 0;
     ids.forEach((x, i) => { const o = byId(x); if (o && +o.orden !== base + i) { o.orden = base + i; upsertT(o); } });
+    if (!enBoard) reordenarPlanHoy(list && list.dataset.hero ? [list.dataset.hero, ...ids] : ids);
     renderVista();
-    toast(`«${t.titulo}» pasó a ${enBoard ? 'En curso' : 'Planeados'}`, 'Deshacer', () => { [t.estado, t.fecha, t.hora, t.hecho] = prev; upsertT(t); renderVista(); });
+    toast(`«${t.titulo}» pasó a ${enBoard ? 'Hoy' : 'Planeados'}`, 'Deshacer', () => { [t.estado, t.fecha, t.hora, t.hecho] = prev; upsertT(t); renderVista(); });
     return;
   }
   if (destino !== t.estado) {
@@ -5967,6 +5979,7 @@ function soltar(id, destino, ids, el, list) {
     const base = +(list && list.dataset.base) || 0;
     if (list && list.dataset.hero) { const h = byId(list.dataset.hero); if (h && +h.orden !== 0) { h.orden = 0; upsertT(h); } }
     ids.forEach((x, i) => { const o = byId(x); if (o && +o.orden !== base + i) { o.orden = base + i; upsertT(o); } });
+    if (destino === 'hoy' && !enBoard) reordenarPlanHoy(list && list.dataset.hero ? [list.dataset.hero, ...ids] : ids);
   }
   renderVista();
 }
