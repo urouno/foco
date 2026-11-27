@@ -1441,8 +1441,13 @@ body{letter-spacing:-.005em;text-rendering:optimizeLegibility}
 .kc.hecha .kc-t{opacity:.72}
 .col .qadd{margin:6px 8px 8px}
 
-/* 7. Bandeja: acciones rápidas sutiles y aviso de respaldo discreto */
-.tr.b-item{pointer-events:auto;cursor:default;background:transparent;min-height:54px;padding:10px 10px 10px 14px}
+/* 7. Bandeja: acciones rápidas sutiles, modo Vaciar la mente y aviso de respaldo discreto */
+.b-modo{margin-bottom:14px}
+.b-modo button{display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.b-modo svg.i{width:15px;height:15px}
+.b-modo .n{font-size:11px;font-weight:700;padding:1px 6px;border-radius:999px;background:var(--sf2);color:var(--mut)}
+.b-modo button.on .n{background:var(--ac-s);color:var(--ac-t)}
+.tr.b-item{pointer-events:auto;cursor:pointer;background:transparent;min-height:54px;padding:10px 10px 10px 14px}
 .tr.b-item .tt{font-weight:400}
 .b-acts{display:flex;align-items:center;gap:6px;flex:none}
 .b-act{min-height:32px;padding:0 10px;border-radius:999px;background:var(--sf);border:1px solid var(--ln);font-size:12px;font-weight:600;color:var(--ac-t);display:inline-flex;align-items:center;gap:4px;transition:background .15s,transform .12s}
@@ -1453,6 +1458,23 @@ body{letter-spacing:-.005em;text-rendering:optimizeLegibility}
 .conn.slim .ci{width:34px;height:34px;border-radius:10px}
 .conn.slim b{font-size:var(--fs-s)}
 .conn.slim .ib{width:32px;height:32px}
+/* Algún día integrado en Tablero › Próximas */
+.algun-sec{margin:6px 8px 10px;border-top:1px dashed var(--ln2);padding-top:8px}
+.algun-sec > summary{list-style:none;display:flex;align-items:center;gap:6px;padding:6px 6px;border-radius:10px;font-size:12.5px;font-weight:600;color:var(--mut);cursor:pointer}
+.algun-sec > summary::-webkit-details-marker{display:none}
+.algun-sec > summary svg.i{width:14px;height:14px}
+.algun-sec > summary .chev{margin-left:auto;transition:transform .2s var(--ease)}
+.algun-sec[open] > summary .chev{transform:rotate(180deg)}
+.algun-sec .algun-l{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.algun-sec .kc{opacity:.88}
+/* Toggle único de Prioritaria */
+.prio-tog{display:inline-flex;align-items:center;gap:7px;min-height:38px;padding:0 14px;border-radius:999px;border:1px solid var(--ln2);background:var(--sf);color:var(--mut);font-size:13px;font-weight:600;transition:all .16s var(--ease)}
+.prio-tog svg.i{width:15px;height:15px}
+.prio-tog.on{background:var(--warn-s);border-color:color-mix(in srgb,var(--warn-f) 45%,transparent);color:var(--warn)}
+@media (min-width:1024px){
+  #v-bandeja.modo-mente > #mnZona{grid-column:2;grid-row:1 / span 5;min-width:0}
+  #v-bandeja.modo-mente .mn-in{min-height:260px}
+}
 @media (hover:hover){
   .btn.foco:not(:disabled):hover{background:color-mix(in srgb,var(--foco) 88%,#000)}
   .enf.fase-foco .cbtn.big:not(:disabled):hover{background:color-mix(in srgb,var(--foco) 88%,#000)}
@@ -1462,6 +1484,7 @@ body{letter-spacing:-.005em;text-rendering:optimizeLegibility}
   .ptile:hover{background:var(--sf);border-color:var(--ln2)}
   .b-act:hover{background:var(--ac-s);border-color:transparent}
   .b-act.sq:hover{background:var(--ok-s);border-color:transparent}
+  .algun-sec > summary:hover{background:var(--sf2);color:var(--ink)}
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]) .pstack i{background:color-mix(in srgb,var(--a,var(--mut2)) 76%,#fff)}
@@ -1708,7 +1731,7 @@ const pref = {
 };
 
 const D = { st:null, justDragged:false };
-const ui = { view:'hoy', scroll:{}, f:{ area:'todas', proyecto:'', estado:'', prio:'', rec:'' }, buscarQ:'', volverDe:'hoy', ult:{}, dia:'', bVerbo:'', hoyVista:'lista', filtro:'todas', col:'prox', agSel:'', agY:null, histQ:'', histN:40, sheet:null,
+const ui = { view:'hoy', scroll:{}, f:{ area:'todas', proyecto:'', estado:'', prio:'', rec:'' }, buscarQ:'', volverDe:'hoy', ult:{}, dia:'', bModo:'capturar', hoyVista:'lista', filtro:'todas', col:'prox', agSel:'', agY:null, histQ:'', histN:40, sheet:null,
   capArea:'', enfCaps:[], dtOpen:'', savedAt:0, nuevoTomate:false, syncErr:'', cfgMsg:null, cfgDraft:null, areaNueva:null, areaColor:'', onb:0 };
 const abierto = k => !!pref.v('ab-' + k);
 
@@ -1721,13 +1744,11 @@ const byOrden = (a, b) => (+a.orden || 0) - (+b.orden || 0);
 const areas = () => S.ajustes.areas;
 const area = id => areas().find(a => a.id === id);
 const colorA = id => (area(id) || {}).c || 'var(--mut2)';
+const esPrioritaria = t => !!(t && (t.importante || t.urgente));
 function cuad(t) {
-  if (t.urgente && t.importante) return { k:'q1', n:'Urgente e importante', ic:'bolt' };
-  if (t.importante) return { k:'q2', n:'Importante', ic:'star' };
-  if (t.urgente) return { k:'q3', n:'Urgente', ic:'flag' };
-  return null;
+  return esPrioritaria(t) ? { k:'q1', n:'Prioritaria', ic:'star' } : null;
 }
-const pesoQ = t => t.urgente && t.importante ? 0 : t.importante ? 1 : t.urgente ? 2 : 3;
+const pesoQ = t => esPrioritaria(t) ? 0 : 1;
 const ordenPrioridad = (a, b) => pesoQ(a) - pesoQ(b) || byOrden(a, b);
 const hechasEl = d => vivas().filter(t => t.estado === 'hecho' && diaDeISO(t.hecho) === d);
 function recTexto(rec) {
@@ -2680,19 +2701,18 @@ function mnReplanear(m) {
 
 /* ================= Interfaz general ================= */
 const VISTAS = [
-  { k:'bandeja', n:'Bandeja', ic:'inbox', sub:() => { const n = tareasEn('bandeja').length; return n ? `${n} por organizar` : 'Anota todo aquí, organiza después'; } },
+  { k:'bandeja', n:'Bandeja', ic:'inbox', sub:() => { if (ui.bModo === 'mente') { const n = mnAbiertos().length; return n ? `${n} por aclarar` : 'Escribe sin orden, Foco lo acomoda'; } const n = tareasEn('bandeja').length; return n ? `${n} por organizar` : 'Anota todo aquí, organiza después'; } },
   { k:'agenda', n:'Agenda', ic:'cal', sub:() => 'Asigna día y hora a tus tareas' },
   { k:'tablero', n:'Tablero', ic:'kanban', sub:() => 'Todas tus tareas por estado' },
   { k:'hoy', n:'Hoy', ic:'sun', sub:() => { const d = new Date(); return `${DIAS[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]}`; } },
   { k:'enfoque', n:'Enfoque', ic:'timer', sub:() => 'Pomodoro y bloques de tiempo' },
-  { k:'progreso', n:'Progreso', ic:'chart', sub:() => 'Tu avance y tus logros' },
-  { k:'mente', n:'Mente', ic:'brain', sub:() => { const n = mnAbiertos().length; return n ? `${n} por aclarar` : 'Escribe sin orden, Foco lo acomoda'; } }
+  { k:'progreso', n:'Progreso', ic:'chart', sub:() => 'Tu avance y tus logros' }
 ];
-// Cuatro secciones: Hoy (con Enfoque como modo ampliado), Bandeja, Planifica (Lista, Tablero y Agenda) y Progreso.
+// Cuatro secciones: Hoy (con Enfoque como modo ampliado), Bandeja (incluye Vaciar la mente), Planifica (Agenda y Tablero) y Progreso.
 // «ocultas» son vistas del grupo que no aparecen como subpestaña.
 const GRUPOS = [
   { k:'hoy', n:'Hoy', ic:'sun', vs:['hoy', 'enfoque'], ocultas:['enfoque'] },
-  { k:'bandeja', n:'Bandeja', ic:'inbox', vs:['bandeja', 'mente'] },
+  { k:'bandeja', n:'Bandeja', ic:'inbox', vs:['bandeja'] },
   { k:'planifica', n:'Planifica', ic:'cal', vs:['agenda', 'tablero'] },
   { k:'progreso', n:'Progreso', ic:'chart', vs:['progreso'] }
 ];
@@ -2776,8 +2796,9 @@ function pintarTabs() {
 }
 const RECUERDA_POS = ['tablero', 'agenda', 'progreso'];
 function ir(v) {
+  if (v === 'mente') { ui.bModo = 'mente'; v = 'bandeja'; }
   if (!VISTAS.some(x => x.k === v)) return;
-  if (ui.view === v) { window.scrollTo({ top:0, behavior:'smooth' }); return; }
+  if (ui.view === v) { if (v === 'bandeja') render(); else window.scrollTo({ top:0, behavior:'smooth' }); return; }
   ui.scroll[ui.view] = scrollY;
   if (v === 'enfoque') ui.volverDe = ui.view;
   ui.view = v; ui.agSel = ''; ui.ult[grupoDe(v).k] = v;
@@ -2790,7 +2811,7 @@ function ir(v) {
 }
 function encabezado() {
   const V = VISTAS.find(x => x.k === ui.view);
-  $('#hTitle').textContent = ui.view === 'enfoque' ? 'Enfoque' : ui.view === 'mente' || desk() ? V.n : grupoDe(ui.view).n; $('#hSub').textContent = V.sub();
+  $('#hTitle').textContent = ui.view === 'enfoque' ? 'Enfoque' : desk() ? V.n : grupoDe(ui.view).n; $('#hSub').textContent = V.sub();
   $('#backBtn').classList.toggle('hide', ui.view !== 'enfoque');
 }
 function render() {
@@ -2914,8 +2935,8 @@ function tip(k, icono, html) {
 }
 
 /* ================= Piezas de tarea ================= */
-const PQ_CORTO = { q1:'Hacer ya', q2:'Importante', q3:'Urgente' };
-const pq = t => { const q = cuad(t); return q ? `<span class="pq ${q.k}" title="${q.n}">${ic(q.ic)}${PQ_CORTO[q.k]}</span>` : ''; };
+const PQ_CORTO = { q1:'Prioritaria' };
+const pq = t => { const q = cuad(t); return q ? `<span class="pq q1" title="Prioritaria">${ic('star')}Prioritaria</span>` : ''; };
 // Máximo 2 o 3 datos por tarjeta: lo que sirve para decidir. El resto vive en el detalle.
 // Datos por relevancia: lo comprometido (hora, duración, seguimiento, límite cercano) siempre se ve;
 // el resto llena el espacio que quede. El orden y los iconos son siempre los mismos.
@@ -2947,28 +2968,50 @@ function filaHecha(t, drag) {
   return `<div class="tr hecha ${area(t.area) ? 'ca' : ''}" style="--a:${colorA(t.area)}" data-a="abrir" data-id="${t.id}" ${drag ? 'data-drag' : ''} role="button" tabindex="0"><span class="ck on">${ic('check')}</span>
     <div class="tb"><div class="tt">${esc(t.titulo)}</div><div class="mt"><span class="tag">${ic('check')}${horaDe(t.hecho)}</span>${t.pomos ? `<span class="tag">${ic('tomato')}${t.pomos}</span>` : ''}</div></div></div>`;
 }
-// Matriz de Eisenhower 2x2: una sola decisión en lugar de dos interruptores.
-function matriz(u, i, accion) {
-  const celdas = [[1, 1, 'q1', 'Hacer ya', 'Urgente e importante'], [0, 1, 'q2', 'Planificar', 'Importante, sin prisa'], [0, 0, 'q0', 'Sin prioridad', 'Ni urgente ni importante']];
-  return `<div class="mx" role="radiogroup" aria-label="Prioridad">${celdas.map(([uu, ii, k, n, s]) => { const on = uu === (u ? 1 : 0) && ii === (i ? 1 : 0); return `<button class="mx-c ${k} ${on ? 'on' : ''}" data-a="${accion}" data-u="${uu}" data-i="${ii}" role="radio" aria-checked="${on}"><b>${n}</b><span>${s}</span></button>`; }).join('')}</div>`;
+// Prioridad simplificada: solo prioritaria o normal.
+function togglePrio(on, accion) {
+  return `<button class="prio-tog ${on ? 'on' : ''}" data-a="${accion}" role="switch" aria-checked="${!!on}">${ic('star', on ? 'fill' : '')}${on ? 'Prioritaria' : 'Marcar como prioritaria'}</button>`;
 }
 
-/* ================= Vista: Bandeja ================= */
+/* ================= Vista: Bandeja (incluye modo «Vaciar la mente») ================= */
+function htmlBandejaModo() {
+  const nb = tareasEn('bandeja').length, nm = mnAbiertos().length, m = ui.bModo === 'mente';
+  return `<div class="seg b-modo" role="tablist" aria-label="Modo de Bandeja">
+    <button class="${!m ? 'on' : ''}" data-a="bModo" data-v="capturar" role="tab" aria-selected="${!m}">${ic('inbox')}Capturar${nb ? `<span class="n">${nb}</span>` : ''}</button>
+    <button class="${m ? 'on' : ''}" data-a="bModo" data-v="mente" role="tab" aria-selected="${m}">${ic('brain')}Vaciar la mente${nm ? `<span class="n">${nm}</span>` : ''}</button></div>`;
+}
 function renderBandeja() {
-  const v = $('#v-bandeja');
+  const v = $('#v-bandeja'), esMente = ui.bModo === 'mente';
+  v.classList.toggle('modo-mente', esMente);
+  if (esMente) {
+    if (!$('#mnIn', v)) {
+      v.innerHTML = htmlBandejaModo() + `<div class="mn-izq"><div class="panel mn-cap" id="mnBox">
+          <textarea id="mnIn" class="mn-in" data-in="mnIn" maxlength="${MN_MAX}" autocomplete="off" autocapitalize="sentences" spellcheck="true" aria-label="Escribe lo que traes en la cabeza" placeholder="¿Qué traes en la cabeza?&#10;&#10;Escríbelo como salga: pendientes, ideas, lo que te preocupa, lo que no sabes qué es. El orden viene después."></textarea>
+          <div class="mn-prev" id="mnPrev"></div>
+          <div class="mn-bot"><button class="lnk2" id="mnIAbtn" data-a="mnIA"></button><span class="sp"></span><button class="btn sm pri" id="mnOrdenar" data-a="mnOrdenar" title="También con ⌘ + Enter o Ctrl + Enter">${ic('sparkle')}Ordenar</button></div>
+        </div></div><div id="mnZona"></div>`;
+      const ta = $('#mnIn'); ta.value = S.menteBor || ''; mnAltura(ta);
+    } else {
+      const seg = $('.b-modo', v); if (seg) seg.outerHTML = htmlBandejaModo();
+    }
+    pintarMnPrev(); pintarMnZona();
+    return;
+  }
   if (!$('#capIn', v)) {
-    v.innerHTML = htmlCapForm('cap') + `<div id="bandejaZona"></div>
+    v.innerHTML = htmlBandejaModo() + htmlCapForm('cap') + `<div id="bandejaZona"></div>
       <details class="tips"><summary>${ic('bulb')}Cómo escribir un buen pendiente${ic('chevD', 'chev')}</summary>
-        <div>Empieza con un <b>verbo</b> (Revisar, Enviar, Llamar…) y di <b>sobre qué</b>: «Enviar la cotización a Luis». Los detalles los completas al organizar.<br>El área se sugiere sola mientras escribes; cámbiala en el selector a la izquierda de Guardar si no es. Si pegas una lista, cada línea se vuelve un pendiente.</div></details>`;
+        <div>Empieza con un <b>verbo</b> (Revisar, Enviar, Llamar…) y di <b>sobre qué</b>: «Enviar la cotización a Luis». Los detalles los completas al organizar.<br>El área es opcional (se sugiere sola si la reconoce). Si pegas una lista, cada línea se vuelve un pendiente.</div></details>`;
+  } else {
+    const seg = $('.b-modo', v); if (seg) seg.outerHTML = htmlBandejaModo();
   }
   pintarCapForm('cap'); pintarBandejaLista();
 }
-// Captura en un paso: verbo (sugerido), qué vas a hacer y área. Nada más es obligatorio.
+// Captura en un paso: verbo (sugerido), qué vas a hacer y área opcional.
 function htmlCapForm(pfx) {
   return `<div class="panel capf" id="${pfx}Box">
     <button class="vtop" id="${pfx}Verbo" data-a="verboAbrir" data-dest="${pfx}" aria-label="Elegir un verbo para empezar a redactar">${ic('bolt')}¿No sabes cómo empezar? Elige un verbo${ic('chevD')}</button>
     <textarea id="${pfx}In" class="capf-in" rows="1" maxlength="2000" placeholder="Anota un pendiente" enterkeyhint="send" autocomplete="off" autocapitalize="sentences" aria-label="Anota un pendiente"></textarea>
-    <div class="capf-bot"><button type="button" class="areasel" id="${pfx}Area" data-a="areaAbrir" data-dest="${pfx}" aria-label="Elegir área (obligatoria)"></button><button class="btn sm pri" data-a="${pfx === 'cap' ? 'capAdd' : 'capSheetAdd'}" aria-label="Guardar entrada en la Bandeja">${ic('inbox')}Guardar entrada</button></div>
+    <div class="capf-bot"><button type="button" class="areasel" id="${pfx}Area" data-a="areaAbrir" data-dest="${pfx}" aria-label="Elegir área (opcional)"></button><button class="btn sm pri" data-a="${pfx === 'cap' ? 'capAdd' : 'capSheetAdd'}" aria-label="Guardar entrada en la Bandeja">${ic('inbox')}Guardar entrada</button></div>
   </div><div class="capf-hint" id="${pfx}Hint" aria-live="polite"></div>`;
 }
 function pintarCapForm(pfx) {
@@ -2978,9 +3021,9 @@ function pintarCapForm(pfx) {
   if (!ui.capAreaManual) ui.capArea = lns.length === 1 ? predecirArea(limpiarTitulo(lns[0])) : '';
   const sa = $(`#${pfx}Area`), ar = area(ui.capArea);
   sa.classList.toggle('vacia', !ar);
-  sa.innerHTML = (ar ? `<i class="dot" style="--a:${ar.c}"></i>` : ic('layers')) + `<span>${esc(ar ? ar.n : 'Área…')}</span>${ic('chevD')}`;
+  sa.innerHTML = (ar ? `<i class="dot" style="--a:${ar.c}"></i>` : ic('layers')) + `<span>${esc(ar ? ar.n : 'Área (opcional)')}</span>${ic('chevD')}`;
   let h = '';
-  if (lns.length === 1 && lns[0].length > 60 && mnSegmentar(lns[0]).length >= 3) h = `Parece que traes varias cosas juntas. <button data-a="mnDesdeCap" data-dest="${pfx}">Llevarlo a Mente</button>`;
+  if (lns.length === 1 && lns[0].length > 60 && mnSegmentar(lns[0]).length >= 3) h = `Parece que traes varias cosas juntas. <button data-a="mnDesdeCap" data-dest="${pfx}">Vaciar la mente</button>`;
   else if (lns.length > 1) h = `Se guardarán ${lns.length} pendientes, uno por línea.`;
   else if (lns.length === 1 && txt.trim().length > 2) {
     const i = analizar(lns[0]).find(x => ['relleno', 'verbo', 'vago'].includes(x.k));
@@ -2988,44 +3031,26 @@ function pintarCapForm(pfx) {
     else if (i && i.k === 'verbo') h = `Tip: empieza con un verbo. ${TOCA()} «Elige un verbo» si no sabes cómo empezar.`;
     else if (i && i.k === 'vago') h = `«${esc(i.msg.split('»')[0].slice(1))}» es poco específico. ¿Qué harás exactamente?`;
   }
-  if (lns.length === 1 && !ui.capAreaManual && ui.capArea) h = `Área sugerida: <b>${esc(area(ui.capArea)?.n || '')}</b>. Cámbiala en el selector si no es.` + (h ? '<br>' + h : '');
-  else if (lns.length && !ui.capAreaManual && !ui.capArea && lns.length === 1 && txt.trim().length > 2) h = 'Elige un área en el selector.' + (h ? '<br>' + h : '');
+  if (lns.length === 1 && !ui.capAreaManual && ui.capArea) h = `Área sugerida: <b>${esc(area(ui.capArea)?.n || '')}</b>.` + (h ? '<br>' + h : '');
   $(`#${pfx}Hint`).innerHTML = h;
 }
-// Un pendiente no se guarda sin área: la elegida o la que se predice para cada línea.
-function capAreaOk(sel, pfx) {
-  const ta = $(sel); if (!ta) return true;
-  const ls = lineasDe(ta.value); if (!ls.length) return true;
-  if (ui.capAreaManual && ui.capArea) return true;
-  if (ls.every(l => predecirArea(limpiarTitulo(l)))) return true;
-  sacudir($(`#${pfx}Area`), 'Elige un área para guardar');
-  return false;
-}
+// Captura sin fricción: el área se sugiere si se reconoce, pero nunca bloquea guardar.
+function capAreaOk() { return true; }
 function capAreaReset() { ui.capArea = ''; ui.capAreaManual = false; }
 function pintarCapAreas() { pintarCapForm('cap'); pintarCapForm('capSheet'); }
 function pintarBandejaLista(nuevos = []) {
   const z = $('#bandejaZona'); if (!z) return;
-  const todos = tareasEn('bandeja').sort((a, b) => b.creado.localeCompare(a.creado));
-  // Filtro por verbo: agrupa los pendientes por el infinitivo con que empiezan.
-  const vb = t => { const v = verboInicial(t.titulo); return v ? cap1(v.verbo.toLowerCase()) : ''; };
-  const cuenta = {}; todos.forEach(t => { const k = vb(t); cuenta[k] = (cuenta[k] || 0) + 1; });
-  if (ui.bVerbo && !cuenta[ui.bVerbo === '-' ? '' : ui.bVerbo]) ui.bVerbo = '';
-  const items = ui.bVerbo ? todos.filter(t => vb(t) === (ui.bVerbo === '-' ? '' : ui.bVerbo)) : todos;
-  const verbos = Object.keys(cuenta).filter(Boolean).sort((a, b) => cuenta[b] - cuenta[a] || a.localeCompare(b));
-  const filtroV = todos.length >= 5 && (verbos.length > 1 || cuenta['']) ? `<div class="chips vf" role="group" aria-label="Filtrar por verbo">
-    <button class="chip ${!ui.bVerbo ? 'on' : ''}" data-a="bVerbo" data-v="">Todos <span class="n">${todos.length}</span></button>
-    ${verbos.map(v => `<button class="chip ${ui.bVerbo === v ? 'on' : ''}" data-a="bVerbo" data-v="${esc(v)}" aria-pressed="${ui.bVerbo === v}">${esc(v)} <span class="n">${cuenta[v]}</span></button>`).join('')}
-    ${cuenta[''] ? `<button class="chip ${ui.bVerbo === '-' ? 'on' : ''}" data-a="bVerbo" data-v="-">Sin verbo <span class="n">${cuenta['']}</span></button>` : ''}</div>` : '';
+  const items = tareasEn('bandeja').sort((a, b) => b.creado.localeCompare(a.creado));
   ui.bIds = items.map(t => t.id);
   const rec = (S.procRec || []).filter(r => { const t = diaDeISO(r.t) === hoy() && byId(r.id); return t && t.estado !== 'bandeja'; }).slice(0, 8);
   let html = '';
   if (items.length) {
-    html += `<button class="cta" data-a="procesar"><span class="ico">${ic('sparkle')}</span><span><b>Organizar ${items.length} ${items.length === 1 ? 'pendiente' : 'pendientes'}${ui.bVerbo ? ` de «${esc(ui.bVerbo === '-' ? 'Sin verbo' : ui.bVerbo)}»` : ''}</b><small>Decide qué hacer con cada uno</small></span>${ic('arrowR')}</button>
-      <div class="sec-t">Por organizar <span class="n">${items.length}${ui.bVerbo ? ' de ' + todos.length : ''}</span><span class="sp"></span>${items.length > 1 ? `<button class="lnk2" data-a="bSelModo">${ui.bSel ? 'Cancelar' : 'Seleccionar varios'}</button>` : ''}</div>${filtroV}
+    html += `<button class="cta" data-a="procesar"><span class="ico">${ic('sparkle')}</span><span><b>Organizar ${items.length} ${items.length === 1 ? 'pendiente' : 'pendientes'}</b><small>Decide en un toque qué hacer con cada uno</small></span>${ic('arrowR')}</button>
+      <div class="sec-t">Por organizar <span class="n">${items.length}</span><span class="sp"></span>${items.length > 1 ? `<button class="lnk2" data-a="bSelModo">${ui.bSel ? 'Cancelar' : 'Seleccionar varios'}</button>` : ''}</div>
       ${ui.bSel ? `<div class="lote-bar"><button class="chip" data-a="bSelTodos">${items.every(t => ui.bSel.has(t.id)) ? 'Ninguno' : 'Todos'}</button><b>${ui.bSel.size} ${ui.bSel.size === 1 ? 'seleccionado' : 'seleccionados'}</b><button class="btn sm pri" data-a="loteAbrir" ${ui.bSel.size ? '' : 'disabled'}>${ic('layers')}Asignar</button></div>` : ''}
       <div class="group ${ui.bSel ? '' : 'bandeja-lista'}">${items.map(t => ui.bSel ? `<button class="tr pl ${ui.bSel.has(t.id) ? 'on' : ''}" style="--a:${t.area ? colorA(t.area) : 'transparent'}" data-a="bSelTog" data-id="${t.id}" aria-pressed="${ui.bSel.has(t.id)}"><span class="ck">${ui.bSel.has(t.id) ? ic('check') : ''}</span>
         <span class="tb"><span class="tt">${esc(t.titulo)}</span><span class="mt">${metaCorta(t, 2, { area:true })}</span></span></button>`
-        : `<div class="tr nock b-item ${nuevos.includes(t.id) ? 'in-anim' : ''}" style="--a:${t.area ? colorA(t.area) : 'transparent'}">
+        : `<div class="tr nock b-item ${nuevos.includes(t.id) ? 'in-anim' : ''}" style="--a:${t.area ? colorA(t.area) : 'transparent'}" data-a="abrir" data-id="${t.id}" role="button" tabindex="0" aria-label="${esc(t.titulo)}. Abrir detalle">
         <div class="tb"><div class="tt">${esc(t.titulo)}</div><div class="mt"><span class="tag ${Date.now() - new Date(t.creado) > 3 * 864e5 ? 'f-olv' : ''}">${haceCuanto(t.creado)}</span>${metaCorta(t, 2, { area:true })}</div></div>
         <div class="b-acts"><button class="b-act" data-a="bHoy" data-id="${t.id}" aria-label="Pasar a Hoy: ${esc(t.titulo)}">Hoy</button><button class="b-act sq" data-a="bHecho" data-id="${t.id}" title="Hecho ya (<2 min)" aria-label="Marcar como hecha ahora: ${esc(t.titulo)}">${ic('check')}</button></div></div>`).join('')}</div>`;
   } else {
@@ -3076,18 +3101,7 @@ function mnGuardar(m) { m.actualizado = nowISO(); encolar('Ajustes', { clave:'me
 function mnAltura(el) { if (!el) return; el.style.height = 'auto'; if (el.value) el.style.height = Math.min(el.scrollHeight, Math.round(innerHeight * .55)) + 'px'; else el.style.height = ''; }
 const MN_APOYO = 'Esto suena muy pesado, y no tienes que resolverlo aquí ni cargarlo a solas. Habla hoy con alguien de confianza o con un profesional.';
 const htmlMnApoyo = () => `<div class="mn-apoyo"><b>${MN_APOYO}</b> Si estás en peligro, llama al <a href="tel:911">911</a>. En México, la Línea de la Vida atiende las 24 horas: <a href="tel:8009112000">800 911 2000</a>.</div>`;
-function renderMente() {
-  const v = $('#v-mente');
-  if (!$('#mnIn', v)) {
-    v.innerHTML = `<div class="mn-izq"><div class="panel mn-cap" id="mnBox">
-        <textarea id="mnIn" class="mn-in" data-in="mnIn" maxlength="${MN_MAX}" autocomplete="off" autocapitalize="sentences" spellcheck="true" aria-label="Escribe lo que traes en la cabeza" placeholder="¿Qué traes en la cabeza?&#10;&#10;Escríbelo como salga: pendientes, ideas, lo que te preocupa, lo que no sabes qué es. El orden viene después."></textarea>
-        <div class="mn-prev" id="mnPrev"></div>
-        <div class="mn-bot"><button class="lnk2" id="mnIAbtn" data-a="mnIA"></button><span class="sp"></span><button class="btn sm pri" id="mnOrdenar" data-a="mnOrdenar" title="También con ⌘ + Enter o Ctrl + Enter">${ic('sparkle')}Ordenar</button></div>
-      </div></div><div id="mnZona"></div>`;
-    const ta = $('#mnIn'); ta.value = S.menteBor || ''; mnAltura(ta);
-  }
-  pintarMnPrev(); pintarMnZona();
-}
+function renderMente() { ui.bModo = 'mente'; renderBandeja(); }
 function pintarMnPrev() {
   const ta = $('#mnIn'), z = $('#mnPrev'), b = $('#mnIAbtn'); if (!ta || !z) return;
   if (b) b.innerHTML = `${ic('sparkle')}${S.ia.on && S.ia.key ? 'IA activada' : 'IA opcional'}`;
@@ -3114,7 +3128,7 @@ function mnCard(m, nuevos, conTipo) {
   const T = MN_TIPOS[m.tipo], p = mnSiguiente(m);
   const tags = [
     conTipo ? `<span class="mn-tp" style="--c:${T.c}">${ic(T.ic)}${T.n}</span>` : '',
-    m.urgente ? `<span class="pq q1">${ic('bolt')}Urgente</span>` : '',
+    m.urgente ? `<span class="pq q1">${ic('star')}Prioritaria</span>` : '',
     m.fecha ? `<span class="tag">${ic('cal')}${fechaCorta(m.fecha)}</span>` : '',
     m.retomar ? `<span class="tag f-ahora">${ic('refresh')}Para retomar</span>` : '',
     area(m.area) ? `<span class="tag"><i class="dot" style="--a:${colorA(m.area)}"></i>${esc(area(m.area).n)}</span>` : '',
@@ -3134,7 +3148,7 @@ function mnFilaCerrada(m) {
   return `<div class="hr" data-a="mnAbrir" data-id="${m.id}" role="button" tabindex="0"><i class="dot" style="--a:${T.c}"></i><div class="tb"><div class="ht">${esc(m.texto)}</div><div class="hn">${lbl}</div></div></div>`;
 }
 function pintarMnZona(nuevos = []) {
-  const z = $('#mnZona'), v = $('#v-mente'); if (!z) return;
+  const z = $('#mnZona'), v = $('#v-bandeja'); if (!z || !v) return;
   const ab = mnAbiertos(), cerr = mnVivos().filter(m => !mnEstaAbierto(m)).sort((a, b) => (b.actualizado || '').localeCompare(a.actualizado || ''));
   v.classList.toggle('con', ab.length + cerr.length > 0);
   let h = '';
@@ -3217,7 +3231,7 @@ function mnDeshacerTareas(rs) {
   rs.forEach(r => { if (!r.dup) { r.t.borrado = true; upsertT(r.t); } r.p.t = ''; r.m.estado = r.previo.estado; r.m.retomar = r.previo.retomar; mnGuardar(r.m); });
   mnRefrescar();
 }
-function mnRefrescar() { if (ui.view === 'mente') { pintarMnZona(); encabezado(); pintarTabs(); } if (ui.sheet && (ui.sheet.k === 'mente' || ui.sheet.k === 'mnIA')) refrescarSheet(); }
+function mnRefrescar() { if (ui.view === 'bandeja' && ui.bModo === 'mente') { pintarMnZona(); encabezado(); pintarTabs(); } if (ui.sheet && (ui.sheet.k === 'mente' || ui.sheet.k === 'mnIA')) refrescarSheet(); }
 
 /* IA opcional: tu propia clave gratuita de Google Gemini. Solo afina lo que el motor local ya ordenó:
    si falla, no hay internet o se acaba la cuota, todo sigue funcionando igual. */
@@ -3330,7 +3344,7 @@ function htmlMnIA() {
 /* ================= Organizar la bandeja (GTD) ================= */
 let proc = null;
 function abrirProc() {
-  const ids = (ui.bVerbo ? (ui.bIds || []).map(byId).filter(t => t && t.estado === 'bandeja') : tareasEn('bandeja')).sort((a, b) => a.creado.localeCompare(b.creado)).map(t => t.id);
+  const ids = tareasEn('bandeja').sort((a, b) => a.creado.localeCompare(b.creado)).map(t => t.id);
   if (!ids.length) { toast('La bandeja ya está vacía'); return; }
   proc = { ids, i:0, paso:'que', d:{}, hechos:0, anim:'enter' };
   $('#proc').classList.add('on'); document.documentElement.classList.add('lock');
@@ -3351,8 +3365,8 @@ function renderProc() {
   while (P.i < P.ids.length) { const t = byId(P.ids[P.i]); if (t && t.estado === 'bandeja' && !t.borrado) break; P.i++; }
   if (P.i >= P.ids.length) return finProc();
   const t = tActualProc(), n = P.ids.length;
-  if (P.qaId !== t.id) { P.qaId = t.id; P.qa = t.area || predecirArea(t.titulo); }
-  const q = { que:`Pendiente ${P.i + 1} de ${n}`, prox:'Próxima acción', espera:'En espera' }[P.paso];
+  if (P.qaId !== t.id) { P.qaId = t.id; P.qa = t.area || predecirArea(t.titulo); P.prio = esPrioritaria(t); }
+  const q = { que:`Pendiente ${P.i + 1} de ${n}`, espera:'En espera' }[P.paso] || `Pendiente ${P.i + 1} de ${n}`;
   o.innerHTML = `
     <div class="proc-top"><button class="ib" data-a="cerrarProc" aria-label="Cerrar">${ic('x')}</button><div class="proc-prog" role="progressbar" aria-valuenow="${P.i}" aria-valuemax="${n}"><div style="width:${P.i / n * 100}%"></div></div><span class="proc-n">${P.i + 1}/${n}</span></div>
     <div class="proc-card ${P.anim}" id="procCard"><div class="proc-q">${q}</div>
@@ -3366,30 +3380,33 @@ function cuerpoProc(t) {
   const P = proc;
   if (P.paso === 'que') return `
     <div id="procClar">${htmlClaridad(t.titulo, 'proc')}</div>
-    ${t.area ? '' : `<div class="f-sec" style="margin-top:8px"><label>Área</label><div class="areapick" id="procQa" role="radiogroup" aria-label="Área (obligatoria)">${areas().map(a => `<button class="chip area ${P.qa === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="pQa" data-v="${a.id}" role="radio" aria-checked="${P.qa === a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('')}</div></div>`}
+    <div class="f-sec" style="margin-top:8px;display:flex;flex-wrap:wrap;align-items:center;gap:8px">
+      ${togglePrio(P.prio, 'pPrio')}
+      ${t.area ? '' : `<div class="areapick" id="procQa" role="radiogroup" aria-label="Área (opcional)">${areas().map(a => `<button class="chip area ${P.qa === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="pQa" data-v="${a.id}" role="radio" aria-checked="${P.qa === a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('')}</div>`}
+    </div>
     <p class="proc-h">¿Qué hago con esto?</p>
     <button class="two" data-a="pYa"><span class="ico">${ic('bolt')}</span><span><b>Lo hago ahora</b><small>Abre un temporizador de 5 minutos para hacerlo ya</small></span>${ic('play', 'fill')}</button>
-    <div class="sec-t" style="margin-top:16px">Si toma más tiempo</div>
+    <div class="sec-t" style="margin-top:16px">Mover a</div>
     <div class="acts">
-      <button class="act" style="--k:var(--ac-t);--k-s:var(--ac-s)" data-a="pProx"><span class="ico">${ic('arrowR')}</span><span><b>Próxima acción</b><span>Pasa a Hoy: solo elijo su prioridad</span></span></button>
-      <button class="act" style="--k:var(--warn);--k-s:var(--warn-s)" data-a="pEspera"><span class="ico">${ic('hourglass')}</span><span><b>En espera</b><span>Depende de otra persona</span></span></button>
-      <button class="act" style="--k:var(--vio);--k-s:var(--vio-s)" data-a="pAlgun"><span class="ico">${ic('bulb')}</span><span><b>Algún día</b><span>Idea para después, sin fecha</span></span></button>
+      <button class="act" style="--k:var(--foco-t);--k-s:var(--foco-s)" data-a="pHoy"><span class="ico">${ic('sun')}</span><span><b>Para hoy</b><span>Se suma a tu día</span></span></button>
+      <button class="act" style="--k:var(--ac-t);--k-s:var(--ac-s)" data-a="pProx"><span class="ico">${ic('arrowR')}</span><span><b>Próximas</b><span>Sin fecha, para después</span></span></button>
+      <button class="act" style="--k:var(--ac-t);--k-s:var(--ac-s)" data-a="pManana"><span class="ico">${ic('moon')}</span><span><b>Mañana</b><span>Programada para mañana</span></span></button>
+      <button class="act" style="--k:var(--warn);--k-s:var(--warn-s)" data-a="pEspera"><span class="ico">${ic('hourglass')}</span><span><b>En espera</b><span>Depende de alguien más</span></span></button>
+      <button class="act" style="--k:var(--vio);--k-s:var(--vio-s)" data-a="pAlgun"><span class="ico">${ic('bulb')}</span><span><b>Algún día</b><span>Idea sin fecha planeada</span></span></button>
       <button class="act del" data-a="pBorrar"><span class="ico">${ic('trash')}</span><span><b>Eliminar</b><span>Ya no hace falta</span></span></button>
     </div>`;
   const d = P.d;
-  if (P.paso === 'espera') return `
-    <div class="f-sec"><label for="pEsperaIn">¿Qué o a quién esperas?</label><input class="in ${d.errEsp ? 'bad' : ''}" id="pEsperaIn" maxlength="120" placeholder="Ej. respuesta de Omar" value="${esc(d.espera || '')}">${d.errEsp ? '<div class="err">Escribe de quién o de qué dependes para poder darle seguimiento.</div>' : ''}</div>
-    <div class="f-sec"><label>¿Cuándo le doy seguimiento?</label><div class="chips">${[['', 'Sin fecha'], [manana(), 'Mañana'], [addDays(hoy(), 3), 'En 3 días'], [addDays(hoy(), 7), 'En una semana']].map(([v, n]) => `<button class="chip ${(d.fecha || '') === v ? 'on' : ''}" data-a="pSeg" data-v="${v}">${n}</button>`).join('')}</div></div>
-    <div class="proc-foot"><button class="btn" data-a="pAtras">Atrás</button><button class="btn pri" data-a="pGuardarEsp">${ic('check')}Guardar</button></div>`;
   return `
-    <div class="f-sec"><label>Prioridad</label>${matriz(d.urgente, d.importante, 'pMx')}</div>
-    <div class="proc-foot"><button class="btn" data-a="pAtras">Atrás</button><button class="btn pri" data-a="pGuardarProx">${ic('check')}Guardar</button></div>`;
+    <div class="f-sec"><label for="pEsperaIn">¿Qué o a quién esperas?</label><input class="in ${d.errEsp ? 'bad' : ''}" id="pEsperaIn" maxlength="120" placeholder="Ej. respuesta de Omar" value="${esc(d.espera || '')}">${d.errEsp ? '<div class="err">Escribe de quién o de qué dependes para poder darle seguimiento.</div>' : ''}</div>
+    <div class="f-sec"><label>¿Cuándo le doy seguimiento?</label><div class="chips">${[['', 'Sin fecha'], [manana(), 'Mañana'], [addDays(hoy(), 3), 'En 3 días'], [addDays(hoy(), 7), 'En una semana']].map(([v, n]) => `<button class="chip ${(d.seg || '') === v ? 'on' : ''}" data-a="pSeg" data-v="${v}">${n}</button>`).join('')}</div></div>
+    <div class="proc-foot"><button class="btn" data-a="pAtras">Atrás</button><button class="btn pri" data-a="pGuardarEsp">${ic('check')}Guardar</button></div>`;
 }
-// Todo pendiente organizado necesita área: se guarda la elegida o la sugerida.
+// Aplica área (opcional) y prioridad elegidas en la tarjeta antes de mover.
 function procArea() {
   const t = tActualProc(); if (!t) return false;
-  if (!proc.qa) { sacudir($('#procQa'), 'Elige un área primero'); return false; }
-  if (t.area !== proc.qa) { t.area = proc.qa; upsertT(t); }
+  if (proc.qa && t.area !== proc.qa) t.area = proc.qa;
+  t.importante = !!proc.prio;
+  t.urgente = false;
   return true;
 }
 function repintarCuerpoProc() { const t = tActualProc(); if (t) $('#procBody').innerHTML = cuerpoProc(t); }
@@ -3937,10 +3954,10 @@ function colDe(t) {
   return '';
 }
 /* Filtros compartidos de Planifica: los mismos en Tablero y Agenda. Hoy y Bandeja no se filtran. */
-const PRIO_F = { q1:'Urgente e importante', imp:'Importante', urg:'Urgente', sin:'Sin prioridad' };
+const PRIO_F = { si:'Prioritarias', no:'Normales' };
 const EST_F = { prox:'Próximas', proceso:'En curso' };
 const REC_F = { si:'Solo rutinas', no:'Tareas únicas' };
-const prioDe = t => t.urgente && t.importante ? 'q1' : t.importante ? 'imp' : t.urgente ? 'urg' : 'sin';
+const prioDe = t => esPrioritaria(t) ? 'si' : 'no';
 function pasaFiltro(t, op = {}) {
   const f = ui.f;
   if (f.area !== 'todas' && !(f.area === 'sin' ? !area(t.area) : t.area === f.area)) return false;
@@ -3989,7 +4006,7 @@ function tareasCol(k) {
 function cardK(t, col) {
   const out = [];
   // La tarjeta se comporta según su estado real, aunque la columna agrupe varios.
-  const k = col === 'proceso' ? (t.estado === 'proceso' ? 'proceso' : 'hoy') : col === 'prox' ? (t.estado === 'espera' ? 'espera' : 'prox') : col;
+  const k = col === 'algun' ? 'algun' : col === 'proceso' ? (t.estado === 'proceso' ? 'proceso' : 'hoy') : col === 'prox' ? (t.estado === 'espera' ? 'espera' : 'prox') : col;
   if (k === 'hecho') out.push(`<span class="tag">${ic('check')}${fechaCorta(diaDeISO(t.hecho))} ${horaDe(t.hecho)}</span>`);
   else {
     if (k === 'espera' && t.espera) out.push(`<span class="tag">${ic('hourglass')}${esc(t.espera)}</span>`);
@@ -4007,9 +4024,10 @@ function cardK(t, col) {
     prox:`<button class="qk" data-a="mover" data-id="${t.id}" data-v="hoy" aria-label="Mover a Hoy">Hoy${ic('arrowR')}</button>`,
     hoy:`<button class="qk pri" data-a="play" data-id="${t.id}">${ic('play', 'fill')}Empezar</button>`,
     proceso:`${suyo ? `<button class="qk pri" data-a="${run ? 'pausar' : 'iniciar'}" aria-label="${run ? 'Pausar' : 'Reanudar'} enfoque">${run ? ic('pause') : ic('play', 'fill')}</button>` : `<button class="qk pri" data-a="play" data-id="${t.id}" aria-label="Empezar enfoque">${ic('play', 'fill')}</button>`}<button class="qk ok" data-a="ck" data-id="${t.id}">${ic('check')}Hecha</button>`,
-    espera:`<button class="qk" data-a="mover" data-id="${t.id}" data-v="hoy">Retomar</button>`
+    espera:`<button class="qk" data-a="mover" data-id="${t.id}" data-v="hoy">Retomar</button>`,
+    algun:`<button class="qk" data-a="mover" data-id="${t.id}" data-v="prox" aria-label="Activar en Próximas">Activar${ic('arrowR')}</button>`
   }[k] || '';
-  return `<div class="kc ${k === 'hecho' ? 'hecha' : ''} ${run ? 'run' : ''} ${area(t.area) ? 'ca' : ''}" style="--a:${colorA(t.area)}" data-id="${t.id}" data-a="abrir" ${k === 'espera' ? '' : 'data-drag'} role="button" tabindex="0">
+  return `<div class="kc ${k === 'hecho' ? 'hecha' : ''} ${run ? 'run' : ''} ${area(t.area) ? 'ca' : ''}" style="--a:${colorA(t.area)}" data-id="${t.id}" data-a="abrir" ${k === 'espera' || k === 'algun' ? '' : 'data-drag'} role="button" tabindex="0">
     <div class="kc-t">${esc(t.titulo)}</div>${enf}<div class="kc-f ${k === 'proceso' ? 'pr' : ''}"><div class="mt">${out.slice(0, 2).join('')}</div>${qk}</div></div>`;
 }
 function renderTablero() {
@@ -4017,13 +4035,15 @@ function renderTablero() {
   const prevLeft = $('#board', v) ? $('#board', v).scrollLeft : null;
   const base = ['prox', 'hoy', 'proceso', 'espera'].flatMap(k => tareasEn(k));
   const nAct = base.filter(t => pasaFiltro(t)).length;
+  const algun = tareasEn('algun').filter(t => pasaFiltro(t, { sinEstado:true })).sort((a, b) => b.creado.localeCompare(a.creado));
   let html = htmlBarraFiltros(nAct, base.length);
   const datos = COLS.map(c => ({ c, ts:tareasCol(c.k) }));
   html += `<div class="coltabs" id="coltabs" role="tablist" aria-label="Columnas">${datos.map(({ c, ts }) => `<button class="${ui.col === c.k ? 'on' : ''}" data-a="colGo" data-v="${c.k}" role="tab"><span>${c.n}</span><b class="${c.lim && ts.length >= c.lim ? 'full' : ''}">${ts.length}${c.lim ? '/' + c.lim : ''}</b></button>`).join('')}</div>`;
   html += tip('tablero', 'arrowR', 'Avanza cada tarjeta con su botón o arrastrándola.');
+  const algunHtml = algun.length ? `<details class="algun-sec" data-k="tb-algun" ${abierto('tb-algun') ? 'open' : ''}><summary>${ic('bulb')}Algún día <span class="cnt">${algun.length}</span>${ic('chevD', 'chev')}</summary><div class="algun-l">${algun.map(t => cardK(t, 'algun')).join('')}</div></details>` : '';
   html += `<div class="board" id="board">${datos.map(({ c, ts }) => `<section class="col" style="--c:${c.c}" data-col="${c.k}" aria-label="${c.n}">
       <div class="col-h"><div><i class="cd"></i>${c.n}<span class="cnt">${ts.length}</span></div><small>${c.d}</small></div>
-      <div class="list" data-list="${c.k}">${ts.map(t => cardK(t, c.k)).join('')}<div class="empty">${{ prox:'Organiza tu Bandeja para llenar esta lista', proceso:'Nada en Hoy. Pasa tareas desde Próximas', hecho:'Aquí verás lo que termines' }[c.k]}</div></div>
+      <div class="list" data-list="${c.k}">${ts.map(t => cardK(t, c.k)).join('')}<div class="empty">${{ prox:'Organiza tu Bandeja para llenar esta lista', proceso:'Nada en Hoy. Pasa tareas desde Próximas', hecho:'Aquí verás lo que termines' }[c.k]}</div>${c.k === 'prox' ? algunHtml : ''}</div>
       ${c.k === 'prox' ? `<div class="qadd"><input id="qaddIn" maxlength="${MAX_TITULO}" placeholder="${esc(phCaptura())}" enterkeyhint="done" autocomplete="off" aria-label="${esc(phCaptura().slice(2))}"></div>` : ''}
     </section>`).join('')}</div>`;
   v.innerHTML = html;
@@ -4760,7 +4780,7 @@ function htmlDetalle(t) {
       `<div class="chips">${estados.map(([k, n]) => `<button class="chip ${t.estado === k ? 'on' : ''}" data-a="dtEstado" data-v="${k}">${n}</button>`).join('')}</div>`),
     area: fila('area', 'layers', 'teal', 'Área', A ? `<i class="dot" style="--a:${A.c}"></i>${esc(A.n)}` : 'Sin área',
       `<div class="chips">${areas().map(a => `<button class="chip area ${t.area === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="dtArea" data-v="${a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('')}<button class="chip" data-a="irAreas">${ic('plus')}Nueva área</button></div>`),
-    prio: fila('prio', 'flag', 'warn', 'Prioridad', q ? pq(t) : 'Sin prioridad', matriz(t.urgente, t.importante, 'dtMx') + `<p class="hint">${TOCA()} la opción que mejor describa la tarea.</p>`),
+    prio: fila('prio', 'star', 'warn', 'Prioridad', q ? pq(t) : 'Normal', togglePrio(esPrioritaria(t), 'dtPrio')),
     fecha: fila('fecha', 'cal', 'hot', 'Día planeado', fechaTxt,
       `<div class="chips">${[['hoy', 'Hoy'], ['manana', 'Mañana'], ['lunes', 'Próximo lunes'], ['semana', 'En una semana'], ['', 'Sin fecha']].map(([v, n]) => `<button class="chip ${(v === 'hoy' && t.fecha === hoy()) || (v === 'manana' && t.fecha === manana()) || (v === '' && !t.fecha) ? 'on' : ''}" data-a="dtCuando" data-v="${v}">${n}</button>`).join('')}</div>
        <label class="f-l" style="margin-top:12px" for="dtFechaIn">Otra fecha</label><input type="date" class="in" id="dtFechaIn" data-in="dtFecha" value="${t.fecha}" ${t.estado !== 'hecho' ? `min="${hoy()}"` : ''}>`),
@@ -4907,8 +4927,8 @@ function aplicarTema(t) {
 const dtT = () => byId(ui.sheet && ui.sheet.id);
 function leerCamposProc() {
   if (!proc) return;
-  const e = $('#pEsperaIn'), f = $('#pFecha'), p = $('#pProyecto'), h = $('#pHora');
-  if (e) proc.d.espera = e.value; if (f) proc.d.fecha = f.value; if (p) proc.d.proyecto = p.value; if (h) proc.d.hora = h.value;
+  const e = $('#pEsperaIn');
+  if (e) proc.d.espera = e.value;
 }
 function hacerPrimera(id) {
   const t = byId(id); if (!t) return;
@@ -5036,7 +5056,7 @@ const ACT = {
   mnIAon:() => {
     const inp = $('#mnKey'); if (inp) S.ia.key = inp.value.trim();
     if (!S.ia.key) { ui.mnIAmsg = { ok:false, t:'Primero pega tu clave.' }; S.ia.on = false; refrescarSheet(); $('#mnKey')?.focus(); return; }
-    S.ia.on = !S.ia.on; ui.mnIAmsg = null; guardarYa(); refrescarSheet(); if (ui.view === 'mente') { pintarMnPrev(); pintarMnZona(); }
+    S.ia.on = !S.ia.on; ui.mnIAmsg = null; guardarYa(); refrescarSheet(); if (ui.view === 'bandeja' && ui.bModo === 'mente') { pintarMnPrev(); pintarMnZona(); }
   },
   mnIApreo:() => { const inp = $('#mnKey'); if (inp) S.ia.key = inp.value.trim(); S.ia.preo = !S.ia.preo; guardarYa(); refrescarSheet(); },
   mnIAprobar:async () => {
@@ -5046,9 +5066,9 @@ const ACT = {
     ui.mnIAprobando = true; ui.mnIAmsg = null; refrescarSheet();
     try { await mnIALlamar([{ i:0, t:'Comprar leche' }]); S.ia.on = true; ui.mnIAmsg = { ok:true, t:`Funciona. La IA ya está activada (${S.ia.modelo}).` }; }
     catch (e) { S.ia.on = false; ui.mnIAmsg = { ok:false, t:e.message }; }
-    ui.mnIAprobando = false; guardarYa(); refrescarSheet(); if (ui.view === 'mente') { pintarMnPrev(); pintarMnZona(); }
+    ui.mnIAprobando = false; guardarYa(); refrescarSheet(); if (ui.view === 'bandeja' && ui.bModo === 'mente') { pintarMnPrev(); pintarMnZona(); }
   },
-  mnIAborrar:() => { S.ia = { on:false, key:'', modelo:'', preo:false }; ui.mnIAmsg = { ok:true, t:'Clave borrada de este dispositivo.' }; guardarYa(); refrescarSheet(); if (ui.view === 'mente') { pintarMnPrev(); pintarMnZona(); } },
+  mnIAborrar:() => { S.ia = { on:false, key:'', modelo:'', preo:false }; ui.mnIAmsg = { ok:true, t:'Clave borrada de este dispositivo.' }; guardarYa(); refrescarSheet(); if (ui.view === 'bandeja' && ui.bModo === 'mente') { pintarMnPrev(); pintarMnZona(); } },
   capAdd:async () => {
     if (!capAreaOk('#capIn', 'cap')) return;
     const c = await capturarDe('#capIn', 'bandeja', ui.capAreaManual && ui.capArea ? { area:ui.capArea } : {});
@@ -5185,7 +5205,7 @@ const ACT = {
     const m = clamp(Math.round(y / 15) * 15, 0, (AG_FIN - AG_INI) * 60 - 15) + AG_INI * 60;
     agendar(byId(ui.agSel), el.dataset.dia, m);
   },
-  bVerbo:el => { ui.bVerbo = ui.bVerbo === el.dataset.v ? '' : el.dataset.v; pintarBandejaLista(); },
+  bModo:el => { const m = el.dataset.v === 'mente' ? 'mente' : 'capturar'; if (ui.bModo === m) return; ui.bModo = m; encabezado(); renderBandeja(); },
   agSel:el => { ui.agSel = ui.agSel === el.dataset.id ? '' : el.dataset.id; renderVista(); },
   tlTap:(el, e) => {
     if (!ui.agSel) return;
@@ -5199,48 +5219,34 @@ const ACT = {
   pDet:el => { ui.pDet = ui.pDet === el.dataset.v ? '' : el.dataset.v; renderVista(); },
   pDist:el => { ui.pDist = el.dataset.v; renderVista(); },
   histMas:() => { ui.histN += 60; pintarHistorial(); },
-  // Organizar bandeja
+  // Organizar bandeja (decisiones en 1 toque)
   cerrarProc:() => cerrarProc(),
   procPlan:() => { cerrarProc(); abrirPlan(); },
-  pQa:el => { proc.qa = el.dataset.v; document.querySelectorAll('#procQa .chip').forEach(b => { const on = b.dataset.v === proc.qa; b.classList.toggle('on', on); b.setAttribute('aria-checked', on); }); },
+  pQa:el => { proc.qa = proc.qa === el.dataset.v ? '' : el.dataset.v; document.querySelectorAll('#procQa .chip').forEach(b => { const on = b.dataset.v === proc.qa; b.classList.toggle('on', on); b.setAttribute('aria-checked', on); }); },
+  pPrio:() => { proc.prio = !proc.prio; repintarCuerpoProc(); },
   // «Lo hago ahora»: abre un temporizador de 5 minutos sobre este pendiente.
   pYa:() => {
     guardarTituloProc(); if (!procArea()) return;
     const t = tActualProc(), tm = T();
-    regProc(t, 'ya');
+    upsertT(t); regProc(t, 'ya');
     if (enMarcha()) cerrarTramo();
     if (!tm.modoPrev) tm.modoPrev = tm.modo;
     tm.modo = 'bloque'; tm.tareaId = t.id; tm.fase = 'foco'; tm.total = tm.restante = 300; tm.inicio = '';
     save(); cerrarProc(); iniciar(); ir('enfoque'); toast('5 minutos. Solo empieza.');
   },
-  pProx:() => { guardarTituloProc(); if (!procArea()) return; const t = tActualProc(); proc.paso = 'prox'; proc.d = { area:t.area, urgente:t.urgente, importante:t.importante, dur:t.dur || 0, cuando:'', hora:'', mas:false, proyecto:t.proyecto }; renderProc(); },
-  pEspera:() => { guardarTituloProc(); if (!procArea()) return; const t = tActualProc(); proc.paso = 'espera'; proc.d = { area:t.area, espera:'', fecha:'' }; renderProc(); setTimeout(() => $('#pEsperaIn')?.focus(), 350); },
+  pHoy:() => { guardarTituloProc(); if (!procArea()) return; const t = tActualProc(); t.estado = 'hoy'; t.fecha = hoy(); t.orden = 50 + tareasEn('hoy').length; upsertT(t); regProc(t, 'hoy'); volarProc('right'); },
+  pProx:() => { guardarTituloProc(); if (!procArea()) return; const t = tActualProc(); t.estado = 'prox'; t.fecha = ''; t.hora = ''; upsertT(t); regProc(t, 'prox'); volarProc('right'); },
+  pManana:() => { guardarTituloProc(); if (!procArea()) return; const t = tActualProc(); t.estado = 'prox'; t.fecha = manana(); upsertT(t); regProc(t, 'prox'); volarProc('right'); },
+  pEspera:() => { guardarTituloProc(); if (!procArea()) return; const t = tActualProc(); proc.paso = 'espera'; proc.d = { espera:t.espera || '', seg:t.seg || '' }; renderProc(); setTimeout(() => $('#pEsperaIn')?.focus(), 350); },
   pAlgun:() => { guardarTituloProc(); if (!procArea()) return; const t = tActualProc(); regProc(t, 'algun'); setEstado(t, 'algun'); volarProc('right'); },
   pBorrar:() => { const t = tActualProc(); regProc(t, 'borrado'); t.borrado = true; upsertT(t); volarProc('left'); },
   pAtras:() => { proc.paso = 'que'; renderProc(); },
-  pArea:el => { leerCamposProc(); proc.d.area = el.dataset.v; repintarCuerpoProc(); },
-  pMas:() => { leerCamposProc(); proc.d.mas = !proc.d.mas; repintarCuerpoProc(); },
-  pMx:el => { leerCamposProc(); proc.d.urgente = el.dataset.u === '1'; proc.d.importante = el.dataset.i === '1'; repintarCuerpoProc(); },
-  pDur:el => { leerCamposProc(); const m = +el.dataset.v; proc.d.dur = proc.d.dur === m ? 0 : m; repintarCuerpoProc(); },
-  pCuando:el => { leerCamposProc(); proc.d.cuando = el.dataset.v; repintarCuerpoProc(); },
-  pSeg:el => { leerCamposProc(); proc.d.fecha = el.dataset.v; repintarCuerpoProc(); },
-  pGuardarProx:() => {
-    guardarTituloProc(); leerCamposProc();
-    const t = tActualProc(), d = proc.d;
-    if (d.cuando === 'fecha' && !d.fecha) { sacudir($('#pFecha'), 'Elige una fecha'); return; }
-    Object.assign(t, { area:d.area || t.area, urgente:!!d.urgente, importante:!!d.importante, dur:d.dur || 0, proyecto:(d.proyecto || '').trim().slice(0, 60) });
-    if (d.cuando) t.hora = d.hora || '';
-    if (d.cuando === 'hoy') { t.estado = 'hoy'; t.fecha = hoy(); t.orden = 50 + tareasEn('hoy').length; }
-    else if (d.cuando === 'manana') { t.estado = 'prox'; t.fecha = manana(); }
-    else if (d.cuando === 'fecha') { t.estado = 'prox'; t.fecha = d.fecha; if (t.fecha <= hoy()) { t.estado = 'hoy'; t.fecha = hoy(); } }
-    else { t.estado = 'hoy'; t.fecha = hoy(); t.orden = 50 + tareasEn('hoy').length; }
-    upsertT(t); regProc(t, t.estado); volarProc('right');
-  },
+  pSeg:el => { leerCamposProc(); proc.d.seg = el.dataset.v; repintarCuerpoProc(); },
   pGuardarEsp:() => {
     guardarTituloProc(); leerCamposProc();
     const t = tActualProc(), d = proc.d;
     if (!(d.espera || '').trim()) { d.errEsp = true; repintarCuerpoProc(); sacudir($('#pEsperaIn')); $('#pEsperaIn').focus(); return; }
-    Object.assign(t, { estado:'espera', area:d.area || '', espera:d.espera.trim().slice(0, 120), fecha:d.fecha || '' });
+    Object.assign(t, { estado:'espera', espera:d.espera.trim().slice(0, 120), seg:d.seg || '', fecha:'' });
     upsertT(t); regProc(t, 'espera'); volarProc('right');
   },
   // Planear
@@ -5311,7 +5317,7 @@ const ACT = {
     if (ui.dtOpen === 'esp') setTimeout(() => $('[data-in="dtEspera"]')?.focus(), 80);
   },
   dtArea:el => { const t = dtT(); t.area = el.dataset.v; upsertT(t); ui.dtOpen = ''; dtRefrescar(); },
-  dtMx:el => { const t = dtT(); t.urgente = el.dataset.u === '1'; t.importante = el.dataset.i === '1'; upsertT(t); ui.dtOpen = ''; dtRefrescar(); },
+  dtPrio:() => { const t = dtT(); t.importante = !esPrioritaria(t); t.urgente = false; upsertT(t); ui.dtOpen = ''; dtRefrescar(); },
   dtDur:el => { const t = dtT(); t.dur = +el.dataset.v; upsertT(t); ui.dtOpen = ''; dtRefrescar(); },
   dtCuando:el => {
     const t = dtT(), v = el.dataset.v;
