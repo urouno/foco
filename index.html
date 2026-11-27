@@ -149,7 +149,7 @@ main .tr .tt{font-weight:500}
 .tag svg.i{width:14px;height:14px;stroke-width:2.1}
 .pq{display:inline-flex;align-items:center;gap:4px;font-weight:600;white-space:nowrap;border-radius:999px;font-size:11.5px;height:22px;padding:0 9px}
 .pq svg.i{width:13px;height:13px;stroke-width:2.3}
-.pq.q1{background:var(--warn-s);color:var(--warn)}.pq.q2{background:var(--vio-s);color:var(--vio)}.pq.q3{background:var(--sf2);color:var(--mut)}.pq.cur{background:var(--ac-s);color:var(--ac-t)}
+.pq.q1{background:var(--warn-s);color:var(--warn)}.pq.q2{background:var(--vio-s);color:var(--vio)}.pq.q3{background:var(--sf2);color:var(--mut)}.pq.cur{background:var(--ac-s);color:var(--ac-t)}.pq.rec{background:var(--vio-s);color:var(--vio)}.pq.rec.sm{height:20px;padding:0 7px;font-size:11px}
 .seg{display:flex;gap:4px;background:var(--sf3);border-radius:999px;padding:4px}
 .seg button{flex:1;min-height:36px;border-radius:999px;font-size:var(--fs-m);font-weight:600;color:var(--mut);display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:all .2s var(--ease)}
 .seg button svg.i{width:17px;height:17px}
@@ -3031,6 +3031,7 @@ function tip(k, icono, html) {
 /* ================= Piezas de tarea ================= */
 const PQ_CORTO = { q1:'Prioritaria' };
 const pq = t => { const q = cuad(t); return q ? `<span class="pq q1" title="Prioritaria">${ic('star')}Prioritaria</span>` : ''; };
+const recBadge = (t, corto) => t.rec ? `<span class="pq rec${corto ? ' sm' : ''}" title="${esc(recTexto(t.rec))}">${ic('repeat')}Recurrente${!corto && recCorto(t.rec) ? ' · ' + esc(recCorto(t.rec)) : ''}</span>` : '';
 // Máximo 2 o 3 datos por tarjeta: lo que sirve para decidir. El resto vive en el detalle.
 // Datos por relevancia: lo comprometido (hora, duración, seguimiento, límite cercano) siempre se ve;
 // el resto llena el espacio que quede. El orden y los iconos son siempre los mismos.
@@ -3044,7 +3045,7 @@ function metaCorta(t, max = 2, op = {}) {
   if (t.fecha && t.fecha !== hoy() && t.estado !== 'hecho') add(`<span class="tag ${t.fecha < hoy() ? 'f-tarde' : ''}">${ic('cal')}${fechaCorta(t.fecha)}</span>`, t.fecha < hoy());
   if (t.limite && t.estado !== 'hecho') add(`<span class="tag ${t.limite <= hoy() ? 'f-tarde' : ''}">${ic('flag')}Vence ${t.limite === hoy() ? 'hoy' : fechaCorta(t.limite).toLowerCase()}</span>`, t.limite <= addDays(hoy(), 2));
   if (t.dur) add(`<span class="tag">${ic('timer')}${t.dur} min</span>`, true);
-  if (t.rec && t.estado !== 'hecho') add(`<span class="tag" title="${esc(recTexto(t.rec))}">${ic('repeat')}${esc(recCorto(t.rec))}</span>`, true);
+  if (t.rec && t.estado !== 'hecho') add(recBadge(t), true);
   if (op.pomos && t.pomos) add(`<span class="tag">${ic('tomato')}${t.pomos}</span>`);
   const must = it.filter(x => x.must), resto = it.filter(x => !x.must).slice(0, Math.max(0, max - must.length));
   return [...must, ...resto].sort((a, b) => a.i - b.i).map(x => x.html).join('');
@@ -3060,7 +3061,7 @@ function filaHoy(t, n, op = {}) {
 }
 function filaHecha(t, drag) {
   return `<div class="tr hecha ${area(t.area) ? 'ca' : ''}" style="--a:${colorA(t.area)}" data-a="abrir" data-id="${t.id}" ${drag ? 'data-drag' : ''} role="button" tabindex="0"><span class="ck on">${ic('check')}</span>
-    <div class="tb"><div class="tt">${esc(t.titulo)}</div><div class="mt"><span class="tag">${ic('check')}${horaDe(t.hecho)}</span>${t.pomos ? `<span class="tag">${ic('tomato')}${t.pomos}</span>` : ''}</div></div></div>`;
+    <div class="tb"><div class="tt">${esc(t.titulo)}</div><div class="mt"><span class="tag">${ic('check')}${horaDe(t.hecho)}</span>${t.rec ? recBadge(t, true) : ''}${t.pomos ? `<span class="tag">${ic('tomato')}${t.pomos}</span>` : ''}</div></div></div>`;
 }
 // Prioridad simplificada: solo prioritaria o normal.
 function togglePrio(on, accion) {
@@ -3141,7 +3142,6 @@ function pintarBandejaLista(nuevos = []) {
   const z = $('#bandejaZona'); if (!z) return;
   const items = tareasEn('bandeja').sort((a, b) => b.creado.localeCompare(a.creado));
   ui.bIds = items.map(t => t.id);
-  const rec = (S.procRec || []).filter(r => { const t = diaDeISO(r.t) === hoy() && byId(r.id); return t && t.estado !== 'bandeja'; }).slice(0, 8);
   let html = '';
   if (items.length) {
     html += `<button class="cta" data-a="procesar"><span class="ico">${ic('sparkle')}</span><span><b>Organizar ${items.length} ${items.length === 1 ? 'pendiente' : 'pendientes'}</b><small>Decide en un toque qué hacer con cada uno</small></span>${ic('arrowR')}</button>
@@ -3155,8 +3155,6 @@ function pintarBandejaLista(nuevos = []) {
   } else {
     html += `<div class="zero"><div class="orb">${ic('check')}</div><h3>Bandeja vacía</h3><p>Anota arriba cualquier pendiente y después decídelo aquí.</p></div>`;
   }
-  if (rec.length) html += `<div class="org"><div class="org-t">${ic('check')}Organizados hoy <span class="n">${rec.length}</span></div>
-    <ul class="org-l">${rec.map(r => { const t = byId(r.id); return `<li><span class="ot">${esc(t.titulo)}</span><span class="od">${DEST[r.d] || ''} · ${horaDe(r.t)}</span></li>`; }).join('')}</ul></div>`;
   if (!S.conn.url && !pref.v('connOff')) html += `<div class="panel conn slim"><span class="ci">${ic('cloudOff')}</span><div class="tb"><b>Respaldo en Google Sheets</b><div class="mut sm">Guardado solo en este dispositivo</div></div><button class="btn sm" style="color:var(--ac-t)" data-a="ajustes">Conectar</button><button class="ib" data-a="connCerrar" aria-label="Ocultar aviso">${ic('x')}</button></div>`;
   z.innerHTML = html;
 }
@@ -3490,9 +3488,7 @@ function cuerpoProc(t) {
     <div class="sec-t" style="margin-top:16px">Mover a</div>
     <div class="acts">
       <button class="act" style="--k:var(--foco-t);--k-s:var(--foco-s)" data-a="pHoy"><span class="ico">${ic('sun')}</span><span><b>Hoy</b><span>En tu lista de hoy</span><em class="dest-tag">→ Hoy</em></span></button>
-      <button class="act" style="--k:var(--ac-t);--k-s:var(--ac-s)" data-a="pProx"><span class="ico">${ic('arrowR')}</span><span><b>Próximas</b><span>Sin fecha, para después</span><em class="dest-tag">→ Planifica · Tablero</em></span></button>
       <button class="act" style="--k:var(--ac-t);--k-s:var(--ac-s)" data-a="pManana"><span class="ico">${ic('moon')}</span><span><b>Mañana</b><span>Programada para mañana</span><em class="dest-tag">→ Planifica · Agenda</em></span></button>
-      <button class="act" style="--k:var(--warn);--k-s:var(--warn-s)" data-a="pEspera"><span class="ico">${ic('hourglass')}</span><span><b>En espera</b><span>Depende de alguien más</span><em class="dest-tag">→ Planifica · Tablero</em></span></button>
       <button class="act" style="--k:var(--vio);--k-s:var(--vio-s)" data-a="pAlgun"><span class="ico">${ic('bulb')}</span><span><b>Algún día</b><span>Idea sin fecha</span><em class="dest-tag">→ Planifica · Tablero</em></span></button>
       <button class="act del" data-a="pBorrar"><span class="ico">${ic('trash')}</span><span><b>Eliminar</b><span>Ya no hace falta</span></span></button>
     </div>`;
@@ -3789,7 +3785,7 @@ function renderSemana() {
   const sel = ui.agSel && byId(ui.agSel);
   const d0 = parseYmd(dias[0]), d6 = parseYmd(dias[6]);
   const rango = d0.getMonth() === d6.getMonth() ? `${d0.getDate()} – ${d6.getDate()} de ${MESES[d6.getMonth()]}` : `${d0.getDate()} ${MESES[d0.getMonth()].slice(0, 3)} – ${d6.getDate()} ${MESES[d6.getMonth()].slice(0, 3)}`;
-  const it = t => `<div class="sm-it ${ui.agSel === t.id ? 'sel' : ''}" draggable="true" data-dnd="${t.id}" data-a="agSel" data-id="${t.id}" role="button" tabindex="0" aria-pressed="${ui.agSel === t.id}" style="--a:${colorA(t.area)}"><i class="dot"></i><span>${esc(t.titulo)}</span>${t.fecha ? `<small>${t.fecha === hoy() ? 'Hoy' : DIAS3[parseYmd(t.fecha).getDay()]}</small>` : ''}</div>`;
+  const it = t => `<div class="sm-it ${ui.agSel === t.id ? 'sel' : ''}" draggable="true" data-dnd="${t.id}" data-a="agSel" data-id="${t.id}" role="button" tabindex="0" aria-pressed="${ui.agSel === t.id}" style="--a:${colorA(t.area)}"><i class="dot"></i><span>${t.rec ? '↻ ' : ''}${esc(t.titulo)}</span>${t.fecha ? `<small>${t.fecha === hoy() ? 'Hoy' : DIAS3[parseYmd(t.fecha).getDay()]}</small>` : ''}</div>`;
   const side = `<aside class="sm-side">${htmlBarraFiltros(nAg, baseAg)}
     <div class="sm-nav"><button class="ib" data-a="semMov" data-v="-7" aria-label="Semana anterior">${ic('chevL')}</button><b>${rango}</b><button class="ib" data-a="semMov" data-v="7" aria-label="Semana siguiente">${ic('chevR')}</button></div>
     <div class="sm-acc">${ui.semIni !== hoy() ? `<button class="btn sm ghost" data-a="semMov" data-v="0">Volver a hoy</button>` : ''}<button class="btn sm ghost" data-a="agCompleto" aria-pressed="${!!ui.diaCompleto}">${ui.diaCompleto ? 'Horario de trabajo' : 'Día completo'}</button><label class="sm-ir">${ic('cal')}<input type="date" data-in="semIr" value="${ui.semIni}" aria-label="Ir a una fecha"></label></div>
@@ -3811,7 +3807,7 @@ function renderSemana() {
     const virts = proyeccionesDia(x).filter(t => t.hora && pasaFiltro(t)).map(t => ({ ...t, _virt:true }));
     const bl = carriles([...reales, ...virts]).map(ev => {
       const virt = !!ev.t._virt, hecha = !virt && ev.t.estado === 'hecho', run = !virt && ev.t.estado === 'proceso', f = virt ? null : franja(ev.t), h = Math.max(ev.e - ev.s, 24);
-      return `<div class="tl-b ${virt ? 'virt' : ''} ${h < 44 ? 'corta' : ''} ${hecha ? 'hecha' : ''} ${run ? 'run' : ''} ${f ? 'f-' + f.k : ''} ${!hecha && !virt && enSolape(x, ev.t.id) ? 'solapa' : ''}" style="--a:${colorA(ev.t.area)};top:${ev.s - AG_INI * 60}px;height:${h - 2}px;left:calc(2px + (100% - 4px) * ${ev.c / ev.n});width:calc((100% - 4px) / ${ev.n} - 2px)" data-id="${ev.t.id}" data-a="abrir" role="button" tabindex="0" ${hecha || virt ? '' : `draggable="true" data-dnd="${ev.t.id}"`} title="${esc(ev.t.titulo)}${virt ? ' (rutina proyectada)' : ''} · ${min2hm(ev.s)} – ${min2hm(ev.e)}"><b>${virt ? ic('repeat') : hecha ? ic('check') : ''}${esc(ev.t.titulo)}</b><span class="tl-t">${min2hm(ev.s)}${f ? ' · ' + f.txt : ''}</span></div>`;
+      return `<div class="tl-b ${virt ? 'virt' : ''} ${h < 44 ? 'corta' : ''} ${hecha ? 'hecha' : ''} ${run ? 'run' : ''} ${f ? 'f-' + f.k : ''} ${!hecha && !virt && enSolape(x, ev.t.id) ? 'solapa' : ''}" style="--a:${colorA(ev.t.area)};top:${ev.s - AG_INI * 60}px;height:${h - 2}px;left:calc(2px + (100% - 4px) * ${ev.c / ev.n});width:calc((100% - 4px) / ${ev.n} - 2px)" data-id="${ev.t.id}" data-a="abrir" role="button" tabindex="0" ${hecha || virt ? '' : `draggable="true" data-dnd="${ev.t.id}"`} title="${esc(ev.t.titulo)}${virt ? ' (recurrente proyectada)' : ev.t.rec ? ' (recurrente)' : ''} · ${min2hm(ev.s)} – ${min2hm(ev.e)}"><b>${hecha ? ic('check') : ''}${virt || ev.t.rec ? ic('repeat') : ''}${esc(ev.t.titulo)}</b><span class="tl-t">${min2hm(ev.s)}${f ? ' · ' + f.txt : ''}</span></div>`;
     }).join('');
     return `<div class="sm-col ${x === hoy() ? 'hoy' : ''}" data-dia="${x}" data-a="semTap">${fuera}${bl}${x === hoy() && nm >= AG_INI * 60 && nm <= AG_FIN * 60 ? `<div class="tl-now" style="top:${nm - AG_INI * 60}px"></div>` : ''}</div>`;
   }).join('');
@@ -3820,7 +3816,7 @@ function renderSemana() {
     const ts = tareasDia(x).filter(t => t.estado !== 'hecho' && !t.hora && pasaFiltro(t)).sort(ordenPrioridad);
     const vs = proyeccionesDia(x).filter(t => !t.hora && pasaFiltro(t)).sort(ordenPrioridad);
     const all = [...ts.map(t => ({ t, v:false })), ...vs.map(t => ({ t, v:true }))];
-    return `<div class="sm-ad ${x === hoy() ? 'hoy' : ''}" data-dia="${x}">${all.slice(0, 4).map(({ t, v }) => `<div class="sm-ad-t ${v ? 'virt' : ''}" ${v ? '' : `draggable="true" data-dnd="${t.id}"`} data-a="abrir" data-id="${t.id}" role="button" tabindex="0" style="--a:${colorA(t.area)}" title="${esc(t.titulo)}${v ? ' (rutina proyectada)' : ''}"><span>${v ? '↻ ' : ''}${esc(t.titulo)}</span></div>`).join('')}${all.length > 4 ? `<small>+${all.length - 4} más</small>` : ''}</div>`;
+    return `<div class="sm-ad ${x === hoy() ? 'hoy' : ''}" data-dia="${x}">${all.slice(0, 4).map(({ t, v }) => `<div class="sm-ad-t ${v ? 'virt' : ''}" ${v ? '' : `draggable="true" data-dnd="${t.id}"`} data-a="abrir" data-id="${t.id}" role="button" tabindex="0" style="--a:${colorA(t.area)}" title="${esc(t.titulo)}${v ? ' (recurrente proyectada)' : t.rec ? ' (recurrente)' : ''}"><span>${v || t.rec ? '↻ ' : ''}${esc(t.titulo)}</span></div>`).join('')}${all.length > 4 ? `<small>+${all.length - 4} más</small>` : ''}</div>`;
   }).join('');
   const hayAd = dias.some(x => tareasDia(x).some(t => t.estado !== 'hecho' && !t.hora && pasaFiltro(t)) || proyeccionesDia(x).some(t => !t.hora && pasaFiltro(t)));
   v.innerHTML = `<div class="semana">${side}<div class="sm-cal ${sel ? 'picking' : ''}"><div class="sm-heads"><div></div>${heads}</div>
@@ -3874,7 +3870,7 @@ function renderAgendaSemana() {
   const total = info.reduce((n, i) => n + i.pend.length, 0), hechasT = info.reduce((n, i) => n + i.hechas.length, 0);
   const porDia = tareasEn('prox').filter(t => !t.fecha && pasaFiltro(t)).sort(ordenPrioridad);
   const fila = (t, virt = false) => `<div class="wd-t ${virt ? 'virt' : ''} ${!virt && t.estado === 'hecho' ? 'hecha' : ''} ${!virt && t.estado === 'proceso' ? 'run' : ''}" style="--a:${colorA(t.area)}" data-a="abrir" data-id="${t.id}" role="button" tabindex="0">
-    <span class="wd-h">${t.hora || '<em>sin hora</em>'}</span><span class="wd-n">${esc(t.titulo)}</span>${t.dur ? `<small>${t.dur} min</small>` : ''}${virt ? ic('repeat') : t.estado === 'hecho' ? ic('check') : ''}</div>`;
+    <span class="wd-h">${t.hora || '<em>sin hora</em>'}</span><span class="wd-n">${esc(t.titulo)}</span>${virt || t.rec ? `<span class="pq rec sm" title="${esc(recTexto(t.rec))}">${ic('repeat')}Recurrente</span>` : ''}${t.dur ? `<small>${t.dur} min</small>` : ''}${!virt && t.estado === 'hecho' ? ic('check') : ''}</div>`;
   let html = `<div class="ag-top" style="margin-top:0"><div class="sm-nav wd-nav"><button class="ib" data-a="semMov" data-v="-7" aria-label="Semana anterior">${ic('chevL')}</button><b>${rango}</b><button class="ib" data-a="semMov" data-v="7" aria-label="Semana siguiente">${ic('chevR')}</button></div>
       ${htmlAgTog()}
       <button class="ib filt ${nf ? 'on' : ''}" data-a="filtrar" aria-label="Filtrar${nf ? `, ${nf} activos` : ''}">${ic('filter')}</button></div>
@@ -3946,7 +3942,7 @@ function htmlAgenda(items, hechas) {
   const bloques = evs.map(ev => {
     const top = ev.s - AG_INI * 60, h = Math.max(ev.e - ev.s, 28);
     const hecha = ev.t.estado === 'hecho', run = ev.t.estado === 'proceso', f = franja(ev.t);
-    return `<div class="tl-b ${h < 44 ? 'corta' : ''} ${hecha ? 'hecha' : ''} ${run ? 'run' : ''} ${f ? 'f-' + f.k : ''} ${!hecha && enSolape(ui.dia || hoy(), ev.t.id) ? 'solapa' : ''}" style="--a:${colorA(ev.t.area)};top:${top}px;height:${h - 2}px;left:calc(58px + (100% - 64px) * ${ev.c / ev.n});width:calc((100% - 64px) / ${ev.n} - 4px)" data-id="${ev.t.id}" data-a="abrir" role="button" tabindex="0" ${hecha ? '' : 'data-drag data-free'}><b>${hecha ? ic('check') : ''}${esc(ev.t.titulo)}</b><span class="tl-t">${min2hm(ev.s)} – ${min2hm(ev.e)}${f ? ' · ' + f.txt : ''}</span></div>`;
+    return `<div class="tl-b ${h < 44 ? 'corta' : ''} ${hecha ? 'hecha' : ''} ${run ? 'run' : ''} ${f ? 'f-' + f.k : ''} ${!hecha && enSolape(ui.dia || hoy(), ev.t.id) ? 'solapa' : ''}" style="--a:${colorA(ev.t.area)};top:${top}px;height:${h - 2}px;left:calc(58px + (100% - 64px) * ${ev.c / ev.n});width:calc((100% - 64px) / ${ev.n} - 4px)" data-id="${ev.t.id}" data-a="abrir" role="button" tabindex="0" ${hecha ? '' : 'data-drag data-free'}><b>${hecha ? ic('check') : ''}${ev.t.rec ? ic('repeat') : ''}${esc(ev.t.titulo)}</b><span class="tl-t">${min2hm(ev.s)} – ${min2hm(ev.e)}${f ? ' · ' + f.txt : ''}</span></div>`;
   }).join('');
   const nm = new Date().getHours() * 60 + new Date().getMinutes();
   const sel = ui.agSel && byId(ui.agSel);
@@ -4108,8 +4104,9 @@ function cardK(t, col) {
   const out = [];
   // La tarjeta se comporta según su estado real, aunque la columna agrupe varios.
   const k = col === 'algun' ? 'algun' : col === 'proceso' ? (t.estado === 'proceso' ? 'proceso' : 'hoy') : col === 'prox' ? (t.estado === 'espera' ? 'espera' : 'prox') : col;
-  if (k === 'hecho') out.push(`<span class="tag">${ic('check')}${fechaCorta(diaDeISO(t.hecho))} ${horaDe(t.hecho)}</span>`);
+  if (k === 'hecho') { out.push(`<span class="tag">${ic('check')}${fechaCorta(diaDeISO(t.hecho))} ${horaDe(t.hecho)}</span>`); if (t.rec) out.push(recBadge(t, true)); }
   else {
+    if (t.rec) out.push(recBadge(t, true));
     if (k === 'espera' && t.espera) out.push(`<span class="tag">${ic('hourglass')}${esc(t.espera)}</span>`);
     if (t.fecha && t.fecha !== hoy()) out.push(`<span class="tag">${ic('cal')}${fechaCorta(t.fecha)}</span>`);
     if (cuad(t)) out.push(pq(t));
@@ -4528,7 +4525,7 @@ function ayuda(k) {
       ['filter', 'Filtrar por verbo', 'Toca un verbo (Llamar, Enviar, Revisar…) para ver solo esos pendientes y organizarlos juntos.'],
       ['layers', 'Área (obligatoria)', 'Elígela en el selector junto a Guardar; si lo dejas vacío, Foco sugiere una según lo que escribes. Puedes crear áreas nuevas en Ajustes.'],
       ['layers', 'Varios a la vez', 'Toca «Seleccionar varios» para asignar área, proyecto, día o destino a muchos pendientes. Se puede deshacer.'],
-      ['sparkle', 'Organiza', 'Cuando tengas varios, toca «Organizar». Decides uno por uno: hacerlo ya, agendarlo, esperar a alguien, guardarlo para algún día o eliminarlo (método GTD). Si la redacción no es clara, Foco te sugiere cómo mejorarla o dividirla.']] },
+      ['sparkle', 'Organiza', 'Cuando tengas varios, toca «Organizar». Decides uno por uno: hacerlo ya, moverlo a Hoy, Mañana, Algún día o eliminarlo. Si la redacción no es clara, Foco te sugiere cómo mejorarla o dividirla.']] },
     mente:{ d:'Tu espacio para sacar lo que te hace ruido, aunque todavía no sepas qué es. Primero escribes; el orden viene después.', p:[
       ['brain', 'Escribe sin formato', 'Un párrafo, frases sueltas o una lista: da igual. Lo que escribes se guarda solo como borrador, también sin internet.'],
       ['sparkle', 'Ordenar', 'Foco separa cada pensamiento y distingue pendientes, problemas, preocupaciones, dudas e ideas. Si no está seguro, te pregunta en lugar de adivinar.'],
@@ -4862,7 +4859,7 @@ function htmlResultados() {
     const nota = norm(t.titulo).includes(q) ? '' : notas(t).find(x => norm(x).includes(q));
     const cuando = t.estado === 'hecho' ? `<span class="tag">${ic('check')}${fechaCorta(diaDeISO(t.hecho))}</span>` : t.fecha ? `<span class="tag">${ic('cal')}${fechaCorta(t.fecha)}${t.hora ? ' · ' + t.hora : ''}</span>` : '';
     return `<button class="tr opt bres" data-a="abrirRes" data-id="${t.id}" style="--a:${colorA(t.area)}"><span class="tb"><span class="tt">${esc(t.titulo)}</span>
-      <span class="mt"><span class="est ${t.estado}">${ESTADOS[t.estado]}</span>${area(t.area) ? `<span class="tag"><i class="dot" style="--a:${colorA(t.area)}"></i>${esc(area(t.area).n)}</span>` : ''}${t.proyecto ? `<span class="tag">${ic('folder')}${esc(t.proyecto)}</span>` : ''}${cuando}</span>
+      <span class="mt"><span class="est ${t.estado}">${ESTADOS[t.estado]}</span>${t.rec ? recBadge(t, true) : ''}${area(t.area) ? `<span class="tag"><i class="dot" style="--a:${colorA(t.area)}"></i>${esc(area(t.area).n)}</span>` : ''}${t.proyecto ? `<span class="tag">${ic('folder')}${esc(t.proyecto)}</span>` : ''}${cuando}</span>
       ${nota ? `<span class="bnota">${ic('note')}${esc(nota.length > 90 ? nota.slice(0, 89) + '…' : nota)}</span>` : ''}</span>${ic('chevR')}</button>`;
   };
   return (act.length ? `<div class="sec-t">Activas <span class="n">${act.length}</span></div><div class="group">${act.slice(0, 40).map(fila).join('')}</div>` : '')
