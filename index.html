@@ -1993,8 +1993,29 @@ function proyeccionesDia(d) {
   if (d < hoy()) return [];
   return activas().filter(t => t.rec && !['bandeja', 'algun'].includes(t.estado) && t.fecha !== d && (!t.fecha || d > t.fecha) && coincideRec(t.rec, d));
 }
-// Garantiza como máximo 1 instancia activa por serie recurrente (limpia duplicados locales o de sincronización).
+// Garantiza como máximo 1 instancia activa por serie recurrente (limpia duplicados por ID, locales o de sincronización).
 function dedupSeries() {
+  const vistos = new Map();
+  const prevLen = (S.tareas || []).length;
+  S.tareas = (S.tareas || []).filter(t => {
+    if (!t || !t.id) return false;
+    const ex = vistos.get(t.id);
+    if (!ex) { vistos.set(t.id, t); return true; }
+    // Si hay dos objetos con el mismo ID, conserva el que no esté borrado o el más reciente.
+    if (ex.borrado && !t.borrado) { vistos.set(t.id, t); return true; }
+    return false;
+  });
+  if (S.tareas.length !== prevLen) {
+    // Re-deduplica en orden si reemplazamos una entrada borrada por una viva.
+    const out = [];
+    const seen = new Set();
+    for (let i = S.tareas.length - 1; i >= 0; i--) {
+      const t = S.tareas[i];
+      if (!seen.has(t.id)) { seen.add(t.id); out.push(t); }
+    }
+    S.tareas = out.reverse();
+    save();
+  }
   const porSerie = {};
   activas().forEach(t => {
     if (!t.rec) return;
@@ -4484,6 +4505,7 @@ function adoptarDeOtraPestana() {
   S = Object.assign({ tareas:[], sesiones:[], ajustes:defAjustes(), cola:[], timer:null, conn, ultSync:'', lvlVisto:0, insVistas:null, diaRoll:'', procRec:[] }, n);
   S.ajustes = Object.assign(defAjustes(), S.ajustes);
   migrar();
+  dedupSeries();
   if (!S.timer) S.timer = tDef();
   S.cola.forEach(o => { if (!o.qid) o.qid = uid(); });
   const t = T(); pantallaActiva(t.corriendo);
@@ -5670,14 +5692,17 @@ const ACT = {
     const R = rutEstado(), tit = limpiarTitulo(R.titulo || '');
     if (!tit) { sacudir($('#rutIn'), 'Escribe el nombre de la rutina'); $('#rutIn')?.focus(); return; }
     if (!R.area) { sacudir($('#rutForm'), 'Elige un área para la rutina'); return; }
+    if (activas().some(x => x.rec && norm(x.titulo) === norm(tit))) {
+      sacudir($('#rutIn'), 'Ya existe una rutina activa con ese nombre');
+      return;
+    }
     const rec = R.freq === 'semanal' ? 'semanal:' + (R.dias.length ? R.dias.join(',') : '1')
       : R.freq === 'mensual' ? 'mensual:' + clamp(+R.diaMes || 1, 1, 31)
       : R.freq;
     const f = primeraFechaRec(rec, hoy());
     const hora = R.hora ? min2hm(hm2min(R.hora)) : '';
-    const t = nuevaTarea(tit, { estado:f === hoy() ? 'hoy' : 'prox', area:R.area, fecha:f, hora, dur:R.dur || 0, rec });
-    t.serie = t.id;
-    S.tareas.push(t); upsertT(t);
+    const id = uid();
+    const t = nuevaTarea(tit, { id, serie:id, estado:f === hoy() ? 'hoy' : 'prox', area:R.area, fecha:f, hora, dur:R.dur || 0, rec });
     R.titulo = ''; R.hora = '';
     renderVista();
     toast(`Rutina creada: «${t.titulo}»`);
