@@ -1603,9 +1603,31 @@ body{letter-spacing:-.005em;text-rendering:optimizeLegibility}
   .plan-man.pend:hover{background:var(--sf);border-color:var(--ln2)}
   .proy-opt:not(.on):hover{background:var(--sf)}
 }
+.hoy-modo{display:flex;align-items:center;gap:12px;padding:10px 14px;margin-bottom:14px;border-radius:var(--r);background:var(--sf);border:var(--bd);box-shadow:var(--glow);transition:background .18s,border-color .18s}
+.hoy-modo.on{background:color-mix(in srgb,var(--ac-s) 55%,var(--sf));border-color:color-mix(in srgb,var(--ac) 32%,transparent)}
+.hoy-modo .hm-ico{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;background:var(--sf2);color:var(--mut)}
+.hoy-modo.on .hm-ico{background:var(--ac);color:var(--on-ac)}
+.hoy-modo .hm-ico svg.i{width:17px;height:17px}
+.hoy-modo .tb{flex:1;min-width:0}
+.hoy-modo b{display:block;font-size:var(--fs-m);font-weight:600;color:var(--ink)}
+.hoy-modo small{display:block;font-size:var(--fs-s);color:var(--mut)}
+.rut-grid{display:grid;grid-template-columns:1fr;gap:18px;align-items:start}
+.rut-form{padding:16px}
+.rut-form h3{margin:0 0 12px;font-size:var(--fs-m);font-weight:700;display:flex;align-items:center;gap:8px}
+.rut-form h3 svg.i{width:17px;height:17px;color:var(--vio)}
+.rut-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.rut-fbar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.rut-item{display:flex;align-items:center;gap:12px;padding:12px 12px 12px 16px;background:var(--sf);position:relative;cursor:pointer}
+.rut-item + .rut-item::after{content:"";position:absolute;top:0;left:16px;right:0;border-top:1px solid var(--ln)}
+.rut-item .tb{flex:1;min-width:0}
+.rut-item .tt{font-weight:500;font-size:var(--fs-m);overflow-wrap:anywhere}
+.rut-item .mt{margin-top:4px}
+.rut-acts{display:flex;align-items:center;gap:4px;flex:none}
 @media (min-width:1024px){
   .hoy-g{grid-template-areas:"a b"}
   .hoy-b > .sec-t:first-child{margin-top:0}
+  .rut-grid{grid-template-columns:380px minmax(0,1fr);gap:24px}
+  .rut-form{position:sticky;top:96px}
 }
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -1625,6 +1647,7 @@ body{letter-spacing:-.005em;text-rendering:optimizeLegibility}
   <section class="view" id="v-agenda"></section>
   <section class="view" id="v-hoy"></section>
   <section class="view" id="v-tablero"></section>
+  <section class="view" id="v-rutinas"></section>
   <section class="view" id="v-enfoque"></section>
   <section class="view" id="v-progreso"></section>
 </main>
@@ -1715,6 +1738,7 @@ const IC = {
   clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
   cal:'<rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/>',
   repeat:'<path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/>',
+  briefcase:'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><path d="M2 12h20"/>',
   flame:'<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
   star:'<path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>',
   bolt:'<path d="M13 2 3 14h9l-1 8 10-12h-9z"/>',
@@ -2821,16 +2845,17 @@ const VISTAS = [
   { k:'bandeja', n:'Bandeja', ic:'inbox', sub:() => { if (ui.bModo === 'mente') { const n = mnAbiertos().length; return n ? `${n} por aclarar` : 'Escribe sin orden, Foco lo acomoda'; } const n = tareasEn('bandeja').length; return n ? `${n} por organizar` : 'Anota todo aquí, organiza después'; } },
   { k:'agenda', n:'Agenda', ic:'cal', sub:() => 'Asigna día y hora a tus tareas' },
   { k:'tablero', n:'Tablero', ic:'kanban', sub:() => 'Todas tus tareas por estado' },
+  { k:'rutinas', n:'Rutinas', ic:'repeat', sub:() => 'Crea y administra tus tareas recurrentes' },
   { k:'hoy', n:'Hoy', ic:'sun', sub:() => { const d = new Date(); return `${DIAS[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]}`; } },
   { k:'enfoque', n:'Enfoque', ic:'timer', sub:() => 'Pomodoro y bloques de tiempo' },
   { k:'progreso', n:'Progreso', ic:'chart', sub:() => 'Tu avance y tus logros' }
 ];
-// Cuatro secciones: Bandeja (incluye Vaciar la mente), Hoy (con Enfoque como modo ampliado), Planifica (Agenda y Tablero) y Progreso.
+// Cuatro secciones: Bandeja (incluye Vaciar la mente), Hoy (con Enfoque como modo ampliado), Planifica (Agenda, Tablero y Rutinas) y Progreso.
 // «ocultas» son vistas del grupo que no aparecen como subpestaña.
 const GRUPOS = [
   { k:'bandeja', n:'Bandeja', ic:'inbox', vs:['bandeja'] },
   { k:'hoy', n:'Hoy', ic:'sun', vs:['hoy', 'enfoque'], ocultas:['enfoque'] },
-  { k:'planifica', n:'Planifica', ic:'cal', vs:['agenda', 'tablero'] },
+  { k:'planifica', n:'Planifica', ic:'cal', vs:['agenda', 'tablero', 'rutinas'] },
   { k:'progreso', n:'Progreso', ic:'chart', vs:['progreso'] }
 ];
 const mqMovil = matchMedia('(max-width:767px)');
@@ -2938,7 +2963,7 @@ function pintarTabs() {
   sn.classList.toggle('hide', sv.length < 2);
   sn.innerHTML = sv.map(k => { const V = VISTAS.find(x => x.k === k); return `<button class="${ui.view === k ? 'on' : ''}" data-a="tab" data-v="${k}" role="tab" aria-selected="${ui.view === k}">${ic(V.ic)}<span>${V.n}</span></button>`; }).join('');
 }
-const RECUERDA_POS = ['tablero', 'agenda', 'progreso'];
+const RECUERDA_POS = ['tablero', 'agenda', 'rutinas', 'progreso'];
 function ir(v) {
   if (v === 'mente') { ui.bModo = 'mente'; v = 'bandeja'; }
   if (!VISTAS.some(x => x.k === v)) return;
@@ -2967,7 +2992,7 @@ function render() {
 }
 function renderVista() {
   try {
-    ({ bandeja:renderBandeja, agenda:renderAgenda, hoy:renderHoy, tablero:renderTablero, enfoque:renderEnfoque, progreso:renderProgreso, mente:renderMente })[ui.view]();
+    ({ bandeja:renderBandeja, agenda:renderAgenda, hoy:renderHoy, tablero:renderTablero, rutinas:renderRutinas, enfoque:renderEnfoque, progreso:renderProgreso, mente:renderMente })[ui.view]();
     pintarTabs(); encabezado(); pintarMini();
   } catch (e) { console.error('Error al renderizar vista:', e); toast('Ocurrió un error al actualizar la vista', null, null, 'info'); }
 }
@@ -3602,7 +3627,8 @@ function candidatosPlan() {
   const f = plan.para === 'hoy' ? hoy() : manana();
   return {
     enHoy:[...tareasEn('proceso'), ...tareasEn('hoy')].sort(ordenPrioridad),
-    prox:tareasEn('prox').filter(t => !t.fecha || t.fecha <= f).sort(ordenPrioridad)
+    prox:tareasEn('prox').filter(t => !t.fecha || t.fecha <= f).sort(ordenPrioridad),
+    algun:plan.para === 'manana' ? tareasEn('algun').sort(ordenPrioridad) : []
   };
 }
 function decidirPendiente(id, dest) {
@@ -3613,18 +3639,19 @@ function decidirPendiente(id, dest) {
   toast(dest === 'hoy' ? `«${t.titulo}» se queda hoy` : `«${t.titulo}» volvió a próximas acciones`, 'Deshacer', () => { [t.estado, t.fecha, t.hora] = prev; upsertT(t); renderVista(); });
 }
 function htmlPlan() {
-  const { enHoy, prox } = candidatosPlan();
+  const { enHoy, prox, algun } = candidatosPlan();
   const fila = t => {
     const i = plan.sel.indexOf(t.id), hecha = t.estado === 'hecho';
     return `<button class="tr pl ${i >= 0 ? 'on' : ''}" data-a="plSel" data-id="${t.id}" style="--a:${colorA(t.area)}" aria-pressed="${i >= 0}" ${hecha ? 'disabled' : ''}><span class="ck">${i >= 0 ? `<b>${i + 1}</b>` : ''}</span><span class="tb"><span class="tt">${esc(t.titulo)}</span><span class="mt">${metaCorta(t, 2, { area:true })}</span></span></button>`;
   };
-  const nada = !enHoy.length && !prox.length;
+  const nada = !enHoy.length && !prox.length && !algun.length;
   const hechasSel = plan.sel.map(byId).filter(t => t && t.estado === 'hecho');
   return cab(`<h2>Orden de ${plan.para === 'hoy' ? 'hoy' : 'mañana'}</h2>`, `<span class="pl-cnt">${plan.sel.length} ${plan.sel.length === 1 ? 'tarea' : 'tareas'}</span>`) + `
     <div class="seg" role="tablist"><button class="${plan.para === 'hoy' ? 'on' : ''}" data-a="plPara" data-v="hoy" role="tab">Hoy</button><button class="${plan.para === 'manana' ? 'on' : ''}" data-a="plPara" data-v="manana" role="tab">Mañana</button></div>
     ${hechasSel.length ? `<div class="sec-t">${ic('check')}Completadas <span class="n">${hechasSel.length}</span></div><div class="group">${hechasSel.map(fila).join('')}</div>` : ''}
     ${enHoy.length ? `<div class="sec-t">${plan.para === 'hoy' ? 'Ya están en Hoy' : 'Sin terminar hoy'}</div><div class="group">${enHoy.map(fila).join('')}</div>` : ''}
     ${prox.length ? `<div class="sec-t">Próximas <span class="n">${prox.length}</span></div><div class="group">${prox.map(fila).join('')}</div>` : ''}
+    ${algun.length ? `<div class="sec-t">${ic('bulb')}Algún día <span class="n">${algun.length}</span></div><div class="group">${algun.map(fila).join('')}</div>` : ''}
     ${nada ? `<div class="zero"><div class="orb ac">${ic('list')}</div><h3>No hay tareas para elegir</h3><p>Anota pendientes en la Bandeja para organizarlos aquí.</p><button class="btn pri" style="margin-top:16px" data-a="irBandeja">Ir a la Bandeja</button></div>` : ''}
     ${plan.para === 'manana' && enHoy.length ? `<div class="group" style="margin-top:16px"><div class="set-r"><span class="sl">Regresar a Próximas las que no elija<small>Mañana empiezas solo con estas</small></span><button class="sw ${plan.regresar ? 'on' : ''}" data-a="plReg" role="switch" aria-checked="${plan.regresar}" aria-label="Regresar las no elegidas"></button></div></div>` : ''}
     ${nada ? '<div class="sh-end"></div>' : `<div class="sh-foot"><button class="btn" data-a="cerrarSheet">Cancelar</button><button class="btn pri" data-a="plGuardar">${ic('check')}Guardar orden</button></div>`}`;
@@ -3674,10 +3701,24 @@ function trabajoDeHoy() {
 }
 /* Hoy, pensado para no saturar: primero «Ahora» (una tarea, una acción, el tiempo visible),
    luego el avance en una sola línea, las 2 siguientes y todo lo demás plegado. */
+const esAreaTrabajo = t => {
+  if (!t) return false;
+  if (t.area === 'trabajo') return true;
+  const a = area(t.area);
+  return !!(a && norm(a.n) === 'trabajo');
+};
 function renderHoy() {
   const v = $('#v-hoy');
-  const { rec, prioIds, esPrio, proceso, cola, otras } = trabajoDeHoy();
-  const hechas = hechasEl(hoy()).sort((a, b) => b.hecho.localeCompare(a.hecho));
+  const modoTrab = !!pref.v('modoTrabajo');
+  const raw = trabajoDeHoy();
+  const { rec, prioIds, esPrio } = raw;
+  const fil = arr => modoTrab ? arr.filter(esAreaTrabajo) : arr;
+  const proceso = fil(raw.proceso), cola = fil(raw.cola), otras = fil(raw.otras);
+  const hechasRaw = hechasEl(hoy()).sort((a, b) => b.hecho.localeCompare(a.hecho));
+  const hechas = fil(hechasRaw);
+  const antRaw = pendientesAnteriores();
+  const ant = fil(antRaw);
+  const ocultas = modoTrab ? (raw.proceso.length - proceso.length) + (raw.cola.length - cola.length) + (raw.otras.length - otras.length) + (antRaw.length - ant.length) : 0;
   const hechasP = prioIds ? prioIds.filter(id => byId(id)?.estado === 'hecho').length : hechas.length;
   const total = prioIds ? prioIds.length : proceso.length + cola.length + hechas.length;
   const pendP = [...proceso.filter(esPrio), ...cola];
@@ -3689,7 +3730,9 @@ function renderHoy() {
   const ahora = proceso[0] || cola[0] || otras[0];
   if (!ahora) {
     const hayProx = tareasEn('prox').length;
-    zA = total
+    zA = modoTrab && ocultas
+      ? `<div class="panel zero"><div class="orb ac">${ic('briefcase')}</div><h3>Sin pendientes de Trabajo</h3><p>Tienes ${ocultas} ${ocultas === 1 ? 'tarea oculta' : 'tareas ocultas'} de otras áreas. Siguen guardadas en Hoy.</p><button class="btn" style="margin-top:16px" data-a="modoTrabajo">Ver todas las tareas</button></div>`
+      : total
       ? `<div class="panel zero"><div class="orb">${ic('check')}</div><h3>Lista terminada</h3><p>Hiciste lo que planeaste. Puedes descansar o preparar mañana.</p><button class="btn pri" style="margin-top:16px" data-a="plan" data-v="manana">${ic('moon')}Preparar mañana</button></div>`
       : `<div class="panel zero"><div class="orb ac">${ic('sun')}</div><h3>¿Qué harás hoy?</h3><p>${hayProx ? 'Elige las tareas de hoy y trabájalas una a la vez.' : 'Anota tus pendientes en la Bandeja y después elige qué hacer hoy.'}</p><button class="btn pri" style="margin-top:16px" data-a="${hayProx ? 'plan' : 'irBandeja'}" ${hayProx ? 'data-v="hoy"' : ''}>${ic(hayProx ? 'list' : 'inbox')}${hayProx ? 'Ordenar el día' : 'Ir a la Bandeja'}</button></div>`;
   } else {
@@ -3732,7 +3775,6 @@ function renderHoy() {
   const dc = !!ahora && !proceso.length && ahora === cola[0];
   const resto = cola.filter(x => x !== ahora), extra = proceso.slice(1), otrasR = otras.filter(x => x !== ahora);
   const nPlan = extra.length + resto.length + otrasR.length;
-  const ant = pendientesAnteriores();
   const zonas = !!(ahora || nPlan || ant.length || hechas.length);
   if (zonas) zB += `<div class="sec-t">${ic('sun')}Planeados <span class="n">${nPlan}</span><span class="sp"></span><button class="lnk2" data-a="plan" data-v="hoy">${ic('list')}Ordenar</button></div>
     ${extra.length ? `<div class="group">${extra.map(x => filaHoy(x, 0, { curso:true })).join('')}</div>` : ''}
@@ -3744,7 +3786,8 @@ function renderHoy() {
   if (ant.length) zB += `<div class="sec-t">${ic('refresh')}Atrasadas <span class="n">${ant.length}</span><span class="sp"></span><button class="lnk2" data-a="pendTodasHoy">${ic('sun')}Mover todas a hoy</button></div>
     <div class="group" data-list="atrasada">${ant.map(x => filaDec(x, `<button class="qk pri" data-a="pendHoy" data-id="${x.id}">Hoy</button><button class="qk" data-a="pendOtro" data-id="${x.id}">Otro día</button><button class="qk" data-a="pendProx" data-id="${x.id}">A próximas</button>`)).join('')}</div>`;
   if (zonas) zB += `<details class="sec-d" data-k="hechas" ${abierto('hechas') ? 'open' : ''}><summary class="sec-t">${ic('check')}Completadas <span class="n">${hechas.length}</span><span class="sp"></span>${ic('chevD', 'chev')}</summary><div class="group" data-list="hecho">${hechas.map(x => filaHecha(x, true)).join('')}${hechas.length ? '' : '<div class="empty">Arrastra aquí una tarea para completarla.</div>'}</div></details>`;
-  v.innerHTML = `<div class="hoy-g"><div class="hoy-a">${zA}</div><div class="hoy-b">${zB}</div></div>`;
+  const barraModo = `<div class="hoy-modo ${modoTrab ? 'on' : ''}"><span class="hm-ico">${ic('briefcase')}</span><span class="tb"><b>Modo trabajo</b><small>${modoTrab ? (ocultas ? `Solo Trabajo · ${ocultas} ${ocultas === 1 ? 'oculta' : 'ocultas'} (siguen guardadas)` : 'Mostrando solo tareas de Trabajo') : 'Oculta Personal para enfocarte en Trabajo'}</small></span><button class="sw ${modoTrab ? 'on' : ''}" data-a="modoTrabajo" role="switch" aria-checked="${modoTrab}" aria-label="Activar Modo trabajo"></button></div>`;
+  v.innerHTML = barraModo + `<div class="hoy-g"><div class="hoy-a">${zA}</div><div class="hoy-b">${zB}</div></div>`;
 }
 // Rango visible de la Agenda: tu horario de trabajo, ampliado si alguna tarea queda fuera (o el día completo).
 let AG_INI = 0, AG_FIN = 24;
@@ -4103,15 +4146,17 @@ const pendientesSinPlan = () => vivas().map(infoPend).filter(Boolean).sort((a, b
 
 /* ================= Vista: Tablero ================= */
 const COLS = [
+  { k:'algun', n:'Algún día', c:'var(--vio)', d:'Ideas sin fecha' },
   { k:'prox', n:'Próximas', c:'var(--mut2)', d:'Pendientes y en espera' },
   { k:'proceso', n:'Hoy', c:'var(--ac)', d:'Lo que harás hoy' },
   { k:'hecho', n:'Hecho', c:'var(--ok-f)', d:'Últimos 7 días' }
 ];
-const COLN = { prox:'Próximas', hoy:'Hoy', proceso:'Hoy', espera:'Próximas', hecho:'Hecho' };
-// Tres columnas alineadas con el resto de la app: Próximas, Hoy y Hecho.
+const COLN = { algun:'Algún día', prox:'Próximas', hoy:'Hoy', proceso:'Hoy', espera:'Próximas', hecho:'Hecho' };
+// Cuatro columnas alineadas con el resto de la app: Algún día, Próximas, Hoy y Hecho.
 const atrasadaHoy = t => t.estado === 'hoy' && t.fecha && t.fecha < hoy();
 function colDe(t) {
   if (t.estado === 'hecho') return 'hecho';
+  if (t.estado === 'algun') return 'algun';
   if (t.estado === 'proceso' || (t.estado === 'hoy' && !atrasadaHoy(t))) return 'proceso';
   if (['prox', 'espera', 'hoy'].includes(t.estado)) return 'prox';
   return '';
@@ -4160,8 +4205,9 @@ function phCaptura() {
   return '+ Agregar próxima acción' + (d.length ? ' en ' + d.join(' · ') : '');
 }
 function tareasCol(k) {
-  const ts = [...tareasEn('prox'), ...tareasEn('espera'), ...tareasEn('hoy'), ...tareasEn('proceso'), ...tareasEn('hecho')].filter(t => colDe(t) === k && pasaFiltro(t));
+  const ts = [...tareasEn('algun'), ...tareasEn('prox'), ...tareasEn('espera'), ...tareasEn('hoy'), ...tareasEn('proceso'), ...tareasEn('hecho')].filter(t => colDe(t) === k && pasaFiltro(t));
   if (k === 'hecho') { const s0 = addDays(hoy(), -7); return ts.filter(t => diaDeISO(t.hecho) >= s0).sort((a, b) => b.hecho.localeCompare(a.hecho)).slice(0, 40); }
+  if (k === 'algun') return ts.sort((a, b) => b.creado.localeCompare(a.creado));
   if (k === 'proceso') return ts.sort((a, b) => (b.estado === 'proceso' ? 1 : 0) - (a.estado === 'proceso' ? 1 : 0) || byOrden(a, b));
   const rango = t => t.fecha && t.fecha < hoy() ? 0 : !t.fecha ? 1 : 2;
   return ts.sort((a, b) => rango(a) - rango(b) || (a.fecha || '').localeCompare(b.fecha || '') || ordenPrioridad(a, b));
@@ -4191,22 +4237,20 @@ function cardK(t, col) {
     espera:`<button class="qk" data-a="mover" data-id="${t.id}" data-v="hoy">Retomar</button>`,
     algun:`<button class="qk" data-a="mover" data-id="${t.id}" data-v="prox" aria-label="Activar en Próximas">Activar${ic('arrowR')}</button>`
   }[k] || '';
-  return `<div class="kc ${k === 'hecho' ? 'hecha' : ''} ${run ? 'run' : ''} ${area(t.area) ? 'ca' : ''}" style="--a:${colorA(t.area)}" data-id="${t.id}" data-a="abrir" ${k === 'espera' || k === 'algun' ? '' : 'data-drag'} role="button" tabindex="0">
+  return `<div class="kc ${k === 'hecho' ? 'hecha' : ''} ${run ? 'run' : ''} ${area(t.area) ? 'ca' : ''}" style="--a:${colorA(t.area)}" data-id="${t.id}" data-a="abrir" ${k === 'espera' ? '' : 'data-drag'} role="button" tabindex="0">
     <div class="kc-t">${esc(t.titulo)}</div>${enf}<div class="kc-f ${k === 'proceso' ? 'pr' : ''}"><div class="mt">${out.slice(0, 2).join('')}</div>${qk}</div></div>`;
 }
 function renderTablero() {
   const v = $('#v-tablero');
   const prevLeft = $('#board', v) ? $('#board', v).scrollLeft : null;
-  const base = ['prox', 'hoy', 'proceso', 'espera'].flatMap(k => tareasEn(k));
+  const base = ['algun', 'prox', 'hoy', 'proceso', 'espera'].flatMap(k => tareasEn(k));
   const nAct = base.filter(t => pasaFiltro(t)).length;
-  const algun = tareasEn('algun').filter(t => pasaFiltro(t, { sinEstado:true })).sort((a, b) => b.creado.localeCompare(a.creado));
   let html = htmlBarraFiltros(nAct, base.length);
   const datos = COLS.map(c => ({ c, ts:tareasCol(c.k) }));
   html += `<div class="coltabs" id="coltabs" role="tablist" aria-label="Columnas">${datos.map(({ c, ts }) => `<button class="${ui.col === c.k ? 'on' : ''}" data-a="colGo" data-v="${c.k}" role="tab"><span>${c.n}</span><b class="${c.lim && ts.length >= c.lim ? 'full' : ''}">${ts.length}${c.lim ? '/' + c.lim : ''}</b></button>`).join('')}</div>`;
-  const algunHtml = algun.length ? `<details class="algun-sec" data-k="tb-algun" ${abierto('tb-algun') ? 'open' : ''}><summary>${ic('bulb')}Algún día <span class="cnt">${algun.length}</span>${ic('chevD', 'chev')}</summary><div class="algun-l">${algun.map(t => cardK(t, 'algun')).join('')}</div></details>` : '';
   html += `<div class="board" id="board">${datos.map(({ c, ts }) => `<section class="col" style="--c:${c.c}" data-col="${c.k}" aria-label="${c.n}">
       <div class="col-h"><div><i class="cd"></i>${c.n}<span class="cnt">${ts.length}</span></div><small>${c.d}</small></div>
-      <div class="list" data-list="${c.k}">${ts.map(t => cardK(t, c.k)).join('')}<div class="empty">${{ prox:'Organiza tu Bandeja para llenar esta lista', proceso:'Nada en Hoy. Pasa tareas desde Próximas', hecho:'Aquí verás lo que termines' }[c.k]}</div>${c.k === 'prox' ? algunHtml : ''}</div>
+      <div class="list" data-list="${c.k}">${ts.map(t => cardK(t, c.k)).join('')}<div class="empty">${{ algun:'Ideas o tareas sin prisa', prox:'Organiza tu Bandeja para llenar esta lista', proceso:'Nada en Hoy. Pasa tareas desde Próximas', hecho:'Aquí verás lo que termines' }[c.k]}</div></div>
       ${c.k === 'prox' ? `<div class="qadd"><input id="qaddIn" maxlength="${MAX_TITULO}" placeholder="${esc(phCaptura())}" enterkeyhint="done" autocomplete="off" aria-label="${esc(phCaptura().slice(2))}"></div>` : ''}
     </section>`).join('')}</div>`;
   v.innerHTML = html;
@@ -4227,6 +4271,62 @@ function ajustarBoard() {
   const top = b.getBoundingClientRect().top + scrollY;
   const extra = document.body.classList.contains('has-mini') ? ($('#mini')?.offsetHeight || 56) : 0;
   b.style.height = Math.max(340, innerHeight - top - (desk() ? 32 : ($('#tabs')?.offsetHeight || 64) + 10) - extra) + 'px';
+}
+
+/* ================= Vista: Rutinas (Planifica) ================= */
+function rutEstado() {
+  if (!ui.rut) ui.rut = { titulo:'', area:(areas().find(a => a.id === 'trabajo') || areas()[0] || {}).id || '', freq:'diaria', dias:[1, 3, 5], diaMes:1, hora:'', dur:0, filtro:'todas' };
+  return ui.rut;
+}
+function renderRutinas() {
+  const v = $('#v-rutinas'), R = rutEstado();
+  const todas = activas().filter(t => !!t.rec).sort((a, b) => (a.area || '').localeCompare(b.area || '') || (a.hora || '99').localeCompare(b.hora || '99') || a.titulo.localeCompare(b.titulo, 'es'));
+  const vis = R.filtro === 'todas' ? todas : todas.filter(t => t.area === R.filtro);
+  const form = `<div class="panel rut-form" id="rutForm">
+    <h3>${ic('repeat')}Nueva rutina</h3>
+    <input class="in" id="rutIn" maxlength="${MAX_TITULO}" value="${esc(R.titulo)}" placeholder="Ej. Revisar correo, Hacer ejercicio…" autocomplete="off" data-in="rutTitulo" aria-label="Nombre de la rutina">
+    <div class="f-sec" style="margin-top:12px"><span class="f-l">Área</span>
+      <div class="chips">${areas().map(a => `<button type="button" class="chip area ${R.area === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="rutArea" data-v="${a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('')}</div>
+    </div>
+    <div class="f-sec" style="margin-top:12px"><span class="f-l">Frecuencia</span>
+      <div class="chips">${[['diaria', 'Todos los días'], ['laboral', 'Lunes a viernes'], ['semanal', 'Ciertos días'], ['mensual', 'Cada mes']].map(([k, n]) => `<button type="button" class="chip ${R.freq === k ? 'on' : ''}" data-a="rutFreq" data-v="${k}">${n}</button>`).join('')}</div>
+      ${R.freq === 'semanal' ? `<div class="days" role="group" aria-label="Días de la semana">${DIAS1.map((d, i) => `<button type="button" class="${R.dias.includes(i) ? 'on' : ''}" data-a="rutDia" data-v="${i}" aria-label="${DIAS[i]}" aria-pressed="${R.dias.includes(i)}">${d}</button>`).join('')}</div>` : ''}
+      ${R.freq === 'mensual' ? `<div class="rec-mes" style="margin-top:10px"><button type="button" class="chip ${R.diaMes === 1 ? 'on' : ''}" data-a="rutDiaMes" data-v="1">Día 1</button><button type="button" class="chip ${R.diaMes === 15 ? 'on' : ''}" data-a="rutDiaMes" data-v="15">Día 15</button><button type="button" class="chip ${R.diaMes >= 31 ? 'on' : ''}" data-a="rutDiaMes" data-v="31">Último día</button><input type="number" class="in" min="1" max="31" value="${clamp(+R.diaMes || 1, 1, 31)}" data-in="rutDiaMesIn" aria-label="Día del mes"></div>` : ''}
+    </div>
+    <div class="rut-row">
+      <div><label class="f-l" for="rutHora">Hora (opcional)</label><input type="time" class="in" id="rutHora" data-in="rutHora" value="${R.hora}" step="900"></div>
+      <div><label class="f-l">Duración</label><div class="chips" style="gap:6px">${[0, 15, 25, 45].map(m => `<button type="button" class="chip ${R.dur === m ? 'on' : ''}" style="min-height:36px;padding:0 10px" data-a="rutDur" data-v="${m}">${m ? m + 'm' : '—'}</button>`).join('')}</div></div>
+    </div>
+    <button type="button" class="btn pri full" style="margin-top:16px" data-a="rutCrear">${ic('plus')}Crear rutina</button>
+  </div>`;
+  const fila = t => {
+    const proxTxt = t.fecha ? (t.fecha === hoy() ? 'Hoy' : t.fecha === manana() ? 'Mañana' : fechaCorta(t.fecha)) : 'Sin fecha';
+    return `<div class="rut-item ${area(t.area) ? 'ca' : ''}" style="--a:${colorA(t.area)}" data-a="abrir" data-id="${t.id}" role="button" tabindex="0">
+      <div class="tb">
+        <div class="tt">${esc(t.titulo)}</div>
+        <div class="mt">
+          ${recBadge(t)}
+          ${area(t.area) ? `<span class="tag"><i class="dot" style="--a:${colorA(t.area)}"></i>${esc(area(t.area).n)}</span>` : ''}
+          <span class="tag">${ic('cal')}Próxima: ${esc(proxTxt)}${t.hora ? ' · ' + t.hora : ''}</span>
+          ${t.dur ? `<span class="tag">${ic('timer')}${t.dur} min</span>` : ''}
+        </div>
+      </div>
+      <div class="rut-acts">
+        <button class="qk" data-a="rutSaltar" data-id="${t.id}" title="Saltar la próxima vez">${ic('skip')}Saltar</button>
+        <button class="b-act del" data-a="rutBorrar" data-id="${t.id}" title="Eliminar rutina" aria-label="Eliminar rutina: ${esc(t.titulo)}">${ic('trash')}</button>
+      </div>
+    </div>`;
+  };
+  const filtros = `<div class="rut-fbar"><button type="button" class="chip ${R.filtro === 'todas' ? 'on' : ''}" data-a="rutFiltro" data-v="todas">Todas (${todas.length})</button>${areas().map(a => {
+    const n = todas.filter(t => t.area === a.id).length;
+    return `<button type="button" class="chip area ${R.filtro === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="rutFiltro" data-v="${a.id}"><i class="dot"></i>${esc(a.n)}${n ? ` (${n})` : ''}</button>`;
+  }).join('')}</div>`;
+  const lista = `<div>
+    <div class="sec-t" style="margin-top:0">${ic('repeat')}Tus rutinas <span class="n">${vis.length}</span></div>
+    ${filtros}
+    ${vis.length ? `<div class="group">${vis.map(fila).join('')}</div>` : `<div class="panel zero"><div class="orb ac">${ic('repeat')}</div><h3>${todas.length ? 'Sin rutinas en esta área' : 'Aún no tienes rutinas'}</h3><p>${todas.length ? 'Cambia el filtro o crea una rutina nueva para esta área.' : 'Crea tus tareas recurrentes de Trabajo o Personal y aparecerán automáticamente en Hoy y en tu Agenda.'}</p></div>`}
+  </div>`;
+  v.innerHTML = `<div class="rut-grid">${form}${lista}</div>`;
 }
 
 /* ================= Enfoque: Pomodoro y bloques ================= */
@@ -4616,11 +4716,16 @@ function ayuda(k) {
       ['timer', 'Capacidad', 'Compara lo estimado con lo que cabe en tu horario (Ajustes: horario, pausas y margen). La ocupación no cuenta dos veces los bloques encimados.'],
       ['flag', 'Solapamientos', 'Si dos bloques se enciman, puedes mover uno al siguiente hueco libre o mantenerlos así a propósito.'],
       ['star', 'Prioridades', 'Para hoy y mañana, elige y ordena todas las tareas que quieras trabajar.']] },
-    tablero:{ d:'Tus tareas en tres estados, con los mismos filtros que la Agenda.', p:[
+    tablero:{ d:'Tus tareas en cuatro columnas, con los mismos filtros que la Agenda.', p:[
+      ['bulb', 'Algún día', 'Ideas o pendientes sin prisa ni fecha definida.'],
       ['list', 'Próximas', 'Lo que está pendiente y no está en Hoy: atrasadas, en espera, sin día o con un día futuro.'],
-      ['timer', 'En curso', 'Lo que está en Hoy. La que estás trabajando ahora aparece primero, con su reloj.'],
+      ['timer', 'Hoy', 'Lo que está en Hoy. La que estás trabajando ahora aparece primero, con su reloj.'],
       ['check', 'Hecho', 'Lo que completaste en los últimos 7 días.'],
       ['arrowR', 'Mover tareas', 'Usa el botón de cada tarjeta, o mantenla presionada y arrástrala a otra columna.']] },
+    rutinas:{ d:'Crea y administra tus tareas recurrentes de Trabajo, Personal o cualquier área.', p:[
+      ['repeat', 'Frecuencias', 'Diarias, de lunes a viernes, ciertos días de la semana o un día fijo del mes.'],
+      ['cal', 'Automáticas', 'Al completar una rutina, Foco programa sola la siguiente fecha y la muestra en Hoy y Agenda.'],
+      ['skip', 'Saltar una vez', 'Si un día no toca hacerla, usa «Saltar» para pasarla a su siguiente fecha sin eliminarla.']] },
     enfoque:{ d:'El modo ampliado del reloj: una sola tarea, sin interrupciones. Cada sesión completa suma puntos y alimenta tu racha.', p:[
       ['tomato', 'Pomodoro', `${a.pomo} minutos de enfoque y ${a.corto} de descanso. Cada ${a.cada}, un descanso largo de ${a.largo}. Ajusta los tiempos en Ajustes.`],
       ['clock', 'Bloque de tiempo', 'Tú eliges la duración. Útil para tareas largas o trabajo profundo.'],
@@ -5469,6 +5574,47 @@ const ACT = {
     upsertT(t); regProc(t, 'espera'); pulsarTab('planifica'); volarProc('right');
   },
   // Planear
+  modoTrabajo:() => {
+    const on = !pref.v('modoTrabajo');
+    pref.set('modoTrabajo', on ? 1 : 0);
+    renderVista();
+    toast(on ? 'Modo trabajo activado · solo tareas de Trabajo' : 'Modo trabajo desactivado · mostrando todo');
+  },
+  rutArea:el => { rutEstado().area = el.dataset.v; renderRutinas(); },
+  rutFreq:el => { rutEstado().freq = el.dataset.v; renderRutinas(); },
+  rutDia:el => {
+    const R = rutEstado(), i = +el.dataset.v;
+    const n = R.dias.includes(i) ? R.dias.filter(x => x !== i) : [...R.dias, i].sort();
+    if (!n.length) { sacudir(el, 'Elige al menos un día'); return; }
+    R.dias = n; renderRutinas();
+  },
+  rutDiaMes:el => { rutEstado().diaMes = clamp(+el.dataset.v || 1, 1, 31); renderRutinas(); },
+  rutDur:el => { rutEstado().dur = +el.dataset.v || 0; renderRutinas(); },
+  rutFiltro:el => { rutEstado().filtro = el.dataset.v; renderRutinas(); },
+  rutCrear:() => {
+    const R = rutEstado(), tit = limpiarTitulo(R.titulo || '');
+    if (!tit) { sacudir($('#rutIn'), 'Escribe el nombre de la rutina'); $('#rutIn')?.focus(); return; }
+    if (!R.area) { sacudir($('#rutForm'), 'Elige un área para la rutina'); return; }
+    const rec = R.freq === 'semanal' ? 'semanal:' + (R.dias.length ? R.dias.join(',') : '1')
+      : R.freq === 'mensual' ? 'mensual:' + clamp(+R.diaMes || 1, 1, 31)
+      : R.freq;
+    const f = primeraFechaRec(rec, hoy());
+    const hora = R.hora ? min2hm(hm2min(R.hora)) : '';
+    const t = nuevaTarea(tit, { estado:f === hoy() ? 'hoy' : 'prox', area:R.area, fecha:f, hora, dur:R.dur || 0, rec });
+    t.serie = t.id;
+    S.tareas.push(t); upsertT(t);
+    R.titulo = ''; R.hora = '';
+    renderVista();
+    toast(`Rutina creada: «${t.titulo}»`);
+    setTimeout(() => $('#rutIn')?.focus(), 50);
+  },
+  rutSaltar:el => { const t = byId(el.dataset.id); if (!t || !t.rec) return; saltarRec(t); renderVista(); },
+  rutBorrar:el => {
+    const t = byId(el.dataset.id); if (!t) return;
+    if (T().tareaId === t.id) { cerrarTramo(); T().tareaId = ''; save(); pushTimer(); }
+    t.borrado = true; upsertT(t); renderVista();
+    toast(`Rutina eliminada: «${t.titulo}»`, 'Deshacer', () => { t.borrado = false; upsertT(t); renderVista(); });
+  },
   plSel:el => {
     const id = el.dataset.id, i = plan.sel.indexOf(id);
     if (i >= 0) plan.sel.splice(i, 1);
@@ -5811,7 +5957,10 @@ const IN = {
     autoAlto(el); const v = el.value, id = el.dataset.id; guardando();
     deb('dt:mn:' + id, () => { const m = mnById(id); if (!m || !v.trim()) return; m.texto = v.trim().slice(0, 1000); mnReplanear(m); mnGuardar(m); pintarMnZona(); const z = ui.sheet && ui.sheet.id === id && $('#mnPasos'); if (z) z.innerHTML = mnFilasPasos(m); });
   },
-  mnTemaIn:el => { const v = el.value, id = el.dataset.id; deb('dt:mnt:' + id, () => { const m = mnById(id); if (!m) return; m.tema = v.trim().slice(0, 24); mnGuardar(m); pintarMnZona(); }); }
+  mnTemaIn:el => { const v = el.value, id = el.dataset.id; deb('dt:mnt:' + id, () => { const m = mnById(id); if (!m) return; m.tema = v.trim().slice(0, 24); mnGuardar(m); pintarMnZona(); }); },
+  rutTitulo:el => { rutEstado().titulo = el.value; },
+  rutDiaMesIn:el => { rutEstado().diaMes = clamp(+el.value || 1, 1, 31); },
+  rutHora:el => { rutEstado().hora = el.value || ''; }
 };
 document.addEventListener('input', e => {
   const el = e.target;
@@ -5865,6 +6014,7 @@ document.addEventListener('keydown', e => {
   else if (el.id === 'agSlotIn') { e.preventDefault(); ACT.agSlotCrear(); }
   else if (el.id === 'dtProyIn') { e.preventDefault(); const n = registrarProyecto(el.value); const t = dtT(); if (t) { t.proyecto = n; upsertT(t); ui.dtOpen = ''; dtRefrescar(); } }
   else if (el.id === 'loteProy') { e.preventDefault(); const n = registrarProyecto(el.value); if (n) { (ui.lote || (ui.lote = {})).proyecto = n; refrescarSheet(); } }
+  else if (el.id === 'rutIn') { e.preventDefault(); ACT.rutCrear(); }
   else if (el.id === 'verboQ') {
     e.preventDefault();
     const q = norm(el.value.trim()); if (!q) return;

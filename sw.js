@@ -1,6 +1,6 @@
 // Foco: funciona sin conexión. Cambia la versión cuando subas cambios para forzar la actualización.
 const PREFIJO = 'foco-';
-const CACHE = PREFIJO + 'v37';
+const CACHE = PREFIJO + 'v38';
 // Fuentes de Google en su propia caché: no se borra al cambiar de versión y permite verlas sin conexión.
 const CACHE_FUENTES = 'focofuentes-v1';
 const FUENTES = ['fonts.googleapis.com', 'fonts.gstatic.com'];
