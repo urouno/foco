@@ -611,6 +611,10 @@ body.dragging .board{scroll-snap-type:none}
 .col-h .cd{width:9px;height:9px;border-radius:50%;background:var(--c)}
 .col-h .cnt{font-size:var(--fs-s);color:var(--mut);font-weight:600}
 .col-h small{display:block;font-size:var(--fs-s);color:var(--mut);margin-top:2px}
+.col-add{margin-left:auto;width:30px;height:30px;border-radius:10px;display:grid;place-items:center;color:var(--mut);background:var(--sf);border:var(--bd);transition:background .15s,color .15s,border-color .15s,transform .12s;flex:none}
+.col-add svg.i{width:16px;height:16px;stroke-width:2.3}
+.col-add:active{transform:scale(.94)}
+@media (hover:hover){.col-add:hover{background:var(--ac-s);color:var(--ac-t);border-color:color-mix(in srgb,var(--ac) 28%,transparent)}}
 .col .list{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:2px 8px 80px;display:flex;flex-direction:column;gap:8px;min-height:60px;-webkit-overflow-scrolling:touch}
 .list > .empty:not(:only-child){display:none}
 .col .empty{border:2px dashed var(--ln2);border-radius:12px;padding:16px 12px;font-size:var(--fs-s)}
@@ -3181,13 +3185,20 @@ function renderBandeja() {
   }
   pintarCapForm('cap'); pintarBandejaLista();
 }
+const CAP_DEST = {
+  bandeja: { h:'Capturar', btn:'Guardar en Bandeja', ic:'inbox' },
+  algun: { h:'Nuevo en Algún día', btn:'Guardar en Algún día', ic:'bulb' },
+  prox: { h:'Nuevo en Próximas', btn:'Guardar en Próximas', ic:'arrowR' },
+  hoy: { h:'Nuevo en Hoy', btn:'Guardar en Hoy', ic:'sun' }
+};
 // Captura en un paso: qué vas a hacer y área obligatoria (con estado visual claro).
-function htmlCapForm(pfx) {
+function htmlCapForm(pfx, est = 'bandeja') {
+  const d = CAP_DEST[est] || CAP_DEST.bandeja;
   return `<div class="panel capf" id="${pfx}Box">
     <textarea id="${pfx}In" class="capf-in" rows="1" maxlength="2000" placeholder="¿Qué pendiente quieres anotar?" enterkeyhint="send" autocomplete="off" autocapitalize="sentences" aria-label="Anota un pendiente"></textarea>
     <div class="capf-bot"><div class="capf-tools">
       <button type="button" class="areasel vacia" id="${pfx}Area" data-a="areaAbrir" data-dest="${pfx}" aria-label="Elegir área (obligatoria)"></button>
-    </div><button class="btn sm pri incompleto" id="${pfx}Btn" data-a="${pfx === 'cap' ? 'capAdd' : 'capSheetAdd'}" aria-label="Guardar en Bandeja">${ic('inbox')}Guardar en Bandeja</button></div>
+    </div><button class="btn sm pri incompleto" id="${pfx}Btn" data-a="${pfx === 'cap' ? 'capAdd' : 'capSheetAdd'}" aria-label="${d.btn}">${ic(d.ic)}${d.btn}</button></div>
   </div><div class="capf-hint" id="${pfx}Hint" aria-live="polite"></div>`;
 }
 function pintarCapForm(pfx) {
@@ -4250,7 +4261,7 @@ function renderTablero() {
   const datos = COLS.map(c => ({ c, ts:tareasCol(c.k) }));
   html += `<div class="coltabs" id="coltabs" role="tablist" aria-label="Columnas">${datos.map(({ c, ts }) => `<button class="${ui.col === c.k ? 'on' : ''}" data-a="colGo" data-v="${c.k}" role="tab"><span>${c.n}</span><b class="${c.lim && ts.length >= c.lim ? 'full' : ''}">${ts.length}${c.lim ? '/' + c.lim : ''}</b></button>`).join('')}</div>`;
   html += `<div class="board" id="board">${datos.map(({ c, ts }) => `<section class="col" style="--c:${c.c}" data-col="${c.k}" aria-label="${c.n}">
-      <div class="col-h"><div><i class="cd"></i>${c.n}<span class="cnt">${ts.length}</span></div><small>${c.d}</small></div>
+      <div class="col-h"><div><i class="cd"></i>${c.n}<span class="cnt">${ts.length}</span>${c.k !== 'hecho' ? `<button class="col-add" data-a="colAdd" data-v="${c.k}" title="Agregar pendiente en ${c.n}" aria-label="Agregar pendiente en ${c.n}">${ic('plus')}</button>` : ''}</div><small>${c.d}</small></div>
       <div class="list" data-list="${c.k}">${ts.map(t => cardK(t, c.k)).join('')}<div class="empty">${{ algun:'Ideas o tareas sin prisa', prox:'Organiza tu Bandeja para llenar esta lista', proceso:'Nada en Hoy. Pasa tareas desde Próximas', hecho:'Aquí verás lo que termines' }[c.k]}</div></div>
       ${c.k === 'prox' ? `<div class="qadd"><input id="qaddIn" maxlength="${MAX_TITULO}" placeholder="${esc(phCaptura())}" enterkeyhint="done" autocomplete="off" aria-label="${esc(phCaptura().slice(2))}"></div>` : ''}
     </section>`).join('')}</div>`;
@@ -4893,7 +4904,7 @@ function ponerTexto(dest, nuevo, desdeSelector) {
   const ctx = desdeSelector ? ui.sheet : null;
   if (dest === 'cap') { if (ctx) cerrarSheet(true, true); const ta = $('#capIn'); ta.value = nuevo; autoAlto(ta); pintarCapForm('cap'); finCursor(ta); }
   else if (dest === 'capSheet') {
-    if (ctx) { abrirSheet({ k:'captura', draft:nuevo }); setTimeout(() => finCursor($('#capSheetIn')), 60); }
+    if (ctx) { abrirSheet({ k:'captura', draft:nuevo, estado:ctx.estado }); setTimeout(() => finCursor($('#capSheetIn')), 60); }
     else { const ta = $('#capSheetIn'); ta.value = nuevo; ui.sheet.draft = nuevo; autoAlto(ta); pintarCapForm('capSheet'); finCursor(ta); }
   } else if (dest === 'proc') {
     const t = tActualProc(); if (!t) return;
@@ -4911,7 +4922,7 @@ function ponerTexto(dest, nuevo, desdeSelector) {
 }
 function abrirSelector(k, dest) {
   const ctx = { k, dest };
-  if (dest === 'capSheet') { ctx.draft = $('#capSheetIn')?.value || ''; ctx.volver = { k:'captura', draft:ctx.draft }; }
+  if (dest === 'capSheet') { ctx.draft = $('#capSheetIn')?.value || ''; ctx.estado = ui.sheet && ui.sheet.estado; ctx.volver = { k:'captura', draft:ctx.draft, estado:ctx.estado }; }
   if (dest === 'dt') { guardarDetalleTexto(); ctx.id = ui.sheet.id; ctx.volver = { k:'detalle', id:ctx.id }; }
   if (dest === 'proc') { guardarTituloProc(); leerCamposProc(); ctx.top = true; }
   abrirSheet(ctx);
@@ -4952,8 +4963,10 @@ function htmlSync() {
     <div class="sh-end"></div>`;
 }
 function htmlCaptura() {
-  return cab('<h2>Capturar</h2>') + htmlCapForm('capSheet') + `
-    <button class="mn-ir" data-a="irMente"><span class="mi">${ic('brain')}</span><span class="tb"><b>¿Traes mucho en la cabeza?</b><small>Escríbelo todo sin orden y Foco lo acomoda</small></span>${ic('chevR', 'chev-r')}</button>
+  const est = (ui.sheet && ui.sheet.estado) || 'bandeja';
+  const d = CAP_DEST[est] || CAP_DEST.bandeja;
+  return cab(`<h2>${d.h}</h2>`) + htmlCapForm('capSheet', est) + (est === 'bandeja' ? `
+    <button class="mn-ir" data-a="irMente"><span class="mi">${ic('brain')}</span><span class="tb"><b>¿Traes mucho en la cabeza?</b><small>Escríbelo todo sin orden y Foco lo acomoda</small></span>${ic('chevR', 'chev-r')}</button>` : '') + `
     <div class="sh-end"></div>`;
 }
 function htmlPicker() {
@@ -5369,13 +5382,28 @@ const ACT = {
     pintarCapForm('cap');
     if (c.length) { pintarBandejaLista(c.map(t => t.id)); encabezado(); pintarTabs(); pulsarTab('bandeja'); toast(c.length > 1 ? `${c.length} en Bandeja` : `En Bandeja: «${c[0].titulo}»`, null, null, 'check'); }
   },
+  colAdd:el => {
+    const col = el.dataset.v, est = col === 'proceso' ? 'hoy' : col;
+    const ctx = ctxCaptura();
+    if (ctx.area) { ui.capArea = ctx.area; ui.capAreaManual = true; }
+    else capAreaReset();
+    abrirSheet({ k:'captura', estado:est });
+  },
   capSheetAdd:async () => {
     if (!capAreaOk('#capSheetIn', 'capSheet')) return;
-    const c = await capturarDe('#capSheetIn', 'bandeja', ui.capAreaManual && ui.capArea ? { area:ui.capArea } : {});
+    const est = (ui.sheet && ui.sheet.estado) || 'bandeja';
+    const extra = Object.assign(est !== 'bandeja' ? ctxCaptura() : {}, ui.capAreaManual && ui.capArea ? { area:ui.capArea } : {}, est === 'hoy' ? { fecha:hoy() } : {});
+    const c = await capturarDe('#capSheetIn', est, extra);
     if (c.length) {
-      capAreaReset(); cerrarSheet(false, true); pulsarTab('bandeja');
-      const enB = ui.view === 'bandeja' && ui.bModo !== 'mente';
-      toast(c.length > 1 ? `${c.length} en Bandeja` : `En Bandeja: «${c[0].titulo}»`, enB ? null : 'Ver', enB ? null : () => { ui.bModo = 'capturar'; ir('bandeja'); }, 'inbox');
+      capAreaReset(); cerrarSheet(false, true);
+      if (est === 'bandeja') {
+        pulsarTab('bandeja');
+        const enB = ui.view === 'bandeja' && ui.bModo !== 'mente';
+        toast(c.length > 1 ? `${c.length} en Bandeja` : `En Bandeja: «${c[0].titulo}»`, enB ? null : 'Ver', enB ? null : () => { ui.bModo = 'capturar'; ir('bandeja'); }, 'inbox');
+      } else {
+        const nom = { algun:'Algún día', prox:'Próximas', hoy:'Hoy' }[est] || est;
+        toast(c.length > 1 ? `${c.length} en ${nom}` : `En ${nom}: «${c[0].titulo}»`, null, null, 'check');
+      }
     }
   },
   procesar:() => abrirProc(),
@@ -5846,7 +5874,7 @@ const ACT = {
   areaElegir:el => {
     const id = el.dataset.v, c = ui.sheet;
     if (c.dest === 'proc') { proc.d.area = id; cerrarSheet(true, true); repintarCuerpoProc(); }
-    else { ui.capArea = id; ui.capAreaManual = !!id; if (c.dest === 'capSheet') abrirSheet({ k:'captura', draft:c.draft }); else { cerrarSheet(true, true); pintarCapForm('cap'); } }
+    else { ui.capArea = id; ui.capAreaManual = !!id; if (c.dest === 'capSheet') abrirSheet({ k:'captura', draft:c.draft, estado:c.estado }); else { cerrarSheet(true, true); pintarCapForm('cap'); } }
   },
   clarVerbo:el => { const d = el.dataset.dest; ponerTexto(d, aplicarVerbo(textoDe(d), el.dataset.v)); },
   clarUsar:el => ponerTexto(el.dataset.dest, el.dataset.v),
