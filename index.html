@@ -521,10 +521,12 @@ body.inmersivo #tabs,body.inmersivo #menuBtn,body.inmersivo #hSub,body.inmersivo
 .cap-b.over i,.wk-l.over i{background:var(--warn-f)}
 .wk-d.pas{opacity:.65}
 .sol{display:flex;flex-direction:column;gap:8px;margin-top:12px}
-.sol-i{display:flex;gap:10px;padding:12px;border-radius:12px;background:var(--warn-s);color:var(--ink);font-size:var(--fs-s);border:1px solid color-mix(in srgb,var(--warn-f) 22%,transparent)}
+.sol-i{display:flex;gap:10px;padding:12px;border-radius:12px;background:var(--warn-s);color:var(--ink);font-size:var(--fs-s);border:1px solid color-mix(in srgb,var(--warn-f) 22%,transparent);min-width:0;max-width:100%}
 .sol-i > svg.i{color:var(--warn);width:18px;height:18px;flex:none;margin-top:1px}
+.sol-i .tb{min-width:0;flex:1}
 .sol-i b{display:block;color:var(--warn);font-size:var(--fs-s)}
-.sol-i span{display:block;margin-top:2px}
+.sol-i span{display:block;margin-top:2px;overflow-wrap:anywhere}
+.sol-i .dec-b .qk{max-width:100%;white-space:normal;text-align:left;line-height:1.25;padding:7px 12px;min-height:36px;height:auto;border-radius:14px}
 .tl-b.solapa{box-shadow:inset 0 0 0 2px var(--warn-f)}
 /* Bloques cortos (≤ 30 min): título y hora en un renglón para que nada quede cortado */
 .tl-b.corta{display:flex;align-items:center;gap:8px;padding-top:2px;padding-bottom:2px}
@@ -988,7 +990,7 @@ html.lock #toast.on{transform:translate(-50%,0)}
   .col{flex:1 1 0;min-width:208px;max-width:340px}
   /* Planifica: semana en columnas */
   .semana{display:grid;grid-template-columns:260px minmax(0,1fr);gap:24px;align-items:start}
-  .sm-side{position:sticky;top:96px;min-width:0}
+  .sm-side{position:sticky;top:96px;min-width:0;overflow-x:hidden}
   .sm-nav{display:flex;align-items:center;gap:4px;padding:4px;border-radius:12px;background:var(--sf)}
   .sm-nav b{flex:1;text-align:center;font-size:var(--fs-m);font-weight:600}
   .sm-nav .ib:disabled{opacity:.3}
@@ -1570,6 +1572,37 @@ body{letter-spacing:-.005em;text-rendering:optimizeLegibility}
   .qk-up:hover{background:var(--ac-s)}
 }
 .hoy-b > .sec-t:first-child{margin-top:14px}
+.plan-man{width:100%;display:flex;align-items:center;gap:12px;margin-top:12px;padding:12px 14px;text-align:left;transition:background .15s,border-color .15s,transform .12s}
+.plan-man:active{transform:scale(.99)}
+.plan-man .pm-ico{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;flex:none}
+.plan-man .pm-ico svg.i{width:18px;height:18px}
+.plan-man .tb{flex:1;min-width:0}
+.plan-man b{display:block;font-size:var(--fs-m);font-weight:600;color:var(--ink)}
+.plan-man small{display:block;font-size:var(--fs-s);color:var(--mut);margin-top:1px}
+.plan-man .pm-tag{display:inline-flex;align-items:center;gap:4px;padding:0 10px;height:24px;border-radius:999px;font-size:11.5px;font-weight:600;flex:none}
+.plan-man .pm-tag svg.i{width:13px;height:13px;stroke-width:2.5}
+.plan-man > svg.i:last-child{color:var(--mut2);flex:none}
+.plan-man.ok{background:color-mix(in srgb,var(--ac-s) 65%,var(--sf));border-color:color-mix(in srgb,var(--ac) 28%,transparent)}
+.plan-man.ok .pm-ico{background:var(--ac);color:var(--on-ac)}
+.plan-man.ok .pm-tag{background:var(--ac-s);color:var(--ac-t)}
+.plan-man.pend{background:var(--sf2);border-color:var(--ln2)}
+.plan-man.pend .pm-ico{background:var(--sf3);color:var(--mut)}
+.plan-man.pend b{color:var(--mut)}
+.plan-man.pend .pm-tag{background:var(--sf3);color:var(--mut)}
+.proy-dd{display:flex;flex-direction:column;gap:4px;margin-top:8px;max-height:190px;overflow-y:auto;padding:4px;border-radius:12px;background:var(--sf2);border:1px solid var(--ln)}
+.proy-opt{display:flex;align-items:center;gap:8px;width:100%;min-height:38px;padding:6px 10px;border-radius:8px;text-align:left;font-size:var(--fs-m);color:var(--ink);transition:background .12s}
+.proy-opt svg.i{width:15px;height:15px;color:var(--mut2);flex:none}
+.proy-opt span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.proy-opt.on{background:var(--ac-s);color:var(--ac-t);font-weight:600}
+.proy-opt.on svg.i{color:var(--ac-t)}
+.proy-opt.add{color:var(--ac-t);font-weight:600}
+.proy-opt.add svg.i{color:var(--ac-t)}
+.proy-opt.clr{color:var(--mut);font-size:var(--fs-s)}
+@media (hover:hover){
+  .plan-man.ok:hover{border-color:color-mix(in srgb,var(--ac) 48%,transparent)}
+  .plan-man.pend:hover{background:var(--sf);border-color:var(--ln2)}
+  .proy-opt:not(.on):hover{background:var(--sf)}
+}
 @media (min-width:1024px){
   .hoy-g{grid-template-areas:"a b"}
   .hoy-b > .sec-t:first-child{margin-top:0}
@@ -2792,11 +2825,11 @@ const VISTAS = [
   { k:'enfoque', n:'Enfoque', ic:'timer', sub:() => 'Pomodoro y bloques de tiempo' },
   { k:'progreso', n:'Progreso', ic:'chart', sub:() => 'Tu avance y tus logros' }
 ];
-// Cuatro secciones: Hoy (con Enfoque como modo ampliado), Bandeja (incluye Vaciar la mente), Planifica (Agenda y Tablero) y Progreso.
+// Cuatro secciones: Bandeja (incluye Vaciar la mente), Hoy (con Enfoque como modo ampliado), Planifica (Agenda y Tablero) y Progreso.
 // «ocultas» son vistas del grupo que no aparecen como subpestaña.
 const GRUPOS = [
-  { k:'hoy', n:'Hoy', ic:'sun', vs:['hoy', 'enfoque'], ocultas:['enfoque'] },
   { k:'bandeja', n:'Bandeja', ic:'inbox', vs:['bandeja'] },
+  { k:'hoy', n:'Hoy', ic:'sun', vs:['hoy', 'enfoque'], ocultas:['enfoque'] },
   { k:'planifica', n:'Planifica', ic:'cal', vs:['agenda', 'tablero'] },
   { k:'progreso', n:'Progreso', ic:'chart', vs:['progreso'] }
 ];
@@ -2809,6 +2842,33 @@ const desk = () => mqDesk.matches;
 // Ratón o trackpad: los textos dicen «Haz clic en» en lugar de «Toca».
 const mqFino = matchMedia('(hover:hover) and (pointer:fine)');
 const TOCA = () => mqFino.matches ? 'Haz clic en' : 'Toca';
+// Proyectos: catálogo persistente (se nutre de lo que escribes) + tareas agrupadas.
+function proyectosGuardados() {
+  const set = new Set([...(S.ajustes.proyectos || []), ...vivas().map(t => t.proyecto)].map(x => (x || '').trim()).filter(Boolean));
+  return [...set].sort((a, b) => a.localeCompare(b, 'es'));
+}
+function registrarProyecto(nombre) {
+  const n = (nombre || '').trim().slice(0, 60); if (!n) return '';
+  S.ajustes.proyectos = S.ajustes.proyectos || [];
+  if (!S.ajustes.proyectos.some(p => norm(p) === norm(n))) {
+    S.ajustes.proyectos.push(n);
+    guardarAjustes(); save();
+  }
+  const dl = $('#proyectos');
+  if (dl) dl.innerHTML = proyectosGuardados().map(p => `<option value="${esc(p)}">`).join('');
+  return n;
+}
+function htmlProyMenu(actual, q, actSel, actAdd) {
+  const ps = proyectosGuardados(), qt = (q || '').trim(), qn = norm(qt);
+  const filt = qn ? ps.filter(p => norm(p).includes(qn)) : ps;
+  const existe = qn && ps.some(p => norm(p) === qn);
+  let h = '';
+  if (qt && !existe) h += `<button type="button" class="proy-opt add" data-a="${actAdd}" data-v="${esc(qt)}">${ic('plus')}<span>Guardar «${esc(qt)}» como proyecto</span></button>`;
+  h += filt.map(p => `<button type="button" class="proy-opt ${actual === p ? 'on' : ''}" data-a="${actSel}" data-v="${esc(p)}">${ic(actual === p ? 'check' : 'folder')}<span>${esc(p)}</span></button>`).join('');
+  if (actual) h += `<button type="button" class="proy-opt clr" data-a="${actSel}" data-v="">${ic('x')}<span>Quitar proyecto</span></button>`;
+  if (!h) h = `<div class="empty" style="padding:10px 8px;font-size:var(--fs-s)">Escribe un nombre para crear tu primer proyecto.</div>`;
+  return h;
+}
 // Proyectos: todas las tareas de cada proyecto (pendientes y hechas) en menús desplegables.
 // En escritorio viven en el panel izquierdo; en teléfono, en una hoja que se abre desde «Más opciones».
 const ordProy = (a, b) => (a.estado === 'proceso' ? 0 : 1) - (b.estado === 'proceso' ? 0 : 1) || (a.fecha || '9').localeCompare(b.fecha || '9') || (a.hora || '99').localeCompare(b.hora || '99') || byOrden(a, b);
@@ -2902,7 +2962,7 @@ function render() {
   encabezado(); pintarTabs(); pintarSync();
   document.body.classList.toggle('inmersivo', ui.view === 'enfoque');
   pintarMini(); renderVista();
-  const pr = [...new Set(vivas().map(t => t.proyecto).filter(Boolean))];
+  const pr = proyectosGuardados();
   $('#proyectos').innerHTML = pr.map(p => `<option value="${esc(p)}">`).join('');
 }
 function renderVista() {
@@ -3096,13 +3156,12 @@ function renderBandeja() {
   }
   pintarCapForm('cap'); pintarBandejaLista();
 }
-// Captura en un paso: qué vas a hacer, área obligatoria (con estado visual claro) y botón compacto de verbo.
+// Captura en un paso: qué vas a hacer y área obligatoria (con estado visual claro).
 function htmlCapForm(pfx) {
   return `<div class="panel capf" id="${pfx}Box">
     <textarea id="${pfx}In" class="capf-in" rows="1" maxlength="2000" placeholder="¿Qué pendiente quieres anotar?" enterkeyhint="send" autocomplete="off" autocapitalize="sentences" aria-label="Anota un pendiente"></textarea>
     <div class="capf-bot"><div class="capf-tools">
       <button type="button" class="areasel vacia" id="${pfx}Area" data-a="areaAbrir" data-dest="${pfx}" aria-label="Elegir área (obligatoria)"></button>
-      <button type="button" class="vpill" id="${pfx}Verbo" data-a="verboAbrir" data-dest="${pfx}" title="Empezar con un verbo" aria-label="Elegir un verbo">${ic('bolt')}Verbo</button>
     </div><button class="btn sm pri incompleto" id="${pfx}Btn" data-a="${pfx === 'cap' ? 'capAdd' : 'capSheetAdd'}" aria-label="Guardar en Bandeja">${ic('inbox')}Guardar en Bandeja</button></div>
   </div><div class="capf-hint" id="${pfx}Hint" aria-live="polite"></div>`;
 }
@@ -3660,13 +3719,22 @@ function renderHoy() {
       <div class="hero-m">${run || desc ? `<span class="mut sm">${t.modo === 'pomo' ? `Sesión de ${S.ajustes.pomo} min` : `Bloque de ${t.bloqueMin} min`}</span><button class="lnk2" data-a="cambiarTarea">Cambiar tarea</button>` : `${ic('clock')}<span id="heroFin">${tiempo}</span><button class="lnk2" data-a="heroModo">Cambiar modo</button>`}</div></div>`;
   }
 
+  // ----- Planear mañana: siempre visible con indicador visual (Listo / Pendiente) -----
+  const recMan = planDe(manana());
+  const plManIds = recMan ? recMan.prio.filter(id => byId(id) && !byId(id).borrado) : [];
+  const plMan = plManIds.length || tareasEn('prox').filter(x => x.fecha === manana()).length;
+  const mananaLista = !!(recMan && plManIds.length) || plMan > 0;
+  zA += mananaLista
+    ? `<button class="panel plan-man ok" data-a="plan" data-v="manana"><span class="pm-ico">${ic('moon')}</span><span class="tb"><b>Mañana planeado</b><small>${plMan} ${plMan === 1 ? 'tarea lista' : 'tareas listas'}</small></span><span class="pm-tag">${ic('check')}Listo</span>${ic('chevR')}</button>`
+    : `<button class="panel plan-man pend" data-a="plan" data-v="manana"><span class="pm-ico">${ic('moon')}</span><span class="tb"><b>Planear mañana</b><small>Elige y ordena tus tareas</small></span><span class="pm-tag">Pendiente</span>${ic('chevR')}</button>`;
+
   // ----- Planeados: directo debajo de Ahora, sin bloques intermedios -----
   const dc = !!ahora && !proceso.length && ahora === cola[0];
   const resto = cola.filter(x => x !== ahora), extra = proceso.slice(1), otrasR = otras.filter(x => x !== ahora);
   const nPlan = extra.length + resto.length + otrasR.length;
   const ant = pendientesAnteriores();
   const zonas = !!(ahora || nPlan || ant.length || hechas.length);
-  if (zonas) zB += `<div class="sec-t">${ic('sun')}Planeados <span class="n">${nPlan}</span><span class="sp"></span><button class="lnk2" data-a="plan" data-v="${tarde ? 'manana' : 'hoy'}">${ic(tarde ? 'moon' : 'list')}${tarde ? 'Mañana' : 'Ordenar'}</button></div>
+  if (zonas) zB += `<div class="sec-t">${ic('sun')}Planeados <span class="n">${nPlan}</span><span class="sp"></span><button class="lnk2" data-a="plan" data-v="hoy">${ic('list')}Ordenar</button></div>
     ${extra.length ? `<div class="group">${extra.map(x => filaHoy(x, 0, { curso:true })).join('')}</div>` : ''}
     <div class="group" data-list="hoy" data-base="${dc ? 1 : 0}" data-hero="${dc ? ahora.id : ''}" id="hoyList">${resto.map((x, i) => filaHoy(x, i + (dc ? 2 : 1))).join('')}${resto.length || extra.length || otrasR.length ? '' : '<div class="empty">Nada más planeado hoy.</div>'}</div>
     ${otrasR.length ? `<div class="group">${otrasR.map(x => filaHoy(x, 0, { otra:true })).join('')}</div>` : ''}`;
@@ -3676,8 +3744,6 @@ function renderHoy() {
   if (ant.length) zB += `<div class="sec-t">${ic('refresh')}Atrasadas <span class="n">${ant.length}</span><span class="sp"></span><button class="lnk2" data-a="pendTodasHoy">${ic('sun')}Mover todas a hoy</button></div>
     <div class="group" data-list="atrasada">${ant.map(x => filaDec(x, `<button class="qk pri" data-a="pendHoy" data-id="${x.id}">Hoy</button><button class="qk" data-a="pendOtro" data-id="${x.id}">Otro día</button><button class="qk" data-a="pendProx" data-id="${x.id}">A próximas</button>`)).join('')}</div>`;
   if (zonas) zB += `<details class="sec-d" data-k="hechas" ${abierto('hechas') ? 'open' : ''}><summary class="sec-t">${ic('check')}Completadas <span class="n">${hechas.length}</span><span class="sp"></span>${ic('chevD', 'chev')}</summary><div class="group" data-list="hecho">${hechas.map(x => filaHecha(x, true)).join('')}${hechas.length ? '' : '<div class="empty">Arrastra aquí una tarea para completarla.</div>'}</div></details>`;
-  const plMan = tareasEn('prox').filter(x => x.fecha === manana()).length;
-  if (plMan && tarde) zB += `<button class="panel row-link" data-a="plan" data-v="manana">${ic('moon')}<span><b>Mañana</b> · ${plMan} ${plMan === 1 ? 'tarea planeada' : 'tareas planeadas'}</span>${ic('chevR')}</button>`;
   v.innerHTML = `<div class="hoy-g"><div class="hoy-a">${zA}</div><div class="hoy-b">${zB}</div></div>`;
 }
 // Rango visible de la Agenda: tu horario de trabajo, ampliado si alguna tarea queda fuera (o el día completo).
@@ -4059,17 +4125,17 @@ function pasaFiltro(t, op = {}) {
   const f = ui.f;
   if (f.area !== 'todas' && !(f.area === 'sin' ? !area(t.area) : t.area === f.area)) return false;
   if (f.proyecto && !(f.proyecto === '-' ? !t.proyecto : t.proyecto === f.proyecto)) return false;
-  if (f.estado && !op.sinEstado && colDe(t) !== f.estado) return false;
+  if (f.estado && !op.sinEstado && ui.view !== 'tablero' && colDe(t) !== f.estado) return false;
   if (f.prio && prioDe(t) !== f.prio) return false;
   if (f.rec === 'si' && !t.rec) return false;
   if (f.rec === 'no' && t.rec) return false;
   return true;
 }
-function chipsFiltro() {
+function chipsFiltro(op = {}) {
   const f = ui.f, out = [];
   if (f.area !== 'todas') out.push(['area', f.area === 'sin' ? 'Sin área' : (area(f.area)?.n || 'Área'), f.area === 'sin' ? 'var(--mut2)' : colorA(f.area)]);
   if (f.proyecto) out.push(['proyecto', f.proyecto === '-' ? 'Sin proyecto' : f.proyecto]);
-  if (f.estado) out.push(['estado', EST_F[f.estado]]);
+  if (f.estado && !op.sinEstado && ui.view !== 'tablero') out.push(['estado', EST_F[f.estado]]);
   if (f.prio) out.push(['prio', PRIO_F[f.prio]]);
   if (f.rec) out.push(['rec', REC_F[f.rec]]);
   return out;
@@ -4801,11 +4867,11 @@ function htmlFiltro() {
   const f = ui.f, base = activas().filter(t => ['prox', 'hoy', 'proceso', 'espera'].includes(t.estado));
   const n = base.filter(t => pasaFiltro(t)).length;
   const grupo = (k, titulo, ops) => `<div class="f-sec"><span class="f-l">${titulo}</span><div class="chips" role="radiogroup" aria-label="${titulo}">${ops.map(([v, nm, c]) => `<button class="chip ${f[k] === v ? 'on' : ''}" data-a="filtroSet" data-k="${k}" data-v="${esc(v)}" role="radio" aria-checked="${f[k] === v}">${c ? `<i class="dot" style="--a:${c}"></i>` : ''}${esc(nm)}</button>`).join('')}</div></div>`;
-  const proys = [...new Set(base.map(t => t.proyecto).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es'));
+  const proys = proyectosGuardados();
   return cab('<h2>Filtrar</h2>') + `<p class="hint" style="margin:0 2px 8px">Se aplica a Tablero y Agenda. Hoy y Bandeja no cambian.</p>
     ${grupo('area', 'Área', [['todas', 'Todas'], ...areas().map(a => [a.id, a.n, a.c]), ['sin', 'Sin área', 'var(--mut2)']])}
     ${grupo('proyecto', 'Proyecto', [['', 'Todos'], ...proys.map(p => [p, p]), ['-', 'Sin proyecto']])}
-    ${grupo('estado', 'Estado', [['', 'Todos'], ...Object.entries(EST_F)])}
+    ${ui.view === 'tablero' ? '' : grupo('estado', 'Estado', [['', 'Todos'], ...Object.entries(EST_F)])}
     ${grupo('prio', 'Prioridad', [['', 'Todas'], ...Object.entries(PRIO_F)])}
     ${grupo('rec', 'Rutinas', [['', 'Todas'], ...Object.entries(REC_F)])}
     <div class="sh-foot"><button class="btn" data-a="limpiarFiltros">Limpiar filtros</button><button class="btn pri" data-a="cerrarSheet">Ver ${n} ${n === 1 ? 'tarea' : 'tareas'}</button></div>`;
@@ -4816,7 +4882,7 @@ function htmlLote() {
   const n = ui.bSel ? ui.bSel.size : 0, L = ui.lote || (ui.lote = {});
   return cab(`<h2>Asignar a ${n} ${n === 1 ? 'pendiente' : 'pendientes'}</h2>`) + `
     <div class="f-sec"><span class="f-l">Área</span><div class="chips">${areas().map(a => `<button class="chip area ${L.area === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="loteSet" data-k="area" data-v="${a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('')}<button class="chip ${L.area === '' ? 'on' : ''}" data-a="loteSet" data-k="area" data-v="">Sin área</button></div></div>
-    <div class="f-sec"><label class="f-l" for="loteProy">Proyecto</label><input class="in" id="loteProy" list="proyectos" maxlength="60" value="${esc(L.proyecto || '')}" placeholder="Sin cambios" data-in="loteProy"></div>
+    <div class="f-sec"><label class="f-l" for="loteProy">Proyecto</label><input class="in" id="loteProy" maxlength="60" value="${esc(L.proyecto || '')}" placeholder="Elige o escribe un proyecto" autocomplete="off" data-in="loteProy"><div class="proy-dd" id="loteProyDd">${htmlProyMenu(L.proyecto || '', '', 'loteProySel', 'loteProyAdd')}</div></div>
     <div class="f-sec"><span class="f-l">Destino</span><div class="chips">${[['', 'Sin cambios'], ['prox', 'Próximas acciones'], ['hoy', 'Hoy'], ['manana', 'Mañana'], ['algun', 'Algún día']].map(([v, nm]) => `<button class="chip ${(L.dest || '') === v ? 'on' : ''}" data-a="loteSet" data-k="dest" data-v="${v}">${nm}</button>`).join('')}</div>
       <label class="f-l" style="margin-top:12px" for="loteFecha">O un día planeado</label><input type="date" class="in" id="loteFecha" data-in="loteFecha" value="${L.fecha || ''}" min="${hoy()}"></div>
     <div class="sh-foot"><button class="btn" data-a="cerrarSheet">Cancelar</button><button class="btn pri" data-a="loteAplicar">${ic('check')}Aplicar a ${n}</button></div>`;
@@ -4885,7 +4951,7 @@ function htmlDetalle(t) {
     hora: fila('hora', 'clock', 'blue', 'Hora', t.hora || '<span class="mut2">Sin hora</span>',
       `<div class="row2"><input type="time" class="in" data-in="dtHora" value="${horaVal}" step="900" aria-label="Hora">${t.hora ? `<button class="btn" data-a="dtSinHora">${ic('x')}Quitar hora</button>` : '<span></span>'}</div>`),
     proy: fila('proy', 'folder', 'gray', 'Proyecto', t.proyecto ? esc(t.proyecto) : '<span class="mut2">Ninguno</span>',
-      `<input class="in" data-in="dtProyecto" list="proyectos" maxlength="60" value="${esc(t.proyecto)}" placeholder="Ej. App de finanzas" aria-label="Proyecto">`),
+      `<input class="in" id="dtProyIn" data-in="dtProyecto" maxlength="60" value="${esc(t.proyecto)}" placeholder="Elige o escribe un proyecto" autocomplete="off" aria-label="Proyecto"><div class="proy-dd" id="dtProyDd">${htmlProyMenu(t.proyecto, '', 'dtProySel', 'dtProyAdd')}</div>`),
     lim: fila('lim', 'flag', 'hot', 'Fecha límite', t.limite ? `${fechaCorta(t.limite)}${t.limite < hoy() && t.estado !== 'hecho' ? ' · vencida' : ''}` : '<span class="mut2">Opcional</span>',
       `<input type="date" class="in" data-in="dtLimite" value="${t.limite || ''}" aria-label="Fecha límite">${t.limite ? `<button class="btn full" style="margin-top:8px" data-a="dtLimQuitar">${ic('x')}Quitar fecha límite</button>` : ''}`),
     notas: fila('notas', 'note', 'gray', 'Notas', (t.notas || []).length ? `${t.notas.length} ${t.notas.length === 1 ? 'nota' : 'notas'}` : '<span class="mut2">Sin notas</span>',
@@ -4937,6 +5003,12 @@ function guardarDetalleTexto() {
   const t = byId(c.id); if (!t) return;
   const ta = $('[data-in="dtTitulo"]');
   if (ta && ta.value.trim() && limpiarTitulo(ta.value) !== t.titulo) { t.titulo = limpiarTitulo(ta.value); upsertT(t); }
+  const pi = $('#dtProyIn');
+  if (pi) {
+    const pv = pi.value.trim().slice(0, 60);
+    if (pv) registrarProyecto(pv);
+    if (pv !== (t.proyecto || '')) { t.proyecto = pv; upsertT(t); }
+  }
   const bi = $('#bitIn'); if (bi && bi.value.trim()) agregarNota(t, bi.value);
 }
 function agregarNota(t, txt) {
@@ -5292,10 +5364,13 @@ const ACT = {
     toast(`${ts.length} ${ts.length === 1 ? 'pendiente eliminado' : 'pendientes eliminados'}`, 'Deshacer', () => { ts.forEach(t => { t.borrado = false; upsertT(t); }); render(); });
   },
   loteSet:el => { const L = ui.lote || (ui.lote = {}); L[el.dataset.k] = L[el.dataset.k] === el.dataset.v ? undefined : el.dataset.v; if (el.dataset.k === 'dest' && el.dataset.v) L.fecha = ''; refrescarSheet(); },
+  loteProySel:el => { const L = ui.lote || (ui.lote = {}); L.proyecto = el.dataset.v || ''; refrescarSheet(); },
+  loteProyAdd:el => { const L = ui.lote || (ui.lote = {}); const n = registrarProyecto(el.dataset.v); if (!n) return; L.proyecto = n; refrescarSheet(); },
   loteAplicar:() => {
     const L = ui.lote || {}, ts = [...(ui.bSel || [])].map(byId).filter(Boolean);
     const proy = (L.proyecto || '').trim().slice(0, 60);
     if (L.area === undefined && !proy && !L.dest && !L.fecha) { toast('Elige qué asignar'); return; }
+    if (proy) registrarProyecto(proy);
     const antes = ts.map(t => [t, { area:t.area, proyecto:t.proyecto, estado:t.estado, fecha:t.fecha }]);
     ts.forEach(t => {
       if (L.area !== undefined) t.area = L.area;
@@ -5457,6 +5532,8 @@ const ACT = {
     if (ui.dtOpen === 'esp') setTimeout(() => $('[data-in="dtEspera"]')?.focus(), 80);
   },
   dtArea:el => { const t = dtT(); t.area = el.dataset.v; upsertT(t); ui.dtOpen = ''; dtRefrescar(); },
+  dtProySel:el => { const t = dtT(); if (!t) return; t.proyecto = el.dataset.v || ''; upsertT(t); ui.dtOpen = ''; dtRefrescar(); },
+  dtProyAdd:el => { const t = dtT(); if (!t) return; const n = registrarProyecto(el.dataset.v); if (!n) return; t.proyecto = n; upsertT(t); ui.dtOpen = ''; dtRefrescar(); },
   dtPrio:() => { const t = dtT(); t.importante = !esPrioritaria(t); t.urgente = false; upsertT(t); ui.dtOpen = ''; dtRefrescar(); },
   dtDur:el => { const t = dtT(); t.dur = +el.dataset.v; upsertT(t); ui.dtOpen = ''; dtRefrescar(); },
   dtCuando:el => {
@@ -5692,7 +5769,11 @@ const IN = {
   dtLimite:el => { const t = dtT(); if (!t) return; t.limite = el.value || ''; upsertT(t); renderVista(); const v = $('.dr.open .dr-v'); if (v) v.textContent = t.limite ? fechaCorta(t.limite) : 'Opcional'; },
   dtDiaMesIn:el => { const t = dtT(); if (!t) return; const d = clamp(+el.value || 1, 1, 31); t.rec = 'mensual:' + d; if (!t.fecha || !coincideRec(t.rec, t.fecha)) { t.fecha = primeraFechaRec(t.rec, hoy()); if (['bandeja', 'algun', 'hoy', 'prox'].includes(t.estado)) t.estado = t.fecha === hoy() ? 'hoy' : 'prox'; } upsertT(t); renderVista(); const v = $('.dr.open .dr-v'); if (v) v.textContent = recTexto(t.rec); },
   dtSeg:el => { const t = dtT(); if (!t || !el.value) return; if (el.value < hoy()) { el.value = t.seg; sacudir(el, 'Elige una fecha de hoy en adelante'); return; } t.seg = el.value; upsertT(t); ui.dtOpen = ''; dtRefrescar(); },
-  dtProyecto:el => { const v = el.value; dtCampo('pr', el, t => { t.proyecto = v.trim().slice(0, 60); upsertT(t); renderVista(); }); },
+  dtProyecto:el => {
+    const v = el.value, t0 = dtT();
+    const dd = $('#dtProyDd'); if (dd) dd.innerHTML = htmlProyMenu(t0 ? t0.proyecto : '', v, 'dtProySel', 'dtProyAdd');
+    dtCampo('pr', el, t => { const pv = v.trim().slice(0, 60); t.proyecto = pv; if (pv) registrarProyecto(pv); upsertT(t); renderVista(); const hdr = $('.dr.open .dr-v'); if (hdr) hdr.innerHTML = pv ? esc(pv) : '<span class="mut2">Ninguno</span>'; });
+  },
   dtEspera:el => { const v = el.value; dtCampo('es', el, t => { t.espera = v.trim().slice(0, 120); upsertT(t); renderVista(); }); },
   dtFecha:el => {
     const t = dtT(); if (!t || !el.value) return;
@@ -5713,7 +5794,7 @@ const IN = {
   buscarQ:el => { ui.buscarQ = el.value; const r = $('#buscarRes'); if (r) r.innerHTML = htmlResultados(); },
   agIr:el => { if (!el.value) return; ui.dia = el.value; ui.agY = null; if (ui.sheet && ui.sheet.k === 'agOpc') cerrarSheet(true); renderVista(); },
   semIr:el => { if (!el.value) return; ui.semIni = el.value; ui.smY = null; renderVista(); },
-  loteProy:el => { (ui.lote || (ui.lote = {})).proyecto = el.value; },
+  loteProy:el => { const L = ui.lote || (ui.lote = {}); L.proyecto = el.value; const dd = $('#loteProyDd'); if (dd) dd.innerHTML = htmlProyMenu(L.proyecto, el.value, 'loteProySel', 'loteProyAdd'); },
   loteFecha:el => { const L = ui.lote || (ui.lote = {}); L.fecha = el.value; if (el.value) L.dest = ''; },
   histQ:el => { ui.histQ = el.value; ui.histN = 40; pintarHistorial(); },
   cfgHora:el => { if (!el.value) return; const k = el.dataset.k, v = min2hm(hm2min(el.value)), a = S.ajustes;
@@ -5782,6 +5863,8 @@ document.addEventListener('keydown', e => {
   else if (el.id === 'cfgClave') { e.preventDefault(); ACT.cfgGuardar(); }
   else if (el.id === 'areaNuevaN') { e.preventDefault(); ACT.areaNuevaOk(); }
   else if (el.id === 'agSlotIn') { e.preventDefault(); ACT.agSlotCrear(); }
+  else if (el.id === 'dtProyIn') { e.preventDefault(); const n = registrarProyecto(el.value); const t = dtT(); if (t) { t.proyecto = n; upsertT(t); ui.dtOpen = ''; dtRefrescar(); } }
+  else if (el.id === 'loteProy') { e.preventDefault(); const n = registrarProyecto(el.value); if (n) { (ui.lote || (ui.lote = {})).proyecto = n; refrescarSheet(); } }
   else if (el.id === 'verboQ') {
     e.preventDefault();
     const q = norm(el.value.trim()); if (!q) return;
