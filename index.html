@@ -4295,15 +4295,16 @@ const COLN = { algun:'Algún día', prox:'Próximas', hoy:'Hoy', proceso:'Hoy', 
 const atrasadaHoy = t => t.estado === 'hoy' && t.fecha && t.fecha < hoy();
 function colDe(t) {
   if (t.estado === 'hecho') return 'hecho';
-  if (t.estado === 'algun') return 'algun';
-  if (t.estado === 'proceso' || (t.estado === 'hoy' && !atrasadaHoy(t))) return 'proceso';
+  if (t.estado === 'proceso') return 'proceso';
+  if (t.estado === 'hoy' && (!t.fecha || t.fecha === hoy())) return 'proceso';
+  if (t.estado === 'algun') return t.fecha ? 'prox' : 'algun';
   if (['prox', 'espera', 'hoy'].includes(t.estado)) return 'prox';
   return '';
 }
 /* Filtros compartidos de Planifica: los mismos en Tablero y Agenda. Hoy y Bandeja no se filtran. */
 const PRIO_F = { si:'Prioritarias', no:'Normales' };
 const EST_F = { prox:'Próximas', proceso:'Hoy' };
-const REC_F = { si:'Solo rutinas', no:'Tareas únicas' };
+const REC_F = { si:'Solo rutinas', no:'Sin recurrentes' };
 const prioDe = t => esPrioritaria(t) ? 'si' : 'no';
 function pasaFiltro(t, op = {}) {
   const f = ui.f;
@@ -4321,15 +4322,15 @@ function chipsFiltro(op = {}) {
   if (f.proyecto) out.push(['proyecto', f.proyecto === '-' ? 'Sin proyecto' : f.proyecto]);
   if (f.estado && !op.sinEstado && ui.view !== 'tablero') out.push(['estado', EST_F[f.estado]]);
   if (f.prio) out.push(['prio', PRIO_F[f.prio]]);
-  if (f.rec) out.push(['rec', REC_F[f.rec]]);
+  if (f.rec && !(ui.view === 'tablero' && f.rec === 'no')) out.push(['rec', REC_F[f.rec]]);
   return out;
 }
 // Barra visible con los filtros activos, el conteo y «Limpiar filtros».
 function htmlBarraFiltros(n, total, delante = '') {
-  const ch = chipsFiltro();
+  const ch = chipsFiltro(), hayFiltro = ch.length > 0 || (ui.view === 'tablero' && ui.f.rec === 'no');
   return `<div class="fbar">${delante}<button class="fbtn ${ch.length ? 'on' : ''}" data-a="filtrar" aria-label="Filtrar${ch.length ? `, ${ch.length} activos` : ''}">${ic('filter')}Filtrar${ch.length ? `<b>${ch.length}</b>` : ''}</button>
     ${ch.map(([k, nm, c]) => `<button class="chip on" data-a="quitarFiltro" data-k="${k}" aria-label="Quitar filtro: ${esc(nm)}">${c ? `<i class="dot" style="--a:${c}"></i>` : ''}${esc(nm)}${ic('x')}</button>`).join('')}
-    ${ch.length ? `<span class="fcnt">${n} de ${total}</span><button class="lnk2" data-a="limpiarFiltros">Limpiar filtros</button>` : ''}</div>`;
+    ${hayFiltro ? `<span class="fcnt">${n} de ${total}</span><button class="lnk2" data-a="limpiarFiltros">Limpiar filtros</button>` : ''}</div>`;
 }
 // Una captura solo hereda área o proyecto si ese filtro se ve en pantalla.
 function ctxCaptura() {
@@ -4348,8 +4349,9 @@ function tareasCol(k) {
   if (k === 'hecho') { const s0 = addDays(hoy(), -7); return ts.filter(t => diaDeISO(t.hecho) >= s0).sort((a, b) => b.hecho.localeCompare(a.hecho)).slice(0, 40); }
   if (k === 'algun') return ts.sort((a, b) => b.creado.localeCompare(a.creado));
   if (k === 'proceso') return ts.sort((a, b) => (b.estado === 'proceso' ? 1 : 0) - (a.estado === 'proceso' ? 1 : 0) || byOrden(a, b));
-  const rango = t => t.fecha && t.fecha < hoy() ? 0 : !t.fecha ? 1 : 2;
-  return ts.sort((a, b) => rango(a) - rango(b) || (a.fecha || '').localeCompare(b.fecha || '') || ordenPrioridad(a, b));
+  // Próximas: primero todas las que tienen fecha (ordenadas cronológicamente), sin fecha hasta abajo.
+  const rango = t => t.fecha ? 0 : 1;
+  return ts.sort((a, b) => rango(a) - rango(b) || (a.fecha || '').localeCompare(b.fecha || '') || (a.hora || '99').localeCompare(b.hora || '99') || ordenPrioridad(a, b));
 }
 function cardK(t, col) {
   const out = [];
@@ -4384,7 +4386,8 @@ function renderTablero() {
   const prevLeft = $('#board', v) ? $('#board', v).scrollLeft : null;
   const base = ['algun', 'prox', 'hoy', 'proceso', 'espera'].flatMap(k => tareasEn(k));
   const nAct = base.filter(t => pasaFiltro(t)).length;
-  let html = htmlBarraFiltros(nAct, base.length);
+  const sinRecBtn = `<button type="button" class="fbtn ${ui.f.rec === 'no' ? 'on' : ''}" data-a="ocultarRec" aria-pressed="${ui.f.rec === 'no'}">${ic('repeat')}${ui.f.rec === 'no' ? 'Recurrentes ocultas' : 'Ocultar recurrentes'}</button>`;
+  let html = htmlBarraFiltros(nAct, base.length, sinRecBtn);
   const datos = COLS.map(c => ({ c, ts:tareasCol(c.k) }));
   html += `<div class="coltabs" id="coltabs" role="tablist" aria-label="Columnas">${datos.map(({ c, ts }) => `<button class="${ui.col === c.k ? 'on' : ''}" data-a="colGo" data-v="${c.k}" role="tab"><span>${c.n}</span><b class="${c.lim && ts.length >= c.lim ? 'full' : ''}">${ts.length}${c.lim ? '/' + c.lim : ''}</b></button>`).join('')}</div>`;
   html += `<div class="board" id="board">${datos.map(({ c, ts }) => `<section class="col" style="--c:${c.c}" data-col="${c.k}" aria-label="${c.n}">
@@ -5654,6 +5657,7 @@ const ACT = {
   hoySeg:el => { ui.hoyVista = el.dataset.v; ui.agSel = ''; ui.agY = null; renderVista(); },
   filtrar:() => abrirSheet({ k:'filtro' }),
   filtroSet:el => { ui.f[el.dataset.k] = el.dataset.v; refrescarSheet(); renderVista(); },
+  ocultarRec:() => { ui.f.rec = ui.f.rec === 'no' ? '' : 'no'; renderVista(); },
   quitarFiltro:el => { const k = el.dataset.k; ui.f[k] = k === 'area' ? 'todas' : ''; renderVista(); },
   limpiarFiltros:() => { ui.f = { area:'todas', proyecto:'', estado:'', prio:'', rec:'' }; if (ui.sheet && ui.sheet.k === 'filtro') refrescarSheet(); renderVista(); },
   bSelModo:() => { ui.bSel = ui.bSel ? null : new Set(); pintarBandejaLista(); },
