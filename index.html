@@ -1541,15 +1541,45 @@ body{letter-spacing:-.005em;text-rendering:optimizeLegibility}
 .edit-wrap.proc-ew .edit-ico{top:14px;right:8px}
 .edit-wrap .edit-ico svg.i{width:16px;height:16px}
 .edit-wrap:focus-within .edit-ico{opacity:0}
-.dt-est{display:flex;flex-wrap:wrap;gap:6px;margin:-4px 0 16px}
-.dt-est .chip{min-height:34px;padding:0 12px;font-size:var(--fs-s)}
-.dt-add-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.dt-add-chip{display:inline-flex;align-items:center;gap:5px;min-height:36px;padding:0 12px;border-radius:999px;background:transparent;border:1.5px dashed var(--ln2);color:var(--mut);font-size:var(--fs-s);font-weight:500;transition:background .15s,border-color .15s,color .15s}
-.dt-add-chip svg.i{width:14px;height:14px}
-.dt-add-chip:active{background:var(--sf2);color:var(--ink)}
+.dt-del{width:36px;height:36px;border-radius:50%;color:color-mix(in srgb,var(--hot) 78%,var(--mut));background:transparent;transition:background .15s,color .15s}
+.dt-del svg.i{width:18px;height:18px}
+.dt-del:active{background:var(--hot-s);color:var(--hot)}
+.dt-card{display:flex;align-items:flex-start;gap:12px;padding:14px 12px 14px 14px;background:var(--sf);border-radius:var(--r);border:var(--bd);margin:0 0 8px}
+.dt-card:focus-within{border-color:color-mix(in srgb,var(--ac) 55%,transparent);box-shadow:0 0 0 3px var(--ac-s)}
+.dt-ck{width:24px;height:24px;border-radius:50%;border:2px solid var(--ln2);background:transparent;display:grid;place-items:center;flex:none;margin-top:2px;color:transparent;transition:background .16s,border-color .16s,color .16s,transform .12s}
+.dt-ck svg.i{width:14px;height:14px;stroke-width:2.8}
+.dt-ck:active{transform:scale(.9)}
+.dt-ck.on{background:var(--ac);border-color:var(--ac);color:var(--on-ac)}
+.dt-card .dt-title{flex:1;min-width:0;padding:0;margin:0;border:0;border-radius:0;background:transparent;font-size:18px;font-weight:700;line-height:1.35;color:var(--ink);box-shadow:none}
+.dt-card .dt-title:focus{box-shadow:none}
+.dt-card .dt-title.hecha{text-decoration:line-through;color:var(--mut)}
+.dt-star{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;flex:none;color:var(--mut2);transition:color .16s,transform .12s}
+.dt-star svg.i{width:19px;height:19px}
+.dt-star:active{transform:scale(.9)}
+.dt-star.on{color:#C89B3C}
+.dt-sec-l{font-family:var(--ff2);font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--mut);margin:20px 2px 8px}
+.dt-est{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:6px;margin:0;padding:2px 0;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.dt-est::-webkit-scrollbar{display:none}
+.dt-est .chip{flex:none;min-height:36px;padding:0 13px;font-size:var(--fs-s);border:0;background:var(--sf2);color:var(--mut);font-weight:500}
+.dt-est .chip.on{background:var(--ac);color:var(--on-ac);font-weight:600}
+.dt-grp .dr + .dr{border-top:1px solid color-mix(in srgb,var(--ln) 65%,transparent)}
+.dt-grp .dr-h{min-height:44px;padding:6px 12px 6px 14px;gap:10px}
+.dt-grp .dr-i{width:20px;height:20px;color:var(--mut)!important}
+.dt-grp .dr-i svg.i{width:16px;height:16px}
+.dt-grp .dr-l{font-size:var(--fs-m);color:var(--ink)}
+.dt-grp .dr-v{color:var(--ink);font-weight:500;font-size:var(--fs-m)}
+.dt-grp .dr.vacio .dr-v{color:var(--mut2);font-weight:400}
+.dt-grp .dr.vacio .chev{opacity:.5}
+.dt-add-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:0}
+.dt-add-chip{display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:38px;padding:0 8px;border-radius:12px;background:var(--sf2);border:0;color:var(--mut);font-size:12.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:background .15s,color .15s,transform .12s}
+.dt-add-chip svg.i{width:13px;height:13px;flex:none;opacity:.7}
+.dt-add-chip:active{transform:scale(.97)}
+.dt-add-chip.on{background:var(--ac-s);color:var(--ac-t);font-weight:600}
+.dt-add-chip.on svg.i{opacity:1}
+.sh-foot.dt-foot{flex-direction:column;gap:8px;padding-top:10px}
+.sh-foot.dt-foot .dt-meta{margin:0;font-size:11.5px;color:var(--mut2)}
 .sh-foot .btn.del-txt{padding:0 12px;background:transparent;color:var(--hot);font-size:var(--fs-s);gap:5px;flex:none}
 .sh-foot .btn.del-txt svg.i{width:17px;height:17px}
-.dt-done{margin-top:16px;color:var(--ok);border-color:color-mix(in srgb,var(--ok-f) 32%,transparent)}
 .ar-r input[type=text]{border-radius:8px;padding:6px 8px;border:1px solid transparent;transition:background .15s,border-color .15s}
 .ar-r input[type=text]:focus{background:var(--sf2);border-color:var(--ac)}
 .ar-r .sw-c{box-shadow:0 0 0 2px var(--sf),0 0 0 3.5px var(--ln2)}
@@ -1570,9 +1600,11 @@ body{letter-spacing:-.005em;text-rendering:optimizeLegibility}
   .mn-del:hover{background:var(--hot-s);color:var(--hot);opacity:1}
   .edit-wrap .dt-title:hover,.edit-wrap .proc-tt:hover{border-color:var(--ln2)}
   .ar-r input[type=text]:hover{background:var(--sf2)}
-  .dt-add-chip:hover{background:var(--sf2);border-color:var(--ac);color:var(--ink)}
+  .dt-del:hover{background:var(--hot-s);color:var(--hot)}
+  .dt-ck:not(.on):hover{border-color:var(--ac)}
+  .dt-star:not(.on):hover{color:#C89B3C}
+  .dt-add-chip:not(.on):hover{background:var(--sf3);color:var(--ink)}
   .sh-foot .btn.del-txt:hover{background:var(--hot-s)}
-  .dt-done:hover{background:var(--ok-s);border-color:color-mix(in srgb,var(--ok-f) 48%,transparent)}
   .qk-up:hover{background:var(--ac-s)}
 }
 .hoy-b > .sec-t:first-child{margin-top:14px}
@@ -1783,25 +1815,33 @@ const LS = 'foco.v1';
 const ESTADOS = { bandeja:'Bandeja', prox:'Próxima', hoy:'Hoy', proceso:'En curso', espera:'En espera', algun:'Algún día', hecho:'Hecha' };
 const EST_CLS = { bandeja:'', prox:'', hoy:'ac', proceso:'ac', espera:'', algun:'', hecho:'ok' };
 const DEST = { hecho:'Hecha en el momento', ya:'En marcha (5 min)', hoy:'Para hoy', prox:'A Próximas', espera:'En espera', algun:'A Algún día', borrado:'Eliminada' };
-// Paleta serena: tonos apagados que conviven con el lienzo cálido. Los colores vivos anteriores se traducen a su par tranquilo.
-const PALETA = ['#545D7C','#5B7FA3','#5E9AA8','#4F8A80','#5E8C6A','#9A7B5B','#C08A4E','#C2724A','#B5544B','#B0607A','#8A6BA8','#7D7973'];
+// Paleta corta y apagada para áreas (salvia, ocre, azul grisáceo suave, rosa polvo) pensada para convivir con el verde principal.
+const PALETA = ['#6F8F80','#B8935A','#6E8599','#B57F86'];
 const PALETA_VIVA = ['#5856D6','#007AFF','#32ADE6','#30B0C7','#34C759','#A2845E','#FF9500','#FF6B22','#FF3B30','#FF2D55','#AF52DE','#8E8E93'];
-const tono = c => { const i = PALETA_VIVA.indexOf(String(c || '').toUpperCase()); return i < 0 ? c : PALETA[i]; };
+const tono = c => {
+  const u = String(c || '').toUpperCase();
+  const i = PALETA_VIVA.indexOf(u);
+  if (i >= 0) return PALETA[i % PALETA.length];
+  if (u === '#5B7FA3') return '#6E8599';
+  if (u === '#8A6BA8') return '#B57F86';
+  if (u === '#C08A4E') return '#B8935A';
+  return c;
+};
 // Las áreas base son Trabajo y Personal: si faltan (datos antiguos), se agregan sin tocar las demás.
 const suavizarAreas = aj => {
   aj.areas = aj.areas || []; aj.areas.forEach(a => { a.c = tono(a.c); });
-  if (!aj.areas.some(a => a.id === 'trabajo')) aj.areas.unshift({ id:'trabajo', n:'Trabajo', c:'#5B7FA3' });
-  if (!aj.areas.some(a => a.id === 'personal')) aj.areas.push({ id:'personal', n:'Personal', c:'#8A6BA8' });
+  if (!aj.areas.some(a => a.id === 'trabajo')) aj.areas.unshift({ id:'trabajo', n:'Trabajo', c:'#6E8599' });
+  if (!aj.areas.some(a => a.id === 'personal')) aj.areas.push({ id:'personal', n:'Personal', c:'#B57F86' });
   // Hobbies se agrega una sola vez a datos anteriores; si luego la borras, no vuelve.
-  if (!aj.hobbies) { aj.hobbies = 1; if (!aj.areas.some(a => a.id === 'hobbies')) aj.areas.push({ id:'hobbies', n:'Hobbies', c:'#C08A4E' }); }
+  if (!aj.hobbies) { aj.hobbies = 1; if (!aj.areas.some(a => a.id === 'hobbies')) aj.areas.push({ id:'hobbies', n:'Hobbies', c:'#B8935A' }); }
   return aj;
 };
 function defAjustes() {
   return {
     areas: [
-      { id:'personal', n:'Personal', c:'#8A6BA8' },
-      { id:'trabajo', n:'Trabajo', c:'#5B7FA3' },
-      { id:'hobbies', n:'Hobbies', c:'#C08A4E' }
+      { id:'personal', n:'Personal', c:'#B57F86' },
+      { id:'trabajo', n:'Trabajo', c:'#6E8599' },
+      { id:'hobbies', n:'Hobbies', c:'#B8935A' }
     ], hobbies:1,
     pomo:25, corto:5, largo:15, cada:4, meta:6, sonido:true,
     jIni:'09:00', jFin:'18:00', pausa:60, margen:15,
@@ -5051,46 +5091,45 @@ function htmlResultados() {
   return (act.length ? `<div class="sec-t">Activas <span class="n">${act.length}</span></div><div class="group">${act.slice(0, 40).map(fila).join('')}</div>` : '')
     + (hechas.length ? `<div class="sec-t">${ic('check')}Completadas <span class="n">${hechas.length}</span></div><div class="group">${hechas.slice(0, 40).map(fila).join('')}</div>` : '');
 }
-// Detalle: estado visible arriba, campos llenos a la vista y campos opcionales vacíos como chips «+».
+// Detalle: jerarquía clara de arriba abajo (título con check/estrella, cuándo, organización, detalles opcionales y pie fijo con Enfocar).
 function htmlDetalle(t) {
-  const q = cuad(t), op = ui.dtOpen, A = area(t.area);
+  const q = cuad(t), op = ui.dtOpen, A = area(t.area), hecha = t.estado === 'hecho';
   const [rk, rv] = (t.rec || '').split(':');
   const diasSem = rk === 'semanal' ? (rv || '').split(',').filter(Boolean).map(Number) : [];
-  const fila = (k, icono, tono, label, valor, cuerpo) => `<div class="dr ${op === k ? 'open' : ''}"><button class="dr-h" data-a="dtFila" data-v="${k}" aria-expanded="${op === k}"><span class="dr-i ${tono}">${ic(icono)}</span><span class="dr-l">${label}</span><span class="dr-v">${valor}</span>${ic('chevD', 'chev')}</button>${op === k ? `<div class="dr-b">${cuerpo}</div>` : ''}</div>`;
-  const estVis = ['bandeja', 'hoy', 'prox', 'espera', 'algun', 'hecho'].filter(k => (k !== 'bandeja' || t.estado === 'bandeja') && (k !== 'hecho' || t.estado === 'hecho'));
+  const fila = (k, icono, tono, label, valor, cuerpo, vacio = false) => `<div class="dr ${op === k ? 'open' : ''} ${vacio ? 'vacio' : ''}"><button class="dr-h" data-a="dtFila" data-v="${k}" aria-expanded="${op === k}"><span class="dr-i ${tono}">${ic(icono)}</span><span class="dr-l">${label}</span><span class="dr-v">${valor}</span>${ic('chevD', 'chev')}</button>${op === k ? `<div class="dr-b">${cuerpo}</div>` : ''}</div>`;
+  const estVis = ['bandeja', 'hoy', 'prox', 'espera', 'algun'].filter(k => k !== 'bandeja' || t.estado === 'bandeja');
   const estCur = t.estado === 'proceso' ? 'hoy' : t.estado;
-  const fechaTxt = t.fecha ? `${fechaCorta(t.fecha)}${t.fecha === hoy() || t.fecha === manana() ? ' · ' + DIAS3[parseYmd(t.fecha).getDay()] : ''}` : '<span class="mut2">Sin fecha</span>';
+  const fechaTxt = t.fecha ? `${fechaCorta(t.fecha)}${t.fecha === hoy() || t.fecha === manana() ? ' · ' + DIAS3[parseYmd(t.fecha).getDay()] : ''}` : 'Sin fecha';
   const horaVal = t.hora ? `${pad(Math.floor(hm2min(t.hora) / 60))}:${pad(hm2min(t.hora) % 60)}` : '';
   const F = {
-    area: fila('area', 'layers', 'teal', 'Área', A ? `<i class="dot" style="--a:${A.c}"></i>${esc(A.n)}` : '<span style="color:var(--hot)">Elegir área</span>',
-      `<div class="chips">${areas().map(a => `<button class="chip area ${t.area === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="dtArea" data-v="${a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('')}<button class="chip" data-a="irAreas">${ic('plus')}Nueva área</button></div>`),
-    prio: `<div class="dr"><button class="dr-h" data-a="dtPrio" role="switch" aria-checked="${!!q}"><span class="dr-i warn">${ic('star', q ? 'fill' : '')}</span><span class="dr-l">Prioritaria</span><span class="sw ${q ? 'on' : ''}" aria-hidden="true"></span></button></div>`,
+    area: fila('area', 'layers', 'teal', 'Área', A ? `<i class="dot" style="--a:${A.c}"></i>${esc(A.n)}` : 'Elegir área',
+      `<div class="chips">${areas().map(a => `<button class="chip area ${t.area === a.id ? 'on' : ''}" style="--a:${a.c}" data-a="dtArea" data-v="${a.id}"><i class="dot"></i>${esc(a.n)}</button>`).join('')}</div>`, !A),
     fecha: fila('fecha', 'cal', 'hot', 'Día planeado', fechaTxt,
       `<div class="chips">${[['hoy', 'Hoy'], ['manana', 'Mañana'], ['lunes', 'Próximo lunes'], ['semana', 'En una semana'], ['', 'Sin fecha']].map(([v, n]) => `<button class="chip ${(v === 'hoy' && t.fecha === hoy()) || (v === 'manana' && t.fecha === manana()) || (v === '' && !t.fecha) ? 'on' : ''}" data-a="dtCuando" data-v="${v}">${n}</button>`).join('')}</div>
-       <label class="f-l" style="margin-top:12px" for="dtFechaIn">Otra fecha</label><input type="date" class="in" id="dtFechaIn" data-in="dtFecha" value="${t.fecha}" ${t.estado !== 'hecho' ? `min="${hoy()}"` : ''}>`),
-    hora: fila('hora', 'clock', 'blue', 'Hora', t.hora || '<span class="mut2">Sin hora</span>',
-      `<div class="row2"><input type="time" class="in" data-in="dtHora" value="${horaVal}" step="900" aria-label="Hora">${t.hora ? `<button class="btn" data-a="dtSinHora">${ic('x')}Quitar hora</button>` : '<span></span>'}</div>`),
-    proy: fila('proy', 'folder', 'gray', 'Proyecto', t.proyecto ? esc(t.proyecto) : '<span class="mut2">Ninguno</span>',
-      `<input class="in" id="dtProyIn" data-in="dtProyecto" maxlength="60" value="${esc(t.proyecto)}" placeholder="Elige o escribe un proyecto" autocomplete="off" aria-label="Proyecto"><div class="proy-dd" id="dtProyDd">${htmlProyMenu(t.proyecto, '', 'dtProySel', 'dtProyAdd')}</div>`),
-    lim: fila('lim', 'flag', 'hot', 'Fecha límite', t.limite ? `${fechaCorta(t.limite)}${t.limite < hoy() && t.estado !== 'hecho' ? ' · vencida' : ''}` : '<span class="mut2">Opcional</span>',
-      `<input type="date" class="in" data-in="dtLimite" value="${t.limite || ''}" aria-label="Fecha límite">${t.limite ? `<button class="btn full" style="margin-top:8px" data-a="dtLimQuitar">${ic('x')}Quitar fecha límite</button>` : ''}`),
-    notas: fila('notas', 'note', 'gray', 'Notas', (t.notas || []).length ? `${t.notas.length} ${t.notas.length === 1 ? 'nota' : 'notas'}` : '<span class="mut2">Sin notas</span>',
+       <label class="f-l" style="margin-top:12px" for="dtFechaIn">Otra fecha</label><input type="date" class="in" id="dtFechaIn" data-in="dtFecha" value="${t.fecha}" ${!hecha ? `min="${hoy()}"` : ''}>`, !t.fecha),
+    hora: fila('hora', 'clock', 'blue', 'Hora', t.hora || 'Sin hora',
+      `<div class="row2"><input type="time" class="in" data-in="dtHora" value="${horaVal}" step="900" aria-label="Hora">${t.hora ? `<button class="btn" data-a="dtSinHora">${ic('x')}Quitar hora</button>` : '<span></span>'}</div>`, !t.hora),
+    proy: fila('proy', 'folder', 'gray', 'Proyecto', t.proyecto ? esc(t.proyecto) : 'Ninguno',
+      `<input class="in" id="dtProyIn" data-in="dtProyecto" maxlength="60" value="${esc(t.proyecto)}" placeholder="Elige o escribe un proyecto" autocomplete="off" aria-label="Proyecto"><div class="proy-dd" id="dtProyDd">${htmlProyMenu(t.proyecto, '', 'dtProySel', 'dtProyAdd')}</div>`, !t.proyecto),
+    lim: fila('lim', 'flag', 'hot', 'Fecha límite', t.limite ? `${fechaCorta(t.limite)}${t.limite < hoy() && !hecha ? ' · vencida' : ''}` : 'Opcional',
+      `<input type="date" class="in" data-in="dtLimite" value="${t.limite || ''}" aria-label="Fecha límite">${t.limite ? `<button class="btn full" style="margin-top:8px" data-a="dtLimQuitar">${ic('x')}Quitar fecha límite</button>` : ''}`, !t.limite),
+    notas: fila('notas', 'note', 'gray', 'Notas', (t.notas || []).length ? `${t.notas.length} ${t.notas.length === 1 ? 'nota' : 'notas'}` : 'Sin notas',
       `<div class="bit">${(t.notas || []).slice().reverse().map(n => `<div class="bit-i"><small>${fechaCorta(diaDeISO(n.t))} · ${horaDe(n.t)}</small>${esc(n.x)}</div>`).join('')}</div>
-       <div class="bit-add" id="bitBox"><textarea class="in" id="bitIn" rows="1" maxlength="1000" placeholder="Agrega una nota o avance" aria-label="Nueva nota"></textarea><button class="cap-send" data-a="bitAdd" aria-label="Agregar nota">${ic('arrowUp')}</button></div>`),
+       <div class="bit-add" id="bitBox"><textarea class="in" id="bitIn" rows="1" maxlength="1000" placeholder="Agrega una nota o avance" aria-label="Nueva nota"></textarea><button class="cap-send" data-a="bitAdd" aria-label="Agregar nota">${ic('arrowUp')}</button></div>`, !(t.notas && t.notas.length)),
     rec: fila('rec', 'repeat', 'gray', 'Repetición', t.rec ? recTexto(t.rec) : 'No se repite',
       `<div class="chips">${[['', 'No se repite'], ['diaria', 'Todos los días'], ['laboral', 'Lunes a viernes'], ['semanal', 'Ciertos días'], ['mensual', 'Cada mes']].map(([k, n]) => `<button class="chip ${(rk || '') === k ? 'on' : ''}" data-a="dtRec" data-v="${k}">${n}</button>`).join('')}</div>
        ${rk === 'semanal' ? `<div class="days" role="group" aria-label="Días">${DIAS1.map((d, i) => `<button class="${diasSem.includes(i) ? 'on' : ''}" data-a="dtDia" data-v="${i}" aria-label="${DIAS[i]}" aria-pressed="${diasSem.includes(i)}">${d}</button>`).join('')}</div>` : ''}
        ${rk === 'mensual' ? `<div class="rec-mes"><button class="chip ${+rv === 1 ? 'on' : ''}" data-a="dtDiaMes" data-v="1">Día 1</button><button class="chip ${+rv === 15 ? 'on' : ''}" data-a="dtDiaMes" data-v="15">Día 15</button><button class="chip ${+rv >= 31 ? 'on' : ''}" data-a="dtDiaMes" data-v="31">Último día</button><input type="number" class="in" min="1" max="31" value="${clamp(+rv || 1, 1, 31)}" data-in="dtDiaMesIn" aria-label="Día del mes"></div>` : ''}
-       ${t.rec && t.estado !== 'hecho' ? `<div class="rec-act"><button class="btn sm ghost" data-a="dtSaltar">${ic('skip')}Saltar esta vez</button></div>` : ''}`),
-    dur: fila('dur', 'timer', 'vio', 'Duración', t.dur ? `${t.dur} min` : '<span class="mut2">Sin estimar</span>',
-      `<div class="chips">${[5, 15, 25, 50, 90].map(m => `<button class="chip ${t.dur === m ? 'on' : ''}" data-a="dtDur" data-v="${m}">${m} min</button>`).join('')}<button class="chip ${!t.dur ? 'on' : ''}" data-a="dtDur" data-v="0">Sin estimar</button></div>`)
+       ${t.rec && !hecha ? `<div class="rec-act"><button class="btn sm ghost" data-a="dtSaltar">${ic('skip')}Saltar esta vez</button></div>` : ''}`, !t.rec),
+    dur: fila('dur', 'timer', 'vio', 'Duración', t.dur ? `${t.dur} min` : 'Sin estimar',
+      `<div class="chips">${[5, 15, 25, 50, 90].map(m => `<button class="chip ${t.dur === m ? 'on' : ''}" data-a="dtDur" data-v="${m}">${m} min</button>`).join('')}<button class="chip ${!t.dur ? 'on' : ''}" data-a="dtDur" data-v="0">Sin estimar</button></div>`, !t.dur)
   };
   const esperaFilas = t.estado === 'espera' ? [
-    fila('esp', 'hourglass', 'warn', 'Esperando a', t.espera ? esc(t.espera) : '<span style="color:var(--hot)">Sin indicar</span>',
-      `<input class="in" data-in="dtEspera" maxlength="120" value="${esc(t.espera)}" placeholder="¿De quién o de qué?" aria-label="Esperando a">`),
-    fila('seg', 'refresh', 'warn', 'Seguimiento', t.seg ? (t.seg === hoy() ? 'Hoy' : fechaCorta(t.seg)) : '<span class="mut2">Sin fecha</span>',
+    fila('esp', 'hourglass', 'warn', 'Esperando a', t.espera ? esc(t.espera) : 'Sin indicar',
+      `<input class="in" data-in="dtEspera" maxlength="120" value="${esc(t.espera)}" placeholder="¿De quién o de qué?" aria-label="Esperando a">`, !t.espera),
+    fila('seg', 'refresh', 'warn', 'Seguimiento', t.seg ? (t.seg === hoy() ? 'Hoy' : fechaCorta(t.seg)) : 'Sin fecha',
       `<div class="chips">${[['1', 'Mañana'], ['3', 'En 3 días'], ['7', 'En una semana'], ['', 'Sin seguimiento']].map(([v, n]) => `<button class="chip ${(v === '' && !t.seg) || (v && t.seg === addDays(hoy(), +v)) ? 'on' : ''}" data-a="dtSegCuando" data-v="${v}">${n}</button>`).join('')}</div>
-       <input type="date" class="in" style="margin-top:12px" data-in="dtSeg" value="${t.seg || ''}" min="${hoy()}" aria-label="Fecha de seguimiento">`)
+       <input type="date" class="in" style="margin-top:12px" data-in="dtSeg" value="${t.seg || ''}" min="${hoy()}" aria-label="Fecha de seguimiento">`, !t.seg)
   ] : [];
   const opSpec = [
     ['proy', 'Proyecto', !!t.proyecto],
@@ -5100,20 +5139,26 @@ function htmlDetalle(t) {
     ['notas', 'Nota', !!(t.notas && t.notas.length)]
   ];
   const extrasVis = opSpec.filter(([k, , lleno]) => lleno || op === k).map(([k]) => F[k]);
-  const extrasAdd = opSpec.filter(([k, , lleno]) => !lleno && op !== k);
-  return cab(`<h2>Tarea</h2>`, `<span class="saved ${Date.now() - ui.savedAt < 1300 ? 'on' : ''}" id="savedTag">${ic('check')}Guardado</span>`) + `
-    <div class="edit-wrap"><textarea class="dt-title" data-in="dtTitulo" rows="1" maxlength="${MAX_TITULO}" aria-label="Título de la tarea">${esc(t.titulo)}</textarea><span class="edit-ico" aria-hidden="true">${ic('pencil')}</span></div>
-    <div id="dtClar">${t.estado === 'hecho' ? '' : htmlClaridad(t.titulo, 'dt')}</div>
+  return cab(`<h2>Tarea</h2>`, `<span class="saved ${Date.now() - ui.savedAt < 1300 ? 'on' : ''}" id="savedTag">${ic('check')}Guardado</span><button class="ib dt-del" data-a="dtBorrar" aria-label="Eliminar tarea" title="Eliminar tarea">${ic('trash')}</button>`) + `
+    <div class="dt-card">
+      <button class="dt-ck ${hecha ? 'on' : ''}" data-a="dtToggleHecha" role="checkbox" aria-checked="${hecha}" aria-label="${hecha ? 'Marcar como pendiente' : 'Marcar como hecha'}">${ic('check')}</button>
+      <textarea class="dt-title ${hecha ? 'hecha' : ''}" data-in="dtTitulo" rows="1" maxlength="${MAX_TITULO}" aria-label="Título de la tarea">${esc(t.titulo)}</textarea>
+      <button class="dt-star ${q ? 'on' : ''}" data-a="dtPrio" role="switch" aria-checked="${!!q}" aria-label="${q ? 'Quitar prioridad' : 'Marcar como prioritaria'}">${ic('star', q ? 'fill' : '')}</button>
+    </div>
+    <div id="dtClar">${hecha ? '' : htmlClaridad(t.titulo, 'dt')}</div>
+    <div class="dt-sec-l">¿Cuándo quieres atenderla?</div>
     <div class="dt-est" role="radiogroup" aria-label="Ubicación">${estVis.map(k => `<button class="chip ${estCur === k ? 'on' : ''}" data-a="dtEstado" data-v="${k}" role="radio" aria-checked="${estCur === k}">${ESTADOS[k]}</button>`).join('')}</div>
-    ${esperaFilas.length ? `<div class="group" style="margin-bottom:14px">${esperaFilas.join('')}</div>` : ''}
-    <div class="group">${F.area}${F.prio}${F.fecha}${F.hora}</div>
+    ${esperaFilas.length ? `<div class="group dt-grp" style="margin-top:12px">${esperaFilas.join('')}</div>` : ''}
+    <div class="dt-sec-l">Organización</div>
+    <div class="group dt-grp">${F.area}${F.fecha}${F.hora}</div>
     ${reprogramaciones(t) || (t.reprog && (t.reprog.o || t.reprog.d)) ? `<p class="hint dt-rep">${ic('repeat')}${reprogramaciones(t) ? `Reprogramada ${reprogramaciones(t)} ${reprogramaciones(t) === 1 ? 'vez' : 'veces'}` : 'Sin reprogramar'}${t.reprog.o ? ` · día original: ${fechaCorta(t.reprog.o).toLowerCase()}` : ''}</p>` : ''}
-    ${extrasVis.length ? `<div class="group" style="margin-top:14px">${extrasVis.join('')}</div>` : ''}
-    ${extrasAdd.length ? `<div class="dt-add-row">${extrasAdd.map(([k, lbl]) => `<button class="dt-add-chip" data-a="dtFila" data-v="${k}">${ic('plus')}${lbl}</button>`).join('')}</div>` : ''}
-    ${t.estado !== 'hecho' ? `<button class="btn full ghost dt-done" data-a="dtCompletar">${ic('check')}Marcar tarea como hecha</button>` : ''}
-    <div class="dt-meta">Se guarda automáticamente · creada ${fechaCorta(diaDeISO(t.creado)).toLowerCase()}${t.pomos ? ` · ${t.pomos} ${+t.pomos === 1 ? 'pomodoro' : 'pomodoros'}` : ''}${t.hecho ? ' · hecha ' + fechaCorta(diaDeISO(t.hecho)).toLowerCase() + ' ' + horaDe(t.hecho) : ''}</div>
-    <div class="sh-foot"><button class="btn del-txt" data-a="dtBorrar" aria-label="Eliminar tarea">${ic('trash')}Eliminar</button>
-      ${t.estado !== 'hecho' ? `<button class="btn" data-a="play" data-id="${t.id}">${ic('play', 'fill')}Enfocar</button>` : `<button class="btn" data-a="dtEstado" data-v="hoy">${ic('refresh')}Reabrir</button>`}<button class="btn pri" data-a="cerrarSheet">Listo</button></div>`;
+    <div class="dt-sec-l">Detalles opcionales</div>
+    ${extrasVis.length ? `<div class="group dt-grp" style="margin-bottom:10px">${extrasVis.join('')}</div>` : ''}
+    <div class="dt-add-grid">${opSpec.map(([k, lbl, lleno]) => { const act = lleno || op === k; return `<button class="dt-add-chip ${act ? 'on' : ''}" data-a="dtFila" data-v="${k}" aria-pressed="${act}">${act ? '' : ic('plus')}<span>${lbl}</span></button>`; }).join('')}</div>
+    <div class="sh-foot dt-foot">
+      <div class="dt-meta">Se guarda automáticamente · creada ${fechaCorta(diaDeISO(t.creado)).toLowerCase()}${t.pomos ? ` · ${t.pomos} ${+t.pomos === 1 ? 'pomodoro' : 'pomodoros'}` : ''}${t.hecho ? ' · hecha ' + fechaCorta(diaDeISO(t.hecho)).toLowerCase() + ' ' + horaDe(t.hecho) : ''}</div>
+      ${!hecha ? `<button class="btn pri full" data-a="play" data-id="${t.id}">${ic('play', 'fill')}Enfocar</button>` : `<button class="btn pri full" data-a="dtEstado" data-v="hoy">${ic('refresh')}Reabrir para hoy</button>`}
+    </div>`;
 }
 // Compatibilidad de campos opcionales abiertos por código.
 const DT_MAS = ['proy', 'lim', 'notas', 'rec', 'dur', 'estado', 'esp', 'seg'];
@@ -5769,6 +5814,7 @@ const ACT = {
     // Eliminar la tarea del reloj conserva el tiempo trabajado y deja el reloj libre.
     if (T().tareaId === t.id) { cerrarTramo(); T().tareaId = ''; save(); pushTimer(); }
     t.borrado = true; upsertT(t); cerrarSheet(); toast('Tarea eliminada', 'Deshacer', () => { t.borrado = false; upsertT(t); render(); }); },
+  dtToggleHecha:el => { const t = dtT(); if (!t) return; guardarDetalleTexto(); if (t.estado === 'hecho') setEstado(t, 'hoy'); else completar(t, el); dtRefrescar(); },
   dtCompletar:el => { const t = dtT(); guardarDetalleTexto(); completar(t, el); cerrarSheet(); },
   // Enfoque
   iniciar:() => iniciar(),
