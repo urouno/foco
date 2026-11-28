@@ -95,7 +95,9 @@ svg.i.fill{fill:currentColor;stroke:none}
 @keyframes shake{0%,100%{transform:none}20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
 @keyframes penter{from{opacity:0;transform:translateY(24px) scale(.96)}to{opacity:1;transform:none}}
 @keyframes livepulse{0%,100%{box-shadow:0 0 0 0 rgba(78,127,108,.45);box-shadow:0 0 0 0 color-mix(in srgb,var(--ok-f) 45%,transparent)}50%{box-shadow:0 0 0 6px transparent;box-shadow:0 0 0 6px color-mix(in srgb,var(--ok-f) 0%,transparent)}}
-@keyframes ckpop{0%{transform:scale(.82)}60%{transform:scale(1.12)}100%{transform:none}}
+@keyframes ckpop{0%{transform:scale(.76)}45%{transform:scale(1.18)}72%{transform:scale(.95)}88%{transform:scale(1.04)}100%{transform:none}}
+@keyframes ckdraw{from{stroke-dashoffset:24}to{stroke-dashoffset:0}}
+@keyframes ckring{0%{box-shadow:0 0 0 0 rgba(62,92,82,.38);box-shadow:0 0 0 0 color-mix(in srgb,var(--ac) 38%,transparent)}100%{box-shadow:0 0 0 10px transparent}}
 .shake{animation:shake var(--t-slow)}
 
 /* ===== Encabezado ===== */
@@ -210,9 +212,10 @@ textarea.in{resize:none}
 .ck{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:var(--fs-s);font-weight:700;color:var(--mut);transition:all var(--t-slow) var(--ease);position:relative;border:1.5px solid var(--ln2);background:transparent}
 .ck svg.i{width:var(--ic-s);height:var(--ic-s);position:absolute;inset:0;margin:auto;opacity:0;transform:scale(.4);transition:all var(--t-slow) var(--ease);color:var(--on-ac)}
 .ck:active{transform:scale(.88)}
-.done .ck,.ck.on{background:var(--ac);border-color:var(--ac);animation:ckpop var(--t-slow) cubic-bezier(.34,1.56,.64,1)}
+.done .ck,.ck.on{background:var(--ac);border-color:var(--ac);animation:ckpop 420ms var(--ease),ckring 420ms var(--ease)}
 .done .ck span,.ck.on span,.done .ck b,.ck.on b{opacity:0}
 .done .ck svg.i,.ck.on svg.i{opacity:1;transform:none}
+.done .ck svg.i path,.ck.on svg.i path,.done .ck svg.i polyline,.ck.on svg.i polyline{stroke-dasharray:24;animation:ckdraw 260ms var(--ease) both}
 .tr.done .tt{text-decoration:line-through;color:var(--mut)}
 .tr.out{opacity:0;transform:translateX(24px)}
 .tr.hecha .tt{text-decoration:line-through;color:var(--mut);font-weight:500}
@@ -223,7 +226,7 @@ textarea.in{resize:none}
 
 /* ===== Arrastre ===== */
 [data-drag]{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
-.drag-ghost{position:fixed;z-index:var(--z-drag);pointer-events:none;margin:0;transform:rotate(1.2deg) scale(1.03);box-shadow:var(--sh-2);border-radius:var(--r);opacity:.97;transition:none}
+.drag-ghost{position:fixed;z-index:var(--z-drag);pointer-events:none;margin:0;box-shadow:var(--sh-2);border-radius:var(--r);opacity:.97;transition:none;will-change:transform,left,top}
 .ph{opacity:.3;outline:2px dashed var(--mut2);outline-offset:-3px}
 .lift{z-index:calc(var(--z-base) + 10);box-shadow:var(--sh-2);transform:scale(1.02)}
 body.dragging{cursor:grabbing}
@@ -1649,6 +1652,51 @@ div.mn-ia{animation:pulse 1.6s infinite}
   .rut-grid{grid-template-columns:380px minmax(0,1fr);gap:24px}
   .rut-form{position:sticky;top:96px}
 }
+/* 10. Progreso: calendario de calor anual, racha y anillo de nivel */
+.pcal-card{margin-bottom:16px;padding:16px;border-radius:var(--r);background:var(--sf);border:var(--bd);box-shadow:var(--sh-1)}
+.pcal-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+.pcal-lvl{display:flex;align-items:center;gap:12px;min-width:0}
+.lvl-ring{position:relative;width:58px;height:58px;flex:none;display:grid;place-items:center}
+.lvl-ring svg{width:58px;height:58px;transform:rotate(-90deg)}
+.lvl-ring .lr-bg{fill:none;stroke:var(--sf3);stroke-width:5}
+.lvl-ring .lr-fg{fill:none;stroke:var(--ac);stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset var(--t-slow) var(--ease)}
+.lvl-ring b{position:absolute;font-size:var(--fs-l);font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.pcal-lt{min-width:0}
+.pcal-lt b{display:block;font-size:var(--fs-m);font-weight:600;color:var(--ink);letter-spacing:-.01em}
+.pcal-lt small{display:block;font-size:var(--fs-s);color:var(--mut);margin-top:2px;font-variant-numeric:tabular-nums}
+.pcal-streak{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--r-s);background:var(--foco-s);color:var(--foco-t)}
+.pcal-streak svg.i{width:var(--ic-m);height:var(--ic-m);flex:none}
+.pcal-streak b{display:block;font-size:var(--fs-m);font-weight:700;line-height:1.15;font-variant-numeric:tabular-nums}
+.pcal-streak small{display:block;font-size:var(--fs-xs);color:var(--mut);margin-top:1px}
+.hmap-body{display:flex;align-items:flex-start;gap:6px}
+.hmap-dow{display:grid;grid-template-rows:repeat(7,12px);gap:3px;padding-top:18px;flex:none;font-size:var(--fs-xs);line-height:12px;color:var(--mut2);user-select:none}
+.hmap-dow span{display:block;height:12px}
+.hmap-scroll{flex:1;min-width:0;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+.hmap-scroll::-webkit-scrollbar{display:none}
+.hmap-inner{display:inline-flex;flex-direction:column;gap:4px}
+.hmap-months{display:grid;grid-auto-flow:column;grid-auto-columns:12px;gap:3px;height:14px;font-size:var(--fs-xs);line-height:14px;color:var(--mut2)}
+.hmap-months span{white-space:nowrap;overflow:visible}
+.hmap-grid{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,12px);grid-auto-columns:12px;gap:3px}
+.hm-c{width:12px;height:12px;border-radius:3px;background:var(--sf2);padding:0;transition:transform var(--t-fast) var(--ease)}
+.hm-c.l1{background:var(--ac-s);background:color-mix(in srgb,var(--ac) 26%,var(--sf2))}
+.hm-c.l2{background:var(--ac-s);background:color-mix(in srgb,var(--ac) 52%,var(--sf2))}
+.hm-c.l3{background:var(--ac);background:color-mix(in srgb,var(--ac) 76%,var(--sf2))}
+.hm-c.l4{background:var(--ac)}
+.hm-c.hoy{box-shadow:inset 0 0 0 1.5px var(--foco)}
+.hm-c.sel{outline:2px solid var(--focus);outline-offset:1px}
+.hm-c.fut{opacity:0;pointer-events:none}
+.hmap-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:var(--fs-xs);color:var(--mut)}
+.hmap-tip{min-width:0;color:var(--mut)}
+.hmap-tip b{color:var(--ink);font-weight:600;margin-right:6px}
+.hmap-leg{display:inline-flex;align-items:center;gap:4px;flex:none;color:var(--mut2)}
+.hmap-leg i{display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--sf2)}
+.hmap-leg i.l1{background:var(--ac-s);background:color-mix(in srgb,var(--ac) 26%,var(--sf2))}
+.hmap-leg i.l2{background:var(--ac-s);background:color-mix(in srgb,var(--ac) 52%,var(--sf2))}
+.hmap-leg i.l3{background:var(--ac);background:color-mix(in srgb,var(--ac) 76%,var(--sf2))}
+.hmap-leg i.l4{background:var(--ac)}
+.dt-ck.on{animation:ckpop 420ms var(--ease)}
+.dt-ck.on svg.i path,.dt-ck.on svg.i polyline{stroke-dasharray:24;animation:ckdraw 260ms var(--ease) both}
+@media (hover:hover){.hm-c:not(.fut):hover{transform:scale(1.28)}}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}</style>
 </head>
 <body>
@@ -2465,6 +2513,7 @@ function setEstado(t, est) {
 }
 function completar(t, origen) {
   if (!t || t.estado === 'hecho') return;
+  haptico('tap');
   const prev = t.estado;
   if (t.rec && !t.serie) t.serie = t.id;
   t.estado = 'hecho'; t.hecho = nowISO(); upsertT(t);
@@ -3112,6 +3161,27 @@ function xpFlotante(xp, origen) {
   el.style.left = clamp(x, 50, innerWidth - 50) + 'px'; el.style.top = clamp(y, 80, innerHeight - 140) + 'px';
   document.body.appendChild(el); setTimeout(() => el.remove(), 1400);
 }
+function haptico(tipo) {
+  if (calma() || !navigator.vibrate) return;
+  const pat = { tap:8, grab:14, drop:[8, 22, 6], nivel:[14, 40, 22] }[tipo] || 8;
+  try { navigator.vibrate(pat); } catch {}
+}
+/* Resorte físico amortiguado (stiffness k, damping c); respeta modo Calma */
+function springAnim({ from, to, v = 0, k = 320, c = 26, onUpdate, onDone }) {
+  if (calma()) { onUpdate(to); if (onDone) onDone(); return () => {}; }
+  let x = from, vel = v, raf = 0, last = performance.now(), dead = false;
+  const paso = now => {
+    if (dead) return;
+    const dt = Math.min(0.032, (now - last) / 1000) || 0.016; last = now;
+    const a = -k * (x - to) - c * vel;
+    vel += a * dt; x += vel * dt;
+    if (Math.abs(to - x) < 0.35 && Math.abs(vel) < 0.8) { onUpdate(to); if (onDone) onDone(); return; }
+    onUpdate(x);
+    raf = requestAnimationFrame(paso);
+  };
+  raf = requestAnimationFrame(paso);
+  return () => { dead = true; cancelAnimationFrame(raf); };
+}
 function confeti(n = 60) {
   if (calma()) return;
   const cols = ['#3E5C52','#8DB5A5','#545D7C','#BAC2E3','#C08A4E','#F6BB80'];
@@ -3130,7 +3200,7 @@ function celebrarNivel(l) {
   if (calma()) { toast(`Subiste a nivel ${l}: ${nombreNivel(l)}`, null, null, 'award'); return; }
   const el = $('#lvlUp');
   el.innerHTML = `<div class="box"><div class="lvl-badge">${l}</div><h2>Subiste a nivel ${l}</h2><p>Ahora eres <b>${nombreNivel(l)}</b>. Sigue así.</p><button class="btn pri full" data-a="cerrarNivel">Continuar</button></div>`;
-  el.classList.add('on'); confeti(80); sonido('nivel');
+  el.classList.add('on'); confeti(80); haptico('nivel'); sonido('nivel');
 }
 let actx;
 function audioListo() { try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if (actx.state === 'suspended') actx.resume(); } catch (e) {} }
@@ -3661,7 +3731,7 @@ function finProc() {
       <div class="u-col u-g3 u-mt4">
         <button class="btn pri" data-a="procPlan">${ic('sparkle')}Elegir mis tareas de ${new Date().getHours() >= 17 ? 'mañana' : 'hoy'}</button>
         <button class="btn" data-a="cerrarProc">Listo</button></div></div>`;
-    confeti(70); sonido('nivel');
+    haptico('drop'); sonido('nivel');
   } else cerrarProc();
 }
 
@@ -4469,7 +4539,7 @@ function finFase() {
       t.fase = f; t.total = t.restante = segFase(f); t.inicio = new Date(finTs).toISOString();
       t.fin = finTs + t.total * 1000; t.corriendo = true;
     } else { t.fase = 'listo'; t.restante = 0; t.total = 1; t.inicio = ''; pantallaActiva(false); restaurarModo(t); }
-    if (reciente) confeti(30);
+    if (reciente) haptico('drop');
   } else {
     if (reciente) sonido('descanso');
     t.fase = 'foco'; t.total = t.restante = segFase('foco'); t.inicio = ''; pantallaActiva(false);
@@ -4683,12 +4753,47 @@ function renderProgreso() {
   const tile = (k, icono, val, label) => `<button class="ptile ${det === k ? 'on' : ''}" data-a="pDet" data-v="${k}" aria-expanded="${det === k}"><div class="ptile-top"><span class="mi">${ic(icono)}</span>${ic('chevD', det === k ? 'chev up' : 'chev')}</div><div class="ptile-v">${val}</div><div class="ptile-l">${label}</div></button>`;
   const prioVal = C.ini ? `${C.ok} de ${C.ini}` : 'Sin elegir';
   const prioLbl = C.ini ? 'prioridades cumplidas' : 'prioridades del día';
-  // Tira semanal de constancia (lunes a domingo de la semana en curso)
-  const hD = parseYmd(hoy()), offsetLun = (hD.getDay() + 6) % 7, lun = addDays(hoy(), -offsetLun);
-  const diasSem = Array.from({ length:7 }, (_, i) => addDays(lun, i));
-  const lblSem = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
-  const rachaCard = `<div class="pstreak"><div class="pstreak-h"><span class="pstreak-ico">${ic('flame')}</span><div class="pstreak-t"><b>${st.racha ? `${st.racha} ${st.racha === 1 ? 'día' : 'días'} de racha` : 'Constancia semanal'}</b><small>${st.rachaMax ? `Mejor racha: ${st.rachaMax} ${st.rachaMax === 1 ? 'día' : 'días'}` : 'Completa una tarea o 5 min de enfoque'}</small></div></div>
-    <div class="pstreak-days" role="img" aria-label="Días activos esta semana">${diasSem.map((d, i) => { const on = st.activos && st.activos.has(d); return `<div class="psd ${on ? 'on' : ''} ${d === hoy() ? 'hoy' : ''}"><span>${lblSem[i]}</span><i>${on ? ic('check') : ''}</i></div>`; }).join('')}</div></div>`;
+  // Calendario de calor anual (52 semanas, L–D) + anillo de nivel + racha
+  const hStr = hoy(), hD = parseYmd(hStr), offsetLun = (hD.getDay() + 6) % 7, lunHoy = addDays(hStr, -offsetLun);
+  const semIni = addDays(lunHoy, -51 * 7);
+  const tarAll = {}, minAll = {};
+  vivas().forEach(t => { if (t.estado === 'hecho' && t.hecho) { const d = diaDeISO(t.hecho); if (d >= semIni && d <= hStr) tarAll[d] = (tarAll[d] || 0) + 1; } });
+  S.sesiones.forEach(s => { if (esFoco(s) && s.fin) { const d = diaDeISO(s.fin); if (d >= semIni && d <= hStr) minAll[d] = (minAll[d] || 0) + (+s.min || 0); } });
+  const scoreDia = d => (tarAll[d] || 0) + Math.floor((minAll[d] || 0) / 25);
+  const mesesC = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+  let diasActAnio = 0, mesPrev = -1;
+  const calMeses = [], calCeldas = [];
+  const pCalSel = ui.pCal && ui.pCal >= semIni && ui.pCal <= hStr ? ui.pCal : '';
+  for (let w = 0; w < 52; w++) {
+    const dLun = addDays(semIni, w * 7), m = parseYmd(dLun).getMonth();
+    calMeses.push(`<span>${m !== mesPrev ? mesesC[m] : ''}</span>`);
+    mesPrev = m;
+    for (let j = 0; j < 7; j++) {
+      const d = addDays(semIni, w * 7 + j);
+      if (d > hStr) { calCeldas.push('<span class="hm-c fut" aria-hidden="true"></span>'); continue; }
+      const n = tarAll[d] || 0, mn = minAll[d] || 0, sc = scoreDia(d);
+      if (sc > 0) diasActAnio++;
+      const lv = sc === 0 ? '' : sc === 1 ? 'l1' : sc <= 3 ? 'l2' : sc <= 5 ? 'l3' : 'l4';
+      const sel = pCalSel === d;
+      const lbl = `${cap1(fechaCorta(d))}: ${n} ${n === 1 ? 'tarea' : 'tareas'}${mn ? ` · ${txtHM(mn)} de enfoque` : ''}`;
+      calCeldas.push(`<button type="button" class="hm-c ${lv} ${d === hStr ? 'hoy' : ''} ${sel ? 'sel' : ''}" data-a="pCal" data-v="${d}" aria-pressed="${sel}" aria-label="${lbl}" title="${lbl}"></button>`);
+    }
+  }
+  const lvlCirc = 2 * Math.PI * 24, lvlFrac = clamp((st.xp - a) / Math.max(1, b - a), 0, 1);
+  const calTip = pCalSel
+    ? `<b>${cap1(fechaCorta(pCalSel))}</b>${tarAll[pCalSel] || 0} ${(tarAll[pCalSel] || 0) === 1 ? 'tarea' : 'tareas'}${minAll[pCalSel] ? ` · ${txtHM(minAll[pCalSel])} de enfoque` : ''}`
+    : `${diasActAnio} ${diasActAnio === 1 ? 'día activo' : 'días activos'} en el último año · ${TOCA()} un cuadro para ver el detalle`;
+  const calCard = `<div class="pcal-card"><div class="pcal-head">
+      <div class="pcal-lvl"><div class="lvl-ring" role="progressbar" aria-label="Progreso al nivel ${l + 1}" aria-valuenow="${Math.round(lvlFrac * 100)}" aria-valuemin="0" aria-valuemax="100"><svg viewBox="0 0 58 58"><circle class="lr-bg" cx="29" cy="29" r="24"/><circle class="lr-fg" cx="29" cy="29" r="24" stroke-dasharray="${lvlCirc.toFixed(1)}" stroke-dashoffset="${(lvlCirc * (1 - lvlFrac)).toFixed(1)}"/></svg><b>${l}</b></div>
+      <div class="pcal-lt"><b>Nivel ${l} · ${nombreNivel(l)}</b><small>${st.xp} XP · faltan ${Math.max(0, b - st.xp)} para nivel ${l + 1}</small></div></div>
+      <div class="pcal-streak">${ic('flame')}<div><b>${st.racha ? `${st.racha} ${st.racha === 1 ? 'día' : 'días'} de racha` : 'Sin racha activa'}</b><small>${st.rachaMax ? `Mejor racha: ${st.rachaMax} ${st.rachaMax === 1 ? 'día' : 'días'}` : 'Completa una tarea o 5 min hoy'}</small></div></div>
+    </div>
+    <div class="hmap-body">
+      <div class="hmap-dow" aria-hidden="true"><span>L</span><span></span><span>X</span><span></span><span>V</span><span></span><span>D</span></div>
+      <div class="hmap-scroll" id="hmapScroll"><div class="hmap-inner"><div class="hmap-months" aria-hidden="true">${calMeses.join('')}</div><div class="hmap-grid" role="group" aria-label="Actividad diaria del último año">${calCeldas.join('')}</div></div></div>
+    </div>
+    <div class="hmap-foot"><span class="hmap-tip" aria-live="polite">${calTip}</span><span class="hmap-leg" aria-hidden="true">Menos <i></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i> Más</span></div>
+  </div>`;
   // Distribución visible con barra apilada horizontal y leyenda compacta
   const totalDist = filasA.reduce((acc, [, x]) => acc + (usaMin ? x.m : x.t), 0) || 1;
   const distCard = filasA.length ? `<div class="pdist"><div class="pdist-h"><b>En qué se fue el tiempo</b><div class="seg mini" role="tablist">${[['area', 'Área'], ['proyecto', 'Proyecto']].map(([k, n]) => `<button class="${dist === k ? 'on' : ''}" data-a="pDist" data-v="${k}" role="tab">${n}</button>`).join('')}</div></div>
@@ -4704,21 +4809,21 @@ function renderProgreso() {
   if (det === 'hechas') detalle = listaHechas();
   if (det === 'enfoque') detalle = ses.length ? `<div class="group">${ses.slice(0, 60).map(x => `<div class="hr" style="--a:${area(x.area) ? colorA(x.area) : 'var(--mut2)'}"><i class="dot"></i><span class="tb"><span class="ht u-blk">${esc(x.tareaTitulo || 'Enfoque libre')}</span><span class="hn">${x.tipo === 'pomodoro' ? 'Pomodoro' : 'Bloque'}${isTrue(x.completa) ? '' : ' parcial'}</span></span><span class="hm">${x.min} min · ${fechaCorta(diaDeISO(x.fin))}</span></div>`).join('')}</div>` : '<div class="empty">Sin sesiones de enfoque en este periodo.</div>';
   if (det === 'prio') detalle = C.dias.length ? `<div class="group">${C.dias.slice().reverse().map(x => `<div class="hr"><span class="tb"><span class="ht u-blk">${cap1(fechaLarga(x.d))}</span><span class="hn">${[x.altas ? `${x.altas} ${x.altas === 1 ? 'añadida' : 'añadidas'} después` : '', x.fuera ? `${x.fuera} fuera del plan` : ''].filter(Boolean).join(' · ') || 'Según el plan inicial'}</span></span><span class="hm">${x.ok} de ${x.ini}</span></div>`).join('')}</div>${C.sinReg ? `<p class="hint">${C.sinReg} ${C.sinReg === 1 ? 'día' : 'días'} sin plan registrado.</p>` : ''}` : `<div class="empty">Aún no hay un plan registrado en este periodo.</div>`;
-  v.innerHTML = `<div class="prog-g"><div class="prog-izq">
+  v.innerHTML = `${calCard}<div class="prog-g"><div class="prog-izq">
     <div class="seg" role="tablist" aria-label="Periodo">${[['hoy', 'Hoy'], ['semana', 'Semana'], ['mes', 'Mes']].map(([k, n]) => `<button class="${per === k ? 'on' : ''}" data-a="pPer" data-v="${k}" role="tab" aria-selected="${per === k}">${n}</button>`).join('')}</div>
     <p class="hint per-r">${ic('cal')}${R.txt}</p>
     ${principal}
     <div class="ptiles">${tile('enfoque', 'timer', hCorta(minT), 'de enfoque')}${tile('prio', 'star', prioVal, prioLbl)}</div>
     ${det ? `<div class="kdet">${detalle}</div>` : ''}
-    ${rachaCard}
   </div><div class="prog-der">
     ${distCard}
-    <details class="acc" data-k="logros" ${abierto('logros') ? 'open' : ''}><summary><span class="ai">${ic('award')}</span>Nivel e insignias<span class="v">Nivel ${l} · ${INSIGNIAS.filter(i => i.ok(st)).length}/${INSIGNIAS.length}</span>${ic('chevD', 'chev')}</summary><div class="acc-b">
-      <div class="panel lvl"><div class="lvl-badge">${l}</div><div class="u-f1m"><div class="ln">Nivel ${l} · ${nombreNivel(l)}</div><div class="bar" role="progressbar" aria-valuenow="${st.xp - a}" aria-valuemax="${b - a}"><i style="width:${(st.xp - a) / (b - a) * 100}%"></i></div><div class="mut sm u-mt2">${st.xp} XP · ${b - st.xp} para el nivel ${l + 1}</div></div></div>
+    <details class="acc" data-k="logros" ${abierto('logros') ? 'open' : ''}><summary><span class="ai">${ic('award')}</span>Insignias<span class="v">${INSIGNIAS.filter(i => i.ok(st)).length}/${INSIGNIAS.length}</span>${ic('chevD', 'chev')}</summary><div class="acc-b">
       <div class="ins">${insHtml}</div></div></details>
     <div class="sec-t">${ic('list')}Historial</div>
     <input class="in" data-in="histQ" type="search" placeholder="Buscar en lo terminado" value="${esc(ui.histQ)}" aria-label="Buscar en el historial"><div id="histList"></div>
   </div></div>`;
+  const hms = $('#hmapScroll');
+  if (hms && !ui.pCal) hms.scrollLeft = hms.scrollWidth;
   pintarHistorial();
 }
 function pintarHistorial() {
@@ -5620,6 +5725,7 @@ const ACT = {
   },
   pPer:el => { ui.pPer = el.dataset.v; ui.pDia = ''; renderVista(); },
   pDia:el => { ui.pDia = ui.pDia === el.dataset.v ? '' : el.dataset.v; renderVista(); },
+  pCal:el => { ui.pCal = ui.pCal === el.dataset.v ? '' : el.dataset.v; renderVista(); },
   pDet:el => { ui.pDet = ui.pDet === el.dataset.v ? '' : el.dataset.v; renderVista(); },
   pDist:el => { ui.pDist = el.dataset.v; renderVista(); },
   histMas:() => { ui.histN += 60; pintarHistorial(); },
@@ -6147,12 +6253,14 @@ function levantar(st) {
   st.origen = it.parentElement.dataset.list; st.enBoard = !!it.closest('.board');
   if (['hoy', 'atrasada', 'hecho'].includes(st.origen)) { const dh = $('details[data-k="hechas"]'); if (dh) dh.open = true; }
   document.body.classList.add('dragging');
-  if (navigator.vibrate) navigator.vibrate(12);
+  haptico('grab');
   if (st.free) { st.wrap = it.closest('.tl-wrap'); st.top0 = it.offsetTop; st.yL = st.y; st.sy0 = st.wrap ? st.wrap.scrollTop : scrollY; it.classList.add('lift'); }
   else {
     const g = it.cloneNode(true); g.classList.add('drag-ghost'); g.removeAttribute('data-drag');
     g.style.width = r.width + 'px'; g.style.left = r.left + 'px'; g.style.top = r.top + 'px';
+    g.style.transform = 'scale(1.03)';
     document.body.appendChild(g); st.g = g; st.dx = st.x - r.left; st.dy = st.y - r.top;
+    st.gx = r.left; st.gy = r.top; st.vx = 0; st.vy = 0; st.rot = 0; st.tPrev = performance.now();
     it.classList.add('ph');
   }
   st.raf = requestAnimationFrame(() => bucle(st));
@@ -6181,7 +6289,10 @@ function mover(st) {
     const lbl = $('.tl-t', it); if (lbl && t) lbl.textContent = `${min2hm(ini)} – ${min2hm(ini + Math.max(+t.dur || 30, 15))}`;
     return;
   }
-  st.g.style.left = (st.x - st.dx) + 'px'; st.g.style.top = (st.y - st.dy) + 'px';
+  if (calma()) {
+    st.gx = st.x - st.dx; st.gy = st.y - st.dy;
+    st.g.style.left = st.gx + 'px'; st.g.style.top = st.gy + 'px';
+  }
   colocar(st);
 }
 function colocar(st) {
@@ -6209,6 +6320,19 @@ function colocar(st) {
 function bucle(st) {
   if (D.st !== st || !st.lifted) return;
   if (!document.contains(st.item)) { dFin(); return; }
+  if (!st.free && st.g && !calma()) {
+    const now = performance.now(), dt = Math.min(0.032, (now - st.tPrev) / 1000) || 0.016;
+    st.tPrev = now;
+    const tx = st.x - st.dx, ty = st.y - st.dy, k = 420, c = 32;
+    st.vx += (-k * (st.gx - tx) - c * st.vx) * dt;
+    st.vy += (-k * (st.gy - ty) - c * st.vy) * dt;
+    st.gx += st.vx * dt; st.gy += st.vy * dt;
+    const targetRot = clamp(st.vx * 0.008, -4.5, 4.5);
+    st.rot += (targetRot - st.rot) * Math.min(1, dt * 18);
+    st.g.style.left = st.gx.toFixed(1) + 'px';
+    st.g.style.top = st.gy.toFixed(1) + 'px';
+    st.g.style.transform = `rotate(${st.rot.toFixed(2)}deg) scale(1.03)`;
+  }
   let movio = false;
   const board = $('#board');
   if (board && st.enBoard && !st.free) {
@@ -6239,20 +6363,29 @@ function dFin() {
   document.body.classList.remove('dragging');
   $$('.col.over,.hero.over,.dz.over').forEach(c => c.classList.remove('over'));
   if (st.free) {
-    st.item.classList.remove('lift'); D.st = null;
+    st.item.classList.remove('lift'); D.st = null; haptico('drop');
     if (st.nt != null) { const t = byId(st.item.dataset.id); if (!t) { renderVista(); return; } const ph = t.hora; t.hora = min2hm(AG_INI * 60 + st.nt); upsertT(t); renderVista(); toast(`Movida a las ${t.hora}`, 'Deshacer', () => { t.hora = ph; upsertT(t); renderVista(); }); }
     return;
   }
-  if (st.top) { st.g.remove(); st.item.classList.remove('ph'); D.st = null; hacerPrimera(st.item.dataset.id); return; }
+  if (st.top) { st.g.remove(); st.item.classList.remove('ph'); D.st = null; haptico('drop'); hacerPrimera(st.item.dataset.id); return; }
   const r = st.item.getBoundingClientRect();
-  st.g.style.transition = 'left .18s var(--ease),top .18s var(--ease),transform .18s';
-  st.g.style.left = r.left + 'px'; st.g.style.top = r.top + 'px'; st.g.style.transform = 'none';
-  setTimeout(() => {
-    st.g.remove(); st.item.classList.remove('ph'); D.st = null;
-    const list = st.item.parentElement;
-    if (!list || !list.dataset.list) { renderVista(); return; }
-    soltar(st.item.dataset.id, list.dataset.list, $$(':scope > [data-drag]', list).map(n => n.dataset.id), st.item, list);
-  }, 190);
+  const x0 = st.gx != null ? st.gx : parseFloat(st.g.style.left) || r.left;
+  const y0 = st.gy != null ? st.gy : parseFloat(st.g.style.top) || r.top;
+  const rot0 = st.rot || 0;
+  springAnim({
+    from: 0, to: 1, k: 380, c: 28,
+    onUpdate: p => {
+      st.g.style.left = (x0 + (r.left - x0) * p).toFixed(1) + 'px';
+      st.g.style.top = (y0 + (r.top - y0) * p).toFixed(1) + 'px';
+      st.g.style.transform = `rotate(${(rot0 * (1 - p)).toFixed(2)}deg) scale(${(1.03 - 0.03 * p).toFixed(3)})`;
+    },
+    onDone: () => {
+      st.g.remove(); st.item.classList.remove('ph'); D.st = null; haptico('drop');
+      const list = st.item.parentElement;
+      if (!list || !list.dataset.list) { renderVista(); return; }
+      soltar(st.item.dataset.id, list.dataset.list, $$(':scope > [data-drag]', list).map(n => n.dataset.id), st.item, list);
+    }
+  });
 }
 function soltar(id, destino, ids, el, list) {
   const t = byId(id); if (!t) return;
@@ -6298,33 +6431,48 @@ document.addEventListener('mouseup', dFin);
 addEventListener('blur', dFin);
 document.addEventListener('contextmenu', e => { if (e.target.closest('[data-drag]')) e.preventDefault(); });
 
-/* Deslizar hacia abajo para cerrar la hoja */
+/* Deslizar hacia abajo para cerrar la hoja (con resistencia elástica, velocidad y resorte) */
 (() => {
   const sh = $('#sheet'), body = $('#sheetBody');
-  let y0 = null, x0 = 0, dy = 0, activo = false, desdeCab = false;
+  let y0 = null, x0 = 0, dy = 0, vy = 0, yPrev = 0, tPrev = 0, activo = false, desdeCab = false, stopSp = null;
   sh.addEventListener('touchstart', e => {
     if (desk() || e.touches.length !== 1) { y0 = null; return; }
     const t = e.target;
     desdeCab = !!t.closest('.sh-top');
     if (!desdeCab && (t.closest('input,textarea,select') || body.scrollTop > 0)) { y0 = null; return; }
-    y0 = e.touches[0].clientY; x0 = e.touches[0].clientX; dy = 0; activo = false;
+    if (stopSp) { stopSp(); stopSp = null; }
+    y0 = yPrev = e.touches[0].clientY; x0 = e.touches[0].clientX;
+    tPrev = performance.now(); dy = 0; vy = 0; activo = false;
   }, { passive:true });
   sh.addEventListener('touchmove', e => {
     if (y0 == null) return;
-    const d = e.touches[0].clientY - y0, dx = Math.abs(e.touches[0].clientX - x0);
+    const cy = e.touches[0].clientY, now = performance.now();
+    const d = cy - y0, dx = Math.abs(e.touches[0].clientX - x0);
     if (!activo) {
-      if (d > 8 && d > dx * 1.2 && (desdeCab || body.scrollTop <= 0)) { activo = true; sh.style.transition = 'none'; }
-      else { if (d < -6 || dx > 12) y0 = null; return; }
+      if (Math.abs(d) > 8 && Math.abs(d) > dx * 1.2 && (desdeCab || (d > 0 && body.scrollTop <= 0))) {
+        activo = true; sh.style.transition = 'none';
+      } else { if (dx > 12 || (!desdeCab && d < -6)) y0 = null; return; }
     }
-    dy = Math.max(0, d - 8);
-    sh.style.setProperty('--dy', dy + 'px');
+    const dt = Math.max(4, now - tPrev);
+    vy = 0.65 * ((cy - yPrev) / dt) + 0.35 * vy;
+    yPrev = cy; tPrev = now;
+    // Resistencia elástica (rubber-band) al tirar hacia arriba
+    dy = d >= 0 ? Math.max(0, d - 8) : -Math.pow(-d, 0.72) * 0.55;
+    sh.style.setProperty('--dy', dy.toFixed(1) + 'px');
     if (e.cancelable) e.preventDefault();
   }, { passive:false });
   const fin = () => {
     if (y0 == null) return;
-    sh.style.transition = '';
-    if (activo && dy > 90) cerrarSheet(); else sh.style.setProperty('--dy', '0px');
-    y0 = null; activo = false; dy = 0;
+    const cerrar = activo && (dy > 90 || (vy > 0.55 && dy > 24));
+    const curDy = dy, curVy = vy;
+    y0 = null; activo = false; dy = 0; vy = 0;
+    if (cerrar) { sh.style.transition = ''; haptico('tap'); cerrarSheet(); return; }
+    if (Math.abs(curDy) < 0.5) { sh.style.transition = ''; sh.style.setProperty('--dy', '0px'); return; }
+    stopSp = springAnim({
+      from: curDy, to: 0, v: curVy * 420, k: 340, c: 28,
+      onUpdate: v => sh.style.setProperty('--dy', v.toFixed(1) + 'px'),
+      onDone: () => { sh.style.transition = ''; sh.style.setProperty('--dy', '0px'); stopSp = null; }
+    });
   };
   sh.addEventListener('touchend', fin); sh.addEventListener('touchcancel', fin);
   $('#sheetBg').addEventListener('touchmove', e => { if (e.cancelable) e.preventDefault(); }, { passive:false });
