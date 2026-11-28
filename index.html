@@ -593,8 +593,9 @@ body.inmersivo #tabs,body.inmersivo #menuBtn,body.inmersivo #hSub,body.inmersivo
 .kc-f.pr .qk.ok{flex:1;justify-content:center}
 .filt{width:44px;height:42px;background:var(--sf2);border-radius:14px}
 .filt.on{background:var(--ac-s);color:var(--ac-t)}
-.coltabs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:12px;background:var(--sf3);padding:4px;border-radius:16px}
-.coltabs button{min-width:0;min-height:50px;padding:4px 2px;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;font-weight:600;color:var(--mut);transition:all .2s var(--ease);text-align:center;overflow:hidden}
+.coltabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:12px;background:var(--sf3);padding:4px;border-radius:16px}
+.coltabs button{min-width:0;min-height:50px;padding:4px 2px;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11.5px;font-weight:600;color:var(--mut);transition:all .2s var(--ease);text-align:center;overflow:hidden}
+.coltabs button span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .coltabs b{font-size:var(--fs-s);min-width:22px;padding:0 8px;border-radius:8px;background:var(--sf);color:var(--ink);line-height:19px;font-weight:600}
 .coltabs b.full{background:var(--ac-s);color:var(--ac-t)}
 .coltabs button.on{background:var(--sf);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.12)}
@@ -1557,9 +1558,8 @@ body{letter-spacing:-.005em;text-rendering:optimizeLegibility}
 .ag-slot-cap .in{flex:1;min-width:0}
 .act .dest-tag{display:inline-block;margin-top:2px;font-size:11px;font-weight:600;color:var(--mut2);letter-spacing:.01em}
 @media (hover:hover){
-  .vpill:hover{background:var(--sf3);color:var(--ink)}
   .b-act.del{opacity:.35}
-  .tr.b-item:hover .b-act.del,.b-act.del:focus-visible{opacity:1}
+  .tr.b-item:hover .b-act.del,.rut-item:hover .b-act.del,.b-act.del:focus-visible{opacity:1}
   .b-act.del:hover{background:var(--hot-s);color:var(--hot)}
   .mn-del{opacity:0}
   .mn-c:hover .mn-del,.mn-del:focus-visible{opacity:.85}
@@ -1615,7 +1615,7 @@ body{letter-spacing:-.005em;text-rendering:optimizeLegibility}
 .rut-form{padding:16px}
 .rut-form h3{margin:0 0 12px;font-size:var(--fs-m);font-weight:700;display:flex;align-items:center;gap:8px}
 .rut-form h3 svg.i{width:17px;height:17px;color:var(--vio)}
-.rut-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.rut-row{display:flex;flex-direction:column;gap:12px;margin-top:12px}
 .rut-fbar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
 .rut-item{display:flex;align-items:center;gap:12px;padding:12px 12px 12px 16px;background:var(--sf);position:relative;cursor:pointer}
 .rut-item + .rut-item::after{content:"";position:absolute;top:0;left:16px;right:0;border-top:1px solid var(--ln)}
@@ -3719,8 +3719,9 @@ function renderHoy() {
   const antRaw = pendientesAnteriores();
   const ant = fil(antRaw);
   const ocultas = modoTrab ? (raw.proceso.length - proceso.length) + (raw.cola.length - cola.length) + (raw.otras.length - otras.length) + (antRaw.length - ant.length) : 0;
-  const hechasP = prioIds ? prioIds.filter(id => byId(id)?.estado === 'hecho').length : hechas.length;
-  const total = prioIds ? prioIds.length : proceso.length + cola.length + hechas.length;
+  const prioVis = prioIds ? (modoTrab ? prioIds.filter(id => esAreaTrabajo(byId(id))) : prioIds) : null;
+  const hechasP = prioVis ? prioVis.filter(id => byId(id)?.estado === 'hecho').length : hechas.length;
+  const total = prioVis ? prioVis.length : proceso.length + cola.length + hechas.length;
   const pendP = [...proceso.filter(esPrio), ...cola];
   const est = pendP.reduce((a, t) => a + (+t.dur || 0), 0), sinEst = pendP.filter(t => !t.dur).length;
   const tarde = new Date().getHours() >= 17, t = T();
@@ -3901,7 +3902,7 @@ function renderSemana() {
     ${htmlSolapes(dias)}
     ${sel ? `<div class="ag-banner">${ic('clock')}<span>${TOCA()} una hora en el calendario para colocar «${esc(sel.titulo)}»</span><button class="lnk2" data-a="agSelNo">Cancelar</button></div>` : ''}
     <div class="sec-t">Por agendar <span class="n">${porAgendar.length}</span></div>
-    ${porAgendar.length ? `<div class="sm-list">${porAgendar.map(it).join('')}</div>` : chipsFiltro().length ? `<p class="hint">Sin coincidencias con los filtros.</p>` : `<p class="hint">Nada pendiente. Organiza tu Bandeja como «Próxima acción» para verlas aquí.</p>`}
+    ${porAgendar.length ? `<div class="sm-list">${porAgendar.map(it).join('')}</div>` : chipsFiltro().length ? `<p class="hint">Sin coincidencias con los filtros.</p>` : `<p class="hint">Nada pendiente por agendar. Las tareas sin día en Próximas aparecen aquí.</p>`}
     ${sinHora.length ? `<div class="sec-t">Con día, sin hora <span class="n">${sinHora.length}</span></div><div class="sm-list">${sinHora.map(it).join('')}</div>` : ''}
   </aside>`;
   const d = new Date(), nm = d.getHours() * 60 + d.getMinutes();
@@ -4688,7 +4689,6 @@ function ayuda(k) {
   return ({
     bandeja:{ d:'Tu lugar para vaciar la cabeza. Solo el título es obligatorio. Anota cualquier pendiente en cuanto se te ocurra, sin pensar todavía dónde va.', p:[
       ['plus', 'Captura en un paso', 'Escribe qué vas a hacer (si no sabes cómo empezar, elige un verbo arriba). El área se sugiere sola y es obligatoria: cámbiala en el selector a la izquierda de Guardar. Toca Guardar. Si pegas una lista, cada línea se vuelve un pendiente.'],
-      ['filter', 'Filtrar por verbo', 'Toca un verbo (Llamar, Enviar, Revisar…) para ver solo esos pendientes y organizarlos juntos.'],
       ['layers', 'Área (obligatoria)', 'Elígela en el selector junto a Guardar; si lo dejas vacío, Foco sugiere una según lo que escribes. Puedes crear áreas nuevas en Ajustes.'],
       ['layers', 'Varios a la vez', 'Toca «Seleccionar varios» para asignar área, proyecto, día o destino a muchos pendientes. Se puede deshacer.'],
       ['sparkle', 'Organiza', 'Cuando tengas varios, toca «Organizar». Decides uno por uno: hacerlo ya, moverlo a Hoy, Mañana, Algún día o eliminarlo. Si la redacción no es clara, Foco te sugiere cómo mejorarla o dividirla.']] },
@@ -4994,10 +4994,12 @@ function htmlLote() {
 }
 // Elegir otra tarea para trabajar ahora: las planeadas de hoy y las atrasadas.
 function htmlCambiar() {
+  const modoTrab = !!pref.v('modoTrabajo');
+  const fil = arr => modoTrab ? arr.filter(esAreaTrabajo) : arr;
   const { proceso, cola, otras } = trabajoDeHoy();
-  const actual = T().tareaId && byId(T().tareaId) ? T().tareaId : (proceso[0] || cola[0] || otras[0] || {}).id;
-  const plan = [...new Set([...proceso, ...cola, ...otras])].filter(x => x.id !== actual);
-  const ant = pendientesAnteriores().filter(x => x.id !== actual && !plan.includes(x));
+  const actual = T().tareaId && byId(T().tareaId) ? T().tareaId : (fil(proceso)[0] || fil(cola)[0] || fil(otras)[0] || {}).id;
+  const plan = fil([...new Set([...proceso, ...cola, ...otras])]).filter(x => x.id !== actual);
+  const ant = fil(pendientesAnteriores()).filter(x => x.id !== actual && !plan.includes(x));
   const fila = x => `<button class="tr opt" data-a="cambiarA" data-id="${x.id}" style="--a:${colorA(x.area)}"><i class="dot"></i><span class="tb"><span class="tt">${esc(x.titulo)}</span><span class="mt">${metaCorta(x, 2, { area:true })}</span></span>${ic('play', 'fill')}</button>`;
   return cab('<h2>Cambiar de tarea</h2>') + `<p class="hint" style="margin:0 4px 16px">Elige en qué vas a trabajar ahora.</p>`
     + (plan.length ? `<div class="sec-t">Planeados <span class="n">${plan.length}</span></div><div class="group">${plan.map(fila).join('')}</div>` : '')
@@ -5644,7 +5646,7 @@ const ACT = {
   connCerrar:() => { pref.set('connOff', 1); pintarBandejaLista(); },
   pendProx:el => decidirPendiente(el.dataset.id, 'prox'),
   pendOtro:el => abrirSheet({ k:'detalle', id:el.dataset.id, open:'fecha' }),
-  pendTodasHoy:() => { const ids = pendientesAnteriores().map(t => t.id); const prev = ids.map(id => { const t = byId(id); return [t, t.estado, t.fecha]; });
+  pendTodasHoy:() => { const modoTrab = !!pref.v('modoTrabajo'); const ids = pendientesAnteriores().filter(t => !modoTrab || esAreaTrabajo(t)).map(t => t.id); if (!ids.length) return; const prev = ids.map(id => { const t = byId(id); return [t, t.estado, t.fecha]; });
     ids.forEach(id => { const t = byId(id); t.estado = 'hoy'; t.fecha = hoy(); upsertT(t); }); renderVista();
     toast(`${ids.length} ${ids.length === 1 ? 'tarea se queda' : 'tareas se quedan'} hoy`, 'Deshacer', () => { prev.forEach(([t, e, f]) => { t.estado = e; t.fecha = f; upsertT(t); }); renderVista(); }); },
   segRetomar:el => { const t = byId(el.dataset.id); if (!t) return; const prev = [t.estado, t.fecha, t.seg]; t.seg = ''; setEstado(t, 'hoy'); renderVista();
@@ -5918,7 +5920,7 @@ const IN = {
   dtProyecto:el => {
     const v = el.value, t0 = dtT();
     const dd = $('#dtProyDd'); if (dd) dd.innerHTML = htmlProyMenu(t0 ? t0.proyecto : '', v, 'dtProySel', 'dtProyAdd');
-    dtCampo('pr', el, t => { const pv = v.trim().slice(0, 60); t.proyecto = pv; if (pv) registrarProyecto(pv); upsertT(t); renderVista(); const hdr = $('.dr.open .dr-v'); if (hdr) hdr.innerHTML = pv ? esc(pv) : '<span class="mut2">Ninguno</span>'; });
+    dtCampo('pr', el, t => { const pv = v.trim().slice(0, 60); t.proyecto = pv; upsertT(t); renderVista(); const hdr = $('.dr.open .dr-v'); if (hdr) hdr.innerHTML = pv ? esc(pv) : '<span class="mut2">Ninguno</span>'; });
   },
   dtEspera:el => { const v = el.value; dtCampo('es', el, t => { t.espera = v.trim().slice(0, 120); upsertT(t); renderVista(); }); },
   dtFecha:el => {
