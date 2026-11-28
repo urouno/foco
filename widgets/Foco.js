@@ -13,6 +13,8 @@
      · Mediano  → hoy        Ahora + avance del día + lo que sigue + «+».
      · Grande   → agenda     Línea del día, racha, vista previa de mañana.
      · Cualquier tamaño → pendientes  Lo que no tiene plan y qué atender.
+     · Cualquier tamaño → progreso    Anillo de nivel, racha y calendario de calor.
+       (Alias aceptados: racha, calor, nivel.)
      · Cualquier tamaño → captura     Registro rápido (Bandeja, Hoy,
                                       Con hora y Mente; también en bloqueo).
        (Alias aceptados: rapido, registro, inbox, add.)
@@ -39,20 +41,21 @@ const dyn = (l, d) => Color.dynamic(new Color(l), new Color(d));
 const C = {
   bg:dyn('#FAF8F5', '#151412'), card:dyn('#FFFFFF', '#1E1D1B'), card2:dyn('#F3EFEA', '#292825'),
   track:dyn('#E9E4DD', '#34322E'), ln:dyn('#ECE7DF', '#2E2C28'),
-  ink:dyn('#201F1E', '#EEEAE4'), mut:dyn('#5C5955', '#ABA59C'), mut2:dyn('#7D7973', '#8D877F'),
+  ink:dyn('#201F1E', '#EEEAE4'), mut:dyn('#5C5955', '#ABA59C'), mut2:dyn('#6B6761', '#969087'),
   ac:dyn('#3E5C52', '#8DB5A5'), acS:dyn('#EAF1ED', '#1D2C26'), onAc:dyn('#FFFFFF', '#10201A'),
   foco:dyn('#B85D38', '#E08A67'), focoS:dyn('#FBF0EB', '#2D1D17'), onFoco:dyn('#FFFFFF', '#2A1208'),
   ok:dyn('#2F5D4C', '#9CCBB6'), okf:dyn('#4E7F6C', '#6FA48F'), okS:dyn('#E8F1EC', '#1C2B24'),
   warn:dyn('#80531F', '#E9B67C'), warnS:dyn('#FAF3EA', '#2B2218'),
   hot:dyn('#A8332A', '#F2A29A'),
   vio:dyn('#4A5371', '#BAC2E3'), vioS:dyn('#EEF0F6', '#212430'),
-  azul:dyn('#3B668C', '#8AB4D8'), azulS:dyn('#EDF3F8', '#1A2632')
+  azul:dyn('#3B668C', '#8AB4D8'), azulS:dyn('#EDF3F8', '#1A2632'),
+  h1:dyn('#CFDCD5', '#2E4039'), h2:dyn('#9AB6AA', '#4C6C60'), h3:dyn('#68897C', '#6B9283')
 };
 // Misma paleta serena que la app: los colores vivos de áreas antiguas se muestran con su par tranquilo.
 const VIVA = ['#5856D6','#007AFF','#32ADE6','#30B0C7','#34C759','#A2845E','#FF9500','#FF6B22','#FF3B30','#FF2D55','#AF52DE','#8E8E93'];
-const CALMA = ['#545D7C','#5B7FA3','#5E9AA8','#4F8A80','#5E8C6A','#9A7B5B','#C08A4E','#C2724A','#B5544B','#B0607A','#8A6BA8','#7D7973'];
+const CALMA = ['#545D7C','#5B7FA3','#5E9AA8','#4F8A80','#5E8C6A','#9A7B5B','#C08A4E','#C2724A','#B5544B','#B0607A','#8A6BA8','#6B6761'];
 const tono = h => { const i = VIVA.indexOf(String(h || '').toUpperCase()); return i < 0 ? h : CALMA[i]; };
-const hex = h => { try { return new Color(tono(h) || '#7D7973'); } catch (e) { return new Color('#7D7973'); } };
+const hex = h => { try { return new Color(tono(h) || '#6B6761'); } catch (e) { return new Color('#6B6761'); } };
 
 /* ---------- Utilidades ---------- */
 const pad = n => String(n).padStart(2, '0');
@@ -231,11 +234,22 @@ function respaldo(j, aj) {
   }, 0);
   const tm = val('timer') || {};
   const x = ts.find(t => t.id === tm.tareaId);
+  const hD = new Date(), semIniD = masDias(inicioDia(hD), -((hD.getDay() + 6) % 7) - 13 * 7), semIni = ymd(semIniD);
+  const tCal = {};
+  ts.forEach(t => { if (t.estado === 'hecho' && t.hecho) { const dd = diaISO(t.hecho); if (dd >= semIni && dd <= hoyS) tCal[dd] = (tCal[dd] || 0) + 1; } });
+  let cal = '', diasAct = 0;
+  for (let i = 0; i < 98; i++) {
+    const dd = ymd(masDias(semIniD, i));
+    if (dd > hoyS) { cal += '.'; continue; }
+    const sc = tCal[dd] || 0; if (sc > 0) diasAct++;
+    cal += sc === 0 ? '0' : sc === 1 ? '1' : sc <= 3 ? '2' : sc <= 5 ? '3' : '4';
+  }
   return { v:2, respaldo:1, gen:new Date().toISOString(), dia:hoyS,
     hoy:{ hechas, total:hechas + vivas.length, prio:0, racha:0, focoMin:0 },
-    bandeja:bandejaList.length, recientes:bandejaList.slice(0, 4).map(t => ({ id:t.id, t:String(t.titulo).slice(0, 90), c:ar(t.area).c || '#7D7973' })),
+    prog:{ l:1, nom:'En marcha', xp:0, a:0, b:100, rachaMax:0, diasAct, ini:semIni, cal },
+    bandeja:bandejaList.length, recientes:bandejaList.slice(0, 4).map(t => ({ id:t.id, t:String(t.titulo).slice(0, 90), c:ar(t.area).c || '#6B6761' })),
     mente, areas:areas.map(a => ({ id:a.id, n:a.n, c:a.c })),
-    lista:vivas.slice(0, 8).map(t => ({ id:t.id, t:String(t.titulo).slice(0, 90), c:ar(t.area).c || '#7D7973', a:ar(t.area).n || '', h:t.hora || '', d:+t.dur || 0, run:t.estado === 'proceso' ? 1 : 0, rec:t.rec ? 1 : 0 })),
+    lista:vivas.slice(0, 8).map(t => ({ id:t.id, t:String(t.titulo).slice(0, 90), c:ar(t.area).c || '#6B6761', a:ar(t.area).n || '', h:t.hora || '', d:+t.dur || 0, run:t.estado === 'proceso' ? 1 : 0, rec:t.rec ? 1 : 0 })),
     timer:{ ...tm, c:x ? ar(x.area).c || '#B85D38' : '#B85D38', fases:tm.corriendo && tm.fin ? [{ f:tm.fase, ini:tm.fin - (tm.total || 0) * 1000, fin:tm.fin }] : [] },
     dias:{ [hoyS]:bloques(hoyS), [manS]:bloques(manS) }, sinPlan:sinPlanRespaldo(ts, ar, hoyS, cfg) };
 }
@@ -720,8 +734,107 @@ function accPendientes(w, sp, fam) {
   texto(w, top ? top.m : (sp ? txtRev(sp) : 'Abre Foco'), Font.mediumSystemFont(12), new Color('#ffffff', 0.8), 1);
 }
 
+/* ---------- Widget «Progreso»: anillo de nivel, racha y mapa de calor ---------- */
+function anilloNivel(frac, nivel, tam = 46) {
+  const dc = new DrawContext(); dc.size = new Size(tam, tam); dc.opaque = false; dc.respectScreenScale = true;
+  const cx = tam / 2, r = tam / 2 - 4, sw = 4;
+  dc.setStrokeColor(C.track); dc.setLineWidth(sw);
+  dc.strokeEllipse(new Rect(cx - r, cx - r, r * 2, r * 2));
+  const f = Math.max(0, Math.min(1, frac));
+  if (f > 0.01) {
+    dc.setStrokeColor(C.ac); dc.setLineWidth(sw);
+    const pasos = Math.max(8, Math.round(48 * f)), p = new Path();
+    for (let i = 0; i <= pasos; i++) {
+      const ang = -Math.PI / 2 + (Math.PI * 2 * f * i) / pasos;
+      const x = cx + Math.cos(ang) * r, y = cx + Math.sin(ang) * r;
+      if (i === 0) p.move(new Point(x, y)); else p.addLine(new Point(x, y));
+    }
+    dc.addPath(p); dc.strokePath();
+  }
+  dc.setTextColor(C.ink); dc.setFont(Font.boldSystemFont(tam >= 44 ? 15 : 13)); dc.setTextAlignedCenter();
+  dc.drawTextInRect(String(nivel), new Rect(0, tam / 2 - (tam >= 44 ? 10 : 8), tam, 20));
+  return dc.getImage();
+}
+function mapaCalorImg(cal, cols, celda, gap) {
+  const s = String(cal || ''), totalCols = Math.min(cols, Math.floor(s.length / 7) || cols);
+  const startCol = Math.max(0, Math.floor(s.length / 7) - totalCols);
+  const W = totalCols * celda + (totalCols - 1) * gap, H = 7 * celda + 6 * gap;
+  const dc = new DrawContext(); dc.size = new Size(W, H); dc.opaque = false; dc.respectScreenScale = true;
+  const pal = [C.card2, C.h1, C.h2, C.h3, C.ac];
+  let ultIdx = -1;
+  for (let i = s.length - 1; i >= 0; i--) { if (s[i] !== '.') { ultIdx = i; break; } }
+  for (let c = 0; c < totalCols; c++) {
+    for (let r = 0; r < 7; r++) {
+      const idx = (startCol + c) * 7 + r, ch = s[idx] || '0';
+      if (ch === '.') continue;
+      const x = c * (celda + gap), y = r * (celda + gap), lv = Math.max(0, Math.min(4, +ch || 0));
+      const p = new Path(); p.addRoundedRect(new Rect(x, y, celda, celda), 2.5, 2.5);
+      dc.setFillColor(pal[lv]); dc.addPath(p); dc.fillPath();
+      if (idx === ultIdx) {
+        dc.setStrokeColor(C.foco); dc.setLineWidth(1.4);
+        dc.addPath(p); dc.strokePath();
+      }
+    }
+  }
+  return dc.getImage();
+}
+function wProgreso(w, d, snap, fam) {
+  const pr = (snap && snap.prog) || { l:1, nom:'En marcha', xp:0, a:0, b:100, rachaMax:0, diasAct:0, cal:'' };
+  const frac = (pr.xp - pr.a) / Math.max(1, pr.b - pr.a);
+  const racha = (snap && snap.hoy && snap.hoy.racha) || 0;
+  const focoM = (snap && snap.hoy && snap.hoy.focoMin) || 0;
+  w.url = urlAccion({ accion:'captura' });
+  if (fam === 'small') {
+    const top = w.addStack(); top.centerAlignContent();
+    const img = top.addImage(anilloNivel(frac, pr.l, 42)); img.imageSize = new Size(42, 42);
+    top.addSpacer(8);
+    const col = top.addStack(); col.layoutVertically();
+    texto(col, `Nivel ${pr.l}`, Font.boldSystemFont(13), C.ink);
+    texto(col, pr.nom || '', Font.mediumSystemFont(10.5), C.mut);
+    w.addSpacer(8);
+    const rk = w.addStack(); rk.centerAlignContent();
+    simbolo(rk, 'flame.fill', 13, C.foco); rk.addSpacer(4);
+    texto(rk, racha ? `${racha} ${racha === 1 ? 'día' : 'días'} de racha` : 'Sin racha', Font.semiboldSystemFont(11.5), C.ink);
+    w.addSpacer(8);
+    const hm = w.addImage(mapaCalorImg(pr.cal, 7, 13, 3));
+    hm.imageSize = new Size(109, 52); hm.applyFittingContentMode();
+    return;
+  }
+  const head = w.addStack(); head.centerAlignContent();
+  const img = head.addImage(anilloNivel(frac, pr.l, 44)); img.imageSize = new Size(44, 44);
+  head.addSpacer(10);
+  const info = head.addStack(); info.layoutVertically();
+  texto(info, `Nivel ${pr.l} · ${pr.nom || ''}`, Font.boldSystemFont(13.5), C.ink);
+  texto(info, `${pr.xp} XP · faltan ${Math.max(0, pr.b - pr.xp)}`, Font.mediumSystemFont(10.5), C.mut);
+  head.addSpacer();
+  pill(head, racha ? `${racha} d` : '0 d', C.focoS, C.foco, 'flame.fill');
+  w.addSpacer(fam === 'large' ? 12 : 8);
+  const cols = fam === 'large' ? 14 : 14, cel = fam === 'large' ? 16 : 10, gap = fam === 'large' ? 4 : 3;
+  const hmImg = w.addImage(mapaCalorImg(pr.cal, cols, cel, gap));
+  hmImg.imageSize = new Size(cols * cel + (cols - 1) * gap, 7 * cel + 6 * gap);
+  w.addSpacer();
+  const extra = `${pr.diasAct || 0} días activos${pr.rachaMax ? ` · mejor ${pr.rachaMax} d` : ''}${focoM ? ` · ${durTxt(focoM)} hoy` : ''}`;
+  pie(w, d, extra);
+}
+function accProgreso(w, snap, fam) {
+  const pr = (snap && snap.prog) || { l:1, nom:'En marcha', xp:0, a:0, b:100 };
+  const racha = (snap && snap.hoy && snap.hoy.racha) || 0;
+  const frac = (pr.xp - pr.a) / Math.max(1, pr.b - pr.a);
+  if (fam === 'accessoryCircular') {
+    const img = w.addImage(anillo(frac)); img.imageSize = new Size(48, 48);
+    return;
+  }
+  if (fam === 'accessoryInline') {
+    w.addText(`Niv. ${pr.l} · Racha ${racha} d`);
+    return;
+  }
+  texto(w, `NIVEL ${pr.l} · ${String(pr.nom || '').toUpperCase()}`, Font.boldSystemFont(10), Color.white());
+  texto(w, racha ? `${racha} ${racha === 1 ? 'día' : 'días'} de racha` : `${pr.xp} XP`, Font.semiboldSystemFont(14), Color.white());
+  texto(w, `Faltan ${Math.max(0, pr.b - pr.xp)} XP para nivel ${pr.l + 1}`, Font.mediumSystemFont(11), Color.white());
+}
+
 /* ---------- Registro rápido y acciones interactivas ---------- */
-// Detecta atajos al escribir rápido: hora (15:30), duración (30m / 1h), «hoy» / «mañana» y urgencia (!).
+// Detecta atajos al escribir rápido: hora (15:30), duración (30m / 1h), «hoy», «mañana», «algún día» y urgencia (!).
 function parsearRapido(txt) {
   let s = String(txt || '').trim(), hora = '', dur = 0, fecha = '', estado = '', urgente = false;
   if (/^!\s*/.test(s)) { urgente = true; s = s.replace(/^!\s*/, ''); }
@@ -734,7 +847,8 @@ function parsearRapido(txt) {
     dur = /^h/i.test(md[2]) ? Math.round(val * 60) : Math.round(val);
     s = s.replace(md[0], ' ');
   }
-  if (/(?:^|\s)ma[ñn]ana(?=\s|$)/i.test(s)) { fecha = ymd(masDias(new Date(), 1)); estado = 'prox'; s = s.replace(/(?:^|\s)ma[ñn]ana(?=\s|$)/i, ' '); }
+  if (/(?:^|\s)alg[uú]n\s+d[ií]a(?=\s|$)/i.test(s)) { estado = 'algun'; s = s.replace(/(?:^|\s)alg[uú]n\s+d[ií]a(?=\s|$)/i, ' '); }
+  else if (/(?:^|\s)ma[ñn]ana(?=\s|$)/i.test(s)) { fecha = ymd(masDias(new Date(), 1)); estado = 'prox'; s = s.replace(/(?:^|\s)ma[ñn]ana(?=\s|$)/i, ' '); }
   else if (/(?:^|\s)hoy(?=\s|$)/i.test(s)) { fecha = ymd(new Date()); estado = 'hoy'; s = s.replace(/(?:^|\s)hoy(?=\s|$)/i, ' '); }
   const titulo = s.replace(/\s{2,}/g, ' ').trim() || String(txt || '').trim();
   return { titulo:titulo.slice(0, 140), hora, dur, fecha, estado, urgente };
@@ -949,6 +1063,7 @@ async function desdeFoco(json) {
 
 /* ---------- Armar el widget ---------- */
 const ES_CAPTURA = t => ['captura', 'rapido', 'rápido', 'registro', 'inbox', 'add'].includes(t);
+const ES_PROGRESO = t => ['progreso', 'racha', 'calor', 'nivel'].includes(t);
 async function crear(familia, tipo) {
   const r = await cargar();
   const w = new ListWidget();
@@ -971,7 +1086,11 @@ async function crear(familia, tipo) {
     return w;
   }
   const d = { ...calcular(r.snap), fam:familia, cola:r.cola || 0, error:r.error && r.error !== 'sin-config' ? r.error : '', snapGen:r.snap.gen };
-  if (tipo === 'pendientes' || tipo === 'sinplan') {
+  if (ES_PROGRESO(tipo)) {
+    if (acc) accProgreso(w, r.snap, familia); else wProgreso(w, d, r.snap, familia);
+    d.refrescar = new Date(Date.now() + 30 * 60000);
+  }
+  else if (tipo === 'pendientes' || tipo === 'sinplan') {
     if (acc) accPendientes(w, r.snap.sinPlan, familia); else wPendientes(w, r.snap.sinPlan, familia);
     const m = inicioDia(masDias(new Date(), 1)); m.setMinutes(1);
     d.refrescar = new Date(Math.min(m.getTime(), Date.now() + 60 * 60000));
@@ -994,9 +1113,11 @@ async function menu() {
   if (!conectado() && !(await configurar())) return;
   const c = cfgAvisos(), nCola = leerCola().length;
   const a = new Alert(); a.title = 'Foco';
-  a.message = `Avisos: ${c.on ? 'activados' : 'desactivados'}${nCola ? ` · ${nCola} en cola local` : ''}. Agrega widgets con Parameter: ahora, hoy, agenda, pendientes o captura.`;
+  a.message = `Avisos: ${c.on ? 'activados' : 'desactivados'}${nCola ? ` · ${nCola} en cola local` : ''}. Agrega widgets con Parameter: ahora, hoy, agenda, pendientes, progreso o captura.`;
   const ops = [
     ['+ Registro rápido…', () => capturarRapido('')],
+    ['Ver «Progreso» (mediano)', () => vista('medium', 'progreso')],
+    ['Ver «Progreso» (pequeño)', () => vista('small', 'progreso')],
     ['Ver «Captura» (mediano)', () => vista('medium', 'captura')],
     ['Ver «Captura» (pequeño)', () => vista('small', 'captura')],
     ['Ver «Captura» (grande)', () => vista('large', 'captura')],

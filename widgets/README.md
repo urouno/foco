@@ -42,7 +42,13 @@ Foco (app web) ◀──al cambiar algo y al salir──▶ Hoja de Google (Tare
 | Bloqueo | Circular | Anillo de avance con la cuenta regresiva al centro; sin actividad, «hechas / total» del día. |
 | Bloqueo | En línea | «Título · hasta 10:25» o «Sigue 11:30 · Título». |
 
-En **Parameter** puedes escribir `ahora`, `hoy`, `agenda`, `pendientes` o `captura` para elegir el diseño sin importar el tamaño (en pequeño, `hoy` y `agenda` muestran `ahora`).
+En **Parameter** puedes escribir `ahora`, `hoy`, `agenda`, `pendientes`, `progreso` o `captura` para elegir el diseño sin importar el tamaño (en pequeño, `hoy` y `agenda` muestran `ahora`).
+
+### Widget «Progreso» (Parameter: `progreso`)
+También acepta `racha`, `calor` o `nivel`. Muestra tu constancia y avance de un vistazo:
+- **Pequeño**: anillo de nivel + racha actual + mini mapa de calor de las últimas 7 semanas.
+- **Mediano / Grande**: anillo de nivel con XP, píldora de racha, mapa de calor de 14 semanas (con borde terracota en hoy) y días activos.
+- **Bloqueo**: anillo de nivel (circular), nivel + racha + XP restante (rectangular) o `Niv. X · Racha Y d` (en línea).
 
 ### Nuevo: Widget «Registro rápido» (Parameter: `captura`)
 También acepta `rapido`, `registro`, `inbox` o `add`. Pensado para capturar tareas, citas o pensamientos sin abrir Foco.

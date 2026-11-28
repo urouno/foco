@@ -2177,7 +2177,7 @@ function pushTimer() {
    La app deja en la hoja (Ajustes › «widget») un resumen ya calculado: lo que va «Ahora», el reloj con sus
    fases previstas y los bloques con hora de hoy y mañana. El widget hace las cuentas con la hora actual,
    así sigue siendo correcto entre una actualización y otra aunque Foco esté cerrado. */
-const hexA = id => (area(id) || {}).c || '#7D7973';
+const hexA = id => (area(id) || {}).c || '#6B6761';
 function fasesTimer() {
   const t = T(); if (!t || !t.corriendo) return [];
   const out = [{ f:t.fase, ini:t.fin - t.total * 1000, fin:t.fin }];
@@ -2198,10 +2198,24 @@ function datosWidget() {
   const bandejaList = tareasEn('bandeja').sort((a, b) => (b.creado || '').localeCompare(a.creado || ''));
   const recientes = bandejaList.slice(0, 4).map(t => ({ id:t.id, t:t.titulo.slice(0, 90), c:hexA(t.area) }));
   const focoHoy = S.sesiones.filter(s => esFoco(s) && diaDeISO(s.fin) === hoyS).reduce((a, s) => a + (+s.min || 0), 0);
-  const st = stats();
+  const st = stats(), lvl = nivelDe(st.xp), [lvlA, lvlB] = rangoNivel(lvl);
+  // Mapa de calor compacto de 14 semanas (L–D) para el widget «progreso»
+  const hD = parseYmd(hoyS), semIni = addDays(hoyS, -((hD.getDay() + 6) % 7) - 13 * 7);
+  const tCal = {}, mCal = {};
+  vivas().forEach(t => { if (t.estado === 'hecho' && t.hecho) { const d = diaDeISO(t.hecho); if (d >= semIni && d <= hoyS) tCal[d] = (tCal[d] || 0) + 1; } });
+  S.sesiones.forEach(s => { if (esFoco(s) && s.fin) { const d = diaDeISO(s.fin); if (d >= semIni && d <= hoyS) mCal[d] = (mCal[d] || 0) + (+s.min || 0); } });
+  let cal = '', diasAct = 0;
+  for (let i = 0; i < 98; i++) {
+    const d = addDays(semIni, i);
+    if (d > hoyS) { cal += '.'; continue; }
+    const sc = (tCal[d] || 0) + Math.floor((mCal[d] || 0) / 25);
+    if (sc > 0) diasAct++;
+    cal += sc === 0 ? '0' : sc === 1 ? '1' : sc <= 3 ? '2' : sc <= 5 ? '3' : '4';
+  }
   const t = T(), x = byId(t.tareaId);
   return { v:2, gen:nowISO(), dia:hoyS,
     hoy:{ hechas:hechasP, total, prio:prioIds ? 1 : 0, racha:st.racha, focoMin:focoHoy }, lista, bandeja:bandejaList.length, recientes, mente:mnAbiertos().length,
+    prog:{ l:lvl, nom:nombreNivel(lvl), xp:st.xp, a:lvlA, b:lvlB, rachaMax:st.rachaMax || 0, diasAct, ini:semIni, cal },
     areas:(S.ajustes.areas || []).map(a => ({ id:a.id, n:a.n, c:a.c })),
     timer:{ fase:t.fase, modo:t.modo, corriendo:t.corriendo ? 1 : 0, fin:t.fin, restante:t.restante, total:t.total, tareaId:t.tareaId || '', tarea:x ? x.titulo.slice(0, 90) : '', c:x ? hexA(x.area) : '#B85D38', fases:fasesTimer() },
     dias:{ [hoyS]:bloquesDe(hoyS), [manana()]:bloquesDe(manana()) },
@@ -5361,7 +5375,7 @@ function htmlWidgets() {
     <div class="panel">${paso(1, 'Instala Scriptable', 'Es gratis, en la App Store.')}
       ${paso(2, 'Copia el script', 'Con el botón de abajo. En Scriptable toca +, pega y nómbralo exactamente «Foco».')}
       ${paso(3, 'Ejecútalo una vez', 'Te pedirá la URL y la clave de tu hoja (las mismas de Ajustes) y permiso para avisos.')}
-      ${paso(4, 'Agrega los widgets', 'Mantén presionada la pantalla de inicio o la de bloqueo › + › Scriptable › elige «Foco». En «Parameter» escribe ahora, hoy, agenda, pendientes o captura (registro rápido). Déjalo vacío para que se adapte al tamaño.')}
+      ${paso(4, 'Agrega los widgets', 'Mantén presionada la pantalla de inicio o la de bloqueo › + › Scriptable › elige «Foco». En «Parameter» escribe ahora, hoy, agenda, pendientes, progreso o captura (registro rápido). Déjalo vacío para que se adapte al tamaño.')}
       ${paso(5, 'Registro rápido y acciones', 'El widget «captura» tiene botones directos para Bandeja, Hoy, Con hora y Mente (también funciona en la pantalla de bloqueo). En los demás widgets puedes tocar «+» para capturar o tocar una tarea para marcarla como hecha.')}</div>
     <button class="btn pri full u-mt4" data-a="widgetsCopiar">${ic('note')}Copiar el script</button>
     <p class="hint">Lo que capturas desde Scriptable se guarda al instante en tu hoja de Google (y si no hay señal, se queda en cola y se envía solo al volver la conexión). El iPhone decide cuándo redibuja el widget (cada 5–15 min); el script pide hacerlo al terminar un enfoque o empezar la siguiente tarea.</p>
